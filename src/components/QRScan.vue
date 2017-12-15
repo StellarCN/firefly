@@ -1,0 +1,192 @@
+/**
+ * 二维码扫
+ * 需要两个事件，
+ * finish(result)
+ * close()
+ */
+<template>
+  <div class="qrscanner">
+    <div class="qrscanner-area"></div>
+    <div class="qrscanner-btn-group">
+      <!--关闭闪光灯-->
+      <span class="qrscanner-btn" @click="closeFlashLight" v-if="isFlashLightOn"><i class="material-icons">&#xE3E6;</i></span>
+      <!--打开闪光灯-->
+      <span class="qrscanner-btn" @click="openFlashLight" v-else><i class="material-icons">&#xE3E7;</i></span>
+      <!--切换摄像头-->
+      <span class="qrscanner-btn" @click="switchCamera"><i class="material-icons">&#xE41E;</i></span>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data(){
+    return {
+      isFlashLightOn: false,
+      isBackCamera: true,
+      isQRScannerPrepared: false,
+      qrInterval: undefined
+    }
+  },
+  props:{
+    validator:{
+      type: Function,
+      required: true
+    }
+  },
+  beforeCreate(){
+    this.qrInterval = setInterval(this.prepareQRScanner, 60000)
+    
+  },
+  mounted(){
+    QRScanner.scan((err,result)=>{
+      console.log('----qr scanner --- ')
+      console.log(err)
+      console.log(result)
+      if(err){
+        if(err.code != 6){
+          // 关闭时不显示错误提示
+          this.$toasted.error(err._message)
+        }
+        this.closeQRScanner()
+      }else{
+        if(!this.validator(result)){
+          this.$toasted.error(this.$t('ERROR.SCANNER_CONTENT_VALIDATE'));
+          this.closeQRScanner()
+        }else{
+          // 成功
+          QRScanner.cancelScan()
+          this.$emit('finish',result)
+        }
+      } 
+    })
+
+    var body = window.document.querySelector('body')
+    this.addClass(body,'hide')
+    var app = window.document.querySelector('.app')
+    this.addClass(app,'hide')
+    var page = window.document.querySelector('.page')
+    this.addClass(page,'hide')
+    //var loading = window.document.querySelector('.loading')
+    //this.addClass(loading,'hide')
+    QRScanner.show()
+  },
+  beforeDestroy(){
+    console.log('before destroy-----')
+    if(this.qrInterval){
+      clearInterval(this.qrInterval)
+    }
+    //window.document.querySelector('.app').classList.remove('hide');
+    var body = window.document.querySelector('body')
+    this.removeClass(body,'hide')
+    var app = window.document.querySelector('.app')
+    this.removeClass(app,'hide')
+    var page = window.document.querySelector('.page')
+    this.removeClass(page,'hide')
+    //var loading = window.document.querySelector('.loading')
+    //this.removeClass(loading,'hide')
+    QRScanner.destroy()
+  },
+  methods:{
+    prepareQRScanner(){
+      console.log('----------prepare qrscanner--------')
+      if(this.isQRScannerPrepared)return
+        QRScanner.prepare((err,status)=>{
+          if (err) {
+            console.error(err)
+            this.$toasted.show(this.$t('ERROR.SCANNER_PREPARE_FAIL'))
+            return
+          }
+          if (status.authorized) {
+            this.isQRScannerPrepared = true
+          } else if (status.denied) {
+            this.$toasted.error(this.$t('ERROR.SCANNER_PERMISSTION_DENIED'))
+            this.isQRScannerPrepared = false
+          } else {
+            this.isQRScannerPrepared = false
+          }
+        })
+    },
+    closeQRScanner(){
+      QRScanner.cancelScan()
+      this.$emit('close')
+    },
+    openFlashLight(){
+      this.isFlashLightOn = !this.isFlashLightOn
+      QRScanner.enableLight()
+    },
+    closeFlashLight(){
+      this.isFlashLightOn = !this.isFlashLightOn
+      QRScanner.disableLight()
+    },
+    switchCamera(){
+      if(this.isBackCamera){
+        QRScanner.useFrontCamera()
+      }else{
+        QRScanner.useBackCamera()
+      }
+      this.isBackCamera = !this.isBackCamera
+    },
+    hasClass(ele, cls) {
+      return ele.className.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"));
+    },
+    //为指定的dom元素添加样式
+    addClass(ele, cls) {
+      if(!ele)return
+      if (!this.hasClass(ele, cls)) ele.className += " " + cls;
+    },
+    //删除指定dom元素的样式
+    removeClass(ele, cls) {
+      if (this.hasClass(ele, cls)) {
+          var reg = new RegExp("(\\s|^)" + cls + "(\\s|$)");
+          ele.className = ele.className.replace(reg, " ");
+      }
+    },
+    //如果存在(不存在)，就删除(添加)一个样式
+    toggleClass(ele,cls){ 
+      if(this.hasClass(ele,cls)){ 
+          this.removeClass(ele, cls); 
+      }else{ 
+          this.addClass(ele, cls); 
+      } 
+    }
+  }
+}
+</script>
+
+<style lang="stylus" scoped>
+@require '../stylus/color.styl'
+.qrscanner
+  background: none
+  background-color:transparent
+  position: fixed
+  top: 48px
+  bottom: 0
+  left: 0
+  right: 0
+  .qrscanner-area
+    width: 100%
+    height: 85%
+    background: url(../assets/img/scanner.svg) no-repeat center center
+    background-size: 50%
+    background-color:transparent
+
+  .qrscanner-btn-group
+    text-align: center
+    background: none
+    .qrscanner-btn
+      padding: 12px 5px
+      display: inline-block
+      text-align: center
+      vertical-align: middle
+      justify-content: center;
+      color: $primarycolor.font
+      width: 56px
+      height: 56px
+      line-height: 56px
+      border-radius: 56px
+      background-color: $primarycolor.gray
+      .material-icons
+        font-size: 32px
+
+</style>
