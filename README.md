@@ -1,18 +1,1 @@
-# filefly wallet 恒星钱包
-
-
-系统部署说明
-----------------
-> 1. 安装nodejs
-> 2. clone 代码
-> 3. 在项目目录，输入npm install(可以使用npm install -g cnpm ，然后再输入cnpm install)
-> 4. npm run dev可以预览项目
-> 5. npm run build 打包
-> 6. npm run android，预览android工程
-
-
-
-主要业务说明
-----------------
-> 1. 如果是已经有钱包地址，但没有输入密码，那么账户是只读状态，不能发送，但对接收
-> 2. 默认只查询出200条数据
+# firefly walletfirefly is a mobile wallet for [Stellar](https://stellar.org) network. It supports android and ios platforms##[Help Document](https://wallet.fchain.io/manual/#0)## Main features:* Accounts	* Import By QRCode	* Create Random Account	* NameCard	* Export Account	* Funding Account	* Federation	* Inflation* Contacts	* Import By QRCode	* Export QRCode* Assets	* Send Asset	* Send Asset By QRCode	* Receive Asset	* Trust* Funding	* Deposite	* Withdraw* Trade	* Custom Trade Pair	* Order Book	* Cancel Trade* Security	* PIN	* Password	* Data Saved Locally* Custom horizon* Multi Language## Building```npm install -g cordovanpm installnpm run buildcordova prepare```### Build APK Need- android studio- android sdk 19 +### Build IPA Need- xcode## License**firefly** is released under **MIT License**
