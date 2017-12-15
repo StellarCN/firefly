@@ -2,7 +2,7 @@
 
 萤火钱包是[恒星网络](https://stellar.org)的手机钱包，支持安卓和IOS平台
 
-##[帮助文档](https://wallet.fchain.io/manual/#0)
+## [帮助文档](https://wallet.fchain.io/manual/#0)
 
 ## 主要功能:
 * 多账户
@@ -42,7 +42,8 @@
 npm install -g cordova
 npm install
 npm run build
-cordova prepare```
+cordova prepare
+```
 
 ### 生成APK需要用到
 - android studio
