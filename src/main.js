@@ -33,18 +33,16 @@ Vue.use(vueMethodsPromise, {
   }
 })
 
+var VueCordova = require('./libs/vue-cordova');
+Vue.use(VueCordova);
+
+
 import Toasted from 'vue-toasted';
 Vue.use(Toasted,{ 
   theme: "primary", 
   position: "bottom-center", 
   duration : 3000
 })
-
-//var VueTouch = require('vue-touch')
-//Vue.use(VueTouch, {name: 'v-touch'})
-
-import VueCordova from 'vue-cordova'
-Vue.use(VueCordova)
 
 // add cordova.js only if serving the app through file://
 if (window.location.protocol === 'file:' || window.location.port === '3000') {

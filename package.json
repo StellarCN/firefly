@@ -28,18 +28,12 @@
     "cordova-ios": "^4.5.4",
     "cordova-plugin-add-swift-support": "^1.7.0",
     "cordova-plugin-camera": "^2.4.1",
-    "cordova-plugin-compat": "^1.2.0",
-    "cordova-plugin-contacts": "^2.2.1",
     "cordova-plugin-device": "^1.1.7",
-    "cordova-plugin-file": "^4.3.3",
-    "cordova-plugin-geolocation": "^2.4.3",
-    "cordova-plugin-inappbrowser": "^1.7.2",
+    "cordova-plugin-whitelist": "1",
     "cordova-plugin-qrscanner": "^2.5.0",
     "cordova-plugin-splashscreen": "^4.1.0",
     "cordova-plugin-statusbar": "^2.3.0",
     "cordova-plugin-swift-support": "^3.1.1",
-    "cordova-plugin-whitelist": "1",
-    "cordova-save-image-gallery": "^0.0.26 ",
     "cordova-sqlite-storage": "^2.1.2",
     "ed25519": "0.0.4",
     "hammerjs": "^2.0.8",
@@ -51,7 +45,6 @@
     "uuid": "^3.1.0",
     "vue": "^2.5.4",
     "vue-awesome-swiper": "^2.6.7",
-    "vue-cordova": "0.1.2",
     "vue-i18n": "^7.2.0",
     "vue-methods-promise": "^0.2.2",
     "vue-pull-refresh": "^0.2.6",
@@ -70,7 +63,6 @@
     "babel-plugin-transform-runtime": "^6.22.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.3.2",
-    "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-2": "^6.22.0",
     "babel-register": "^6.22.0",
     "babel-runtime": "^6.26.0",
@@ -125,21 +117,12 @@
   ],
   "cordova": {
     "plugins": {
-      "cordova-plugin-contacts": {
-        "CONTACTS_USAGE_DESCRIPTION": " "
-      },
       "cordova-plugin-device": {},
-      "cordova-plugin-geolocation": {
-        "GEOLOCATION_USAGE_DESCRIPTION": " "
-      },
       "cordova-plugin-whitelist": {},
-      "cordova-plugin-file": {},
-      "cordova-plugin-inappbrowser": {},
       "cordova-plugin-qrscanner": {},
       "cordova-plugin-splashscreen": {},
       "cordova-plugin-statusbar": {},
       "cordova-plugin-clipboard2": {},
-      "cordova-save-image-gallery": {},
       "cordova-plugin-camera": {},
       "cordova-sqlite-storage": {},
       "cordova-disable-http-cache": {}

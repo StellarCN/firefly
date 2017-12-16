@@ -6,6 +6,7 @@ www/
 platforms/
 plugins/
 hooks/
+!src/libs/vue-cordova/plugins
 
 npm-debug.log*
 yarn-debug.log*
