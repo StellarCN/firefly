@@ -1,4 +1,4 @@
-# 萤火钱包
+# 萤火钱包[![Build Status](https://travis-ci.org/StellarCN/firefly.svg)](https://travis-ci.org/StellarCN/firefly)
 
 萤火钱包是[恒星网络](https://stellar.org)的手机钱包，支持安卓和IOS平台
 
