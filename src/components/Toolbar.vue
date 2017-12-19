@@ -56,7 +56,7 @@
       <v-btn @click="changetheme('red')" >韭菜</v-btn> -->
       <v-list>
         <v-list-tile avatar v-for='setting in AccountSettings' :key=setting.icon @click="redirect(setting.path)"
-         class="menu-li" :class="isPage(setting.path)">
+         class="menu-li" :class="isPage(setting.path)" tag="div">
             <v-list-tile-avatar>
               <v-icon >{{setting.icon}}</v-icon>
             </v-list-tile-avatar>
@@ -68,7 +68,7 @@
       <hr class='divid'></hr>
       <v-list>
         <v-list-tile avatar v-for='setting in WalletSettings' :key=setting.icon @click="redirect(setting.path)"
-         class="menu-li" :class="isPage(setting.path)">
+         class="menu-li" :class="isPage(setting.path)" tag="div">
             <v-list-tile-avatar>
               <v-icon >{{setting.icon}}</v-icon>
             </v-list-tile-avatar>
@@ -266,12 +266,12 @@ export default {
       this.showaccounts = !this.showaccounts
     },
     back(){
-      console.log('----on click -- go back')
+      //console.log('----on click -- go back')
       //this.$router.back()
       this.$emit('goback');
     },
     changeaccount(index,item){
-      console.log('------change account----')
+      //console.log('------change account----')
       //if(item.address === this.account.address){
       //  return;
       //}
@@ -398,6 +398,7 @@ export default {
   .list
     padding 0
     .menu-li
+      text-decoration: none 
       .list__tile
         &__avatar
           .icon
