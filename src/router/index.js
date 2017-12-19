@@ -211,6 +211,11 @@ const router = new Router({
       name: 'PinLock',
       component: resolve => require(['../pages/PinLock'], resolve)
     },
+    {
+      path: '/about',
+      name: 'Abount',
+      component: resolve => require(['../pages/About'], resolve)
+    },
 
 
   ]

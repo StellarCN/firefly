@@ -30,6 +30,9 @@
             <li class="settings-li" @click="toChangeHorizon">
               <span>{{$t('PublicNetUrl')}}</span>
             </li>
+            <li class="settings-li" @click="toAbout">
+              <span>{{$t('About.Title')}}</span> 
+            </li>
           </ul>
         </div>
       </card>
@@ -88,6 +91,9 @@ export default {
     },
     toChangeHorizon(){
       this.$router.push(`/horizon`)
+    },
+    toAbout(){
+      this.$router.push(`/about`)
     },
    
   },

@@ -1,5 +1,5 @@
 {
-  "Version": "0.1.0",
+  "Version": "版本",
   "AppName": "萤火钱包",
   "Asset": "资产",
   "Save": "保存",
@@ -234,6 +234,9 @@
   "CongratsMessage":"祝贺您！保存好信息后，您就可以开始使用萤火钱包了。",
   "Error.AccountNotFund": "您的账号尚未激活。请查看帮助信息",
   "ERROR.SCANNER_CONTENT_VALIDATE":"二维码内容不正确",
+
+  "About.Title":"关于",
+
 
   "App.ClickOneMoreTimeExit":"再点击一次退出!"
 

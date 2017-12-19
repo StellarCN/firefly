@@ -1,5 +1,5 @@
 {
-  "Version": "0.1.0",
+  "Version": "version",
   "AppName": "FireFly",
   "Asset": "Asset",
   "Save": "Save",
@@ -240,6 +240,9 @@
 
   "Error.AccountNotFund": "Your account have not been activated. View the help information to continue.",
   "ERROR.SCANNER_CONTENT_VALIDATE":"qrcode content is not validated",
+
+
+  "About.Title":"about",
 
     "App.ClickOneMoreTimeExit":"click one more time to exit!"
 }
