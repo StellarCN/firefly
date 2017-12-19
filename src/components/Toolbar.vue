@@ -188,7 +188,7 @@ export default {
     },
     shadow: {
       type: Boolean,
-      default: true
+      default: false
     }
   },
   mounted(){
