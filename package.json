@@ -29,11 +29,12 @@
     "cordova-plugin-add-swift-support": "^1.7.0",
     "cordova-plugin-camera": "^2.4.1",
     "cordova-plugin-device": "^1.1.7",
-    "cordova-plugin-whitelist": "1",
+    "cordova-plugin-inappbrowser": "^1.7.2",
     "cordova-plugin-qrscanner": "^2.5.0",
     "cordova-plugin-splashscreen": "^4.1.0",
     "cordova-plugin-statusbar": "^2.3.0",
     "cordova-plugin-swift-support": "^3.1.1",
+    "cordova-plugin-whitelist": "1",
     "cordova-sqlite-storage": "^2.1.2",
     "ed25519": "0.0.4",
     "hammerjs": "^2.0.8",
@@ -125,7 +126,8 @@
       "cordova-plugin-clipboard2": {},
       "cordova-plugin-camera": {},
       "cordova-sqlite-storage": {},
-      "cordova-disable-http-cache": {}
+      "cordova-disable-http-cache": {},
+      "cordova-plugin-inappbrowser": {}
     },
     "platforms": [
       "browser",

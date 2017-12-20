@@ -63,4 +63,5 @@
     <plugin name="cordova-plugin-camera" spec="^2.4.1" />
     <plugin name="cordova-sqlite-storage" spec="^2.1.2" />
     <plugin name="cordova-disable-http-cache" spec="^1.0.0" />
+    <plugin name="cordova-plugin-inappbrowser" spec="^1.7.2" />
 </widget>
