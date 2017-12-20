@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import Index from '../pages/Index'
 import Main from '../pages/Main'
 import Wallet from '../pages/Wallet'
 import NProgress from 'nprogress'
@@ -12,7 +13,8 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      redirect: '/main' 
+      name: 'Index',
+      component: Index
     },
     {
       path: '/main',
@@ -221,12 +223,6 @@ const router = new Router({
   ]
 })
 
-/*
-// need login
-router.beforeEach((to, from, next) => {
-  next()
-})
-*/
 router.beforeEach((to,from,next) => {
   NProgress.start();
   next()
