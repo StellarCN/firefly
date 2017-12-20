@@ -63,6 +63,7 @@ export default {
   //right: 0
   //left: 0
   //bottom: 0
+  display: block
   height: 100%
   background: $primarycolor.green
   color: $primarycolor.font
