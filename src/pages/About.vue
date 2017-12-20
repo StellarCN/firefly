@@ -28,8 +28,8 @@
                 <div class="label">
                     github        
                 </div>
-                <div class="value">
-                    <a href="https://github.com/stellarcn/firefly" class="link">https://github.com/stellarcn/firefly</a>
+                <div class="value" @click="openFireflyGithub">
+                    {{fireflyGithub}}
                 </div>
             </div>
         </div>
@@ -41,13 +41,14 @@
 <script>
 import Toolbar from '@/components/Toolbar'
 import Card from '@/components/Card'
-import { APP_VERSION } from '@/api/gateways'
+import { APP_VERSION, APP_GITHUB} from '@/api/gateways'
 export default {
   data(){
     return {
       showmenuicon: false,
       showbackicon: true,
-      appversion: APP_VERSION
+      appversion: APP_VERSION,
+      fireflyGithub: APP_GITHUB,
 
     }
   },
@@ -56,6 +57,10 @@ export default {
     back(){
       this.$router.back()
     },
+
+    openFireflyGithub(){
+      window.open(this.fireflyGithub, '_system')
+    }
     
   },
   components: {
