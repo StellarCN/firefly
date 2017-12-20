@@ -22,6 +22,7 @@
 import Toolbar from '@/components/Toolbar'
 import PinCode from '@/components/PinCode'
 import { mapState, mapActions} from 'vuex'
+import Vue from 'vue'
 
 export default {
   data(){
@@ -41,8 +42,8 @@ export default {
     PinCode,
     Toolbar,
   },
-  created(){
-    if('ios'===cordova.platformId){
+  beforeMount(){
+    if('ios'===Vue.cordova.platformId){
       this.isios = true
     }
   },
