@@ -124,7 +124,7 @@ const actions = {
     let accounts = { data: data, selected: state.selected }
     await saveAccounts(accounts)
     commit(LOAD_ACCOUNTS, accounts)
-    dispatch('cleanAccount')
+    // dispatch('cleanAccount')
   },
   // 删除账户
   async deleteAccount({dispatch, commit, state}, {index, account}){
