@@ -20,8 +20,17 @@ export const LANGUAGES = [
   ZH_CN
 ]
 
+export const DEVICE_LANGUAGE = function getDeviceLanguage() {
+  // console.log("getDeviceLanguage: " + navigator.language);
+  if (['zh-CN', 'zh-TW', 'zh-HK'].includes(navigator.language)) {
+    return ZH_CN
+  } else {
+    return EN
+  }
+}()
+
 export const i18n = new VueI18n({
-  locale: ZH_CN.key,
+  locale: DEVICE_LANGUAGE.key,
   messages: {
     [EN.key]: endata,
     [ZH_CN.key]: zhcndata

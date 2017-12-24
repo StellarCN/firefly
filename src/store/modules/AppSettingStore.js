@@ -1,12 +1,12 @@
 // appsetting store encrypt by default key @see ../../api/storage.js LOCK_KEY
-import { EN,ZH_CN } from '../../locales'
+import { DEVICE_LANGUAGE } from '../../locales'
 import { readAppSetting, saveAppSetting as save } from '../../api/storage'
 import { OFFICIAL_HORIZON, CHINA_HORIZON } from '../../api/horizon'
 
 // 状态字段
 const state = {
   // 默认语言
-  locale: ZH_CN,
+  locale: DEVICE_LANGUAGE,
   // 是否开启PIN码
   enablePin: false,
   // PIN码值
