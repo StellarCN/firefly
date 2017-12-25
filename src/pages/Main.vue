@@ -107,8 +107,9 @@ export default {
   computed:{
     ...mapState({
       account: state => state.accounts.selectedAccount,
-      accountData: state => state.accounts.accountData,
+      accountData: state => state.account.data,
       assethosts: state => state.asset.assethosts,
+      selectedAccountIndex: state => state.accounts.selected,
     }),
     ...mapGetters([
       'balances',
@@ -161,23 +162,27 @@ export default {
       'selectAsset',
       'selectPayment',
       'cleanAccount',
-      'paymentSteamData'
+      'paymentSteamData',
+      'updateAccount'
       ]),
 
-    fetchData(){
-      if(this.account.address){
+    fetchData() {
+      if (this.account.address) {
         this.load()
-          .then(data=>{  })
-          .catch(err=>{
+          .then(data => {
+            this.updateFederationAndInflationInfo()
+          })
+          .catch(err => {
+            console.log("errorhere");
             this.cleanAccount()
             console.log(err.message)
             let msg = err.message
-            if(msg && 'Network Error' === msg){
+            if (msg && 'Network Error' === msg) {
               this.$toasted.error(this.$t('Account.NetworkError'))
               return
             }
             console.error(err)
-            if(err.data && err.data.status === 404){
+            if (err.data && err.data.status === 404) {
               this.noticeText = this.$t('Error.AccountNotFund')
               this.notice = true
             }
@@ -188,9 +193,29 @@ export default {
             // this.$toasted.error(this.$t('Error.GetAccountInfoError'))
           })
         // 处理stream
-       // listenPaymentStream(this.account.address, this.onPaymentStream)
+        // listenPaymentStream(this.account.address, this.onPaymentStream)
       }
-
+    },
+    updateFederationAndInflationInfo() {
+      // update home_domain and inflation_destination from horizon.
+      console.log("updateFederationAndInflationInfo")
+      console.log(this.accountData)
+      if (this.account.federationAddress !== this.accountData.inflation_destination || this.account.inflationAddress !== this.accountData.home_domain) {
+        let data = Object.assign({}, this.account, {
+          federationAddress: this.accountData.home_domain,
+          inflationAddress: this.accountData.inflation_destination
+        })
+        let params = {index: this.selectedAccountIndex, account: data}
+        console.log(params)
+        this.updateAccount(params)
+          .then(data => {
+            console.log("success")
+          })
+          .catch(err => {
+            console.log("failed")
+            console.error(err)
+          })
+      }
     },
     load(){
       this.cleanAccount()
@@ -329,4 +354,3 @@ export default {
 .history-amount.minus
   color: $primarycolor.red
 </style>
-

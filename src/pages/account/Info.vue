@@ -232,7 +232,7 @@ export default {
           })
           .catch(err=>{
             this.$toasted.error(this.$t('Error.PasswordWrong'))
-            this.inpassword = false
+            // this.inpassword = false
           })
       }
     },
