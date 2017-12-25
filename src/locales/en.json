@@ -232,9 +232,9 @@
   "Next": "next",
   "Back": "back",
   "Attention": "Attention",
-  "PasswordNotice":"Password: IMPORTANT. Used to decrypt your account. we didn't store it so it cann't be retrived if you forgot it.",
-  "SeedNotice":"Seed: VERY IMPORTANT. Lost it means lost everything. Write down or print it and keep it safe. Screenshot, mobile ,mailbox is not recommended.",
-  "Congrats":"To da moon!",
+  "PasswordNotice": "Password: IMPORTANT. Used to decrypt your account. we didn't store it so it cann't be retrived if you forgot it.",
+  "SeedNotice": "Seed: VERY IMPORTANT. Lost it means lost everything. Write down or print it and keep it safe. Screenshot, mobile ,mailbox is not recommended.",
+  "Congrats": "To da moon!",
   "CongratsMessage":"You have created an acount. Now you are free to fly in the sky!",
 
 
