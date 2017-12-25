@@ -8,7 +8,7 @@
   "Close":"Close",
   "SetPinCode": "Set pin code",
   "ResetPinCode": "Confirm pin code",
-  "setPinCodeError": "Pin code does not equals with the last one",
+  "setPinCodeError": "Pin code mismatch",
   "ImportAccount":"Import",
   "CreateAccount":"Create",
 
@@ -28,24 +28,24 @@
   "CopySuccess":"Copy success",
 
   
-  "Error.ScannerPrepareFail": "qrscanner prepare fail",
-  "Error.ScannerPermissionDenied": "qrscanner permisstion denied",
+  "Error.ScannerPrepareFail": "QR scanner prepare fail",
+  "Error.ScannerPermissionDenied": "QR scanner permisstion denied",
   "Error.ScannerContentValidWrong": "the content is wrong",
   "Error.GetAccountInfoError": "get account info error",
   "Error.NoPassword":"please input account's password",
-  "Error.UnValidatedAddress":"unvalidate address",
-  "Error.NotEnoughLumens":"Not Enough Lumens.",
+  "Error.UnValidatedAddress":"invalid address",
+  "Error.NotEnoughLumens":"not Enough Lumens",
 
 
   "Error.NotValidSeed":"seed is not valid",
-  "Error.NotValidStellarAddress":"Address is not valid",
+  "Error.NotValidStellarAddress":"address is not valid",
   
   "Account.AccountName":"account name",
-  "Account.Password":"Password",
+  "Account.Password":"password",
   "Account.ConfirmPassword":"confirm password",
-  "Account.CreateAccountHint":"never lost the password",
-  "Account.CreateAccountReadyHint":"this message is very import, don't lose and share with others!",
-  "Account.CreateAccountSuccess":"create account success!",
+  "Account.CreateAccountHint":"don't lose this password",
+  "Account.CreateAccountReadyHint":"this message is very import, save these details and never share them with anyone!",
+  "Account.CreateAccountSuccess":"account creation successful",
   "Account.CreateAccountError":"error occured while creating account",
 
   "Account.AccountAddress":"address",
@@ -69,7 +69,7 @@
   "Memo":"memo",
   "MemoContent":"memo content",
   "PullToRefresh":"pull to refresh",
-  "ReleaseToRefresh":"realse to refresh",
+  "ReleaseToRefresh":"release to refresh",
   "Loading":"loading...",
   "LoadOver":"load over",
   "LoadFail":"load fail",
@@ -80,13 +80,13 @@
   "AddContact":"add contact",
   "AddAsset":"add asset",
   "AddAssetSuccess":"asset added",
-  "AddAssetNotFound": "Asset info not found",
-  "FederationUrl":"federation url host",
+  "AddAssetNotFound": "asset info not found",
+  "FederationUrl":"federation host URL",
   "Working":"working...",
 
 
   "Info.ChangeAccountSuccess":"success",
-  "Error.PasswordWrong":"password is wrong",
+  "Error.PasswordWrong":"password incorrect",
 
   "Menu.MyAssets":"My assets",  
   "Menu.Funding":"Funding",
@@ -103,21 +103,21 @@
   "FederationAddressDesc":"federation address description",
   "InflationAddress": "inflation address",
   "InflationDesc": "inflation desc",
-  "PublicNetUrl":"Steallar public network url",
-  "StellarOrg":"Stellar Offcial",
+  "PublicNetUrl":"Stellar public network URL",
+  "StellarOrg":"Stellar Official",
   "ChinaPublic":"China Public",
   "WanCloud":"WanCloud",
-  "SaveHorizonSuccess":"save public network url success",
-  "Error.SaveHorizonFial": "save public network url failed",
+  "SaveHorizonSuccess":"save public network URL success",
+  "Error.SaveHorizonFial": "save public network URL failed",
 
-  "SaveSuccess":"save success",
+  "SaveSuccess":"save successful",
   "SaveFailed":"save failed",
 
-  "Error.PinCodeIsDifferent":"pin code is different",
+  "Error.PinCodeIsDifferent":"pin code mismatch",
   "SetPinCodeSuccess":"set pin code success",
   "Error.PinCodeIsWrong": "pin code is wrong",
-  "RemovePinCodeSuccess": "remove pin code success",
-  "Error.RemovePinCodeFailed":"fail to remove pin code",
+  "RemovePinCodeSuccess": "pin code removed successfully",
+  "Error.RemovePinCodeFailed":"failed to remove pin code",
   
   
 
@@ -125,7 +125,7 @@
   "Random.Colors":"Red|Orange|Yellow|Green|Cyan|Blue|Violet|Black|White",
 
   "payment":"payment",
-  "path_payment":"path payment",
+  "path_payment":"payment path",
   "create_account":"create account",
   "Receive":"receive",
   "Send":"send",
@@ -142,28 +142,28 @@
   "Account.NetworkError":"network error",
   "Error.NotEnoughAssetToFundAccount":"send more than 20 XLM to fund the target",
 
-  "Error.NotEnoughAsset":"not enough asset",
+  "Error.NotEnoughAsset":"asset funding insufficient",
 
 
   "DW.DepositAndWithdraw":"Deposit/Withdraw",
   "DW.Deposit":"deposit",
   "DW.Withdraw":"withdraw",
   "DW.Error.NoDepositService":"no deposit server",
-  "DW.Error.NoDepositServiceDesc":"cannot deposit this asset,please contact with the issuer.",
+  "DW.Error.NoDepositServiceDesc":"cannot deposit this asset,please contact the issuer.",
   "DW.Error.NoWithdrawService":"no withdraw service",
-  "DW.Error.NoWithdrawServiceDesc":"cannot withdraw this asset,please contact with the issuer.",
+  "DW.Error.NoWithdrawServiceDesc":"cannot withdraw this asset,please contact the issuer.",
   "DW.DepositInfo":"deposit info",
   "Error.SubmitQuoteFail":"submit quote failed",
 
   
-  "Menu.TradeCenter":"Trade center",  
+  "Menu.TradeCenter":"Trade Center",  
   "Trade.SelfSelection":"self selection",
-  "Trade.Buy":"buy",
-  "Trade.Sell":"sell",
+  "Trade.Buy":"Buy",
+  "Trade.Sell":"Sell",
   "Trade.BuyOffer":"Bids",
   "Trade.SellOffer":"Asks",
-  "Trade.MyOffer":"My offers",
-  "Trade.UnitPrice":"unit price",
+  "Trade.MyOffer":"My Offers",
+  "Trade.UnitPrice":"Unit Price",
   "Trade.Price":"Price",
   "Trade.Depth":"Depth",
   "Trade.Cancel":"Cancel",
@@ -180,10 +180,10 @@
   "Error.CancelOfferFailed":"cancel offer failed",
   "Trade.AddTradePairSuccess":"add trade pair success",
   "Error.AddTradePairFailed":"add trade pair failed",
-  "Error.AddTradePair.SameAsset":"Same asset is not allowed",
-  "Error.AddTradePair.ExistPair":"Trade pair exists",
+  "Error.AddTradePair.SameAsset":"same asset is not allowed",
+  "Error.AddTradePair.ExistPair":"trade pair exists",
   "Trade.Total":"total",
-  "Error.LackOfBalance":"You have not enough balance to continue",
+  "Error.LackOfBalance":"You do not have enough balance to continue",
   "Error.LackOfTrustline":"You have not added this kind of asset.",
   "Error.CounterLackOfTrustline":"You have not added counter asset.",
 
@@ -209,9 +209,9 @@
   "ContactAdd.details": "detail",
   "Contact.ContactModify": "modify contact",
   "Error.NoContactYet": "no contact yet",
-  "Error.ContactExist": "Contect Exist",
+  "Error.ContactExist": "contact already exists",
 
-  "MyAddress.Title":"Address book",
+  "MyAddress.Title":"Address Book",
   "Error.NoData":"no data",
   "MyAddress.Add":"add address",
   "MyAddress.Edit":"modify address",
@@ -222,7 +222,7 @@
   "MyAddress.DeleteSuccess":"delete success",
   "MyAddress.DeleteFail":"delete failed",
   
-  "ContactBook.Title": "contact book",
+  "ContactBook.Title": "Contact Book",
   
   
   "Cancel":"Cancel",
@@ -232,14 +232,14 @@
   "Next": "next",
   "Back": "back",
   "Attention": "Attention",
-  "PasswordNotice":"Password: IMPORTANT. Used to decrypt your account. we didn't store it so it cann't be retrived if you forgot it.",
-  "SeedNotice":"Seed: VERY IMPORTANT. Lost it means lost everything. Write down or print it and keep it safe. Screenshot, mobile ,mailbox is not recommended.",
+  "PasswordNotice":"Password: IMPORTANT! Used to decrypt your account. We don't store this password so it cannot be retrieved if you forget it."
+  "SeedNotice":"Seed: VERY IMPORTANT! Losing this means the account and any assets held are permanently lost! Write down or print it and keep it in a safe and private location. Screenshot, mobile ,mailbox is not recommended.",
   "Congrats":"To da moon!",
-  "CongratsMessage":"You have created an acount. Now you are free to fly in the sky!",
+  "CongratsMessage":"You have created an acount. Now you are free to soar with Stellar!",
 
 
   "Error.AccountNotFund": "Your account have not been activated. View the help information to continue.",
-  "ERROR.SCANNER_CONTENT_VALIDATE":"qrcode content is not validated",
+  "ERROR.SCANNER_CONTENT_VALIDATE":"QR code content is not validated",
 
 
   "About.Title":"about",
