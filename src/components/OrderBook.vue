@@ -133,6 +133,10 @@ export default {
     interval:{
       type: Number,
       default: null
+    },
+    blank:{
+      type: Boolean,
+      default: false
     }
   },
   computed:{
@@ -242,7 +246,15 @@ export default {
     }
   },
   mounted(){
-    this.setup()
+    this.setup();
+  },
+  beforeUpdate(){
+    console.log('------before update ---------' )
+    console.log(this.interval)
+    console.log(this.blank)
+    if(!this.interval){
+      this.setup()
+    }
   },
   methods: {
     ...mapActions({
@@ -258,6 +270,7 @@ export default {
 
     }),
     setup(){
+      if(this.blank)return
       if(this.selectedTradeIndex === this.pairIndex){
         this.fetchData()
         if (!this.interval){

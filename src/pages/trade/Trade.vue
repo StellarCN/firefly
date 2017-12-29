@@ -72,7 +72,7 @@
                 <v-btn class="error btn-sell" @click.stop="switchToSell">{{$t('Trade.Sell')}}</v-btn>
               </div>
               <v-slide-y-transition>
-              <v-flex xs12 v-show='tradeSwitch' class="tradebox swiper-no-swiping">
+              <v-flex xs12 v-if='tradeSwitch && (selectedTradeIndex === index)' class="tradebox swiper-no-swiping">
                 <v-card dark  color=''v-bind:style="'width: 100% !important'">
                   <v-card-text flex>
                     <v-text-field  dark required  clearable hide-details v-bind:style="'width: 90% !important'"
@@ -133,7 +133,7 @@
             
             </div>
           </card>
-          <order-book :ref="'orderbook'+index" 
+          <order-book :blank="selectedTradeIndex != index" :ref="'orderbook'+index" 
                       :pairIndex="index" 
                       :interval="orderBookInterval_d"
                       @intervalChanged="intervalChanged"
@@ -221,7 +221,6 @@ export default {
     price(newvalue,oldvalue){
       if(this.justify) return
       this.justify = true
-      console.log('price : '+ newvalue, oldvalue)
       if(isNaN(parseFloat(newvalue))){
           this.price = 0
       }else{
