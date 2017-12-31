@@ -18,6 +18,7 @@ const state = {
   accountpassword: null,
   memo: null,
   iosstatusbarcolor: 'primary',
+  onpause: false,//is app on pause
   
 }
 
@@ -50,6 +51,12 @@ const actions = {
   cleanGlobalState({commit}){
     commit(CLEAN_GLOBAL_STATE)
   },
+  onPause({commit}){
+    commit(ON_PAUSE)
+  },
+  onResume({commit}){
+    commit(ON_RESUME)
+  }
   
 
 }
@@ -94,6 +101,12 @@ const mutations = {
   },
   CHANGE_IOSSTATUSBAR_COLOR(state,color){
     state.iosstatusbarcolor = color
+  },
+  ON_PAUSE(state){
+    state.onpause = true
+  },
+  ON_RESUME(state){
+    state.onpause = false
   }
 }
 
@@ -120,3 +133,5 @@ export const SHOW_LOADING = 'SHOW_LOADING'
 export const HIDEN_LOADING = 'HIDEN_LOADING'
 export const CLEAN_GLOBAL_STATE = 'CLEAN_GLOBAL_STATE'
 export const CHANGE_IOSSTATUSBAR_COLOR = 'CHANGE_IOSSTATUSBAR_COLOR'
+export const ON_PAUSE = 'ON_PAUSE'
+export const ON_RESUME = 'ON_RESUME'

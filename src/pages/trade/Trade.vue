@@ -72,7 +72,7 @@
                 <v-btn class="error btn-sell" @click.stop="switchToSell">{{$t('Trade.Sell')}}</v-btn>
               </div>
               <v-slide-y-transition>
-              <v-flex xs12 v-show='tradeSwitch' class="tradebox swiper-no-swiping">
+              <v-flex xs12 v-if='tradeSwitch && (selectedTradeIndex === index)' class="tradebox swiper-no-swiping">
                 <v-card dark  color=''v-bind:style="'width: 100% !important'">
                   <v-card-text flex>
                     <v-text-field  dark required  clearable hide-details v-bind:style="'width: 90% !important'"
@@ -133,7 +133,7 @@
             
             </div>
           </card>
-          <order-book :ref="'orderbook'+index" 
+          <order-book :blank="selectedTradeIndex != index" :ref="'orderbook'+index" 
                       :pairIndex="index" 
                       :interval="orderBookInterval_d"
                       @intervalChanged="intervalChanged"
@@ -161,6 +161,7 @@ import { getAsset } from '@/api/assets'
 import { myofferConvert } from '@/api/offer'
 import { offer as doOffer } from '@/api/offer'
 import OrderBook from '@/components/OrderBook'
+import { DEFAULT_INTERVAL } from '@/api/gateways'
 export default {
   data(){
     return {
@@ -221,7 +222,6 @@ export default {
     price(newvalue,oldvalue){
       if(this.justify) return
       this.justify = true
-      console.log('price : '+ newvalue, oldvalue)
       if(isNaN(parseFloat(newvalue))){
           this.price = 0
       }else{
@@ -333,7 +333,15 @@ export default {
       }
       this.resetJustify()
       console.log("total watch: " + this.price, this.amount,this.total)
-    }
+    },
+    onpause(val){
+      if(val){
+        this.deleteTradeInterval()
+        this.deleteOrderBookInterval()
+      }else{
+        this.setupTradeInterval()
+      }
+    },
 
   },
   computed:{
@@ -347,7 +355,8 @@ export default {
       bids: state => state.accounts.selectedTradePair.bids,//买单
       asks: state => state.accounts.selectedTradePair.asks,//卖单
       my: state => state.accounts.selectedTradePair.my.records,
-      assethosts: state => state.asset.assethosts
+      assethosts: state => state.asset.assethosts,
+      onpause: state => state.onpause,
 
     }),
     ...mapGetters([
@@ -630,7 +639,7 @@ export default {
           this.fetchLatestTrade()
           console.log(this.account.address)
           this.getAccountInfo(this.account.address)
-        },4000)
+        },DEFAULT_INTERVAL)
       }
       this.fetchLatestTrade()
     },

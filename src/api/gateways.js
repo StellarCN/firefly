@@ -5,6 +5,8 @@ export const APP_VERSION = '1.0.2'
 
 export const APP_GITHUB = 'https://github.com/stellarcn/firefly'
 
+//default interval : 4000ms
+export const DEFAULT_INTERVAL = 4000
 
 //通账池
 export const INFLATION_POOL = [

@@ -49,9 +49,11 @@
 
         //添加cordova事件
         document.addEventListener("pause", ()=>{
+          this.onAppPause()
           this.onPause()
         }, false);
         document.addEventListener("resume", ()=>{
+          this.onAppResume()
           this.onResume()
         }, false);
 
@@ -138,13 +140,15 @@
         'saveAppSetting',
         'afterPauseAppSetting',
         'getAccountInfo',
-        'getAllAssetHosts'
+        'getAllAssetHosts',
+        'onPause',
+        'onResume'
         ]),
-      onPause(){
+      onAppPause(){
         this.pauseStart = new Date().getTime()
         console.log('-------------on pause ------' + this.pauseStart)
       },
-      onResume(){
+      onAppResume(){
         //暂停恢复,判断是否要输入pin码
         if(this.alldata.app.enablePin){
           let pauseEnd = new Date().getTime()
