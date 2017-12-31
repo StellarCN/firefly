@@ -272,27 +272,33 @@ export default {
         return true
       }
       //2. 内容是否为接收二维码
-      try{
+      try {
         text = text.trim()
         let data = JSON.parse(text)
-        if(data.stellar && data.stellar.payment){
-          let payment = data.stellar.payment
-          if(payment.asset){
-            this.selectasset = payment.asset
-          }else{
-            this.selectasset = {code: 'XLM'}
+        if (data.stellar) {
+          if (data.stellar.payment) {
+            let payment = data.stellar.payment
+            if (payment.asset) {
+              this.selectasset = payment.asset
+            } else {
+              this.selectasset = {code: 'XLM'}
+            }
+            this.destination = payment.destination
+            this.amount = payment.amount
+            let memo = payment.memo
+            if (memo) {
+              this.memotype = memo.type
+              this.memo = memo.value
+            }
+            return true
           }
-          this.destination = payment.destination
-          this.amount = payment.amount
-          let memo = payment.memo
-          if(memo){
-            this.memotype = memo.type
-            this.memo = memo.value
+          if (data.stellar.account.id) {
+            this.destination = data.stellar.account.id
+            return true
           }
-          return true
         }
         return false
-      }catch(e){
+      } catch (e) {
         console.error(e)
         return false
       }
