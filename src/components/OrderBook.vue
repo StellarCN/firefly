@@ -107,6 +107,7 @@ import Card from './Card'
 import { mapState, mapActions, mapGetters} from 'vuex'
 import { getTrades,listenOrderbook } from '../api/orderbook'
 import { cancel as cancelOffer }  from '../api/offer'
+import { DEFAULT_INTERVAL } from '@/api/gateways'
 import { getAsset } from '../api/assets'
 import Scroll from '../components/Scroll'
 import { myofferConvert } from '../api/offer'
@@ -149,7 +150,8 @@ export default {
       selectedTradeIndex: state => state.accounts.selectedTradePair.index,
       bids: state => state.accounts.selectedTradePair.bids,//买单
       asks: state => state.accounts.selectedTradePair.asks,//卖单
-      my: state => state.accounts.selectedTradePair.my.records
+      my: state => state.accounts.selectedTradePair.my.records,
+      onpause: state => state.onpause,
 
     }),
     ...mapGetters([
@@ -243,15 +245,23 @@ export default {
     activeTab(){
       console.log(this.activeTab)
       this.active = this.activeTab
+    },
+    onpause(val){
+      if(val){
+        if(this.timeInterval){
+          clearInterval(this.timeInterval)
+        }
+      }else{
+        if(!this.timeInterval && this.interval){
+          this.setup()
+        }
+      }
     }
   },
   mounted(){
     this.setup();
   },
   beforeUpdate(){
-    console.log('------before update ---------' )
-    console.log(this.interval)
-    console.log(this.blank)
     if(!this.interval){
       this.setup()
     }
@@ -274,9 +284,9 @@ export default {
       if(this.selectedTradeIndex === this.pairIndex){
         this.fetchData()
         if (!this.interval){
-          let i = setInterval(()=>{this.fetchData()},4000)
+          this.timeInterval = setInterval(()=>{this.fetchData()},DEFAULT_INTERVAL)
           this.$nextTick(function(){
-            this.$emit('intervalChanged',i)
+            this.$emit('intervalChanged',this.timeInterval)
           })
           this.fetchData()
         }
