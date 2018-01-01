@@ -47,6 +47,13 @@ export default {
       this.isios = true
     }
   },
+  mounted() {
+    document.removeEventListener("backbutton", this.onBackKeyDown, false); 
+    document.addEventListener("backbutton", this.onBackKeyDown, false); 
+  },
+  beforeDestroy() {
+    document.removeEventListener("backbutton", this.onBackKeyDown, false); 
+  },
   methods: {
     ...mapActions([ ]),
     
@@ -59,6 +66,10 @@ export default {
         this.$toasted.error(this.$t('Error.PinCodeIsWrong'))
       }
     },
+    onBackKeyDown() {
+      // Todo: 这里等待补充更多的逻辑，比如双击退出之类的。
+      this.exitapp()
+    } ,
     exitapp(){
       console.log(navigator)
       console.log(navigator.app)
