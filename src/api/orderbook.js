@@ -7,13 +7,6 @@ export function getOrderbook(sellAsset, buyAsset){
   return getServer().orderbook(sellAsset, buyAsset).call();
 }
 
-export function getTrades(sellAsset, buyAsset,order="desc", limit = 200){
-  let builder = getServer().orderbook(sellAsset, buyAsset).trades();
-  builder.url.addQuery("limit", limit+'');
-  builder.url.addQuery("order", order);
-  return builder.call()
-}
-
 
 // orderbook stream instance
 var _stream = undefined;
