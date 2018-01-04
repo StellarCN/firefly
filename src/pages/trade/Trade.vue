@@ -135,7 +135,6 @@
           </card>
           <order-book :blank="selectedTradeIndex != index" :ref="'orderbook'+index" 
                       :pairIndex="index" 
-                      :interval="orderBookInterval_d"
                       @intervalChanged="intervalChanged"
                       :activeTab="activeTab"
                       @choose="choose"
@@ -214,12 +213,6 @@ export default {
     this.deleteOrderBookInterval()
   },
   watch: {
-    orderBookInterval: function(data){
-      console.log("trade watched orderbookInterval is "+ this.orderBookInterval)
-      console.log("trade watched orderbookInterval is "+ data)
-      this.orderBookInterval_d = this.orderBookInterval
-      console.log("trade watched OrderbookInterval_d is "+ this.orderBookInterval_d)
-    },
     price(newvalue,oldvalue){
       if(this.justify) return
       this.justify = true

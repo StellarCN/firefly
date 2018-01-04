@@ -131,10 +131,6 @@ export default {
       type: Number,
       default: null
     },
-    interval:{
-      type: Number,
-      default: null
-    },
     blank:{
       type: Boolean,
       default: false
@@ -178,12 +174,14 @@ export default {
       return this.selectedTrade.to
     },
     myoffers(){
+      if(this.blank)return []
       if(this.my){
         return myofferConvert(this.BaseAsset,this.CounterAsset,this.my)
       }
       return []
     },
     bidsdata(){
+      if(this.blank)return []
       let data = []
       let dep = 0
       let n=this.bids.length
@@ -205,6 +203,7 @@ export default {
       return data
     },
     asksdata(){
+      if(this.blank)return []
       let data = []
       let dep = 0
       // for (ask of asks){
@@ -232,16 +231,12 @@ export default {
   },
   beforeDestroy: function() {
     console.log('OrderBook before Destroy......................--------------------------------..')
-    console.log(this.interval)
-    if(this.interval!=null){
-      clearInterval(this.interval)
+    if(this.timeInterval!=null){
+      clearInterval(this.timeInterval)
     }
   },
  
   watch: {
-    interval(){
-      this.setup()
-    },
     activeTab(){
       console.log(this.activeTab)
       this.active = this.activeTab
@@ -252,17 +247,25 @@ export default {
           clearInterval(this.timeInterval)
         }
       }else{
-        if(!this.timeInterval && this.interval){
+        if(!this.timeInterval && !this.blank){
           this.setup()
         }
       }
-    }
+    },
+    blank(val){
+      if(this.timeInterval){
+          clearInterval(this.timeInterval)
+       }
+      if(!val){
+        this.setup()
+      }
+    },//end of blank
   },
   mounted(){
     this.setup();
   },
   beforeUpdate(){
-    if(!this.interval){
+    if(!this.blank && !this.timeInterval){
       this.setup()
     }
   },
@@ -283,13 +286,11 @@ export default {
       if(this.blank)return
       if(this.selectedTradeIndex === this.pairIndex){
         this.fetchData()
-        if (!this.interval){
-          this.timeInterval = setInterval(()=>{this.fetchData()},DEFAULT_INTERVAL)
-          this.$nextTick(function(){
-            this.$emit('intervalChanged',this.timeInterval)
-          })
-          this.fetchData()
-        }
+        this.timeInterval = setInterval(()=>{this.fetchData()},DEFAULT_INTERVAL)
+        this.$nextTick(function(){
+          this.$emit('intervalChanged',this.timeInterval)
+        })
+        this.fetchData()
 
       }
     },
