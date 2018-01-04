@@ -58,16 +58,7 @@ export default {
         this.init = false
         this.working = false
       }
-    },success(){
-      console.log("result passed in "+this.success)
-    },fail(newValue,oldValue){
-      console.log("Tx failed passed in")
-      console.log(newValue,oldValue)
-      if(newValue === oldValue){
-        console.log(newValue)
-        return
-      }
-    }
+    },
   },
 }
 </script>

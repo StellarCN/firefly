@@ -271,9 +271,8 @@ export default {
         memo_type: this.senddata.memo_type,
         memo_value: this.senddata.memo
       }
-      console.log(params)
       this.onsend = true
-      this.sending = false
+      this.sending = true
       this.sendAsset(params)
         .then(response=>{
           this.sending = false
