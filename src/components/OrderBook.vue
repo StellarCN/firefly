@@ -105,12 +105,12 @@
 <script>
 import Card from './Card'
 import { mapState, mapActions, mapGetters} from 'vuex'
-import { getTrades,listenOrderbook } from '../api/orderbook'
-import { cancel as cancelOffer }  from '../api/offer'
+import { listenOrderbook } from '@/api/orderbook'
+import { cancel as cancelOffer }  from '@/api/offer'
 import { DEFAULT_INTERVAL } from '@/api/gateways'
-import { getAsset } from '../api/assets'
-import Scroll from '../components/Scroll'
-import { myofferConvert } from '../api/offer'
+import { getAsset } from '@/api/assets'
+import Scroll from '@/components/Scroll'
+import { myofferConvert } from '@/api/offer'
 export default {
   data(){
     return {

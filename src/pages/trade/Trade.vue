@@ -155,7 +155,8 @@ import Card from '@/components/Card'
 import BottomNotice from '@/components/BottomNotice'
 import Loading from '@/components/Loading'
 import { mapState, mapActions, mapGetters} from 'vuex'
-import { getTrades,listenOrderbook } from '@/api/orderbook'
+import { listenOrderbook } from '@/api/orderbook'
+import { getTrades } from '@/api/trade'
 import { cancel as cancelOffer }  from '@/api/offer'
 import { getAsset } from '@/api/assets'
 import { myofferConvert } from '@/api/offer'
@@ -416,7 +417,8 @@ export default {
     },
     LatestPrice(){
       if(this.latestTrade){
-        let p = this.latestTrade[0].bought_amount/this.latestTrade[0].sold_amount
+
+        let p = Number(this.latestTrade[0].base_amount)/Number(this.latestTrade[0].counter_amount)
         
         return Number(p.toFixed(7))+''
       }else{
