@@ -4,6 +4,8 @@ firefly is a mobile wallet for [Stellar](https://stellar.org) network. It suppor
 
 ## [Help Document](https://wallet.fchain.io/manual/#0)
 
+## [RoadMap](https://github.com/StellarCN/firefly/blob/master/docs/ROADMAP.MD)
+
 ## Main features:
 * Accounts
 	* Import By QRCode
