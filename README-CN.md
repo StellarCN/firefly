@@ -4,6 +4,9 @@
 
 ## [帮助文档](https://wallet.fchain.io/manual/#0)
 
+
+## [路线图](https://github.com/StellarCN/firefly/blob/master/docs/ROADMAP_CN.MD)
+
 ## 主要功能:
 * 多账户
 	* 二维码导入
