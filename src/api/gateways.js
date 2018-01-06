@@ -19,6 +19,16 @@ export const INFLATION_POOL = [
 
 //默认交易对
 export const TRADE_PAIRS = [
+
+  {
+    from: {
+      code: 'XLM'
+    },
+    to: {
+      code: 'XCN',
+      issuer: 'GCNY5OXYSY4FKHOPT2SPOQZAOEIGXB5LBYW3HVU3OWSTQITS65M5RCNY'
+    }
+  },
   {
     from: {
       code: 'XLM'
@@ -33,17 +43,8 @@ export const TRADE_PAIRS = [
       code: 'XLM'
     },
     to: {
-      code: 'CNY',
-      issuer: 'GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX'
-    }
-  },
-  {
-    from: {
-      code: 'XLM'
-    },
-    to: {
-      code: 'HKDC',
-      issuer: 'GA4BYMUO5D7OLGVJWZ2D5FCWU7SB63FNZ4QUU574SMNA6ELK5TZD3SO3'
+      code: 'ETH',
+      issuer: 'GBETHKBL5TCUTQ3JPDIYOZ5RDARTMHMEKIO2QZQ7IOZ4YC5XV3C2IKYU'
     }
   }
 ]
@@ -67,6 +68,16 @@ export const ASSETS_ISSUER_HOST = {
   'GA4BYMUO5D7OLGVJWZ2D5FCWU7SB63FNZ4QUU574SMNA6ELK5TZD3SO3': {
     code: 'HKDC',
     host: 'cryptomover.com'
+  },
+
+  'GBETHKBL5TCUTQ3JPDIYOZ5RDARTMHMEKIO2QZQ7IOZ4YC5XV3C2IKYU': {
+    code: 'ETH',
+    host: 'fchain.io'
+  },
+
+  'GCNY5OXYSY4FKHOPT2SPOQZAOEIGXB5LBYW3HVU3OWSTQITS65M5RCNY': {
+    code: 'XCN',
+    host: 'fchain.io'
   }
 
 
@@ -75,12 +86,16 @@ export const ASSETS_ISSUER_HOST = {
 
 export const BASE_RESERVE = 10
 
+// 默认axios超时时间
+export const AXIOS_DEFAULT_TIMEOUT = 5000
 
 let _default_trade_pair = undefined
 // 默认交易对从fchain获取
 const API_TRADE_PAIR = `https://api.fchain.io/tradepairs`
 export function defaultTradePairsAPI(){
-  axios.get(API_TRADE_PAIR)
+  axios.get(API_TRADE_PAIR,{
+    timeout: AXIOS_DEFAULT_TIMEOUT
+  })
     .then(response=>{
       let data = response.data
       if(data.tradepairs){
