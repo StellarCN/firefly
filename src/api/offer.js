@@ -85,7 +85,9 @@ export function cancel(seed,offer) {
 
 }
 
-export function myofferConvert(sellasset,buyasset,my){
+export function myofferConvert(_sellasset,_buyasset,my){
+  let sellasset = Object.assign({}, _sellasset)
+  let buyasset = Object.assign({}, _buyasset)
   let data = []
   my.forEach(ele=>{
     let sellcode = 'XLM'
@@ -100,30 +102,28 @@ export function myofferConvert(sellasset,buyasset,my){
       buycode = ele.buying.asset_code
       buyissuer = ele.buying.asset_issuer 
     }
+    let stellarorg = 'stellar.org'
+    if(stellarorg === sellasset.issuer){
+      sellasset.issuer = null
+    }
+    if(stellarorg === buyasset.issuer){
+      buyasset.issuer = null
+    }
+    let codeandissuer_sb = `${sellcode}-${sellissuer}-${buycode}-${buyissuer}`
+    let codeandissuer_bs = `${buycode}-${buyissuer}-${sellcode}-${sellissuer}`
+    let codeandissuer_sb_target = `${sellasset.code}-${sellasset.issuer}-${buyasset.code}-${buyasset.issuer}`
+    let codeandissuer_bs_target = `${buyasset.code}-${buyasset.issuer}-${sellasset.code}-${sellasset.issuer}`
+
+
     let obj = null
-    if(sellcode === sellasset.code 
-        && buycode === buyasset.code
-        && (sellissuer === sellasset.issuer
-          || (sellissuer === null && (sellasset.issuer === null||sellasset.issuer === undefined))
-        )
-        && (buyissuer === buyasset.issuer
-          || (buyissuer === null && (buyasset.issuer === null||buyasset.issuer === undefined))
-        ) 
-        ){
+    if(codeandissuer_sb === codeandissuer_sb_target && codeandissuer_bs === codeandissuer_bs_target){
       obj = Object.assign({}, ele, {type: 'sell'})
       obj.amount = Number(obj.amount)
       obj.price = Number(obj.price)
       obj.base = Number((obj.amount * obj.price).toFixed(7))
       data.push(obj)
     }else if(
-      buycode === sellasset.code 
-        && sellcode === buyasset.code
-        && (buyissuer === sellasset.issuer
-          || (buyissuer === null && (sellasset.issuer === null||sellasset.issuer === undefined))
-        )
-        && (sellissuer === buyasset.issuer
-          || (sellissuer=== null && (buyasset.issuer===null||buyasset.issuer === undefined))
-        )
+      codeandissuer_sb === codeandissuer_bs_target && codeandissuer_bs === codeandissuer_sb_target
     ){
       obj = Object.assign({}, ele, {type: 'buy'})
       obj.amount = Number(obj.amount)
@@ -133,8 +133,6 @@ export function myofferConvert(sellasset,buyasset,my){
       data.push(obj)
     }
   })
-  console.log('-------------------data:')
-  console.log(data)
   data.sort(function(a,b){
     return b.price - a.price
   })
