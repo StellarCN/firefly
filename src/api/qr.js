@@ -24,8 +24,8 @@ export function exportAccount(account,accountData){
       "account": {
         "name":account.name, //账户名称
         //id: account.address, //地址  
-        "fed": account.federationAddress, //联绑地址
-        "inflate": account.inflationAddress,//通账地址
+        //"fed": account.federationAddress, //联绑地址
+        //"inflate": account.inflationAddress,//通账地址
         "memo": account.memo,//备注
       },
       "key": accountData.seed // 私钥地址
