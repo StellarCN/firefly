@@ -150,7 +150,9 @@ export default {
   },
   beforeDestroy(){
     closePaymentStream()
-    document.removeEventListener("backbutton", this.onBackKeyDown, false); 
+    window.clearInterval(this.intervalID);
+    document.removeEventListener("backbutton", this.onBackKeyDown, false);
+    document.removeEventListener("backbutton", this.exitApp, false); 
   },
   methods: {
     ...mapActions([
@@ -233,10 +235,10 @@ export default {
         document.removeEventListener("backbutton", this.onBackKeyDown, false); // 注销返回键  
         document.addEventListener("backbutton", this.exitApp, false);//绑定退出事件  
         // 3秒后重新注册  
-        var intervalID = window.setInterval(function() {  
-          document.removeEventListener("backbutton", this.exitApp, false); // 注销返回键  
+        this.intervalID = window.setInterval(() => {  
+            document.removeEventListener("backbutton", this.exitApp, false); // 注销返回键  
             document.addEventListener("backbutton", this.onBackKeyDown, false); // 返回键  
-            window.clearInterval(intervalID);  
+            window.clearInterval(this.intervalID);  
         }, 3000);  
     }  ,
     exitApp(){  

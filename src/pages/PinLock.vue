@@ -8,7 +8,7 @@
       :showmenuicon="showmenuicon" 
       :showbackicon="showbackicon"
       >
-        <v-btn icon slot='right-tool' @click="exitapp" v-if="!isios">
+        <v-btn icon slot='right-tool' @click="exitApp" v-if="!isios">
           <i class="material-icons">exit_to_app</i>
         </v-btn>
       </Toolbar>
@@ -52,7 +52,9 @@ export default {
     document.addEventListener("backbutton", this.onBackKeyDown, false); 
   },
   beforeDestroy() {
+    window.clearInterval(this.intervalID);
     document.removeEventListener("backbutton", this.onBackKeyDown, false); 
+    document.removeEventListener("backbutton", this.exitApp, false);
   },
   methods: {
     ...mapActions([ ]),
@@ -67,10 +69,16 @@ export default {
       }
     },
     onBackKeyDown() {
-      // Todo: 这里等待补充更多的逻辑，比如双击退出之类的。
-      this.exitapp()
+        this.$toasted.show(this.$t('App.ClickOneMoreTimeExit'));  
+        document.removeEventListener("backbutton", this.onBackKeyDown, false);
+        document.addEventListener("backbutton", this.exitApp, false);
+        this.intervalID = window.setInterval(() => {  
+            document.removeEventListener("backbutton", this.exitApp, false);
+            document.addEventListener("backbutton", this.onBackKeyDown, false);
+            window.clearInterval(this.intervalID);  
+        }, 3000);  
     } ,
-    exitapp(){
+    exitApp(){
       console.log(navigator)
       console.log(navigator.app)
       navigator.app.exitApp();  
