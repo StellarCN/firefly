@@ -20,9 +20,30 @@ export const LANGUAGES = [
   ZH_CN
 ]
 
+export function getDeviceLanguage(){
+  return new Promise((resolve,reject) => {
+    console.log(navigator.globalization)
+    navigator.globalization.getLocaleName(locale=>{
+        console.log('-----locale---')
+        console.log(locale)
+        let val = locale.value
+        if (['zh','zh-CN', 'zh-TW', 'zh-HK'].includes(navigator.language)) {
+          resolve(ZH_CN) 
+        } else {
+          resolve(EN)
+        }
+      },()=>{
+        //reject()
+        resolve(ZH_CN)
+      }
+    );
+  })
+}
+
+
 export const DEVICE_LANGUAGE = function getDeviceLanguage() {
-  // console.log("getDeviceLanguage: " + navigator.language);
-  if (['zh-CN', 'zh-TW', 'zh-HK'].includes(navigator.language)) {
+
+  if (['zh','zh-CN', 'zh-TW', 'zh-HK'].includes(navigator.language)) {
     return ZH_CN
   } else {
     return EN

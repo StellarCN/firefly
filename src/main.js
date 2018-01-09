@@ -12,6 +12,8 @@ require('./filters/index')
 require('./directives/swiper')
 require('./api/index')
 import { setVuexStore } from './streams'
+import { AXIOS_DEFAULT_TIMEOUT } from './api/gateways'
+import axios from 'axios'
 
 // animate.css
 import 'animate.css'
@@ -62,6 +64,9 @@ Vue.use(Vuetify, {
 })
 FastClick.attach(document.body)
 Vue.config.productionTip = false
+
+
+axios.defaults.timeout = AXIOS_DEFAULT_TIMEOUT
 
 
 setVuexStore(store)
