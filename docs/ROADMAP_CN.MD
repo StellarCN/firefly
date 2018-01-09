@@ -6,3 +6,4 @@
 * []充值提现支持[SEP006标准](https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0006.md)
 * []交易界面操作和性能优化
 * []K线图功能
+* []重置密码
