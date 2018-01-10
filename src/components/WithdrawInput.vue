@@ -103,7 +103,7 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import { getAssetWithdrawUrl,submitQuote } from '../api/withdraw'
 import Loading from './Loading'
 import ContactBook from '@/components/ContactBook'
-import { xdrMsg } from '@/api/xdr'
+import { xdrMsg,getXdrResultCode } from '@/api/xdr'
 export default {
   data(){
     return {
@@ -294,10 +294,10 @@ export default {
           this.sendfail = true
           this.hideLoading()
           this.$toasted.error(this.$t('Error.SendAssetFail'))
-          let msg = xdrMsg(err)
+          let msg = getXdrResultCode(err)
           setTimeout(()=>{
             if(msg){
-              this.$toasted.error(msg)
+              this.$toasted.error(this.$t(msg))
             }else{
               this.$toasted.error(this.$t(err.message))
             }

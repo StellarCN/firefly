@@ -7,3 +7,15 @@ export function xdrMsg(err){
     }
     return null
 }
+
+export function getXdrResultCode(err){
+    if(err.data.extras && err.data.extras.result_codes){
+        let codes = err.data.extras.result_codes
+        if(codes.transaction){
+            return codes.transaction
+        }
+        if(codes.operation){
+            return codes.operation
+        }
+    }
+}

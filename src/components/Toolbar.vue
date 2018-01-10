@@ -241,8 +241,7 @@ export default {
         this.checkPwd = false
         this.password = null
         this.showaccounts = false
-        //重新处理stream
-        closeStreams()
+        //重新处理stream        closeStreams()
         initStreams(this.account.address)
 
       }).catch(err=>{

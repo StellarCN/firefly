@@ -12,7 +12,7 @@
       <div :class="'selloffer offermenu' + (active==='sell'?' active':'')" 
           @click.stop="active='sell'">{{$t('Trade.SellOffer')}}</div>
       <div :class="'myoffer offermenu' + (active==='myoffer'?' active':'')" 
-          @click.stop="active='myoffer'">{{$t('Trade.MyOffer')}}</div>
+          @click.stop="active='myoffer'">{{$t('Trade.MyOffer')}}({{myofferlen}})</div>
       <!-- <div :class="'myoffer offermenu' + (active==='myTradeHistory'?' active':'')" 
           @click.stop="active='myTradeHistory'">{{$t('Trade.MyTradeHistory')}}</div> -->
     </div>
@@ -62,7 +62,6 @@
           <div class="headcol">{{BaseAsset.code}}</div>
           <div class="headcol">{{CounterAsset.code}}</div>
           <div class="headcol">&nbsp;</div>
-          
         </div>
         <div class="table-row body-2" 
           v-for="(item,index) in myoffers" :key="index" :class='item.type'>
@@ -98,6 +97,7 @@
           </div>
         </div>
       </div> -->
+
     </card>
   </scroll>
 </template>
@@ -173,6 +173,10 @@ export default {
     CounterAsset(){
       return this.selectedTrade.to
     },
+    myofferlen(){
+      if(this.blank)return 0;
+      return this.myoffers.length;
+    },
     myoffers(){
       if(this.blank)return []
       if(this.my){
@@ -189,7 +193,8 @@ export default {
         let obj = Object.assign({}, this.bids[i])
         obj.num = Number(obj.amount).toFixed(4)
         obj.price = Number(obj.price).toFixed(this.decimal)
-        obj.amount = (obj.num / obj.price).toFixed(2)
+       // obj.amount = (obj.num / obj.price).toFixed(2)
+        obj.amount = (obj.num * obj.price_r.n / obj.price_r.d).toFixed(2)
         dep += Number(obj.num)
         obj.depth = dep.toFixed(2)
         obj.origin = this.bids[i]

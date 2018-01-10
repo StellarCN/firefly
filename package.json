@@ -37,6 +37,7 @@
     "cordova-plugin-swift-support": "^3.1.1",
     "cordova-plugin-whitelist": "1",
     "cordova-sqlite-storage": "^2.1.2",
+    "cordova-plugin-globalization": "^1.0.9",
     "ed25519": "0.0.4",
     "hammerjs": "^2.0.8",
     "lodash": "^4.17.4",
@@ -128,7 +129,8 @@
       "cordova-plugin-camera": {},
       "cordova-sqlite-storage": {},
       "cordova-disable-http-cache": {},
-      "cordova-plugin-inappbrowser": {}
+      "cordova-plugin-inappbrowser": {},
+      "cordova-plugin-globalization": {}
     },
     "platforms": [
       "browser",

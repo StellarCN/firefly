@@ -17,6 +17,7 @@
   import { defaultTradePairsAPI } from '@/api/gateways'
   import { closeStreams, initStreams } from '@/streams'
   import { initStorage,checkPlatform } from '@/api/storage'
+  import { getDeviceLanguage } from '@/locales'
 
   export default {
     data () {
@@ -24,6 +25,7 @@
         pauseStart: null,//暂时的起始时间
         pauseMaxSecond: 60,//最大
         isios: false,
+        devicelang: null,
       }
     },
     computed:{
@@ -69,7 +71,11 @@
           this.$store.commit('CHANGE_IOSSTATUSBAR_COLOR','primary')
         }
         //加载系统配置
-        this.loadAppSetting().then(data=>{
+        getDeviceLanguage()
+          .then((locale) => {
+            this.devicelang = locale
+            return this.loadAppSetting()
+          }).then(data=>{
           //if(this.alldata.app.enablePin){
           //  this.showConfirmPin = true
           //}
@@ -115,11 +121,11 @@
          
           initStorage().then(()=>{
             console.log('---init storage ok---')
-            this.saveAppSetting({})
+            this.saveAppSetting({locale: this.devicelang})
           }).catch(err=>{
             console.error('---init storage error---')
             console.error(err)
-            this.saveAppSetting({})
+            this.saveAppSetting({locale: this.devicelang})
           })
           //保存默认的设置数据
           
@@ -134,7 +140,9 @@
 
     },
     methods: {
-      ...mapActions(['loadAppSetting',
+      ...mapActions([
+        'deviceLang',
+        'loadAppSetting',
         'getLedger',
         'loadAccounts',
         'saveAppSetting',
