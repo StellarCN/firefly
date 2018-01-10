@@ -73,6 +73,7 @@ import Toolbar from '../components/Toolbar'
 import Card from '../components/Card'
 import { mapState, mapActions} from 'vuex'
 import { OFFICIAL_HORIZON,CHINA_HORIZON,WANCLOUD_HORIZON } from '../api/horizon'
+import { initStreams } from '@/streams'
 export default {
   data(){
     return {
@@ -121,6 +122,7 @@ export default {
       this.setHorizon(this.horizon)
         .then(()=>{
           this.$toasted.show(this.$t('SaveHorizonSuccess'))
+          initStreams(this.account.address)
           setTimeout(()=>{
             this.working = false
             this.$router.back()
