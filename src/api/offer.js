@@ -85,6 +85,11 @@ export function cancel(seed,offer) {
 
 }
 
+function undefinedToNull(val){
+  if(typeof val === 'undefined')return null
+  return val
+}
+
 export function myofferConvert(_sellasset,_buyasset,my){
   let sellasset = Object.assign({}, _sellasset)
   let buyasset = Object.assign({}, _buyasset)
@@ -109,11 +114,10 @@ export function myofferConvert(_sellasset,_buyasset,my){
     if(stellarorg === buyasset.issuer){
       buyasset.issuer = null
     }
-    let codeandissuer_sb = `${sellcode}-${sellissuer}-${buycode}-${buyissuer}`
-    let codeandissuer_bs = `${buycode}-${buyissuer}-${sellcode}-${sellissuer}`
-    let codeandissuer_sb_target = `${sellasset.code}-${sellasset.issuer}-${buyasset.code}-${buyasset.issuer}`
-    let codeandissuer_bs_target = `${buyasset.code}-${buyasset.issuer}-${sellasset.code}-${sellasset.issuer}`
-
+    let codeandissuer_sb = `${sellcode}-${undefinedToNull(sellissuer)}-${buycode}-${undefinedToNull(buyissuer)}`
+    let codeandissuer_bs = `${buycode}-${undefinedToNull(buyissuer)}-${sellcode}-${undefinedToNull(sellissuer)}`
+    let codeandissuer_sb_target = `${sellasset.code}-${undefinedToNull(sellasset.issuer)}-${buyasset.code}-${undefinedToNull(buyasset.issuer)}`
+    let codeandissuer_bs_target = `${buyasset.code}-${undefinedToNull(buyasset.issuer)}-${sellasset.code}-${undefinedToNull(sellasset.issuer)}`
 
     let obj = null
     if(codeandissuer_sb === codeandissuer_sb_target && codeandissuer_bs === codeandissuer_bs_target){
@@ -125,10 +129,12 @@ export function myofferConvert(_sellasset,_buyasset,my){
     }else if(
       codeandissuer_sb === codeandissuer_bs_target && codeandissuer_bs === codeandissuer_sb_target
     ){
+      console.log("----------------xxxxxxx")
+      console.log(ele)
       obj = Object.assign({}, ele, {type: 'buy'})
       obj.amount = Number(obj.amount)
       obj.price = Number(obj.price)
-      obj.base = Number((obj.amount * obj.price).toFixed(7))
+      obj.base = Number((obj.amount * obj.price_r.n / obj.price_r.d).toFixed(7))
       obj.price = Number((1 / obj.price).toFixed(4))
       data.push(obj)
     }

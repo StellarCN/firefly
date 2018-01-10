@@ -144,7 +144,7 @@ import * as accountapi from '../api/account'
 import _ from 'lodash'
 import { resolveByFedAddress } from '../api/federation'
 import ContactBook from '@/components/ContactBook'
-import { xdrMsg } from '@/api/xdr'
+import { xdrMsg,getXdrResultCode } from '@/api/xdr'
 
 //TODO 校验输入数据不能超过最大值
 
@@ -396,9 +396,9 @@ export default {
           this.sendfail = true
           setTimeout(()=>{
             this.onsend=false
-            let msg = xdrMsg(err)
+            let msg = getXdrResultCode(err)
             if(msg){
-              this.$toasted.error(msg)
+              this.$toasted.error(this.$t(msg))
             }else{
               this.$toasted.error(this.$t('Error.SendAssetFail'))
               this.$toasted.error(this.$t(err.message))

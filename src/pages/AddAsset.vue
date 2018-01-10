@@ -61,7 +61,7 @@ import Card from '../components/Card'
 import { mapState, mapActions, mapGetters} from 'vuex'
 import { federation } from '../api/federation'
 import Loading from '@/components/Loading'
-import { xdrMsg } from '@/api/xdr'
+import { xdrMsg,getXdrResultCode } from '@/api/xdr'
 
 export default {
   data(){
@@ -204,9 +204,9 @@ export default {
             this.showloading = false
           },3000)
           //有可能返回超时，这时候也需要处理一下
-          let msg = xdrMsg(err)
+          let msg = getXdrResultCode(err)
           if(msg){
-            this.$toasted.error(msg)
+            this.$toasted.error(this.$t(msg))
           }else{
             this.$toasted.error(this.$t('AddAsset')+this.$t('SaveFailed'))
           }     
