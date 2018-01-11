@@ -16,19 +16,21 @@
               <span class="amount">{{selected.amount}}</span>
               <span class="code">{{selected.asset.code}}</span>
           </div>
-          <div class="address">{{account.address | shortaddress}}</div>
+          <div class="address" @click="copy(account.address)">{{account.address | shortaddress}}</div>
         </div>
       </card>
       <h2 class="details-title">{{$t('Detail')}}</h2>
       <card class="details">
         <div class="card-content" slot="card-content">
+          <div class="label">TX</div>
+          <div class="value" @click="copy(transaction.id)">{{transaction.id  | shortaddress}}</div>
           <div class="label" v-if="!selected.isInbound">{{$t('To')}}</div>
           <div class="label" v-else>{{$t('From')}}</div>
-          <div class="value">{{selected.counterparty | shortaddress}}</div>
+          <div class="value" @click="copy(selected.counterparty)">{{selected.counterparty | shortaddress}}</div>
           <div class="label">{{$t('DateTime')}}</div>
           <div class="value">{{date}}</div>
           <div class="label">{{$t('Memo')}}</div>
-          <div class="value">{{transaction.memo}}</div>
+          <div class="value" @click="copy(transaction.memo)">{{transaction.memo}}</div>
         </div>
       </card>
       <div style="flex: 1;"></div>
@@ -104,7 +106,14 @@ export default {
     },
     addContact(){
       this.$router.push({name:'AddContact', params: {address: this.selected.counterparty}});
+    },
+    copy(value){
+      if(cordova.plugins.clipboard){
+        cordova.plugins.clipboard.copy(value)
+        this.$toasted.show(this.$t('CopySuccess'))
+      }
     }
+
    
   },
   components: {
@@ -158,6 +167,8 @@ export default {
         color: $secondarycolor.font
         padding-top: 8px
         padding-bottom: 2px
+      .value
+        word-break: break-all
   
 .btn-group
   width: 100%
