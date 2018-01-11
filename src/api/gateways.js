@@ -84,7 +84,7 @@ export const ASSETS_ISSUER_HOST = {
 }
 
 
-export const BASE_RESERVE = 10
+export const BASE_RESERVE = 0.5
 
 // 默认axios超时时间
 export const AXIOS_DEFAULT_TIMEOUT = 5000
