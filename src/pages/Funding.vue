@@ -47,10 +47,27 @@
               {{$t('DW.Error.NoDepositServiceDesc')}}
             </div>
             <div class="data" v-else>
-              <div class="label" v-if="depositData.deposit_info">{{$t('DW.DepositInfo')}}</div>
-              <div class="deposit_info" @click="copy(depositData.deposit_info)">{{depositData.deposit_info}}</div>
-              <div class="extra_info">{{depositData.extra_info}}</div>
-              <div class="extra_info">{{depositData.extra_info_cn}}</div>
+
+              <div v-if="standardDepositData">
+                <div class="label">{{$t('DW.DepositInfo')}}</div>
+                <div class="deposit_info" @click="copy(standardDepositData.how)">{{standardDepositData.how}}</div>
+                <div class="extra_info" v-if="standardDepositData.eta!= undefined">{{$t('DW.DepositInfo.eta',[standardDepositData.eta])}}</div>
+                <div class="extra_info" v-if="standardDepositData.min_amount!=undefined">{{$t('DW.DepositInfo.min', [standDepositData.min_amount])}}</div>
+                <div class="extra_info" v-if="standardDepositData.max_amount!=undefined">{{$t('DW.DepositInfo.max', [standDepositData.max_amount])}}</div>
+                <div class="extra_info" v-if="standardDepositData.fee_fixed!=undefined">{{$t('DW.DepositInfo.feefixed', [standDepositData.fee_fixed])}}</div>
+                <div class="extra_info" v-if="standardDepositData.fee_percent!=undefined">{{$t('DW.DepositInfo.feepercent', [standDepositData.fee_percent * 100])}}</div>
+                <div v-if="standardDepositData.extra_info!=undefined">
+                  <div class="extra_info" v-for="(value,index) in standardDepositData.extra_info" :key="index" >{{value}}</div>
+                </div>
+              </div>
+ 
+              <div v-else>
+                <div class="label" v-if="depositData.deposit_info">{{$t('DW.DepositInfo')}}</div>
+                <div class="deposit_info" @click="copy(depositData.deposit_info)">{{depositData.deposit_info}}</div>
+                <div class="extra_info">{{depositData.extra_info}}</div>
+                <div class="extra_info">{{depositData.extra_info_cn}}</div>
+              </div>
+
             </div>
           </div>
 
@@ -112,7 +129,7 @@ import Toolbar from '../components/Toolbar'
 import Card from '../components/Card'
 import BottomNotice from '@/components/BottomNotice'
 import { mapState, mapActions, mapGetters} from 'vuex'
-import { queryDeposit } from '../api/deposit'
+import { queryDeposit,queryStandardDeposite } from '../api/deposit'
 import { getAssetWithdrawUrl,submitQuote } from '../api/withdraw'
 import { resolveByFedAddress, federation, resolveByFedDomain} from '../api/federation'
 import { send } from '../api/account'
@@ -126,6 +143,7 @@ export default {
       selectedasset:{},
       assetChoseReturnObject: true,
       depositData:{},//充值
+      standardDepositData:undefined,//标准的充值协议数据
       withdrawData:{},//提现
       error:null,
       withdrawErr: false,//true或false
@@ -198,10 +216,11 @@ export default {
 
     },
     changeAsset(item){
-      this.working = true
-      this.error = null
-      this.depositData ={}
-      this.withdrawData = {}
+      this.working = true;
+      this.error = null;
+      this.depositData ={};
+      this.standardDepositData = undefined;
+      this.withdrawData = {};
       let info = this.assetAccounts[item.issuer]
       //根据home_dome查询数据
       if(info){
@@ -231,24 +250,39 @@ export default {
 
     },
     getDeposit(home_domain,asset){
-      queryDeposit(home_domain,asset,this.account.address)
+      console.log('------asset ---')
+      console.log(asset)
+      //先按照标准协议去查询，然后再按照自定义的协议去查询 
+      queryStandardDeposite(home_domain, asset.code, this.account.address)
         .then(response=>{
-          console.log('-------------query deposit data------')
           let data = response.data
-          if(data){
-            this.depositData = data
-          }else{
-            this.error = this.$t('DW.Error.NoDepositService')
-            this.$toasted.error(this.$t('DW.Error.NoDepositService'))
+          if(data.error){
+            throw new Error(data.error)
           }
-          this.working = false
+          this.standardDepositData = data;
+          this.working = false;
+        }).catch(err=>{
+          console.log('not standard deposit service');
+          queryDeposit(home_domain,asset,this.account.address)
+            .then(response=>{
+            console.log('-------------query deposit data------')
+            let data = response.data
+            if(data){
+              this.depositData = data
+            }else{
+              this.error = this.$t('DW.Error.NoDepositService')
+              this.$toasted.error(this.$t('DW.Error.NoDepositService'))
+            }
+            this.working = false
+          })
+          .catch(err=>{
+            console.error(err)
+            this.error = err
+            this.$toasted.error(this.$t('DW.Error.NoDepositService'))
+            this.working = false
+          })
         })
-        .catch(err=>{
-          console.error(err)
-          this.error = err
-          this.$toasted.error(this.$t('DW.Error.NoDepositService'))
-          this.working = false
-        })
+        
     },
     getWithdraw(home_domain,asset){
       console.log(`---------get withdraw info ------`)

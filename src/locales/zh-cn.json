@@ -148,8 +148,11 @@
   "DW.Error.NoWithdrawServiceDesc":"该资产不满足我们的网络提现协议，无法提现。如需提现，请直接联系资产发行方。",
   "DW.DepositInfo":"充值地址",
   "Error.SubmitQuoteFail":"提交失败",
-  
-
+  "DW.DepositInfo.eta": "充值需要{0}秒到账",
+  "DW.DepositInfo.min":"最小充值金额为{0}",
+  "DW.DepositInfo.max":"最大充值金额为{0}",
+  "DW.DepositInfo.feefixed":"充值收费金额为{0}",
+  "DW.DepositInfo.feepercent":"充值收费比例为{0}%",
 
   "Menu.TradeCenter":"交易中心",  
   "Trade.SelfSelection":"自选交易",

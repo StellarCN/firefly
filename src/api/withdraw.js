@@ -84,3 +84,19 @@ export function submitQuote(url,data){
   console.log(`submite withdraw quote url : ${url}`)
   return axios.get(url)
 }
+
+/**
+ * sep 0006 标准的提现流程
+ * 1. 请求stellar.toml，拿到FEDERATION_SERVER
+ * 2. GET请求FEDERATION_SERVER，参数：
+ * {
+ *    type:   forward
+ *    forward_type:   bank_account或crypto
+ *    asset_code: 提现的币种
+ *    dest: 提现的目标账户
+ *    dest_extra: 可选，提现备注（如果是抽现到其他网络上）
+ *    
+ * }
+ * 3. 根据返回结果构造表单，由用户确认提交
+ * 
+ */

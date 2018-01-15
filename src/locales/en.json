@@ -154,6 +154,12 @@
   "DW.Error.NoWithdrawServiceDesc":"cannot withdraw this asset,please contact the issuer.",
   "DW.DepositInfo":"deposit info",
   "Error.SubmitQuoteFail":"submit quote failed",
+  "DW.DepositInfo.eta": "the deposit will take {0} seconds to credit",
+  "DW.DepositInfo.min":"the min of deposit is {0}",
+  "DW.DepositInfo.max":"the max of deposit is {0}",
+  "DW.DepositInfo.feefixed":"the deposit fee is {0}",
+  "DW.DepositInfo.feepercent":"the persent fee for deposit is {0}%",
+  
 
   
   "Menu.TradeCenter":"Trade Center",  
