@@ -192,6 +192,7 @@
   "Error.DestinationIsRequired":"目标地址不能为空",
   "Error.AmountIsRequired":"数量不能为空",
   "Error.MemoIsRequired":"备注不能为空",
+  "Error.MemoIsInvalid": "备注格式不正确",
   
   "Error.DeleteTrustError":"删除信任线失败",
   "DeleteTrustSuccess":"删除信任线成功",

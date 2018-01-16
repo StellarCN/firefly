@@ -353,6 +353,10 @@ export default {
           this.$toasted.error(this.$t('Error.MemoIsRequired'))
           return
         }
+        if(!accountapi.isValidMemo(this.memotype, this.memo)) {
+          this.$toasted.error(this.$t('Error.MemoIsInvalid'))
+          return
+        }
       }
 
 

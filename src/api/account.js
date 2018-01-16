@@ -213,3 +213,28 @@ export function miniAddress(address){
   var end = address.substring(address.length - 4);
   return start + '...' + end;
 }
+
+export function isValidMemo(type, memo) {
+  let valid = true;
+  try {
+    switch (type.toUpperCase()) {
+      case 'ID':
+        StellarSdk.Memo.id(memo);
+        break;
+      case 'TEXT':
+        StellarSdk.Memo.text(memo);
+        break;
+      case 'HASH':
+        StellarSdk.Memo.hash(memo);
+        break;
+      case 'RETURN':
+        StellarSdk.Memo.return(memo);
+        break;
+      default:
+        valid = false;
+    }
+  } catch (err) {
+    valid = false;
+  }
+  return valid;
+};
