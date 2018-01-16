@@ -24,13 +24,13 @@ export function convertRecords(address,rows){
         t.isInbound = r.to === address;
         t.counterparty = t.isInbound ? r.from : r.to;
         t.asset = r.asset_type == "native" ? {code: "XLM"} : {code:r.asset_code, issuer: r.asset_issuer};
-        t.amount = parseFloat(r.amount);
+        t.amount = r.amount;
         break;
       case 'create_account':
         t.isInbound = r.account === address;
         t.counterparty = t.isInbound ? r.source_account : r.account;
         t.asset = {code: "XLM"};
-        t.amount = parseFloat(r.starting_balance);
+        t.amount = r.starting_balance;
         break;
       default:
       
@@ -45,7 +45,9 @@ let _payment_stream = undefined
 
 export function listenPaymentStream(address,handler){
   closePaymentStream();
-  _payment_stream = getServer().payments().forAccount(address).stream({
+  _payment_stream = getServer().payments().forAccount(address)
+  //.order("desc").limit(20)
+  .stream({
     onmessage: res => {
       handler(res);
     }
