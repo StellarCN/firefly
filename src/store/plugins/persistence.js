@@ -1,5 +1,8 @@
-/**
+/*
+ * vuex state 复制保存插件
  * 代码复制来自于  https://github.com/crossjs/vuex-localstorage
+ * @Author: mazhaoyong
+ * @Date: 2018-01-16 09:59:52
  */
 import shvl from 'shvl'
 
@@ -101,6 +104,7 @@ export function createStorage ({
  * @param  {function}   [param.reducer]         用于数据过滤的方法
  * @param  {string[]}   [param.paths = []]      需要持久化的数据的路径，state 的 keys。
  *                                              如需处理更多层级，可以配合自定义 reducer 实现
+ * @param  {string[]}   [param.blocks = {} ]    不需要保存的数据
  * @return {function(store: object)}            插件函数
  * @example
  * const plugin = createPersist()
@@ -118,7 +122,8 @@ export default function createPersist ({
   expires,
   merge = defaultMerge,
   reducer = defaultReducer,
-  paths = []
+  paths = [],
+  blocks = {}
 } = {}) {
   return store => {
     const storage = createStorage({
@@ -131,12 +136,14 @@ export default function createPersist ({
       expires
     })
 
+    console.log('-------replace store---------')
     store.replaceState(
       merge(store.state, storage.get())
     )
 
     store.subscribe((mutation, state) => {
-      storage.set(reducer(state, paths))
+      console.log('------store state------')
+      storage.set(reducer(state, paths, blocks))
     })
   }
 }
@@ -145,8 +152,8 @@ function defaultMerge (...args) {
   return Object.assign({}, ...args)
 }
 
-function defaultReducer (state, paths) {
-  return paths.length === 0
+function defaultReducer (state, paths, blocks) {
+  let newstate = paths.length === 0
   ? state
   : paths.reduce((substate, path) => {
     if (state.hasOwnProperty(path)) {
@@ -154,4 +161,14 @@ function defaultReducer (state, paths) {
     }
     return substate
   }, {})
+  //去掉不需要保存的数据
+  if(blocks && blocks.keys && blocks.keys.length > 0 ){
+    for(var i=0,n=blocks.keys.length; i<n; i++){
+      let key = blocks.keys[i]
+      let d = shvl.get(blocks.data, key)
+      shvl.set(newstate, key , d)
+    }
+  }
+
+  return newstate
 }

@@ -113,7 +113,31 @@ const mutations = {
   }
 }
 
-export default new Vuex.Store({
+const blocks = {
+  keys:[
+    'error',
+    'seed',
+    'seedExtData',
+    'accountname',
+    'accountpassword',
+    'memo',
+    'accounts.error',
+    'accounts.data',
+    'account.accountData',
+  
+  ],
+  data:{
+    accounts:{
+      data:[],
+      accountData: { seed: null }
+    }
+  }
+}
+
+
+
+
+const store = new Vuex.Store({
   state,
   getters,
   actions,
@@ -130,7 +154,8 @@ export default new Vuex.Store({
     serialize,
     deserialize,
     // never expire
-    expires: 0
+    expires: 0,
+    blocks
   })]
 
 })
@@ -155,3 +180,24 @@ export const CLEAN_GLOBAL_STATE = 'CLEAN_GLOBAL_STATE'
 export const CHANGE_IOSSTATUSBAR_COLOR = 'CHANGE_IOSSTATUSBAR_COLOR'
 export const ON_PAUSE = 'ON_PAUSE'
 export const ON_RESUME = 'ON_RESUME'
+
+console.log(module.hot + '----module----')
+console.log(module.hot)
+
+if (module.hot) {
+  module.hot.accept([
+    './modules/AccountsStore',
+    './modules/AccountStore',
+    './modules/AppSettingStore',
+    './modules/AssetStore'
+  ], () => {
+    store.hotUpdate({
+      app: require('./modules/AppSettingStore'),
+      account: require('./modules/AccountStore'),
+      accounts: require('./modules/AccountsStore'),
+      asset: require('./modules/AssetStore')
+    })
+  })
+}
+
+export default store
