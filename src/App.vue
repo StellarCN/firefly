@@ -94,7 +94,7 @@
           //尝试加载当前账户信息
           try{
             if(this.address){
-              this.getAccountInfo(this.address)
+              //this.getAccountInfo(this.address)
               closeStreams()
               initStreams(this.address)
               this.getAllAssetHosts()

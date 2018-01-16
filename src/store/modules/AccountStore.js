@@ -60,14 +60,15 @@ const mutations = {
   CLEAN_ACCOUNT(state){
     state.data = {balances:[]}
     state.transations = { records:[] }
-    //state.payments = { records:[] }
     state.selectedPayment = null
   },
   CLEAN_PAYMENTS(state){
     state.payments = { records: [] }
   },
   ACCOUNT_INFO_SUCCESS(state,info){
-    state.data = info
+    state.transations = { records:[] };
+    state.selectedPayment = null;
+    state.data = info;
   },
   GET_TRANSACTIONS_SUCCESS(state,data){
     state.transactions = data

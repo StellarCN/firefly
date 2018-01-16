@@ -220,7 +220,7 @@ export default {
       }
     },
     load(){
-      this.cleanAccount()
+      //this.cleanAccount()
       let address = this.account.address
      // let process = [this.getAccountInfo(address),this.getPayments(address)]
       //console.log(process)
