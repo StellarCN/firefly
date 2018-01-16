@@ -68,6 +68,7 @@
 import Toolbar from '@/components/Toolbar'
 import Card from '@/components/Card'
 import { mapState, mapActions, mapGetters} from 'vuex'
+import {isValidMemo} from '@/api/account'
 
 let loseCode = function(str) {
   let hash = 0;
@@ -137,11 +138,16 @@ export default {
       }
     },
     modifyContact() {
+      //Todo: 这里好像有个 bug，修改账户的时候 memo_type 会被置空
       //let length = this.accountData.contacts.length
       let contact_temp = {name: this.name, address: this.address, memotype: this.memotype_real, memo: this.memo}
       let hash_temp = loseCode(this.address + this.memotype_real + this.memo)
       if (hash_temp === this.contact.hash) {
         this.$toasted.error(this.$t('Error.ContactExist'))
+        return
+      }
+      if(contact_temp.memotype !== '' && contact_temp.memotype != 'None' && !isValidMemo(contact_temp.memotype, contact_temp.memo)) {
+        this.$toasted.error(this.$t('Error.MemoIsInvalid'))
         return
       }
       //console.log(contact_temp)

@@ -197,6 +197,7 @@
   "Error.DestinationIsRequired":"destination is required",
   "Error.AmountIsRequired":"amount is required",
   "Error.MemoIsRequired":"memo is required",
+  "Error.MemoIsInvalid": "memo is invalid",
 
   "Error.DeleteTrustError":"delete trust error",
   "DeleteTrustSuccess":"delete trust success",
