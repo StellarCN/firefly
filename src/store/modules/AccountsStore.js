@@ -229,8 +229,6 @@ const mutations = {
     state.accountData = Object.assign({},BLANK_ACCOUNT)
   },
   CHANGE_ACCOUNT(state, {index, address, password, accountdata}){
-    console.log('---mutation CHANGE_ACCOUNT')
-
     // 当前选择的账户信息要调整
     state.selected = index
     state.password = password

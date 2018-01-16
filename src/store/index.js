@@ -122,13 +122,11 @@ const blocks = {
     'accountpassword',
     'memo',
     'accounts.error',
-    'accounts.data',
     'account.accountData',
   
   ],
   data:{
     accounts:{
-      data:[],
       accountData: { seed: null }
     }
   }
@@ -180,9 +178,6 @@ export const CLEAN_GLOBAL_STATE = 'CLEAN_GLOBAL_STATE'
 export const CHANGE_IOSSTATUSBAR_COLOR = 'CHANGE_IOSSTATUSBAR_COLOR'
 export const ON_PAUSE = 'ON_PAUSE'
 export const ON_RESUME = 'ON_RESUME'
-
-console.log(module.hot + '----module----')
-console.log(module.hot)
 
 if (module.hot) {
   module.hot.accept([

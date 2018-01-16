@@ -135,14 +135,11 @@ export default function createPersist ({
       merge,
       expires
     })
-
-    console.log('-------replace store---------')
     store.replaceState(
       merge(store.state, storage.get())
     )
 
     store.subscribe((mutation, state) => {
-      console.log('------store state------')
       storage.set(reducer(state, paths, blocks))
     })
   }
