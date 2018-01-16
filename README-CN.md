@@ -2,10 +2,13 @@
 
 萤火钱包是[恒星网络](https://stellar.org)的手机钱包，支持安卓和IOS平台
 
+
+## [English Document](README.md)
+
 ## [帮助文档](https://wallet.fchain.io/manual/#0)
 
 
-## [路线图](https://github.com/StellarCN/firefly/blob/master/docs/ROADMAP_CN.MD)
+## [路线图](docs/ROADMAP_CN.MD)
 
 ## 主要功能:
 * 多账户

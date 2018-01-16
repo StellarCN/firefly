@@ -1,10 +1,14 @@
 # firefly wallet [![Build Status](https://travis-ci.org/StellarCN/firefly.svg)](https://travis-ci.org/StellarCN/firefly)
 
+
 firefly is a mobile wallet for [Stellar](https://stellar.org) network. It supports android and ios platforms
+
+
+## [中文文档](README-CN.md)
 
 ## [Help Document](https://wallet.fchain.io/manual/#0)
 
-## [RoadMap](https://github.com/StellarCN/firefly/blob/master/docs/ROADMAP.MD)
+## [RoadMap](docs/ROADMAP.MD)
 
 ## Main features:
 * Accounts
