@@ -126,6 +126,15 @@ const actions = {
     commit(LOAD_ACCOUNTS, accounts)
     // dispatch('cleanAccount')
   },
+  /**
+   * 重置账户密码
+   */
+  async resetAccountPwd({dispatch, commit, state}, {index, account, password, newpassword}){
+    let address = account.address
+    let data = await readAccountData(address,password)
+    await saveAccountData(address,data,newpassword)
+    commit(RESET_PASSWORD, {index, newpassword})
+  },
   // 删除账户
   async deleteAccount({dispatch, commit, state}, {index, account}){
     let statedata = [...state.data]
@@ -285,6 +294,11 @@ const mutations = {
     console.log('-------------------------state ORDERBOOK_STREAM_HANDLER')
     console.log(data)
   },
+  RESET_PASSWORD(state,{index,newpassword}){
+    if(index === state.selected){
+      state.password = newpassword;
+    }
+  },
 
 }
 
@@ -306,3 +320,4 @@ export const QUERY_ORDERBOOK = 'QUERY_ORDERBOOK'
 export const QUERY_MY_OFFERS = 'QUERY_MY_OFFERS'
 export const ORDERBOOK_STREAM_HANDLER = 'ORDERBOOK_STREAM_HANDLER'
 export const CONTACT_ID_INCREMENT = 'CONTACT_ID_INCREMENT'
+export const RESET_PASSWORD = 'RESET_PASSWORD'

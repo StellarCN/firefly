@@ -11,6 +11,7 @@
   "setPinCodeError": "两次Pin码不相同",
   "ImportAccount":"导入账户",
   "CreateAccount":"创建账户",
+  "ResetPassword":"重置密码",
   
   
   "TermsOfServiceTitle":"服务条款",
@@ -45,6 +46,7 @@
   "Account.CreateAccountReadyHint":"以上为账户重要信息，遗失后无法找回并造成钱包内资产遗失。请勿与他人分享，妥善保管并备份！",
   "Account.CreateAccountSuccess":"账户创建成功!",
   "Account.CreateAccountError":"账户创建失败！",
+  
 
   "Account.AccountAddress":"账户地址",
 
@@ -135,6 +137,15 @@
   "Account.NameCard":"名片",
   "Account.WhetherCoverAccount": "是否覆盖账户",
   "Account.NetworkError":"网络错误",
+  "Account.OriginPassword":"原密码",
+  "Account.NewPassword":"新密码",
+  "Account.RePassword":"再输一次新密码",
+  "Account.PasswordNotNull":"密码不能为空！",
+  "Account.PasswordNotSame":"两次密码不相同！",
+  "Account.PasswordResetSuccess":"密码重置成功！",
+  "Account.PasswordResetFail":"密码重置失败！",
+
+
   "Error.NotEnoughAssetToFundAccount":"发送XLM必须大于20才可以激活账户",
 
   "Error.NotEnoughAsset":"资产不足",
@@ -244,7 +255,8 @@
 
   "App.ClickOneMoreTimeExit":"再点击一次退出!",
 
-
+  "Q.DeleteAccount":"您确认删除该账户么？",
+  "Q.ResetPassword":"您确认重置密码么？",
   
 	"op_success":"操作成功",
 	"op_malformed":"操作格式不正确",

@@ -25,7 +25,7 @@ export default {
     },
     size:{
       type:Number,
-      default: 240
+      default: 200
     },
     callback: {
       type: Function
