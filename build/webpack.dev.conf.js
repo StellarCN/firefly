@@ -34,7 +34,6 @@ module.exports = merge(baseWebpackConfig, {
       inject: true
     }),
     new FriendlyErrorsPlugin(),
-    new webpack.NamedModulesPlugin(),
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.NamedModulesPlugin()
   ]
 })
