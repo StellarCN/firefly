@@ -47,7 +47,7 @@
           <v-stepper-items>
             <v-stepper-content step="1">
               <v-flex  class="stepper-content" v-touch="{left: () => swipe('Left'),right: () => swipe('Right')}">
-                <v-flex xs12 d-flex justify-center> 
+                <v-flex xs12 d-flex justify-center class="guide-img-wrapper"> 
                   <img :src='require("../assets/img/step1.svg")' class="guide-img"/>
                 </v-flex>
                 <v-flex xs12 ><h4 class="headline">{{$t("Attention")}}</h4></v-flex>
@@ -60,7 +60,7 @@
             </v-stepper-content>
             <v-stepper-content step="2">
               <v-flex v-touch="{left: () => swipe('Left'),right: () => swipe('Right')}">
-                <v-flex xs12 d-flex justify-center> 
+                <v-flex xs12 d-flex justify-center class="guide-img-wrapper"> 
                   <img :src='require("../assets/img/step2.svg")' class="guide-img"/>
                 </v-flex>
                 <v-flex xs12 ><h4 class="headline">{{$t("Attention")}}</h4></v-flex>                
@@ -72,9 +72,9 @@
                 </v-card-actions>
               </v-flex>
             </v-stepper-content>
-            <v-stepper-content step="3">
+            <v-stepper-content step="3" > 
               <v-flex v-touch="{left: () => swipe('Left'),right: () => swipe('Right')}">
-                 <v-flex xs12 d-flex justify-center> 
+                 <v-flex xs12 d-flex justify-center class="guide-img-wrapper"> 
                   <img :src='require("../assets/img/step3.svg")' class='guide-img'>
                 </v-flex>
                 <v-flex xs12 ><h4 class="headline">{{$t("Congrats")}}</h4></v-flex>
@@ -305,9 +305,13 @@ export default {
 .stepper-content
   display flex
   flex-direction column
+.guide-img-wrapper
+  height: 150px
+  width: 100%
 .guide-img
-  height 150px
-  max-width 320px  
+  height:150px
+  max-width:320px  
+  min-height: 150px
 .guide-header
   box-shadow 0 0 0 0
 </style>
