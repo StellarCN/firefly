@@ -1022,16 +1022,6 @@ bindings@^1.2.1:
   version "1.3.0"
   resolved "http://registry.npm.taobao.org/bindings/download/bindings-1.3.0.tgz#b346f6ecf6a95f5a815c5839fc7cdb22502f1ed7"
 
-bip39@^2.4.0, bip39@^2.5.0:
-  version "2.5.0"
-  resolved "http://registry.npm.taobao.org/bip39/download/bip39-2.5.0.tgz#51cbd5179460504a63ea3c000db3f787ca051235"
-  dependencies:
-    create-hash "^1.1.0"
-    pbkdf2 "^3.0.9"
-    randombytes "^2.0.1"
-    safe-buffer "^5.0.1"
-    unorm "^1.3.3"
-
 bl@~0.9.0:
   version "0.9.5"
   resolved "http://registry.npm.taobao.org/bl/download/bl-0.9.5.tgz#c06b797af085ea00bc527afc8efcf11de2232054"
@@ -2089,7 +2079,7 @@ create-hash@^1.1.0, create-hash@^1.1.2:
     ripemd160 "^2.0.0"
     sha.js "^2.4.0"
 
-create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4, create-hmac@^1.1.6:
+create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
   version "1.1.6"
   resolved "http://registry.npm.taobao.org/create-hmac/download/create-hmac-1.1.6.tgz#acb9e221a4e17bdb076e90657c42b93e3726cf06"
   dependencies:
@@ -2496,14 +2486,6 @@ echarts@^4.0.1:
   resolved "http://registry.npm.taobao.org/echarts/download/echarts-4.0.1.tgz#59dbf1099acd299c1d221208eb9d41ae25f755f8"
   dependencies:
     zrender "4.0.0"
-
-ed25519-hd-key@^0.5.0:
-  version "0.5.0"
-  resolved "http://registry.npm.taobao.org/ed25519-hd-key/download/ed25519-hd-key-0.5.0.tgz#24893bb29c96351538eccce7f36347891025193d"
-  dependencies:
-    bip39 "^2.4.0"
-    create-hmac "^1.1.6"
-    js-nacl "^1.2.2"
 
 ed25519@0.0.4:
   version "0.0.4"
@@ -3903,10 +3885,6 @@ isstream@~0.1.2:
 js-base64@^2.1.9, js-base64@^2.3.2:
   version "2.4.0"
   resolved "http://registry.npm.taobao.org/js-base64/download/js-base64-2.4.0.tgz#9e566fee624751a1d720c966cd6226d29d4025aa"
-
-js-nacl@^1.2.2:
-  version "1.2.2"
-  resolved "http://registry.npm.taobao.org/js-nacl/download/js-nacl-1.2.2.tgz#c4633dbfa67dc62f6b73033e5118e564e5abb987"
 
 js-tokens@^3.0.0, js-tokens@^3.0.2:
   version "3.0.2"
@@ -5327,7 +5305,7 @@ path-type@^3.0.0:
   dependencies:
     pify "^3.0.0"
 
-pbkdf2@^3.0.3, pbkdf2@^3.0.9:
+pbkdf2@^3.0.3:
   version "3.0.14"
   resolved "http://registry.npm.taobao.org/pbkdf2/download/pbkdf2-3.0.14.tgz#a35e13c64799b06ce15320f459c230e68e73bade"
   dependencies:
@@ -6769,14 +6747,6 @@ stellar-base@^0.7.6:
     tweetnacl "^0.14.5"
   optionalDependencies:
     ed25519 "0.0.4"
-
-stellar-hd-wallet@^0.0.4:
-  version "0.0.4"
-  resolved "http://registry.npm.taobao.org/stellar-hd-wallet/download/stellar-hd-wallet-0.0.4.tgz#e4f251031ec2a6caa81d45eb520b3349a027ca77"
-  dependencies:
-    bip39 "^2.5.0"
-    ed25519-hd-key "^0.5.0"
-    stellar-base "^0.7.6"
 
 stellar-sdk@^0.8.0:
   version "0.8.0"
