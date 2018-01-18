@@ -30,10 +30,18 @@ export function initStreams(address){
 
 export function initPaymentStream(){
     closePaymentStream()
-    _data.store.commit('CLEAN_PAYMENTS')
+    //_data.store.commit('CLEAN_PAYMENTS')
+    let paymentsdata = _data.store.state.account.payments.records
+    let token = null
+    if(paymentsdata && paymentsdata.length > 0 ){
+        token = paymentsdata[0].paging_token
+    }
     listenPaymentStream(_data.address, (data)=>{
         _data.store.dispatch('paymentSteamData',[data])
-    })
+    },err => {
+        console.log(`----payments err -- `)
+        console.log(err)
+    }, { token })
 }
 
 export function closeStreams(){
