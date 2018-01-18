@@ -135,6 +135,7 @@ export default function createPersist ({
       merge,
       expires
     })
+    console.log(`------ --replace------- `)
     store.replaceState(
       merge(store.state, storage.get())
     )
@@ -158,14 +159,15 @@ function defaultReducer (state, paths, blocks) {
     }
     return substate
   }, {})
+  let prostate = Object.assign({} , newstate)
   //去掉不需要保存的数据
   if(blocks && blocks.keys && blocks.keys.length > 0 ){
     for(var i=0,n=blocks.keys.length; i<n; i++){
       let key = blocks.keys[i]
       let d = shvl.get(blocks.data, key)
-      shvl.set(newstate, key , d)
+      shvl.set(prostate, key , d)
     }
   }
 
-  return newstate
+  return prostate
 }
