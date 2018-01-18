@@ -1,8 +1,8 @@
 //交易记录
 <template>
   <div class="page">
-    <toolbar :title="$t(title)" 
-      :showmenuicon="showmenuicon" 
+    <toolbar :title="$t(title)"
+      :showmenuicon="showmenuicon"
       :showbackicon="showbackicon"
       @goback="back"
       />
@@ -26,7 +26,7 @@
           <div class="value" @click="copy(transaction.id)">{{transaction.id  | shortaddress}}</div>
           <div class="label" v-if="!selected.isInbound">{{$t('To')}}</div>
           <div class="label" v-else>{{$t('From')}}</div>
-          <div class="value" @click="copy(selected.counterparty)">{{selected.counterparty | shortaddress}}</div>
+          <div class="value" @click="copy(selected.counterparty)">{{selected.counterparty | shortaddress}}<span v-if="this.contactName"> ({{$t('Transaction.ContactName')}}: {{this.contactName}})</span></div>
           <div class="label">{{$t('DateTime')}}</div>
           <div class="value">{{date}}</div>
           <div class="label">{{$t('Memo')}}</div>
@@ -34,12 +34,12 @@
         </div>
       </card>
       <div style="flex: 1;"></div>
-    <v-footer>        
+    <v-footer>
       <v-layout row  wrap>
         <v-flex xs12>
-          <v-btn class='primary'  block dark large @click="addContact">{{$t('AddContact')}}</v-btn>
+          <v-btn class='primary' block dark large @click="addContact" v-if="!this.contactName">{{$t('AddContact')}}</v-btn>
         </v-flex>
-      </v-layout>  
+      </v-layout>
     </v-footer>
     </div>
 
@@ -62,7 +62,6 @@ export default {
       showmenuicon: false,
       showbackicon: true,
       transaction:{}
-
     }
   },
    computed:{
@@ -70,7 +69,8 @@ export default {
       account: state => state.accounts.selectedAccount,
       accountData: state => state.accounts.accountData,
       asset: state => state.asset.selected,
-      selected: state => state.account.selectedPayment
+      selected: state => state.account.selectedPayment,
+      allcontacts: state => state.app.contacts
     }),
     ...mapGetters([
       'balances',
@@ -86,7 +86,11 @@ export default {
         return ''
       }
     },
-  
+    contactName: function() {
+      let address = this.selected.counterparty
+      let contact = this.allcontacts.filter(contact => contact.address === address)
+      return contact.length != 0 ? contact[0].name : ''
+    }
   },
   mounted(){
     this.payment.transaction()
@@ -113,13 +117,10 @@ export default {
         this.$toasted.show(this.$t('CopySuccess'))
       }
     }
-
-   
   },
   components: {
     Toolbar,
     Card,
-    
   }
 
 
@@ -169,7 +170,7 @@ export default {
         padding-bottom: 2px
       .value
         word-break: break-all
-  
+
 .btn-group
   width: 100%
   margin-top: 20px
