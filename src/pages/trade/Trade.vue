@@ -162,6 +162,7 @@ import { myofferConvert } from '@/api/offer'
 import { offer as doOffer } from '@/api/offer'
 import OrderBook from '@/components/OrderBook'
 import { DEFAULT_INTERVAL } from '@/api/gateways'
+import { getXdrResultCode } from '@/api/xdr'
 export default {
   data(){
     return {
@@ -583,6 +584,7 @@ export default {
         this.$toasted.error(this.$t('Error.NoPassword'))
         return
       }
+
       if(this.working)return
       this.working = true
       this.submitting = true
@@ -606,11 +608,15 @@ export default {
         })
         .catch(err=>{
           console.log(err)
-          this.submitting = false
-          this.submitFail = true
-          this.clean()
-          this.hideLoading()
-          this.$toasted.error(this.$t('Error.OfferFailed'))
+          this.submitting = false;
+          this.submitFail = true;
+          this.clean();
+          this.hideLoading();
+          this.$toasted.error(this.$t('Error.OfferFailed'));
+          let errcode = getXdrResultCode(err);
+          if(errcode){
+            this.$toasted.error(this.$t(errcode));
+          }
         })
 
     }, 
