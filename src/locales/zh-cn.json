@@ -232,6 +232,8 @@
   "MyAddress.DeleteSuccess":"地址删除成功",
   "MyAddress.DeleteFail":"地址删除失败",
 
+  "Transaction.ContactName": "名称",
+  
   "ContactBook.Title": "通讯录",
   
 

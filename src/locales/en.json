@@ -237,6 +237,8 @@
   "MyAddress.DuplicateAddress":"address is not unique",
   "MyAddress.DeleteSuccess":"delete success",
   "MyAddress.DeleteFail":"delete failed",
+
+  "Transaction.ContactName": "Name",
   
   "ContactBook.Title": "Contact Book",
   
