@@ -13,6 +13,7 @@ const state = {
   payments: { records:[] },
   selectedPayment:null,//当前选择的payment的
   ledger: null,
+  account_not_funding: false,//账户是否未激活
 }
 
 const actions = {
@@ -86,9 +87,16 @@ const mutations = {
     state.selectedPayment = data
   },
   GET_LEDGER_INFO(state, ledger){
-    console.log('get newest ledger info')
     state.ledger = ledger
   },
+
+  ACCOUNT_IS_FUNDING(state){
+    state.account_not_funding = false
+  },
+  ACCOUNT_NOT_FUNDING(state){
+    state.account_not_funding = true
+  },
+
 }
 
 const getters = {
@@ -168,6 +176,8 @@ export const CLEAN_ACCOUNT = 'CLEAN_ACCOUNT'
 export const GET_LEDGER_INFO = 'GET_LEDGER_INFO'
 export const GET_PAYMENT_STREAM = 'GET_PAYMENT_STREAM'
 export const CLEAN_PAYMENTS = 'CLEAN_PAYMENTS'
+export const ACCOUNT_IS_FUNDING = 'ACCOUNT_IS_FUNDING'
+export const ACCOUNT_NOT_FUNDING = 'ACCOUNT_NOT_FUNDING'
 
 export default {
   state,

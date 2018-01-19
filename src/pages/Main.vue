@@ -90,6 +90,7 @@ import * as accountapi from '../api/account'
 import { getAddressByAccountId } from '../api/federation'
 import Scroll from '../components/Scroll'
 import { listenPaymentStream, closePaymentStream, getPaymentStream, convertRecords } from '@/api/payments'
+import { ACCOUNT_IS_FUNDING,ACCOUNT_NOT_FUNDING } from '@/store/modules/AccountStore'
 
 export default {
   data(){
@@ -173,6 +174,7 @@ export default {
         this.load()
           .then(data => {
             this.updateFederationAndInflationInfo()
+            this.$store.commit(ACCOUNT_IS_FUNDING)
           })
           .catch(err => {
             console.log("errorhere");
@@ -186,6 +188,7 @@ export default {
             console.error(err)
             if (err.data && err.data.status === 404) {
               this.noticeText = this.$t('Error.AccountNotFund')
+              this.$store.commit(ACCOUNT_NOT_FUNDING)
               this.notice = true
             }
             // this.snackbarText = this.$t('Error.AccountNotFund')

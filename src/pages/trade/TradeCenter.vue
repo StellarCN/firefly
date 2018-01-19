@@ -125,7 +125,8 @@ export default {
       accountData: state => state.accounts.accountData,
       tradepairs: state => state.accounts.accountData.tradepairs,
       islogin: state => state.accounts.accountData.seed ? true:false,
-      assethosts: state => state.asset.assethosts
+      assethosts: state => state.asset.assethosts,
+      notfunding: state => state.account.account_not_funding
     }),
     ...mapGetters([
       'balances',
@@ -173,7 +174,7 @@ export default {
 
     }),
     pickershow(){
-      if(!this.items.length){
+      if(this.notfunding){
         this.snackbarText = this.$t('Error.AccountNotFund')
         this.snackbarColor = 'primary'
         this.snackbar = true

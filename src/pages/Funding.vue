@@ -164,6 +164,7 @@ export default {
       assetAccounts: state => state.asset.assets,
       assethosts: state => state.asset.assethosts,
       islogin: state => state.accounts.accountData.seed ? true:false,
+      notfunding: state => state.account.account_not_funding
     }),
     ...mapGetters([
       'balances',
@@ -189,7 +190,7 @@ export default {
       this.changeAsset(this.selectedasset)
     }
     setTimeout(()=>{
-      if(!this.balances.length){
+      if(this.notfunding){
         this.noticeText = this.$t('Error.AccountNotFund')
         this.notice = true
       }

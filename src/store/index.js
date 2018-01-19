@@ -85,8 +85,8 @@ const mutations = {
     state.seedExtData = extdata
   },
   SET_CREATE_ACCOUNT_DATA(state,{name,password,memo}){
-    state.name = name
-    state.password = password
+    state.accountname = name
+    state.accountpassword = password
     state.memo = memo
   },
   SHOW_LOADING(state){
@@ -120,14 +120,21 @@ const blocks = {
     'seedExtData',
     'accountname',
     'accountpassword',
+    'password',
     'memo',
+    'accounts.password',
     'accounts.error',
     'account.accountData',
+    'account.account_not_funding',
+
   
   ],
   data:{
     accounts:{
       accountData: { seed: null }
+    },
+    account: {
+      account_not_funding: false
     }
   }
 }
