@@ -144,6 +144,7 @@ import QRCode from '../components/QRCode'
 import { exportAccount } from '../api/qr'
 import Loading from '@/components/Loading'
 import StellarHDWallet from 'stellar-hd-wallet'
+import { closeStreams, initStreams,cleanStreamData } from '@/streams'
 export default {
   data(){
     return {
@@ -171,17 +172,21 @@ export default {
   computed:{
     ...mapState({
       seed: state => state.seed,
-      name: state => state.name,
-      password: state => state.password,
+      name: state => state.accountname,
+      password: state => state.accountpassword,
       extdata: state => state.seedExtData,
       accounts: state => state.accounts.data || [],
       isImportAccount: state => state.isImportAccount,
       isCreateAccount: state => state.isCreateAccount,
     }),
     address(){
-      return genAddress(this.seed)
+      if(this.seed){
+        return genAddress(this.seed)
+      }
+      return ''
     },
     qrtext(){
+      if(!this.seed)return ''
       //类似于stargaza的格式
       var data = {stellar:{name:this.name,key:this.seed}}
       let account = Object.assign({
@@ -234,6 +239,9 @@ export default {
       }
     },
     btnOKSeedInput(){
+      console.log('check--btn input--')
+      console.log(this.seed)
+      console.log(this.seedInput)
       if(this.seed != this.seedInput){
         this.seedInputErr = 'Error.SeedWrong'
         return;
@@ -265,9 +273,10 @@ export default {
          this.ok()
           this.$toasted.show(this.$t('Account.CreateAccountSuccess'));
           this.cleanGlobalState()
-          setTimeout(()=>{
-            this.$router.push(`/main`)
-          },1500)
+          cleanStreamData()
+          closeStreams()
+          initStreams(this.address)
+          this.$router.push(`/main`)
         }).catch(err=>{
           this.$toasted.error(this.$t('Account.CreateAccountError'))
           this.fail()

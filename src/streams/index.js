@@ -49,3 +49,10 @@ export function closeStreams(){
     closePaymentStream()
 }
 
+/**
+ * 清理payments中的数据 
+ */
+export function cleanStreamData(){
+    _data.store.commit('CLEAN_PAYMENTS')
+}
+

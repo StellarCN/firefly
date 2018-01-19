@@ -79,7 +79,8 @@ import Card from '../../components/Card'
 import Loading from '@/components/Loading'
 import { mapState, mapActions} from 'vuex'
 import {readAccountData} from '@/api/storage'
-import { closeStreams, initStreams } from '@/streams'
+import { closeStreams, initStreams, cleanStreamData } from '@/streams'
+import { ACCOUNT_IS_FUNDING,ACCOUNT_NOT_FUNDING } from '@/store/modules/AccountStore'
 export default {
   data(){
     return {
@@ -184,8 +185,10 @@ export default {
                   .then(data=>{
                     //重新处理stream
                     try{
-                      closeStreams()
-                      initStreams(this.account.address)
+                      this.$store.commit(ACCOUNT_IS_FUNDING)
+                      cleanStreamDa();
+                      closeStreams();
+                      initStreams(this.account.address);
                     }catch(err){
                       console.error(`stream error`)
                       console.error(err)
@@ -196,6 +199,11 @@ export default {
                     if(msg && 'Network Error' === msg){
                       this.$toasted.error(this.$t('Account.NetworkError'))
                       return
+                    }
+                    if (err.data && err.data.status === 404) {
+                      this.noticeText = this.$t('Error.AccountNotFund')
+                      this.$store.commit(ACCOUNT_NOT_FUNDING)
+                      this.notice = true
                     }
                   })
               }

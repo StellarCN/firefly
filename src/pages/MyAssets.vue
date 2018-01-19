@@ -109,6 +109,7 @@ export default {
       accountData: state => state.accounts.accountData,
       islogin: state => state.accounts.accountData.seed ? true:false,
       assethosts: state => state.asset.assethosts,
+      notfunding: state => state.account.account_not_funding
     }),
     ...mapGetters([
       'balances',
@@ -131,7 +132,7 @@ export default {
   mounted(){
    this.$nextTick(()=>{
      setTimeout(()=>{
-        if(!this.balances.length){
+        if(this.notfunding){
           this.noticeText = this.$t('Error.AccountNotFund')
           this.notice = true
         }

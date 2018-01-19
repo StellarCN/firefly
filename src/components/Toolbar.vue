@@ -133,7 +133,7 @@
 
 <script>
 import { mapState, mapActions} from 'vuex'
-import { closeStreams, initStreams } from '@/streams'
+import { closeStreams, initStreams, cleanStreamData } from '@/streams'
 export default {
   data(){
     return {
@@ -236,13 +236,15 @@ export default {
       }
       console.log(data)
       this.choseAccount(data).then(account=>{
-        this.$toasted.show(this.$t('Info.ChangeAccountSuccess'))
-        this.showPwdSheet = false
-        this.checkPwd = false
-        this.password = null
-        this.showaccounts = false
-        //重新处理stream        closeStreams()
-        initStreams(this.account.address)
+        this.$toasted.show(this.$t('Info.ChangeAccountSuccess'));
+        this.showPwdSheet = false;
+        this.checkPwd = false;
+        this.password = null;
+        this.showaccounts = false;
+        //重新处理stream        
+        closeStreams();
+        cleanStreamData();
+        initStreams(this.account.address);
 
       }).catch(err=>{
         console.error('change account error')
