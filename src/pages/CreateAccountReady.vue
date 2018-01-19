@@ -101,6 +101,36 @@
       </v-card>
     </v-dialog>
 
+    <!-- 密钥输入窗口 -->
+    <v-dialog v-model="seedInputDlgShow" persistent max-width="95%"  fullscreen transition="dialog-bottom-transition" :overlay=false>
+      <v-card>
+        <v-card-title class="headline">{{$t('Account.InputSecretKey')}}</v-card-title>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-alert color="error" icon="warning" value="true" v-if="seedInputErr">
+              {{$t(seedInputErr)}}
+            </v-alert>
+            <v-layout wrap>
+              <v-flex xs12 sm6 md4>
+                <v-text-field dark
+                :label="$t('SecretKey')"
+                v-model="seedInput"
+                required
+                multi-line
+                onpaste="return false"
+                rows=2></v-text-field>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green" flat @click.native="seedInputDlgShow = false">{{$t('Button.Cancel')}}</v-btn>
+          <v-btn color="red" flat @click.native="btnOKSeedInput">{{$t('Button.OK')}}</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
   <loading :show="working" :loading="working" :success="dealok" :fail='dealfail' />
 
 </div>
@@ -113,6 +143,7 @@ import {address as genAddress} from '../api/account'
 import QRCode from '../components/QRCode'
 import { exportAccount } from '../api/qr'
 import Loading from '@/components/Loading'
+import StellarHDWallet from 'stellar-hd-wallet'
 export default {
   data(){
     return {
@@ -129,6 +160,11 @@ export default {
       working: false,
       dealok: false,
       dealfail: false,
+
+      //新增账户的情况下，要求用户输入密钥
+      seedInputDlgShow: false,
+      seedInput: null,
+      seedInputErr: null,
     
     }
   },
@@ -139,6 +175,8 @@ export default {
       password: state => state.password,
       extdata: state => state.seedExtData,
       accounts: state => state.accounts.data || [],
+      isImportAccount: state => state.isImportAccount,
+      isCreateAccount: state => state.isCreateAccount,
     }),
     address(){
       return genAddress(this.seed)
@@ -158,8 +196,22 @@ export default {
     }
   
   },
+  beforeMount () {
+    // const mnemonic = StellarHDWallet.generateMnemonic({
+    //   language: 'chinese_simplified',
+    // })
+    // console.log(mnemonic)
+    // console.log(typeof mnemonic)
+    // const wallet = StellarHDWallet.fromMnemonic(mnemonic)
+
+    // console.log(wallet.getPublicKey(0)) // => GDKYMXOAJ5MK4EVIHHNWRGAAOUZMNZYAETMHFCD6JCVBPZ77TUAZFPKT
+    //  console.log(wallet.getSecret(0)) // => SCVVKNLBHOWBNJYHD3CNROOA2P3K35I5GNTYUHLLMUHMHWQYNEI7LVED
+    //  console.log(wallet.getKeypair(0) )// => StellarBase.Keypair for account 0
+
+  },
   mounted(){
-    this.dialog = true
+    this.dialog = true;
+    
   },
   methods: {
     ...mapActions(['createAccount','cleanGlobalState','coverAccount']),
@@ -181,7 +233,23 @@ export default {
           this.guide --
       }
     },
+    btnOKSeedInput(){
+      if(this.seed != this.seedInput){
+        this.seedInputErr = 'Error.SeedWrong'
+        return;
+      }
+      this.seedInputDlgShow = false
+      this.doSave();
+    },
     save(){
+      //要求用户输入密钥，只有密钥输入正确才能继续进行
+      if(this.isCreateAccount){
+        this.seedInputDlgShow = true;
+      }else{
+        this.doSave();
+      }
+    },
+    doSave(){
       //保存，并跳转到main界面
       //校验地址是否冲突
       var index = this.accounts.map(ele=>ele.address).indexOf(this.address)
@@ -206,7 +274,7 @@ export default {
         })
     },
 
-    doCoverAccount(){
+  doCoverAccount(){
     if(this.working)return
     this.working = true
     this.coverAccount({name: this.name,address: this.address,seed: this.seed,password: this.password})

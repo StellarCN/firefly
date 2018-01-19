@@ -48,7 +48,8 @@
   "Account.CreateAccountReadyHint":"this message is very import, save these details and never share them with anyone!",
   "Account.CreateAccountSuccess":"account creation successful",
   "Account.CreateAccountError":"error occured while creating account",
-
+  "Account.InputSecretKey":"input secret key",
+  "Error.SeedWrong":"wrong secret key",
   "Account.AccountAddress":"address",
 
   "Add":"add",

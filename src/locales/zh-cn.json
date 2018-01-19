@@ -46,7 +46,8 @@
   "Account.CreateAccountReadyHint":"以上为账户重要信息，遗失后无法找回并造成钱包内资产遗失。请勿与他人分享，妥善保管并备份！",
   "Account.CreateAccountSuccess":"账户创建成功!",
   "Account.CreateAccountError":"账户创建失败！",
-  
+  "Account.InputSecretKey":"请输入密钥",
+  "Error.SeedWrong":"密钥错误",
 
   "Account.AccountAddress":"账户地址",
 
