@@ -46,6 +46,7 @@
     "nprogress": "^0.2.0",
     "raf.js": "^0.0.4",
     "shvl": "^1.2.0",
+    "stellar-hd-wallet": "^0.0.4",
     "swiper": "^4.0.7",
     "uuid": "^3.1.0",
     "vue": "^2.5.4",
