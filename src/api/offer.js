@@ -149,11 +149,16 @@ export function myofferConvert(_sellasset,_buyasset,my){
 var _stream = undefined;
 
 // listen on myOffer stream
-export function listenMyOffer(address, limit=200, handler) {
+export function listenMyOffer(address, limit=200, handler, errorHandler) {
   closeMyOfferStream();
   _stream = getServer().offers('accounts', address).limit(limit).stream({
-    onmessage:res=>{
+    onmessage: res => {
       handler(res)
+    },
+    onerror: error => {
+      console.log("listenMyOffer onerror")
+      errorHandler()
+      listenMyOffer(address, limit=200, handler, errorHandler)
     }
   });
 };

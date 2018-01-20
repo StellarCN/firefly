@@ -215,8 +215,8 @@ const actions = {
   orderBookStreamHandler({commit,state}, data){
     commit(ORDERBOOK_STREAM_HANDLER, data)
   },
-  //监听我的委单
-  //TODO: horizon 好像只有在创建订单的时候才会返回消息，撤单的时候并不会
+  // 监听我的委单
+  // TODO: 目前撤消订单监听的是 onerror 事件，需要更多的测试。
   myOfferStreamHandler({dispatch, commit, state}){
     console.log("myOfferStreamHandler called")
     let data = { records:[] }
@@ -224,6 +224,8 @@ const actions = {
       // console.log("listenMyOffer called")
       data.records.push(record)
       commit(QUERY_MY_OFFERS, data)
+    }, () => {
+      data.records = []
     })
   },
 }

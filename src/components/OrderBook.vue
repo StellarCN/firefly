@@ -324,8 +324,7 @@ export default {
         .then(data=>{
           this.$toasted.show(this.$t('Trade.CancelOfferSuccess'))
           // this.queryMyOffers()
-          // TODO: Stream 无法监听取消订单，或许还有改进空间
-          this.myOfferStreamHandler()
+          // this.myOfferStreamHandler()
           this.working = false
           this.delindex = -1
         })
