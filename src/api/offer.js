@@ -32,7 +32,7 @@ export function offer(seed, option) {
   console.debug('%s %s %s use %s@ %s', option.type, option.amount, option.currency, option.base, option.price);
   var buying, selling;
   var selling_amount, selling_price;
-  
+
   if (option.type == 'buy') {
     selling = getAsset(option.base, option.base_issuer);
     buying = getAsset(option.currency, option.issuer);
@@ -105,7 +105,7 @@ export function myofferConvert(_sellasset,_buyasset,my){
     }
     if(ele.buying.asset_type!='native'){
       buycode = ele.buying.asset_code
-      buyissuer = ele.buying.asset_issuer 
+      buyissuer = ele.buying.asset_issuer
     }
     let stellarorg = 'stellar.org'
     if(stellarorg === sellasset.issuer){
@@ -143,4 +143,25 @@ export function myofferConvert(_sellasset,_buyasset,my){
     return b.price - a.price
   })
   return data
-}
+};
+
+// myOffer stream instance
+var _stream = undefined;
+
+// listen on myOffer stream
+export function listenMyOffer(address, limit=200, handler) {
+  closeMyOfferStream();
+  _stream = getServer().offers('accounts', address).limit(limit).stream({
+    onmessage:res=>{
+      handler(res)
+    }
+  });
+};
+
+// close myOffer stream
+export function closeMyOfferStream() {
+  if(_stream){
+    _stream();
+    _stream = undefined;
+  }
+};

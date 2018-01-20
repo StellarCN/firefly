@@ -4,16 +4,16 @@
  * 点击买单或卖单，会触发@change事件，将当前页面的数据发送出去
  */
 <template>
-  <scroll :refresh="load">
+  <scroll :refresh="onRefresh">
     <!--菜单-->
     <div class="ordermenu">
-      <div :class="'buyoffer offermenu' + (active==='buy'?' active':'')" 
+      <div :class="'buyoffer offermenu' + (active==='buy'?' active':'')"
           @click.stop="active='buy'">{{$t('Trade.BuyOffer')}}</div>
-      <div :class="'selloffer offermenu' + (active==='sell'?' active':'')" 
+      <div :class="'selloffer offermenu' + (active==='sell'?' active':'')"
           @click.stop="active='sell'">{{$t('Trade.SellOffer')}}</div>
-      <div :class="'myoffer offermenu' + (active==='myoffer'?' active':'')" 
+      <div :class="'myoffer offermenu' + (active==='myoffer'?' active':'')"
           @click.stop="active='myoffer'">{{$t('Trade.MyOffer')}}({{myofferlen}})</div>
-      <!-- <div :class="'myoffer offermenu' + (active==='myTradeHistory'?' active':'')" 
+      <!-- <div :class="'myoffer offermenu' + (active==='myTradeHistory'?' active':'')"
           @click.stop="active='myTradeHistory'">{{$t('Trade.MyTradeHistory')}}</div> -->
     </div>
 
@@ -25,7 +25,7 @@
           <div class="headcol">{{CounterAsset.code}}</div>
           <div class="headcol">{{$t('Trade.Depth')}}</div>
         </div>
-        <div class="table-row body-2" 
+        <div class="table-row body-2"
           v-for="(item,index) in bidsdata" :key="index"
           :style="'background: linear-gradient(to right,#303034 0%,#303034 '
             +item.blank+'%,#216549 0%,#216549 ' + item.percent +'%);'"
@@ -44,7 +44,7 @@
           <div class="headcol">{{CounterAsset.code}}</div>
           <div class="headcol depth">{{$t('Trade.Depth')}}</div>
         </div>
-        <div class="table-row body-2" 
+        <div class="table-row body-2"
           v-for="(item,index) in asksdata" :key="index"
           :style="'background: linear-gradient(to left,#303034 0%,#303034 '
             +item.blank+'%,#733520 0%,#733520 ' + item.percent +'%);'"
@@ -63,7 +63,7 @@
           <div class="headcol">{{CounterAsset.code}}</div>
           <div class="headcol">&nbsp;</div>
         </div>
-        <div class="table-row body-2" 
+        <div class="table-row body-2"
           v-for="(item,index) in myoffers" :key="index" :class='item.type'>
           <div class="b-row price" >{{Number(item.price.toFixed(4))}}</div>
           <div class="b-row" v-if="item.type==='buy'">+{{Number(item.base.toFixed(4)) | KNumber}}</div>
@@ -82,9 +82,9 @@
           <div class="headcol">{{BaseAsset.code}}</div>
           <div class="headcol">{{CounterAsset.code}}</div>
           <div class="headcol">&nbsp;</div>
-          
+
         </div>
-        <div class="table-row body-2" 
+        <div class="table-row body-2"
           v-for="(item,index) in myoffers" :key="index" :class='item.type'>
           <div class="b-row price" >{{Number(item.price.toFixed(4))}}</div>
           <div class="b-row" v-if="item.type==='buy'">{{item.base}}</div>
@@ -239,7 +239,7 @@ export default {
       clearInterval(this.timeInterval)
     }
   },
- 
+
   watch: {
     activeTab(){
       console.log(this.activeTab)
@@ -282,8 +282,9 @@ export default {
       selectTradePair: 'selectTradePair',
       queryOrderBook: 'queryOrderBook',
       switchSelectedTradePair: 'switchSelectedTradePair',
-      queryMyOffers: 'queryMyOffers',
-      orderBookStreamHandler: 'orderBookStreamHandler'
+      // queryMyOffers: 'queryMyOffers',
+      orderBookStreamHandler: 'orderBookStreamHandler',
+      myOfferStreamHandler: 'myOfferStreamHandler'
 
     }),
     setup(){
@@ -306,7 +307,12 @@ export default {
       })
     },
     load(){
-      return Promise.all([this.queryOrderBook(), this.queryMyOffers()])
+      // return Promise.all([this.queryOrderBook(), this.queryMyOffers()])
+      return Promise.all([this.queryOrderBook()])
+    },
+    onRefresh() {
+      this.myOfferStreamHandler()
+      this.load()
     },
     //撤消委单
     cancelMyOffer(item,index){
@@ -317,7 +323,9 @@ export default {
       cancelOffer(this.accountData.seed,item)
         .then(data=>{
           this.$toasted.show(this.$t('Trade.CancelOfferSuccess'))
-          this.queryMyOffers()
+          // this.queryMyOffers()
+          // TODO: Stream 无法监听取消订单，或许还有改进空间
+          this.myOfferStreamHandler()
           this.working = false
           this.delindex = -1
         })
@@ -332,7 +340,7 @@ export default {
     chooseItem(type,data){
       this.$emit('choose',{type,data})
     }
-   
+
   },
   components: {
     Card,
@@ -382,7 +390,7 @@ export default {
     text-align: right
     &>a
       color: $primarycolor.green
-    
+
 
 .working
     display: block
@@ -402,4 +410,3 @@ export default {
   padding: 5px;
   color: $primarycolor.red
 </style>
- 

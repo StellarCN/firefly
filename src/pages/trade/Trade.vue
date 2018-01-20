@@ -3,13 +3,13 @@
  */
 <template>
   <div class="page">
-    <toolbar :title="$t(title)" :showmenuicon="showmenuicon" 
+    <toolbar :title="$t(title)" :showmenuicon="showmenuicon"
       :showbackicon="showbackicon"
       @goback="back"
       :shadow="false"
     />
     <swiper :options="swiperOptionTop" class="gallery-top tradepairs-wrapper" ref="swiperTop">
-      <swiper-slide 
+      <swiper-slide
         v-for="(item,index) in this.tradepairs"
         v-bind:item="item"
         v-bind:index="index"
@@ -35,7 +35,7 @@
       </swiper-slide>
     </swiper>
     <swiper :options="swiperOptionContent" class="gallery-content" ref="swiperContent">
-      <swiper-slide 
+      <swiper-slide
         v-for="(item,index) in this.tradepairs"
         v-bind:item="item"
         v-bind:index="index"
@@ -76,7 +76,7 @@
                 <v-card dark  color=''v-bind:style="'width: 100% !important'">
                   <v-card-text flex>
                     <v-text-field  dark required  clearable hide-details v-bind:style="'width: 90% !important'"
-                      :prefix="$t('Trade.UnitPrice')" 
+                      :prefix="$t('Trade.UnitPrice')"
                       v-model='price'
                       type="number"
                       :tabindex = '0'
@@ -85,12 +85,12 @@
                     <!--数量-->
                     <v-text-field  dark required hide-details clearable  v-bind:style="'width: 90% !important'"
                       :prefix="$t('Amount')"
-                      v-model="amount"  
-                      type="number" name="amount" 
+                      v-model="amount"
+                      type="number" name="amount"
                       :tabindex = '1'
                       :color="tradeType ==='buy'? 'primary':'error'"
                       ></v-text-field>
-                    <v-slider v-model="num"  hide-details 
+                    <v-slider v-model="num"  hide-details
                       class="buy-amount-slider"
                       dark
                       max=100 step=10 ticks
@@ -118,7 +118,7 @@
                       {{$t("Trade.Sell")}}
                     </v-btn>
                     <v-btn flat color="primary" v-else @click.stop="doTrade">{{$t("Trade.Buy")}}</v-btn>
-                  
+
                   </v-card-actions>
                   </v-card>
               </v-flex>
@@ -130,11 +130,11 @@
                 <v-spacer/>
                 <div class="to">{{$t('Available')}}:{{BaseBalance.balance||0}}&nbsp;{{BaseAsset.code}}</div>
               </div>
-            
+
             </div>
           </card>
-          <order-book :blank="selectedTradeIndex != index" :ref="'orderbook'+index" 
-                      :pairIndex="index" 
+          <order-book :blank="selectedTradeIndex != index" :ref="'orderbook'+index"
+                      :pairIndex="index"
                       @intervalChanged="intervalChanged"
                       :activeTab="activeTab"
                       @choose="choose"
@@ -158,7 +158,7 @@ import { listenOrderbook } from '@/api/orderbook'
 import { getTrades } from '@/api/trade'
 import { cancel as cancelOffer }  from '@/api/offer'
 import { getAsset } from '@/api/assets'
-import { myofferConvert } from '@/api/offer'
+import { myofferConvert, closeMyOfferStream } from '@/api/offer'
 import { offer as doOffer } from '@/api/offer'
 import OrderBook from '@/components/OrderBook'
 import { DEFAULT_INTERVAL } from '@/api/gateways'
@@ -170,7 +170,7 @@ export default {
       showmenuicon: false,
       showbackicon: true,
 
-      
+
       tradeSwitch: false,
       justify: false,
       price: 0,
@@ -188,9 +188,9 @@ export default {
       orderBookInterval: null,
       orderBookInterval_d : null,
       tradeInterval: null,//查询最新一次交易数据的interval
-      latestTrade: null ,//最新的一次交易数据     
-      
-      noticeText: '',  
+      latestTrade: null ,//最新的一次交易数据
+
+      noticeText: '',
       notice: false,
 
       swiperOptionContent: {
@@ -210,6 +210,7 @@ export default {
   beforeDestroy () {
     console.log('Trade will destroy...................')
     console.log(this.orderBookInterval)
+    closeMyOfferStream();
     this.deleteTradeInterval()
     this.deleteOrderBookInterval()
   },
@@ -319,9 +320,9 @@ export default {
           console.log('----------------------------------------> balance')
           this.resetJustify()
           return
-        } 
+        }
         this.setAmount()
-        this.setNum() 
+        this.setNum()
         // this.amount = Number(Number(this.total / this.price).toFixed(7))
         // this.num = Number((this.amount / this.tradeBalance * 100).toFixed(0))
         console.log("total watch: " + this.price, this.amount,this.total)
@@ -378,7 +379,7 @@ export default {
           if(!this.BaseAsset.issuer){
             let c = JSON.parse(JSON.stringify(b))
             let t = this.native.balance - this.reserve - this.base_reserve - 0.0001
-            if(t < 0 ) t = 0 
+            if(t < 0 ) t = 0
             c.balance = Number(t.toFixed(7))
             t = null
             return c
@@ -400,7 +401,7 @@ export default {
           if(!this.CounterAsset.issuer){
             let c = JSON.parse(JSON.stringify(b))
             let t = this.native.balance - this.reserve - this.base_reserve - 0.0001
-            if(t < 0 ) t = 0 
+            if(t < 0 ) t = 0
             c.balance = Number(t.toFixed(7))
             t = null
             return c
@@ -413,7 +414,7 @@ export default {
       if(this.latestTrade){
 
         let p = Number(this.latestTrade[0].base_amount)/Number(this.latestTrade[0].counter_amount)
-        
+
         return Number(p.toFixed(7))+''
       }else{
         return null
@@ -424,7 +425,7 @@ export default {
         return this.CounterBalance.balance || 0
       }else if(this.tradeType === 'sell'){
         console.log(this.BaseAsset,this.BaseBalance.balance)
-        return this.BaseBalance.balance  
+        return this.BaseBalance.balance
       }else{
         return null
       }
@@ -434,11 +435,11 @@ export default {
     },
   },
   mounted(){
-    // this.setupTradeInterval() 
+    // this.setupTradeInterval()
     this.swiperTop.params.control = this.swiperContent
     this.swiperContent.params.control = this.swiperTop
     this.swiperTop.on('SlideChangeEnd', this.swipeTradepair)
-    this.swiperTop.slideTo(this.selectedTradeIndex,0,true) 
+    this.swiperTop.slideTo(this.selectedTradeIndex,0,true)
   },
   methods: {
     ...mapActions({
@@ -450,8 +451,9 @@ export default {
       queryOrderBook: 'queryOrderBook',
       getAccountInfo: 'getAccountInfo',
       switchSelectedTradePair: 'switchSelectedTradePair',
-      queryMyOffers: 'queryMyOffers',
-      orderBookStreamHandler: 'orderBookStreamHandler'
+      // queryMyOffers: 'queryMyOffers',
+      orderBookStreamHandler: 'orderBookStreamHandler',
+      myOfferStreamHandler: 'myOfferStreamHandler'
     }),
     setNum(){
       if(this.tradeType === 'buy'){
@@ -462,7 +464,7 @@ export default {
         this.num = Number((this.amount / this.tradeBalanceInt * 100))
         this.num = this.num > 100 ? 100 : (this.num - this.num % 10)
       }
-    }, 
+    },
     setAmount(){
       if(this.tradeType === 'buy'){
         this.$nextTick(function(){this.amount = Number(Number(this.total /this.price).toFixed(7))})
@@ -590,10 +592,10 @@ export default {
       this.submitting = true
       let option = {type:this.tradeType, // sell or buy
         currency:this.BaseAsset.code,    //base   buying:  base ++  counter --
-        issuer: this.BaseAsset.issuer, 
+        issuer: this.BaseAsset.issuer,
         base: this.CounterAsset.code,     //counter  selling : base -- counter ++
-        base_issuer: this.CounterAsset.issuer, 
-        amount:  Number(this.amount), 
+        base_issuer: this.CounterAsset.issuer,
+        amount:  Number(this.amount),
         price: Number(this.price)
       }
       console.log(this.tradeType + '--- option: $s',option)
@@ -604,7 +606,7 @@ export default {
           this.clean()
           this.hideLoading()
           this.$toasted.show(this.$t('Trade.OfferSuccess'))
-          this.queryMyOffers()
+          // this.queryMyOffers()
         })
         .catch(err=>{
           console.log(err)
@@ -619,7 +621,7 @@ export default {
           }
         })
 
-    }, 
+    },
     clean(){
       if(this.justify) return
       this.justify = true
@@ -687,6 +689,7 @@ export default {
       this.selectTradePair({index,tradepair})
       this.deleteTradeInterval()
       this.setupTradeInterval()
+      this.myOfferStreamHandler()
     },
     //查询最新一次成交记录
     fetchLatestTrade(){
@@ -705,7 +708,8 @@ export default {
         })
     },
     load(){
-      return Promise.all([this.queryOrderBook(), this.queryMyOffers()])
+      // return Promise.all([this.queryOrderBook(), this.queryMyOffers()])
+      return Promise.all([this.queryOrderBook()])
     },
     toBuy(){
       if(this.CounterBalance.balance === 0 ){
@@ -733,7 +737,7 @@ export default {
       }
       this.$router.push({name:"TradeSell"})
     },
-    
+
   },
   // filters: {
   //   formatNumber: {
@@ -838,7 +842,7 @@ export default {
   padding-bottom: 10px
   .pair-from
     flex: 2
-    .code 
+    .code
       font-size: 16px
     .issuer
       color: $secondarycolor.font
@@ -871,7 +875,7 @@ export default {
 .available
   display: flex
   .from
-  .to 
+  .to
     // flex: 1
     color: $secondarycolor.font
     font-size: 12px
@@ -894,32 +898,32 @@ export default {
   height: 42px
   margin: 0 !important
   min-height:42px !important
-  .swiper-slide 
+  .swiper-slide
     width: 140px;
     height: 100%;
     opacity: 0.6;
-  .swiper-slide-active 
+  .swiper-slide-active
     opacity: 1;
     font-weight 600
 
-.gallery-content 
+.gallery-content
    width: 100%;
 
 .tradebox
   width:100%
   display flex
   flex-direction column
-  align-items center 
+  align-items center
   .input-group
     .input-group_input
       min-height 30px !important
 
 
-input[type=number] 
+input[type=number]
   -moz-appearance:textfield
 
 input[type=number]::-webkit-outer-spin-button
-input[type=number]::-webkit-inner-spin-button 
+input[type=number]::-webkit-inner-spin-button
   -webkit-appearance: none;
   margin: 0;
 

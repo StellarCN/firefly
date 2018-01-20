@@ -3,9 +3,9 @@
  */
 <template>
   <div class="page">
-    
-     <toolbar :title="$t(title)" 
-      :showmenuicon="showmenuicon" 
+
+     <toolbar :title="$t(title)"
+      :showmenuicon="showmenuicon"
       :showbackicon="showbackicon"
       @goback="back"
       >
@@ -17,7 +17,7 @@
     <div class="content">
       <card class="mytrade" padding="10px 10px">
         <div class="card-content" slot="card-content">
-          
+
           <!--交易对-->
           <div class="pair-show">
             <div class="pair-from">
@@ -52,7 +52,7 @@
               required
               type="text"
             ></v-text-field>
-            <!-- <v-slider v-model="num" 
+            <!-- <v-slider v-model="num"
                 class="buy-amount-slider"
                 dark
                 color="primary"
@@ -74,7 +74,7 @@
           <!--可用-->
           <div class="available">{{$t('Available')}}:{{buyassetbalance.balance||0}}&nbsp;{{buyassetbalance.code}}</div>
 
-          
+
         </div>
       </card>
 
@@ -109,7 +109,7 @@ export default {
       price: null,//单价
       amount: null,//数量
       num: 0,
-      
+
 
     }
   },
@@ -127,7 +127,7 @@ export default {
       'balances',
     ]),
     asset(){
-      let asset = this.selectedTrade.from 
+      let asset = this.selectedTrade.from
       return asset ? asset : {}
     },
     balance(){
@@ -181,7 +181,7 @@ export default {
       return ''
     },
 
-    
+
   },
   watch: {
     num(newvalue,oldvalue){
@@ -197,7 +197,7 @@ export default {
       selectTradePair: 'selectTradePair',
       queryOrderBook: 'queryOrderBook',
       switchSelectedTradePair: 'switchSelectedTradePair',
-      queryMyOffers: 'queryMyOffers',
+      // queryMyOffers: 'queryMyOffers',
       orderBookStreamHandler: 'orderBookStreamHandler'
 
     }),
@@ -223,12 +223,12 @@ export default {
       if(this.working)return
       this.working = true
       this.sending = true
-      let option = {type:'buy', 
-        currency:this.asset.code, 
-        issuer: this.asset.issuer, 
-        base: this.buyasset.code, 
-        base_issuer: this.buyasset.issuer, 
-        amount:  Number(this.amount), 
+      let option = {type:'buy',
+        currency:this.asset.code,
+        issuer: this.asset.issuer,
+        base: this.buyasset.code,
+        base_issuer: this.buyasset.issuer,
+        amount:  Number(this.amount),
         price: Number(this.price)
       }
       console.log('--buy option: $s',option)
@@ -239,7 +239,7 @@ export default {
           this.clean()
           this.hideLoading()
           this.$toasted.show(this.$t('Trade.OfferSuccess'))
-          this.queryMyOffers()
+          // this.queryMyOffers()
         })
         .catch(err=>{
           console.log(err)
@@ -250,7 +250,7 @@ export default {
         })
 
     },
-    
+
     hideLoading(){
       setTimeout(()=>{
           this.sendsuccess =false
@@ -258,13 +258,13 @@ export default {
           this.working = false
         },3000)
     },
-    
+
     clean(){
       this.num = 0
       this.amount = null
       this.price = null
     }
-   
+
   },
   components: {
     Toolbar,
@@ -294,7 +294,7 @@ export default {
   padding-bottom: 10px
   .pair-from
     flex: 2
-    .code 
+    .code
       font-size: 16px
     .issuer
       color: $secondarycolor.font
@@ -328,4 +328,3 @@ export default {
   padding-bottom: 0px
 
 </style>
-
