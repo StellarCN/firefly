@@ -1,10 +1,10 @@
 // 钱包账户地址
-import { createAccount as createAccountApi, readAccounts, 
+import { createAccount as createAccountApi, readAccounts,
     saveAccounts, readAccountData, saveAccountData,deleteAccountData } from '../../api/storage'
 import { getDefaultTradePairs } from '../../api/gateways'
 import { getOrderbook } from '../../api/orderbook'
 import { getAsset } from '../../api/assets'
-import { fetchEffects } from '../../api/effetcts'
+import { fetchEffects } from '../../api/effects'
 import { queryOffer } from '../../api/offer'
 
 // 状态字段
@@ -36,8 +36,11 @@ const state = {
     bids:[],//买单
     asks:[],//卖单
     my: []//我的委单
-  }
-
+  },
+  effects:{
+    records: [],
+    nextPage: null
+  },
 }
 
 const BLANK_ACCOUNT = {seed: null, tradepairs: []}
@@ -54,7 +57,7 @@ const actions = {
     let accounts = {data: state.data, selected: state.selected}
     await saveAccounts(accounts)
   },
-  // 输入密码切换账户 
+  // 输入密码切换账户
   // @param index 序号
   // @param address 地址
   // @param password 密码
@@ -187,9 +190,9 @@ const actions = {
   },
   //查询当前的盘面
   async queryOrderBook({commit,state}){
-    let buyAsset = getAsset(state.selectedTradePair.tradepair.to.code, 
+    let buyAsset = getAsset(state.selectedTradePair.tradepair.to.code,
         state.selectedTradePair.tradepair.to.issuer)
-    let sellAsset = getAsset(state.selectedTradePair.tradepair.from.code, 
+    let sellAsset = getAsset(state.selectedTradePair.tradepair.from.code,
         state.selectedTradePair.tradepair.from.issuer)
     let records = await getOrderbook(sellAsset,buyAsset)
     // console.log(`---------------query order book : ${records}`)
@@ -212,12 +215,30 @@ const actions = {
   //盘面监听得到数据后处理
   orderBookStreamHandler({commit,state}, data){
     commit(ORDERBOOK_STREAM_HANDLER, data)
-  }
-
-  
+  },
 
 
 
+
+
+  // TODO: 分页获取我的交易记录，获取的数据是未处理的，需要进一步处理，只保留 type 为 trade 的
+  async queryMyEffects({commit,state}, nextPage=false) {
+    let queryData;
+    let recordPerPage = 20;
+    if (!nextPage) {
+      commit(CLEAN_MY_EFFECTS)
+      queryData = await fetchEffects(state.selectedAccount.address, 'desc', recordPerPage)
+    } else {
+      if (!state.effects.nextPage) {
+        throw new Error('No nextPage, please check state.accounts.effects.nextPage first.');
+      }
+      queryData = await state.effects.nextPage()
+    }
+    if (queryData.records.length < recordPerPage) {
+      queryData.next = null
+    }
+    commit(QUERY_MY_EFFECTS, queryData)
+  },
 }
 
 const mutations = {
@@ -272,7 +293,7 @@ const mutations = {
         my: []//我的委单
       }
   },
-    
+
   SELECT_TRADE_PAIR(state, { index, tradepair}){
     state.selectedTradePair = {
       index,
@@ -299,6 +320,14 @@ const mutations = {
       state.password = newpassword;
     }
   },
+  QUERY_MY_EFFECTS(state, data) {
+    state.effects.records.push(...data.records)
+    state.effects.nextPage = data.next
+  },
+  CLEAN_MY_EFFECTS(state) {
+    state.effects.records = []
+    state.effects.nextPage = null
+  }
 
 }
 
@@ -321,3 +350,5 @@ export const QUERY_MY_OFFERS = 'QUERY_MY_OFFERS'
 export const ORDERBOOK_STREAM_HANDLER = 'ORDERBOOK_STREAM_HANDLER'
 export const CONTACT_ID_INCREMENT = 'CONTACT_ID_INCREMENT'
 export const RESET_PASSWORD = 'RESET_PASSWORD'
+export const QUERY_MY_EFFECTS = 'QUERY_MY_EFFECTS'
+export const CLEAN_MY_EFFECTS = 'CLEAN_MY_EFFECTS'
