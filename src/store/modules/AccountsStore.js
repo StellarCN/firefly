@@ -1,11 +1,11 @@
 // 钱包账户地址
-import { createAccount as createAccountApi, readAccounts, 
+import { createAccount as createAccountApi, readAccounts,
     saveAccounts, readAccountData, saveAccountData,deleteAccountData } from '../../api/storage'
 import { getDefaultTradePairs } from '../../api/gateways'
 import { getOrderbook } from '../../api/orderbook'
 import { getAsset } from '../../api/assets'
 import { fetchEffects } from '../../api/effetcts'
-import { queryOffer } from '../../api/offer'
+import { queryOffer, listenMyOffer } from '../../api/offer'
 
 // 状态字段
 const state = {
@@ -54,7 +54,7 @@ const actions = {
     let accounts = {data: state.data, selected: state.selected}
     await saveAccounts(accounts)
   },
-  // 输入密码切换账户 
+  // 输入密码切换账户
   // @param index 序号
   // @param address 地址
   // @param password 密码
@@ -187,9 +187,9 @@ const actions = {
   },
   //查询当前的盘面
   async queryOrderBook({commit,state}){
-    let buyAsset = getAsset(state.selectedTradePair.tradepair.to.code, 
+    let buyAsset = getAsset(state.selectedTradePair.tradepair.to.code,
         state.selectedTradePair.tradepair.to.issuer)
-    let sellAsset = getAsset(state.selectedTradePair.tradepair.from.code, 
+    let sellAsset = getAsset(state.selectedTradePair.tradepair.from.code,
         state.selectedTradePair.tradepair.from.issuer)
     let records = await getOrderbook(sellAsset,buyAsset)
     // console.log(`---------------query order book : ${records}`)
@@ -201,23 +201,33 @@ const actions = {
     let tradepair = {from: state.selectedTradePair.to, to: state.selectedTradePair.from}
     commit(SELECT_TRADE_PAIR,{index, tradepair})
     await dispatch('queryOrderBook')
-    await dispatch('queryMyOffers')
+    // await dispatch('queryMyOffers')
   },
 
   //查询我的委单（所有的，需要手动过滤）
   async queryMyOffers({dispatch,commit,state}){
-    let records = await queryOffer(state.selectedAccount.address)
+    let records = await q
+    orderBookStreamHandler
+    ueryOffer(state.selectedAccount.address)
     commit(QUERY_MY_OFFERS,records)
   },
   //盘面监听得到数据后处理
   orderBookStreamHandler({commit,state}, data){
     commit(ORDERBOOK_STREAM_HANDLER, data)
-  }
-
-  
-
-
-
+  },
+  // 监听我的委单
+  // TODO: 目前撤消订单监听的是 onerror 事件，需要更多的测试。
+  myOfferStreamHandler({dispatch, commit, state}){
+    console.log("myOfferStreamHandler called")
+    let data = { records:[] }
+    listenMyOffer(state.selectedAccount.address, 200, (record) => {
+      // console.log("listenMyOffer called")
+      data.records.push(record)
+      commit(QUERY_MY_OFFERS, data)
+    }, () => {
+      data.records = []
+    })
+  },
 }
 
 const mutations = {
@@ -272,7 +282,7 @@ const mutations = {
         my: []//我的委单
       }
   },
-    
+
   SELECT_TRADE_PAIR(state, { index, tradepair}){
     state.selectedTradePair = {
       index,
