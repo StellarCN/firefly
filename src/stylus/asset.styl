@@ -1,0 +1,132 @@
+// 资产界面的样式表
+@require '~@/stylus/app.styl'
+.assets
+.assets-row
+  overflow: hidden
+  position: relative
+  .myassets-li
+    position: relative
+    z-index: 2
+    padding: 5px 5px
+    background: $secondarycolor.gray
+    width: 100%
+    .myassets-wrapper
+      .myassets
+        .myassets-name
+          font-size: 16px
+        .myassets-issuer
+          color: $secondarycolor.font
+          font-size: 14px
+      .myassets-balance
+        text-align: right
+        color: $secondarycolor.font
+        .balance
+          color: $primarycolor.green
+          font-size: 16px
+          padding-right: 10px
+      .myassets-reserve
+        text-align: right  
+        color: $secondarycolor.font
+        .balance
+          padding-right: 10px
+.myassets-balance.third
+  height: 100%
+  padding-top: 10px
+.assets-row
+  border-bottom: 1px solid $secondarycolor.font
+.assets-row:last-child
+  border-bottom: 0px
+.operate-box 
+  position: absolute
+  z-index: 1
+  height: 100%
+  right: 0
+  top: 0
+  display: flex
+  .send
+  .receive
+  .del
+    display: flex
+    justify-content: center
+    align-items: center
+    background-color: $secondarycolor.green
+    color: $primarycolor.font
+    padding: 0 12px
+  .receive
+    border-left: 1px solid $secondarycolor.gray
+  .del
+    background-color: $secondarycolor.red
+    border-right: 1px solid $secondarycolor.gray
+
+//=== asset page==
+
+.assets-wrapper
+  background: $primarycolor.green
+  height: 42px
+  margin: 0 !important
+  min-height:42px !important
+  .swiper-slide 
+    width: 100px;
+    height: 100%;
+    opacity: 0.6;
+  .swiper-slide-active 
+    opacity: 1;
+    font-weight 600
+
+.assets-code
+  font-size: 16px
+  text-align: center
+.assets-issuer
+  text-align center
+
+.gallery-content 
+   width: 100%;
+
+.infocard
+   min-height 10em
+   max-width: 100%
+
+.asset-amount
+  padding: 10px
+  min-height 10vh
+  .row
+    .label
+    .label-reserve
+      color: $secondarycolor.font
+    .amount
+      font-size: 20px
+      padding-left: 10px
+      padding-right: 20px
+    .available
+      font-size: 18px
+      padding-left: 10px
+      padding-right: 20px
+    .reserve
+      font-size: 18px
+      padding-left: 10px
+      padding-right: 20px
+    .label-reserve
+      padding-left: 10px
+.btns
+  padding-top: 20px
+  padding-bottom: 10px
+  .btn
+    width 45%
+
+.subtitle
+  padding-left: 10px
+  padding-top: 10px
+  padding-bottom: 5px
+  margin-bottom: 0px
+  color: $secondarycolor.font
+  font-size: 16px
+.history-li
+  padding-top: 5px
+  padding-bottom: 5px
+  font-size: 16px
+.history-amount
+  text-align: right
+.history-amount.add
+  color: $primarycolor.green
+.history-amount.minus
+  color: $primarycolor.red

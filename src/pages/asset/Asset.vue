@@ -85,8 +85,8 @@
 </template>
 
 <script>
-import Card from '../components/Card'
-import Toolbar from '../components/Toolbar'
+import Card from '@/components/Card'
+import Toolbar from '@/components/Toolbar'
 import { mapState, mapActions, mapGetters} from 'vuex'
 
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
@@ -239,102 +239,6 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-@require '../stylus/color.styl'
-.page
-  background: $primarycolor.gray
-  color: $primarycolor.font
-  .content
-    padding: 8px 8px
+@require '~@/stylus/asset.styl'
 
-// .mytoolbar
-//   background: $primarycolor.green
-//   color: $primarycolor.font
-//   width: 100%
-//   height:56px
-//   line-height: 56px
-//   .back-icon
-//     float: left
-//     padding-left: 10px
-//     .material-icons
-//       font-size: 30px
-//       margin-top: 10px
-//   .mytitle
-//     width: 100%
-//     height:56px
-//     line-height: 56px
-//     text-align: center
-//     font-size: 20px
-
-// .gallery-top
-    
-.assets-wrapper
-  background: $primarycolor.green
-  height: 42px
-  margin: 0 !important
-  min-height:42px !important
-  .swiper-slide 
-    width: 100px;
-    height: 100%;
-    opacity: 0.6;
-  .swiper-slide-active 
-    opacity: 1;
-    font-weight 600
-
-.assets-code
-  font-size: 16px
-  text-align: center
-.assets-issuer
-  text-align center
-
-.gallery-content 
-   width: 100%;
-
-.infocard
-   min-height 10em
-   max-width: 100%
-
-.asset-amount
-  padding: 10px
-  min-height 10vh
-  .row
-    .label
-    .label-reserve
-      color: $secondarycolor.font
-    .amount
-      font-size: 20px
-      padding-left: 10px
-      padding-right: 20px
-    .available
-      font-size: 18px
-      padding-left: 10px
-      padding-right: 20px
-    .reserve
-      font-size: 18px
-      padding-left: 10px
-      padding-right: 20px
-    .label-reserve
-      padding-left: 10px
-.btns
-  padding-top: 20px
-  padding-bottom: 10px
-  .btn
-    width 45%
-
-.subtitle
-  padding-left: 10px
-  padding-top: 10px
-  padding-bottom: 5px
-  margin-bottom: 0px
-  color: $secondarycolor.font
-  font-size: 16px
-.history-li
-  padding-top: 5px
-  padding-bottom: 5px
-  font-size: 16px
-.history-amount
-  text-align: right
-.history-amount.add
-  color: $primarycolor.green
-.history-amount.minus
-  color: $primarycolor.red
 </style>

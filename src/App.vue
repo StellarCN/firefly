@@ -2,22 +2,23 @@
  <v-app class="app" dark>
     <v-system-bar status :color="iosstatusbarcolor" v-show="isios">
       <v-spacer></v-spacer>
-      
     </v-system-bar>
 
     <router-view></router-view>
 
+    <tab-bar/>
  </v-app>
 </template>
 
 <script>
   import Vue from 'vue'
   import { mapActions,mapState } from 'vuex'
-  import PinCode from './components/PinCode'
+  import PinCode from '@/components/PinCode'
   import { defaultTradePairsAPI } from '@/api/gateways'
   import { closeStreams, initStreams } from '@/streams'
   import { initStorage,checkPlatform } from '@/api/storage'
   import { getDeviceLanguage } from '@/locales'
+  import  TabBar from '@/components/TabBar'
 
   export default {
     data () {
@@ -169,12 +170,13 @@
 
     },
     components:{
-      PinCode
+      PinCode,
+      TabBar
     }
   }
 </script>
 <style lang="stylus">
-@require './stylus/color.styl'
+@require './stylus/app.styl'
 .app
   background-color: $primarycolor.gray
 .hide

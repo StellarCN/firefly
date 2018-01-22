@@ -68,9 +68,9 @@
 </template>
 
 <script>
-import Toolbar from '../components/Toolbar'
-import Card from '../components/Card'
-import QRCode from '../components/QRCode'
+import Toolbar from '@/components/Toolbar'
+import Card from '@/components/Card'
+import QRCode from '@/components/QRCode'
 import { mapState, mapActions, mapGetters} from 'vuex'
 
 export default {
@@ -200,7 +200,7 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-@require '../stylus/color.styl'
+@require '~@/stylus/color.styl'
 .page
   background: $primarycolor.gray
   .content

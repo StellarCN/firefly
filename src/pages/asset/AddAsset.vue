@@ -56,10 +56,10 @@
 </template>
 
 <script>
-import Toolbar from '../components/Toolbar'
-import Card from '../components/Card'
+import Toolbar from '@/components/Toolbar'
+import Card from '@/components/Card'
 import { mapState, mapActions, mapGetters} from 'vuex'
-import { federation } from '../api/federation'
+import { federation } from '@/api/federation'
 import Loading from '@/components/Loading'
 import { xdrMsg,getXdrResultCode } from '@/api/xdr'
 

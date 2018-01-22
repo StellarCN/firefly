@@ -272,17 +272,6 @@ export default {
 
 <style lang="stylus" scoped>
 @require '~@/stylus/color.styl'
-.page
-  // position: absolute
-  //top: 0
-  //left: 0
-  //right: 0
-  //bottom: 0
-  background: $primarycolor.gray
-  color: $primarycolor.font
-.content
-  padding: 8px 8px
-  overflow-y:auto
   .infocard
     text-algin: center
     .title

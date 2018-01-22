@@ -15,8 +15,8 @@
 </template>
 
 <script>
-import Toolbar from '../components/Toolbar'
-import PinCode from '../components/PinCode'
+import Toolbar from '@/components/Toolbar'
+import PinCode from '@/components/PinCode'
 import { mapState, mapActions} from 'vuex'
 export default {
   data(){
@@ -69,7 +69,7 @@ export default {
 
 
 <style lang="stylus" scoped>
-@require '../stylus/color.styl'
+@require '~@/stylus/color.styl'
 .page
   background: $primarycolor.gray
   color: $primarycolor.font

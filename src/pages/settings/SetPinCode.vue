@@ -16,8 +16,8 @@
 </template>
 
 <script>
-import Toolbar from '../components/Toolbar'
-import PinCode from '../components/PinCode'
+import Toolbar from '@/components/Toolbar'
+import PinCode from '@/components/PinCode'
 import { mapState, mapActions} from 'vuex'
 const WORKING_SET = 'set'
 const WORKING_RESET = 'reset'

@@ -67,7 +67,7 @@ export default {
 
 
 <style lang="stylus" scoped>
-@require '../stylus/color.styl'
+@require '~@/stylus/color.styl'
 .page
   background: $primarycolor.gray
   height: 100%

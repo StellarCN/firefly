@@ -11,7 +11,7 @@
       >
     </toolbar>
     <div class="logo-wrapper">
-            <img src="../assets/img/logo-blank.png" alt="firefly" class="logo-img"/>
+            <img src="../../assets/img/logo-blank.png" alt="firefly" class="logo-img"/>
     </div>
     <div class="content">
       <card class="icard" padding="8px 8px">

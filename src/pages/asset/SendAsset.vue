@@ -135,14 +135,14 @@
 </template>
 
 <script>
-import QRScan from '../components/QRScan'
-import Toolbar from '../components/Toolbar'
-import Card from '../components/Card'
-import Loading from '../components/Loading'
+import QRScan from '@/components/QRScan'
+import Toolbar from '@/components/Toolbar'
+import Card from '@/components/Card'
+import Loading from '@/components/Loading'
 import { mapState, mapActions, mapGetters} from 'vuex'
-import * as accountapi from '../api/account'
+import * as accountapi from '@/api/account'
 import _ from 'lodash'
-import { resolveByFedAddress } from '../api/federation'
+import { resolveByFedAddress } from '@/api/federation'
 import ContactBook from '@/components/ContactBook'
 import { xdrMsg,getXdrResultCode } from '@/api/xdr'
 
@@ -469,7 +469,7 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-@require '../stylus/color.styl'
+@require '~@/stylus/color.styl'
 .content
   //top: 48px
   //bottom: 0

@@ -69,10 +69,10 @@
 </template>
 
 <script>
-import Toolbar from '../components/Toolbar'
-import Card from '../components/Card'
+import Toolbar from '@/components/Toolbar'
+import Card from '@/components/Card'
 import { mapState, mapActions} from 'vuex'
-import { OFFICIAL_HORIZON,CHINA_HORIZON,WANCLOUD_HORIZON } from '../api/horizon'
+import { OFFICIAL_HORIZON,CHINA_HORIZON,WANCLOUD_HORIZON } from '@/api/horizon'
 import { initStreams } from '@/streams'
 export default {
   data(){
@@ -144,7 +144,7 @@ export default {
 
 
 <style lang="stylus" scoped>
-@require '../stylus/color.styl'
+@require '~@/stylus/color.styl'
 .select
   display flex
   justify-content center

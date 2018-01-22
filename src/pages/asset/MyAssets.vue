@@ -17,7 +17,7 @@
       <span slot="switch_password">{{$t('Account.Password')}}</span>
     </toolbar>
     <div class="content">
-      <card padding="0px 0px" class="infocard">
+      <card padding="0px 0px" class="">
         <div class="assets" slot="card-content" v-if="balances && balances.length>0">
           <v-layout class="myassets-li" row wrap v-swiper=2 @click.stop="toAsset(native)">
             <v-flex xs4 class="myassets-wrapper">
@@ -80,9 +80,9 @@
 </template>
 
 <script>
-import Toolbar from '../components/Toolbar'
+import Toolbar from '@/components/Toolbar'
 import { mapState, mapActions, mapGetters} from 'vuex'
-import Card from '../components/Card'
+import Card from '@/components/Card'
 import BottomNotice from '@/components/BottomNotice'
 import  { miniAddress } from '@/api/account'
 import Loading from '@/components/Loading'
@@ -224,73 +224,6 @@ export default {
 
 
 <style lang="stylus" scoped>
-@require '~@/stylus/color.styl'
-.page
-  background: $primarycolor.gray
-.content
-  color: $primarycolor.font
-  font-size: 16px
-  padding: 10px 10px
-.right
-  .material-icons
-    font-size: 24px
-.assets
-.assets-row
-  overflow: hidden
-  position: relative
-  .myassets-li
-    position: relative
-    z-index: 2
-    padding: 5px 5px
-    background: $secondarycolor.gray
-    width: 100%
-    .myassets-wrapper
-      .myassets
-        .myassets-name
-          font-size: 16px
-        .myassets-issuer
-          color: $secondarycolor.font
-          font-size: 14px
-      .myassets-balance
-        text-align: right
-        color: $secondarycolor.font
-        .balance
-          color: $primarycolor.green
-          font-size: 16px
-          padding-right: 10px
-      .myassets-reserve
-        text-align: right  
-        color: $secondarycolor.font
-        .balance
-          padding-right: 10px
-.myassets-balance.third
-  height: 100%
-  padding-top: 10px
-.assets-row
-  border-bottom: 1px solid $secondarycolor.font
-.assets-row:last-child
-  border-bottom: 0px
-.operate-box 
-  position: absolute
-  z-index: 1
-  height: 100%
-  right: 0
-  top: 0
-  display: flex
-  .send
-  .receive
-  .del
-    display: flex
-    justify-content: center
-    align-items: center
-    background-color: $secondarycolor.green
-    color: $primarycolor.font
-    padding: 0 12px
-  .receive
-    border-left: 1px solid $secondarycolor.gray
-  .del
-    background-color: $secondarycolor.red
-    border-right: 1px solid $secondarycolor.gray
-
+@require '~@/stylus/asset.styl'
 </style>
 

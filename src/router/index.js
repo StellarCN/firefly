@@ -21,16 +21,6 @@ const router = new Router({
       name: 'Main',
       component: Main
     },
-    {
-      path: '/receiveasset',
-      name: 'ReceiveAsset',
-      component: resolve => require(['../pages/ReceiveAsset.vue'], resolve)
-    },
-    {
-      path: '/sendasset',
-      name: 'SendAsset',
-      component: resolve => require(['../pages/SendAsset.vue'], resolve)
-    },
     
     {
       path: '/wallet',
@@ -58,10 +48,81 @@ const router = new Router({
       component: resolve => require(['../pages/CreateAccountReady.vue'], resolve)
     },
     {
-      path: '/myassets',
-      name: 'MyAssets',
-      component: resolve => require(['../pages/MyAssets.vue'], resolve)
+      path:'/mysettings',
+      name: 'MySettings',
+      component: resolve => require(['../pages/settings/SettingParent.vue'], resolve),
+      redirect: { name: 'Settings' },
+      children: [
+        {
+          path: '/settings',
+          name: 'Settings',
+          component: resolve => require(['../pages/settings/Settings.vue'], resolve)
+        },
+        {
+          path: '/horizon',
+          name: 'Horizon',
+          component: resolve => require(['../pages/settings/Horizon'], resolve)
+        },
+        {
+          path: '/language',
+          name: 'Language',
+          component: resolve => require(['../pages/settings/Language'], resolve)
+        },
+        {
+          path: '/setpincode',
+          name: 'SetPinCode',
+          component: resolve => require(['../pages/settings/SetPinCode'], resolve)
+        },
+        {
+          path: '/delpincode',
+          name: 'DelPinCode',
+          component: resolve => require(['../pages/settings/DelPinCode'], resolve)
+        },
+        {
+          path: '/help',
+          name: 'Help',
+          component: resolve => require(['../pages/settings/Help'], resolve)
+        },
+        {
+          path: '/about',
+          name: 'Abount',
+          component: resolve => require(['../pages/settings/About'], resolve)
+        }
+      ]
     },
+    {
+      path: '/assets',
+      name: 'Assets',
+      component: resolve => require(['../pages/asset/AssetParent.vue'], resolve),
+      redirect: { name: 'MyAssets' },
+      children: [
+        {
+          path: '/myassets',
+          name: 'MyAssets',
+          component: resolve => require(['../pages/asset/MyAssets.vue'], resolve)
+        },
+        {
+          path: '/asset',
+          name: 'Asset',
+          component: resolve => require(['../pages/asset/Asset.vue'], resolve)
+        },
+        {
+          path: '/assets/add',
+          name: 'AddAsset',
+          component: resolve => require(['../pages/asset/AddAsset.vue'], resolve)
+        },
+        {
+          path: '/receiveasset',
+          name: 'ReceiveAsset',
+          component: resolve => require(['../pages/asset/ReceiveAsset.vue'], resolve)
+        },
+        {
+          path: '/sendasset',
+          name: 'SendAsset',
+          component: resolve => require(['../pages/asset/SendAsset.vue'], resolve)
+        },
+      ]
+    },   
     {
       path: '/tradecenter',
       name: 'TradeCenter',
@@ -116,11 +177,6 @@ const router = new Router({
       ]
     },
     {
-      path: '/settings',
-      name: 'Settings',
-      component: resolve => require(['../pages/Settings.vue'], resolve)
-    },
-    {
       path: '/account/manage',
       name: 'ManageAccount',
       component: resolve => require(['../pages/account/Manage.vue'], resolve)
@@ -141,39 +197,9 @@ const router = new Router({
       component: resolve => require(['../pages/account/ModifyAccount.vue'], resolve)
     },
     {
-      path: '/asset',
-      name: 'Asset',
-      component: resolve => require(['../pages/Asset.vue'], resolve)
-    },
-    {
-      path: '/assets/add',
-      name: 'AddAsset',
-      component: resolve => require(['../pages/AddAsset.vue'], resolve)
-    },
-    {
       path: '/transaction',
       name: 'Transaction',
       component: resolve => require(['../pages/Transaction'], resolve)
-    },
-    {
-      path: '/horizon',
-      name: 'Horizon',
-      component: resolve => require(['../pages/Horizon'], resolve)
-    },
-    {
-      path: '/language',
-      name: 'Language',
-      component: resolve => require(['../pages/Language'], resolve)
-    },
-    {
-      path: '/setpincode',
-      name: 'SetPinCode',
-      component: resolve => require(['../pages/SetPinCode'], resolve)
-    },
-    {
-      path: '/delpincode',
-      name: 'DelPinCode',
-      component: resolve => require(['../pages/DelPinCode'], resolve)
     },
     {
       path: '/myaddress/',
@@ -204,19 +230,9 @@ const router = new Router({
       ]
     },
     {
-      path: '/help',
-      name: 'Help',
-      component: resolve => require(['../pages/Help'], resolve)
-    },
-    {
       path: '/pinlock',
       name: 'PinLock',
       component: resolve => require(['../pages/PinLock'], resolve)
-    },
-    {
-      path: '/about',
-      name: 'Abount',
-      component: resolve => require(['../pages/About'], resolve)
     },
 
 
