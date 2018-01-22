@@ -57,7 +57,7 @@
             </v-flex>
             <v-flex xs8 class="myassets-wrapper">
               <div class="myassets-balance third">
-                 <span class="balance">{{Number(item.balance.toFixed(7))}}</span>
+                 <span class="balance">{{item.balance > 0 ? item.balance.toFixed(7) : 0}}</span>
                  <span class="label">{{$t('Total')}}</span>
               </div>
             </v-flex>

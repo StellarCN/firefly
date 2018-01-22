@@ -111,6 +111,7 @@ import { DEFAULT_INTERVAL } from '@/api/gateways'
 import { getAsset } from '@/api/assets'
 import Scroll from '@/components/Scroll'
 import { myofferConvert } from '@/api/offer'
+import NP from 'number-precision'
 export default {
   data(){
     return {
@@ -191,17 +192,17 @@ export default {
       let n=this.bids.length
       for(var i=0;i<n;i++){
         let obj = Object.assign({}, this.bids[i])
-        obj.num = Number(obj.amount).toFixed(4)
+        obj.num = (NP.round(Number(obj.amount), 4)).toFixed(4)
         obj.price = Number(obj.price).toFixed(this.decimal)
-        obj.amount = (obj.num * obj.price_r.d / obj.price_r.n).toFixed(2)
-        dep += Number(obj.num)
-        obj.depth = dep.toFixed(2)
+        obj.amount = (NP.round((obj.num * obj.price_r.d / obj.price_r.n), 2)).toFixed(2)
+        dep = NP.plus(dep, Number(obj.num));
+        obj.depth = (NP.round(dep, 2)).toFixed(2)
         obj.origin = this.bids[i]
         data.push(obj)
       }
       data.forEach(ele=>{
         let p = ele.depth / dep
-        ele.percent = Number((p * 100).toFixed(2))
+        ele.percent = Number(NP.round((p * 100), 2))
         ele.blank = 100 - ele.percent
       })
       return data
@@ -216,17 +217,17 @@ export default {
       let n=this.asks.length
       for(var i=0;i<n;i++){
         let obj = Object.assign({}, this.asks[i])
-        obj.amount = Number(obj.amount).toFixed(2)
-        obj.price = Number(obj.price).toFixed(this.decimal)
-        obj.num = (obj.price * obj.amount).toFixed(4)
-        dep += Number(obj.num)
-        obj.depth = dep.toFixed(2)
+        obj.amount = (NP.round(Number(obj.amount), 2)).toFixed(2)
+        obj.price = (NP.round(Number(obj.price), this.decimal)).toFixed(this.decimal)
+        obj.num = (NP.round((obj.price * obj.amount),4)).toFixed(4)
+        dep = NP.plus(dep,Number(obj.num));
+        obj.depth = (NP.round(dep,2)).toFixed(2)
         obj.origin = this.asks[i]
         data.push(obj)
       }
       data.forEach(ele=>{
         let p = ele.depth / dep
-        ele.percent = Number((p * 100).toFixed(2))
+        ele.percent = Number(NP.round((p * 100),2))
         ele.blank = 100 - ele.percent
       })
       return data
@@ -234,7 +235,6 @@ export default {
 
   },
   beforeDestroy: function() {
-    console.log('OrderBook before Destroy......................--------------------------------..')
     if(this.timeInterval!=null){
       clearInterval(this.timeInterval)
     }

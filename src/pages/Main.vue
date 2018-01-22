@@ -28,7 +28,7 @@
               </v-flex>
               <v-flex xs6 class="myassets-wrapper">
                 <div class="myassets-balance">
-                    {{Number(item.balance.toFixed(7))}}
+                    {{item.balance > 0 ? item.balance.toFixed(7): item.balance}}
                 </div>
               </v-flex>
               <v-flex xs2 class="myassets-wrapper">
