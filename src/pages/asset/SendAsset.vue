@@ -58,7 +58,7 @@
             :suffix="selectedasset.code"
             required
             type="text"
-            :placeholder="(selectedasset.code === 'XLM'? selectedasset.balance - reserve - 0.00001: selectedasset.balance )|| '0'"
+            :placeholder="(selectedasset.code === 'XLM'? (''+(selectedasset.balance - reserve - 0.00001)): (''+selectedasset.balance) )|| '0'"
             @input="amountInput"
             
           ></v-text-field>
@@ -88,6 +88,16 @@
             <span class="searching" v-if="fedSearching">{{$t('Working')}}</span>
             <span class="fedurl" v-else>{{realDestination}}</span>
           </div>
+          <v-text-field
+            v-if="iscontact"
+            :label="$t('ContactAdd.name')"
+            v-model="contactname"
+            class="selectasset"
+            dark
+            disabled
+            hide-details
+          ></v-text-field>
+
           <v-layout row wrap style='height:65px'>
           <v-flex xs2 d-flex>
             <v-flex class="memoswitch">{{$t('Memo')}}</v-flex>
@@ -184,6 +194,9 @@ export default {
       num:0,
 
       numStep: Number(0.0000001),
+
+      iscontact: false,
+      contactname: null,
 
     }
   },
@@ -326,6 +339,8 @@ export default {
       if(contact.memo){
         this.memo = contact.memo
       }
+      this.iscontact = true
+      this.contactname = contact.name
 
     },
     selectmemo(type,data){
@@ -434,8 +449,9 @@ export default {
     },
 
     destinationInput: _.debounce(function(val) {//必须是普通function，不能是箭头函数
-      console.log(val+'-----------2---')
-      console.log(this.destination)
+      if(this.iscontact){
+        this.iscontact = false
+      }
         //根据当前用户的输入内容，请求联邦地址，获取对应的实际address，从而获取对应的实际账户地址（暂时不支持提现部分协议）
         if(val && val.indexOf('*') > 0){
           this.fedSearching = true
