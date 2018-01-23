@@ -6,7 +6,7 @@
 
     <router-view></router-view>
 
-    <tab-bar/>
+    <tab-bar v-if="showTabBar"/>
  </v-app>
 </template>
 
@@ -37,7 +37,11 @@
           address: state => state.accounts.selectedAccount.address,
           iosstatusbarcolor: state => state.iosstatusbarcolor,
           accounts: state => state.accounts.data,
-        })
+        }),
+        showTabBar: function () {
+          let hidePathName = ['Index', 'Wallet', 'TermsOfService', 'ImportAccount', 'CreateAccount', 'CreateAccountReady']
+          return !hidePathName.includes(this.$route.name)
+        }
     },
     beforeMount(){
       Vue.cordova.on('deviceready', () => {
@@ -91,7 +95,7 @@
           console.log('read accounts')
           console.log(data)
           navigator.splashscreen.hide();
-          
+
           //尝试加载当前账户信息
           try{
             if(this.address){
@@ -119,7 +123,7 @@
           // 跳转到错误界面
           //this.$toasted.error(err._message)
           navigator.splashscreen.hide()
-         
+
           initStorage().then(()=>{
             console.log('---init storage ok---')
             this.saveAppSetting({locale: this.devicelang})
@@ -129,13 +133,13 @@
             this.saveAppSetting({locale: this.devicelang})
           })
           //保存默认的设置数据
-          
+
           this.$router.push('/wallet')
 
         });
 
-      
-        
+
+
 
       })
 

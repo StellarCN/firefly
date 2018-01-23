@@ -125,7 +125,7 @@ export function myofferConvert(_sellasset,_buyasset,my){
       obj = Object.assign({}, ele, {type: 'sell'})
       obj.amount = Number(obj.amount)
       obj.price = Number(obj.price)
-      obj.base = NP.round(Number((obj.amount * obj.price), 7))
+      obj.base = NP.round(Number(obj.amount * obj.price), 7)
       data.push(obj)
     }else if(
       codeandissuer_sb === codeandissuer_bs_target && codeandissuer_bs === codeandissuer_sb_target
@@ -135,7 +135,7 @@ export function myofferConvert(_sellasset,_buyasset,my){
       obj = Object.assign({}, ele, {type: 'buy'})
       obj.amount = Number(obj.amount)
       obj.price = Number(obj.price)
-      obj.base = NP.round(Number((obj.amount * obj.price_r.n / obj.price_r.d), 7))
+      obj.base = NP.round(Number(obj.amount * obj.price_r.n / obj.price_r.d), 7)
       obj.price = Number(NP.round((1 / obj.price), 4))
       data.push(obj)
     }
