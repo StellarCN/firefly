@@ -97,6 +97,7 @@
   "Menu.Settings":"Settings",
   "Menu.Help":"Trade help",
   "Menu.My":"my",
+  "Menu.History": "History",
 
   "ManageAccount":"manage account",
   "PinCode":"pin code",
@@ -270,6 +271,11 @@
   "Q.DeleteAccount":"will delete the account, please confirm ?",
   "Q.ResetPassword":"will reset the password, please confirm ?",
 
+  "History.Title": "History",
+  "History.Offer": "Offer",
+  "History.Transaction": "Transaction",
+  "History.Trade": "Trade",
+  "History.DepositAndWithdraw": "Deposit/Withdraw",
 
 	"op_success":"operation success",
 	"op_malformed":"opernation incorrect",
