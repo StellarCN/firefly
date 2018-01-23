@@ -51,8 +51,13 @@ const router = new Router({
       path:'/mysettings',
       name: 'MySettings',
       component: resolve => require(['../pages/settings/SettingParent.vue'], resolve),
-      redirect: { name: 'Settings' },
+      redirect: { name: 'My' },
       children: [
+        {
+          path: '/my',
+          name: 'My',
+          component: resolve => require(['../pages/settings/My.vue'], resolve)
+        },
         {
           path: '/settings',
           name: 'Settings',
@@ -96,6 +101,7 @@ const router = new Router({
       component: resolve => require(['../pages/asset/AssetParent.vue'], resolve),
       redirect: { name: 'MyAssets' },
       children: [
+        
         {
           path: '/myassets',
           name: 'MyAssets',

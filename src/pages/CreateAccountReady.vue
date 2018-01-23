@@ -20,7 +20,7 @@
       <div class="label">{{$t('SecretKey')}}</div>
       <div class="value" @click="copy(seed)">{{seed}}</div>
       <div class="qrcode">
-        <qrcode :text="qrtext" size=200 />
+        <qrcode :text="qrtext" :size="200" />
       </div>
       <div class="hint">{{$t('Account.CreateAccountReadyHint')}}</div>
     </div>

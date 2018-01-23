@@ -17,7 +17,7 @@ export default {
                 { title:'Menu.MyAssets', name: 'MyAsset', path: '/myassets', icon: 'account_balance_wallet' },
                 { title:'Menu.TradeCenter', name: 'TradeCenter', path: '/tradecenter', icon: 'trending_up' },
                 { title:'Menu.Funding', name: 'Funding', path: '/funding', icon: 'import_export' },
-                { title:'Menu.My', name: 'My', path: '/mysettings', icon: 'account_box' },
+                { title:'Menu.My', name: 'My', path: '/my', icon: 'account_box' },
             ],
             active: 0
         }
