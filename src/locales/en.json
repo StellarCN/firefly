@@ -150,6 +150,7 @@
   "Account.PasswordNotSame":"two passwords is not the same",
   "Account.PasswordResetSuccess":"reset password successed",
   "Account.PasswordResetFail":"reset password failed",
+  "Account.SecretStoredAndExit":"backed up the secret, skip this step",
 
   "Error.NotEnoughAssetToFundAccount":"send more than 20 XLM to fund the target",
 

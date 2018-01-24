@@ -128,6 +128,9 @@
           <v-btn color="green" flat @click.native="seedInputDlgShow = false">{{$t('Button.Cancel')}}</v-btn>
           <v-btn color="red" flat @click.native="btnOKSeedInput">{{$t('Button.OK')}}</v-btn>
         </v-card-actions>
+        <v-card-actions>
+          <v-btn color="green" flat @click.native="doSave">{{$t('Account.SecretStoredAndExit')}}</v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
 

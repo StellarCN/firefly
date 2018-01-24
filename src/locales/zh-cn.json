@@ -146,6 +146,7 @@
   "Account.PasswordNotSame":"两次密码不相同！",
   "Account.PasswordResetSuccess":"密码重置成功！",
   "Account.PasswordResetFail":"密码重置失败！",
+  "Account.SecretStoredAndExit":"已经备份密钥，跳过这一步",
 
 
   "Error.NotEnoughAssetToFundAccount":"发送XLM必须大于20才可以激活账户",
