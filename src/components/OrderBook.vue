@@ -32,9 +32,9 @@
           @click.stop="chooseItem('buy',item)"
           >
           <div class="b-row price">{{item.price}}</div>
-          <div class="b-row">{{item.amount | KNumber }}</div>
-          <div class="b-row">{{item.num | KNumber}}</div>
-          <div class="b-row depth">{{item.depth | KNumber}}</div>
+          <div class="b-row">{{[locale.key,item.amount] | I18NNumberFormat }}</div>
+          <div class="b-row">{{[locale.key,item.num] | I18NNumberFormat}}</div>
+          <div class="b-row depth">{{[locale.key,item.depth] | I18NNumberFormat}}</div>
         </div>
       </div>
       <div class="selloffer-table offer-table" v-if="active === 'sell'" slot="card-content">
@@ -51,9 +51,9 @@
             @click.stop="chooseItem('sell',item)"
           >
           <div class="b-row price">{{item.price}}</div>
-          <div class="b-row">{{item.amount | KNumber}}</div>
-          <div class="b-row">{{item.num | KNumber}}</div>
-          <div class="b-row depth">{{item.depth | KNumber}}</div>
+          <div class="b-row">{{[locale.key,item.amount] | I18NNumberFormat}}</div>
+          <div class="b-row">{{[locale.key,item.num] | I18NNumberFormat}}</div>
+          <div class="b-row depth">{{[locale.key,item.depth] | I18NNumberFormat}}</div>
         </div>
       </div>
       <div class="myoffer-table offer-table" v-if="active === 'myoffer'" slot="card-content">
@@ -66,10 +66,10 @@
         <div class="table-row body-2" 
           v-for="(item,index) in myoffers" :key="index" :class='item.type'>
           <div class="b-row price" >{{Number(item.price.toFixed(4))}}</div>
-          <div class="b-row" v-if="item.type==='buy'">+{{Number(item.base.toFixed(4)) | KNumber}}</div>
-          <div class="b-row" v-else>-{{Number(item.amount.toFixed(4)) | KNumber}}</div>
-          <div class="b-row" v-if="item.type==='buy'">-{{Number(item.amount.toFixed(4)) | KNumber}}</div>
-          <div class="b-row" v-else>+{{Number(item.base.toFixed(4)) | KNumber}}</div>
+          <div class="b-row" v-if="item.type==='buy'">+{{[locale.key,Number(item.base.toFixed(4))] | I18NNumberFormat}}</div>
+          <div class="b-row" v-else>-{{[locale.key,Number(item.amount.toFixed(4))] | I18NNumberFormat}}</div>
+          <div class="b-row" v-if="item.type==='buy'">-{{[locale.key,Number(item.amount.toFixed(4))] | I18NNumberFormat}}</div>
+          <div class="b-row" v-else>+{{[locale.key,Number(item.base.toFixed(4))] | I18NNumberFormat}}</div>
           <div class="b-row depth">
             <span class="working" v-if="working && delindex===index"></span>
             <a v-else href="javascript:void(0)"   @click.stop="cancelMyOffer(item,index)">{{$t('Trade.Cancel')}}</a>
@@ -149,6 +149,7 @@ export default {
       asks: state => state.accounts.selectedTradePair.asks,//卖单
       my: state => state.accounts.selectedTradePair.my.records,
       onpause: state => state.onpause,
+      locale: state => state.app.locale,
 
     }),
     ...mapGetters([
