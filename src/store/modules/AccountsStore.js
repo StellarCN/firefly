@@ -41,6 +41,7 @@ const state = {
     records: [],
     nextPage: null
   },
+  currentHistoryComponent: 'offer' // 记住用户的历史页面 not perfect but works
 }
 
 const BLANK_ACCOUNT = {seed: null, tradepairs: []}
@@ -239,6 +240,9 @@ const actions = {
     }
     commit(QUERY_MY_EFFECTS, queryData)
   },
+  changeCurrentHistoryComponent({commit,state}, current) {
+    commit(CHANGE_CURRENT_HISTORY_COMPONENT, current)
+  }
 }
 
 const mutations = {
@@ -327,8 +331,10 @@ const mutations = {
   CLEAN_MY_EFFECTS(state) {
     state.effects.records = []
     state.effects.nextPage = null
+  },
+  CHANGE_CURRENT_HISTORY_COMPONENT(state, data) {
+    state.currentHistoryComponent = data
   }
-
 }
 
 export default {
@@ -352,3 +358,4 @@ export const CONTACT_ID_INCREMENT = 'CONTACT_ID_INCREMENT'
 export const RESET_PASSWORD = 'RESET_PASSWORD'
 export const QUERY_MY_EFFECTS = 'QUERY_MY_EFFECTS'
 export const CLEAN_MY_EFFECTS = 'CLEAN_MY_EFFECTS'
+export const CHANGE_CURRENT_HISTORY_COMPONENT = 'CHANGE_CURRENT_HISTORY_COMPONENT'

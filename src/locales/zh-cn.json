@@ -93,6 +93,7 @@
   "Menu.Settings":"设置",
   "Menu.Help":"交易使用教程",
   "Menu.My":"我的",
+  "Menu.History": "历史记录",
   
   "ManageAccount":"账户管理",
   "PinCode":"Pin码",
@@ -263,6 +264,12 @@
   "Q.DeleteAccount":"您确认删除该账户么？",
   "Q.ResetPassword":"您确认重置密码么？",
   
+  "History.Title": "历史记录",
+  "History.Offer": "我的委单",
+  "History.Transaction": "收发记录",
+  "History.Trade": "成交记录",
+  "History.DepositAndWithdraw": "充提记录",
+
 	"op_success":"操作成功",
 	"op_malformed":"操作格式不正确",
 	"op_underfunded":"操作资金不足",

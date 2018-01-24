@@ -21,7 +21,7 @@ const router = new Router({
       name: 'Main',
       component: Main
     },
-    
+
     {
       path: '/wallet',
       name: 'Wallet',
@@ -128,7 +128,7 @@ const router = new Router({
           component: resolve => require(['../pages/asset/SendAsset.vue'], resolve)
         },
       ]
-    },   
+    },
     {
       path: '/tradecenter',
       name: 'TradeCenter',
@@ -155,6 +155,11 @@ const router = new Router({
       component: resolve => require(['../pages/Funding.vue'], resolve)
     },
     {
+      path: '/history',
+      name: 'History',
+      component: resolve => require(['../pages/History.vue'], resolve)
+    },
+    {
       path: '/mycontacts/',
       name: 'MyContacts',
       component: resolve => require(['../pages/contacts/MyContacts.vue'], resolve),
@@ -165,17 +170,17 @@ const router = new Router({
           name: 'ContactsList',
           component: resolve => require(['../pages/contacts/ContactsList.vue'], resolve),
         },
-        { 
+        {
           path: 'add',
           name: 'AddContact',
           component: resolve => require(['../pages/contacts/AddContact.vue'], resolve)
         },
-        { 
+        {
           path: 'modify/:id',
           name: 'ModifyContact',
           component: resolve => require(['../pages/contacts/ModifyContact.vue'], resolve)
         },
-        { 
+        {
           path: ':id',
           name: 'ContactDetails',
           component: resolve => require(['../pages/contacts/ContactDetails.vue'], resolve)
@@ -218,17 +223,17 @@ const router = new Router({
           name: 'MyAddressList',
           component: resolve => require(['../pages/myaddress/MyAddressList.vue'], resolve),
         },
-        { 
+        {
           path: 'add',
           name: 'MyAddressAdd',
           component: resolve => require(['../pages/myaddress/MyAddressAdd.vue'], resolve)
         },
-        { 
+        {
           path: 'edit/:name',
           name: 'MyAddressEdit',
           component: resolve => require(['../pages/myaddress/MyAddressEdit.vue'], resolve)
         },
-        { 
+        {
           path: ':name',
           name: 'MyAddressView',
           component: resolve => require(['../pages/myaddress/MyAddressView.vue'], resolve)
