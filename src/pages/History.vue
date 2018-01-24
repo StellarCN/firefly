@@ -27,6 +27,8 @@
 </template>
 
 <script>
+
+  import {mapState, mapActions, mapGetters} from 'vuex'
   import Toolbar from '@/components/Toolbar'
   import HistoryOffer from '@/components/HistoryOffer'
   import HistoryTransaction from '@/components/HistoryTransaction'
@@ -40,36 +42,42 @@
         showbackicon: false,
         showmenuicon: true,
         loading: false,
-        show: {
-          name: 'offer',
-          component: HistoryOffer
-        },
         components: {
           offer: HistoryOffer,
           transaction: HistoryTransaction,
           trade: HistoryTrade,
           depositAndWithdraw: HistoryDepositAndWithdraw
+        },
+        show: {
+          name: null,
+          component: null
         }
-
       }
     },
+    created() {
+      this.switchComponent(this.currentHistoryComponent)
+    },
+    computed: {
+     ...mapState({
+       currentHistoryComponent: state => state.accounts.currentHistoryComponent,
+     }),
+    },
     methods: {
-      change() {
-        this.home = HistoryOffer
-      },
+      ...mapActions([
+        'changeCurrentHistoryComponent'
+      ]),
       switchComponent(name) {
         if (name == this.show.name) return
         this.show.name = name
         this.show.component = this.components[name]
-        console.log(this.show)
       },
-
-
+    },
+    beforeDestroy() {
+      this.changeCurrentHistoryComponent(this.show.name)
     },
     components: {
       Toolbar
     }
-
   }
 </script>
 <style lang="stylus" scoped>

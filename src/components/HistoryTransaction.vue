@@ -4,9 +4,8 @@
       <div class="content">
         <card padding="10px 10px" class="infocard">
           <div class="history" slot="card-content">
-            <!-- <v-layout class="history-li" row wrap v-for="item in history" :key="item.id" @click.stop="toTranscation(item)"> -->
-            <!-- TODO: 详情页有bug，待测试。 -->
-            <v-layout class="history-li" row wrap v-for="item in history" :key="item.id">
+            <!-- TODO: 详情页有 bug，表现与 Main 页面一致，好像是由 联系人 那个 commit 引入的，待测试。 -->
+            <v-layout class="history-li" row wrap v-for="item in history" :key="item.id" @click.stop="toTranscation(item)">
               <v-flex xs4 class="history-wrapper">
                 <div class="history">
                   <div class="history-flag">{{$t(item.flag)}}</div>

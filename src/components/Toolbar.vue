@@ -142,8 +142,7 @@ export default {
          { title: 'Menu.MyAssets', path:{name:'MyAssets'}, icon: "account_balance_wallet" },
          { title: 'Menu.TradeCenter', path:{name:'TradeCenter'}, icon: "trending_up" },
          { title: 'Menu.Funding', path:{name:'Funding'}, icon: "import_export" },
-         // TODO: 图标待定
-         { title: 'Menu.History', path:{name:'History'}, icon: "bookmark" },
+         { title: 'Menu.History', path:{name:'History'}, icon: "history" },
       ],
       WalletSettings: [
          { title: 'Menu.MyAddress', path:{name:'MyAddress'}, icon: "bookmark" },

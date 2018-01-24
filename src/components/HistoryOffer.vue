@@ -79,6 +79,7 @@
       ...mapGetters([]),
       offersData() {
         let data = []
+        if (!this.my) return
         for (let i = 0; i < this.tradepairs.length; i++) {
           let aPairData = myofferConvert(this.tradepairs[i].from, this.tradepairs[i].to, this.my)
           // console.log(aPairData);
@@ -98,7 +99,6 @@
         clearInterval(this.timeInterval)
       }
     },
-
     mounted() {
       this.setup()
     },
