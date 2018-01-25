@@ -15,20 +15,20 @@
 
   "TermsOfServiceTitle":"Terms Of Service",
   "TermsOfService":"This is a binding Agreement between Muyu Network Technology Co.,Ltd. (\"Muyu\" or \"We\") and the person, persons, or entity (\"You\" or \"Your\") using the service, Software, or application (\"Software\").<br/><br/>RIGHTS AND OBLIGATIONS<br/><br/>Muyu provides the Software solely on the terms and conditions set forth in this Agreement and on the condition that You accept and comply with them. By using the Software You (a) accept this Agreement and agree that You are legally bound by its terms; and (b) represent and warrant that: (i) You are of legal age to enter into a binding agreement; and (ii) if You are a corporation, governmental organization or other legal entity, You have the right, power and authority to enter into this Agreement on behalf of the corporation, governmental organization or other legal entity and bind them to these terms. <br/><br/>This Software functions as a free, open source, and multi-signature digital wallet. The Software does not constitute an account where We or other third parties serve as financial intermediaries or custodians of Your Cryptocurrencies. <br/><br/>While the Software has undergone beta testing and continues to be improved by feedback from the open-source user and developer community, We cannot guarantee there will not be bugs in the Software. You acknowledge that Your use of this Software is at Your own discretion and in compliance with all applicable laws. You are responsible for safekeeping Your passwords, private key pairs, PINs, and any other codes You use to access the Software. <br/><br/>IF YOU LOSE ACCESS TO YOUR WALLET OR YOUR ENCRYPTED PRIVATE KEYS AND YOU HAVE NOT SEPARATELY STORED A BACKUP OF YOUR WALLET AND CORRESPONDING PASSWORD, YOU ACKNOWLEDGE AND AGREE THAT ANY CRYPTOCURRENCY YOU HAVE ASSOCIATED WITH THAT WALLET WILL BECOME INACCESSIBLE. All transaction requests are irreversible. The authors of the Software, employees and affiliates of Muyu, copyright holders, and Muyu, Ltd. cannot retrieve Your private keys or passwords if You lose or forget them and cannot guarantee transaction confirmation as they do not have control over the Cryptocurrency network system. <br/><br/>DISCLAIMER<br/><br/>THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE, EMPLOYEES AND AFFILIATES OF MUYU, COPYRIGHT HOLDERS, OR MUYU, LTD. BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. <br/><br/>IN NO EVENT WILL MUYU OR ITS AFFILIATES, OR ANY OF ITS OR THEIR RESPECTIVE SERVICE PROVIDERS, BE LIABLE TO YOU OR ANY THIRD PARTY FOR ANY USE, INTERRUPTION, DELAY OR INABILITY TO USE THE SOFTWARE, LOST REVENUES OR PROFITS, DELAYS, INTERRUPTION OR LOSS OF SERVICES, BUSINESS OR GOODWILL, LOSS OR CORRUPTION OF DATA, LOSS RESULTING FROM SYSTEM OR SYSTEM SERVICE FAILURE, MALFUNCTION OR SHUTDOWN, FAILURE TO ACCURATELY TRANSFER, READ OR TRANSMIT INFORMATION, FAILURE TO UPDATE OR PROVIDE CORRECT INFORMATION, SYSTEM INCOMPATIBILITY OR PROVISION OF INCORRECT COMPATIBILITY INFORMATION OR BREACHES IN SYSTEM SECURITY, OR FOR ANY CONSEQUENTIAL, INCIDENTAL, INDIRECT, EXEMPLARY, SPECIAL OR PUNITIVE DAMAGES, WHETHER ARISING OUT OF OR IN CONNECTION WITH THIS AGREEMENT, BREACH OF CONTRACT, TORT (INCLUDING NEGLIGENCE) OR OTHERWISE, REGARDLESS OF WHETHER SUCH DAMAGES WERE FORESEEABLE AND WHETHER OR NOT WE WERE ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. <br/><br/> INTELLECTUAL PROPERTY<br/><br/>  We retain all right, title, and interest in and to the Content and all of Muyu’s brands, logos, and trademarks, including, but not limited to, Muyu, Ltd., Muyu, Firefly Wallet – One Wallet For All Coins, Firefly Wallet, Firefly App, Firefly Wallet App, and variations of the wording of the aforementioned brands, logos, and trademarks. <br/><br/>  CHOICE OF LAW<br/><br/>  This Agreement, and its application and interpretation, shall be governed exclusively by the laws of The People's Republic of China, without regard to its conflict of law rules. You consent to the exclusive jurisdiction of the courts located in or near Shanghai, China for any dispute arising under this Agreement. <br/><br/>  SEVERABILITY<br/><br/>  In the event any court shall declare any section or sections of this Agreement invalid or void, such declaration shall not invalidate the entire Agreement and all other paragraphs of the Agreement shall remain in full force and effect. <br/><br/>  BINDING AGREEMENT<br/><br/>  The terms and provisions of this Agreement are binding upon Your heirs, successors, assigns, and other representatives. This Agreement may be executed in counterparts, each of which shall be considered to be an original, but both of which constitute the same Agreement. <br/><br/>  You assume any and all risks associated with the use of the Software. We reserve the right to modify this Agreement from time to time. <br/><br/>",
-  
+
   "Return": "Return",
   "Agree": "Agree",
   "Finish":"Finish",
   "NextStep": "Next step",
   "SecretKey": "Secret key",
-  
+
   "Title.Scan": "Scan",
   "Title.MyWallet":"My wallet",
   "Title.Account":"Account",
   "Title.MyAssets":"My assets",
   "CopySuccess":"Copy success",
 
-  
+
   "Error.ScannerPrepareFail": "QR scanner prepare fail",
   "Error.ScannerPermissionDenied": "QR scanner permisstion denied",
   "Error.ScannerContentValidWrong": "the content is wrong",
@@ -40,7 +40,7 @@
 
   "Error.NotValidSeed":"seed is not valid",
   "Error.NotValidStellarAddress":"address is not valid",
-  
+
   "Account.AccountName":"account name",
   "Account.Password":"password",
   "Account.ConfirmPassword":"confirm password",
@@ -61,7 +61,7 @@
   "Total":"total",
   "Reserve":"reserve",
   "Delete":"delete",
-  "Modify":"modify", 
+  "Modify":"modify",
   "Export":"export",
   "Available":"available",
   "Amount":"amount",
@@ -90,7 +90,7 @@
   "Info.ChangeAccountSuccess":"success",
   "Error.PasswordWrong":"password incorrect",
 
-  "Menu.MyAssets":"My assets",  
+  "Menu.MyAssets":"My assets",
   "Menu.Funding":"Funding",
   "Menu.MyAddress":"Address book",
   "Menu.Contacts":"Contacts",
@@ -122,8 +122,8 @@
   "Error.PinCodeIsWrong": "pin code is wrong",
   "RemovePinCodeSuccess": "pin code removed successfully",
   "Error.RemovePinCodeFailed":"failed to remove pin code",
-  
-  
+
+
 
   "Random.Planets":"Mercury|Venus|Earth|Mars|Jupiter|Saturn|Uranus|Neptune|Pluto",
   "Random.Colors":"Red|Orange|Yellow|Green|Cyan|Blue|Violet|Black|White",
@@ -172,10 +172,10 @@
   "DW.DepositInfo.max":"the max of deposit is {0}",
   "DW.DepositInfo.feefixed":"the deposit fee is {0}",
   "DW.DepositInfo.feepercent":"the persent fee for deposit is {0}%",
-  
 
-  
-  "Menu.TradeCenter":"Trade Center",  
+
+
+  "Menu.TradeCenter":"Trade Center",
   "Trade.SelfSelection":"self selection",
   "Trade.Buy":"Buy",
   "Trade.Sell":"Sell",
@@ -243,10 +243,10 @@
   "MyAddress.DeleteFail":"delete failed",
 
   "Transaction.ContactName": "Name",
-  
+
   "ContactBook.Title": "Contact Book",
-  
-  
+
+
   "Cancel":"Cancel",
   "Confirm":"Confirm",
 
@@ -265,10 +265,11 @@
 
 
   "About.Title":"about",
+  "About.UpdateTo": "Update to",
 
   "App.ClickOneMoreTimeExit":"click one more time to exit!",
 
-  
+
   "Q.DeleteAccount":"will delete the account, please confirm ?",
   "Q.ResetPassword":"will reset the password, please confirm ?",
 

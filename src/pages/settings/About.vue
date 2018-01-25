@@ -3,8 +3,8 @@
  */
 <template>
   <div class="page" >
-    <toolbar :title="$t('About.Title')" 
-      :showmenuicon="showmenuicon" 
+    <toolbar :title="$t('About.Title')"
+      :showmenuicon="showmenuicon"
       :showbackicon="showbackicon"
       @goback="back"
       ref="toolbar"
@@ -18,7 +18,7 @@
         <div class="card-content" slot="card-content">
             <div class="row">
                 <div class="label">
-                    {{$t('Version')}}    
+                    {{$t('Version')}}
                 </div>
                 <div class="value">
                     {{appversion}}
@@ -26,7 +26,7 @@
             </div>
             <div class="row">
                 <div class="label">
-                    github        
+                    github
                 </div>
                 <div class="value" @click="openFireflyGithub">
                     {{fireflyGithub}}
@@ -34,6 +34,14 @@
             </div>
         </div>
       </card>
+      <div style="flex: 1;"></div>
+      <v-footer>
+        <v-layout row wrap>
+          <v-flex xs12>
+            <v-btn class='primary' block dark large @click="openDownloadURL" v-if="latestVersion > appversion">{{$t('About.UpdateTo')}} {{latestVersion}}</v-btn>
+          </v-flex>
+        </v-layout>
+      </v-footer>
     </div>
   </div>
 </template>
@@ -41,7 +49,8 @@
 <script>
 import Toolbar from '@/components/Toolbar'
 import Card from '@/components/Card'
-import { APP_VERSION, APP_GITHUB} from '@/api/gateways'
+import { APP_VERSION, APP_GITHUB, checkUpdate } from '@/api/gateways'
+
 export default {
   data(){
     return {
@@ -49,24 +58,37 @@ export default {
       showbackicon: true,
       appversion: APP_VERSION,
       fireflyGithub: APP_GITHUB,
-
+      latestVersion: null,
+      updateURL: null
     }
   },
+  mounted() {
+    this.checkNewVersion()
+  },
   methods: {
-    
     back(){
       this.$router.back()
     },
 
     openFireflyGithub(){
       window.open(this.fireflyGithub, '_system')
-    }
-    
+    },
+
+    checkNewVersion() {
+      checkUpdate().then(data => {
+        this.latestVersion = data.version
+        this.updateURL = data.url
+      }).catch(err => console.log(err))
+    },
+
+    openDownloadURL() {
+      window.open(this.updateURL, '_system')
+    },
   },
   components: {
     Toolbar,
     Card,
-    
+
   }
 
 
@@ -106,4 +128,3 @@ export default {
 .link
     color: $secondarycolor.font
 </style>
-
