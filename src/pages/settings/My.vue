@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-23 11:14:24 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-01-23 19:32:39
+ * @Last Modified time: 2018-01-25 21:42:15
  * @License: MIT 
  */
 <template>
@@ -25,6 +25,7 @@
                 </div>
             </div>
           </card>
+          <k :base="base" :counter="counter"></k>
           <card padding="0px 0px" margin="20px 0px" class="infocard">
             <div slot="card-content">
                 <ul class="settings-ul">
@@ -61,11 +62,14 @@
 <script>
 import Toolbar from '@/components/Toolbar'
 import Card from '@/components/Card'
+import K from '@/components/K'
 import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
     data(){
         return {
             pinEnable: false,
+            base:{ code: 'XLM' },
+            counter: { code: 'BTC', issuer:'GATEMHCCKCY67ZUCKTROYN24ZYT5GK4EQZ65JJLDHKHRUZI3EUEKMTCH' }
         }
     },
     computed: {
@@ -113,6 +117,7 @@ export default {
     components: {
         Toolbar,
         Card,
+        K
     }
 
 }

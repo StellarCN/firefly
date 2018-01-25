@@ -5,6 +5,7 @@ import AppSettingStore from './modules/AppSettingStore'
 import AccountStore from './modules/AccountStore'
 import AssetStore from './modules/AssetStore'
 import createPersist from './plugins/persistence'
+import TradesStore from './modules/tradesStore'
 import { APP_NAME, APP_VERSION } from '@/api/gateways'
 var Base64 = require('js-base64').Base64
 
@@ -151,7 +152,8 @@ const store = new Vuex.Store({
     accounts: AccountsStore,
     app: AppSettingStore,
     account: AccountStore,
-    asset: AssetStore
+    asset: AssetStore,
+    trades: TradesStore,
   },
   plugins: [createPersist({
     namespace: APP_NAME + '-vuex-',
