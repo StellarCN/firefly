@@ -7,7 +7,14 @@ export function getAsset(code, issuer) {
     issuer = code.issuer;
     code = code.code;
   }
-  return code == 'XLM' ? new StellarSdk.Asset.native() : new StellarSdk.Asset(code, issuer); 
+  console.log(`---code=${code},issuer:${issuer}`)
+  console.log(!issuer || issuer === 'stellar.org')
+  console.log(code === 'XLM')
+  if(!issuer || issuer === 'stellar.org'){
+    if(code === 'XLM')return  new StellarSdk.Asset.native();
+  }else{
+   return new StellarSdk.Asset(code, issuer);
+  }
 }
 
 export const ALL_HOSTS_URL = 'https://api.fchain.io/asset_host'
