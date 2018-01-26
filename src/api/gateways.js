@@ -7,6 +7,8 @@ export const APP_VERSION = '1.2.6'
 
 export const APP_GITHUB = 'https://github.com/stellarcn/firefly'
 
+// APP 最新版本信息
+export const CHECK_UPDATE = 'https://stellarcn.github.io/firefly/version.json'
 //default interval : 4000ms
 export const DEFAULT_INTERVAL = 4000
 
@@ -114,3 +116,12 @@ export function getDefaultTradePairs(){
   return _default_trade_pair || TRADE_PAIRS
 }
 
+export function checkUpdate(){
+  return axios.get(CHECK_UPDATE)
+    .then(response => {
+      // let platform = 'android'
+      let platform = cordova.platformId
+      let data = response.data[platform]
+      return Promise.resolve(data)
+    })
+}

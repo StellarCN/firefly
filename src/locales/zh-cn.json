@@ -12,23 +12,23 @@
   "ImportAccount":"导入账户",
   "CreateAccount":"创建账户",
   "ResetPassword":"重置密码",
-  
-  
+
+
   "TermsOfServiceTitle":"服务条款",
   "TermsOfService":"重要提示：本协议是您（个人、公司或其他任何实体）与Muyu Network Technology Co., Ltd（以下简称“Muyu”）签订的关于使用萤火钱包的最终用户许可协议（以下简称本“协议”）。在使用您的萤火钱包前，请仔细阅读本协议。您使用萤火钱包将被视为您已同意接受本协议中所述的约束条件。如您不同意本协议，请勿使用萤火钱包。<br/><br/>1.重要提示<br/><br/>在您使用萤火钱包之前，请仔细阅读使用说明，创建钱包之后自行备份您的钱包私钥和密码，并妥善保管您的密码和钱包。为了确保萤火钱包绝对安全，本公司无法存储您的钱包私钥和密码，正是由于这一安全机制，本公司无法给您提供密码找回功能。如因您个人直接或间接导致钱包私钥、密码、萤火钱包丢失、遗忘或被盗，由此引起的一切风险、责任、损失、费用等应由您自行承担。<br/><br/>2.使用限制<br/><br/>2.1 未经本公司事先许可，不得使用本公司的技术或知识产权来设计、开发、制造、销售与萤火钱包相关联的第三方设备/附件或授予许可。 <br/>2.2 除非另有明示许可，您不得且同意不会或促使其他任何人复制、反向工程、反编译、反汇编或创作萤火钱包的衍生作品。 <br/>2.3 您同意在使用萤火钱包时遵守钱包驻留或使用的国家或地区的所有适用法律和法规。<br/><br/>3.权利保留<br/><br/>3.1本公司及其许可方享有和保留对萤火钱包的所有权利和资格，并保留本协议未明确授予您的其他任何权利。<br/><br/>3.2您确认本钱包是“按原样”提供，不存在任何形式的明示或暗示担保，并且在适用法律允许的最大范围内，本公司、其许可方/附属公司或版权持有者均不提供任何明示或暗示的陈述或保证，包括但不限于有关适销性、满意质量、适用于特定目的、准确性、保密权以及不侵犯第三方权利的保证。本公司或任何其他方均不保证钱包中所含的功能将满足您的要求，也不保证钱包的运行不会中断或出错。选择本钱包来达到预期结果，以及使用本钱包并获取结果所带来的所有责任和风险由您承担。<br/><br/>5.责任限制<br/><br/>5.1 对于因滥用、错误使用或未经授权修改所引起的萤火钱包使用问题，本公司不承担任何责任。 <br/>5.2 在适用法律未明令禁止的程度下，对于因使用或无法使用本钱包而引起的任何利润、收入、销售损失、数据丢失或采购替代商品或服务的成本、财产损害、人身伤害、业务中断、商业信息损失，或者任何特殊的、直接的、间接的、附带的、经济性、覆盖性、惩罚性、特殊或从属损害，无论是基于何种责任理论（合同、侵权、过失或其他），本公司及其员工、许可方或附属公司都不承担赔偿责任，即使其已被告知存在此种损害的可能性也是如此。某些司法管辖区不允许对人身伤害、附带或从属损害等进行责任限制，则此限制可能不适用于您。 <br/>5.3不超过在任何情况下，本公司对本协议所承担的总责任限额总额不超过港币200元。<br/><br/>6.争议解决和所依据法律<br/><br/>6.1 本协议受香港特别行政区的相关法律管辖，并依据这些法律进行解释。 <br/>6.2 因本协议引起或与之相关的所有争议应首先通过协议双方的友好协商加以解决。如果协商不成，您应将纠纷或争议提交至本公司公司所在地有管辖权的法院解决。<br/>",
-  
+
   "Return": "返回",
   "Agree": "同意",
   "Finish":"完成",
   "NextStep": "下一步",
   "SecretKey": "钱包密钥",
-  
+
   "Title.Scan": "扫描二维码",
   "Title.MyWallet":"我的钱包",
   "Title.Account":"账户信息",
   "Title.MyAssets":"我的资产",
   "CopySuccess":"复制成功",
-  
+
   "Error.ScannerPrepareFail": "扫描二维码配置失败",
   "Error.ScannerPermissionDenied": "请求摄像头权限被拒绝，请放开权限",
   "Error.ScannerContentValidWrong": "扫描内容解析错误",
@@ -51,7 +51,7 @@
 
   "Account.AccountAddress":"账户地址",
 
-  
+
   "Add":"添加",
   "Manage":"管理",
   "Button.Cancel":"取消",
@@ -85,8 +85,8 @@
 
   "Info.ChangeAccountSuccess":"切换账户成功！",
   "Error.PasswordWrong":"密码错误！",
-  
-  "Menu.MyAssets":"我的资产",  
+
+  "Menu.MyAssets":"我的资产",
   "Menu.Funding":"充值提现",
   "Menu.Contacts":"联系人",
   "Menu.MyAddress":"我的地址簿",
@@ -94,7 +94,7 @@
   "Menu.Help":"交易使用教程",
   "Menu.My":"我的",
   "Menu.History": "历史记录",
-  
+
   "ManageAccount":"账户管理",
   "PinCode":"Pin码",
   "Language":"语言",
@@ -109,30 +109,30 @@
   "WanCloud":"万云公共地址",
   "SaveHorizonSuccess":"保存恒星公网节点地址成功",
   "Error.SaveHorizonFial": "保存恒星公网节点地址失败",
-  
+
   "SaveSuccess":"保存成功",
   "SaveFailed":"保存失败",
-  
+
   "Error.PinCodeIsDifferent":"两次PIN码不相同",
   "SetPinCodeSuccess":"PIN码设置成功",
   "Error.PinCodeIsWrong": "PIN码错误",
   "RemovePinCodeSuccess": "删除PIN码成功",
   "Error.RemovePinCodeFailed":"删除PIN码失败",
-  
+
   "Random.Planets":"水星|金星|地球|火星|木星|土星|天王星|海王星|冥王星",
   "Random.Colors":"红色|橙色|黄色|绿色|青色|蓝色|紫色|黑色|白色",
-  
+
   "payment":"支付",
   "path_payment":"路径支付",
   "create_account":"创建",
   "Receive":"接收",
   "Send":"发送",
-  "Delete":"删除",  
-  "Modify":"修改",  
-  "Export":"导出",  
+  "Delete":"删除",
+  "Modify":"修改",
+  "Export":"导出",
   "SendAssetSuccess":"发送资产成功",
   "Error.SendAssetFail":"发送资产失败",
-  
+
   "Account.DeleteSuccess":"账号删除成功",
   "Account.DeleteFailed":"账号删除失败",
   "Account.Modify":"修改账户",
@@ -153,7 +153,7 @@
   "Error.NotEnoughAssetToFundAccount":"发送XLM必须大于20才可以激活账户",
 
   "Error.NotEnoughAsset":"资产不足",
-  
+
   "DW.DepositAndWithdraw":"充值提现",
   "DW.Deposit":"充值",
   "DW.Withdraw":"提现",
@@ -169,7 +169,7 @@
   "DW.DepositInfo.feefixed":"充值收费金额为{0}",
   "DW.DepositInfo.feepercent":"充值收费比例为{0}%",
 
-  "Menu.TradeCenter":"交易中心",  
+  "Menu.TradeCenter":"交易中心",
   "Trade.SelfSelection":"自选交易",
   "Trade.Buy":"买入",
   "Trade.Sell":"卖出",
@@ -211,10 +211,10 @@
   "Error.AmountIsRequired":"数量不能为空",
   "Error.MemoIsRequired":"备注不能为空",
   "Error.MemoIsInvalid": "备注格式不正确",
-  
+
   "Error.DeleteTrustError":"删除信任线失败",
   "DeleteTrustSuccess":"删除信任线成功",
-  
+
   "ContactAdd.Sussess": "新增联系人成功",
   "ContactAdd.name": "名称",
   "ContactAdd.address": "地址",
@@ -237,13 +237,13 @@
   "MyAddress.DeleteFail":"地址删除失败",
 
   "Transaction.ContactName": "名称",
-  
+
   "ContactBook.Title": "通讯录",
-  
+
 
   "Cancel":"撤消",
   "Confirm":"确认",
-  
+
   "required": "必要项",
 
   "Next": "继续",
@@ -257,13 +257,14 @@
   "ERROR.SCANNER_CONTENT_VALIDATE":"二维码内容不正确",
 
   "About.Title":"关于",
+  "About.UpdateTo": "升级到",
 
 
   "App.ClickOneMoreTimeExit":"再点击一次退出!",
 
   "Q.DeleteAccount":"您确认删除该账户么？",
   "Q.ResetPassword":"您确认重置密码么？",
-  
+
   "History.Title": "历史记录",
   "History.Offer": "我的委单",
   "History.Transaction": "收发记录",
