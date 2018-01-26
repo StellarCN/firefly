@@ -14,7 +14,7 @@ require('./api/index')
 import { setVuexStore } from './streams'
 import { AXIOS_DEFAULT_TIMEOUT } from './api/gateways'
 import axios from 'axios'
-import './api/utils'
+require('./api/utils') 
 
 // animate.css
 import 'animate.css'

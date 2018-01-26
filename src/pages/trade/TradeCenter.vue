@@ -32,23 +32,27 @@
           <ul class="tradepairs-ul">
             <li class="tradepair-li" v-for="(pair,index) in tradepairs" :key="index">
               <v-layout class="pair-wrapper" row wrap v-swiper=2  @click="trade(index,pair)">
-                <v-flex xs5 class="from-wrapper">
+                <v-flex xs4 class="from-wrapper">
                   <div class="code">{{pair.from.code}}</div>
                   <div class="issuer" v-if="assethosts[pair.from.code]">{{assethosts[pair.from.code]}}</div>
                   <div class="issuer" v-else-if="assethosts[pair.from.issuer]">{{assethosts[pair.from.issuer]}}</div>
                   <div class="issuer" v-else>{{pair.from.issuer | miniaddress}}</div>
                 </v-flex>
-                <v-flex xs2 class="exchange-wrapper">
+                <v-flex xs1 class="exchange-wrapper">
                   <div class="exchange">
                     <i class="icons material-icons">&#xE8D4;</i>
                   </div>
                 </v-flex>
-                <v-flex xs5 class="to-wrapper">
+                <v-flex xs4 class="to-wrapper">
                   <div class="code">{{pair.to.code}}</div>
                   <div class="issuer" v-if="assethosts[pair.to.code]">{{assethosts[pair.to.code]}}</div>
                   <div class="issuer" v-else-if="assethosts[pair.to.issuer]">{{assethosts[pair.to.issuer]}}</div>
                   <div class="issuer" v-else>{{pair.to.issuer | miniaddress}}</div>
                 </v-flex>
+                <v-flex xs3>
+                  <k-line :base="pair.from" :counter="pair.to" :height="56"></k-line>
+                </v-flex>
+
               </v-layout>
               <div class="operate-box">
                 <div class="del" @click="del(index,pair)">
@@ -103,6 +107,7 @@ import TradePairPicker from '../../components/TradePairPicker'
 
 import { mapState, mapActions,mapGetters} from 'vuex'
 import { miniAddress } from '@/api/account'
+import KLine from '@/components/KLine'
 export default {
   data(){
     return {
@@ -312,6 +317,7 @@ export default {
     Card,
     Picker,
     TradePairPicker,
+    KLine
   }
 }
 </script>

@@ -9,8 +9,9 @@ import {getServer} from './server'
  * @param {long} end_time 截止时间
  * @param {long} resolution 时间间隔
  */
-export function getTradeAggregation(base,counter,start_time,end_time,resolution){
-    return getServer().tradeAggregation(base,counter,start_time,end_time,resolution).call();
+export function getTradeAggregation(base,counter,start_time,end_time,resolution,limit,order){
+    return getServer().tradeAggregation(base,counter,start_time,end_time,resolution)
+            .order(order||'asc').limit(limit||200).call();
 }
 /**
  * 获取时间区间内每5分钟的成交数据
@@ -19,24 +20,24 @@ export function getTradeAggregation(base,counter,start_time,end_time,resolution)
  * @param {*} start_time 
  * @param {*} end_time 
  */
-export function getTradeAggregation5min(base,counter,start_time,end_time){
-    return getServer().tradeAggregation(base,counter,start_time,end_time,RESOLUTION_5MIN).call();
+export function getTradeAggregation5min(base,counter,start_time,end_time,limit){
+    return getTradeAggregation(base, counter, start_time, end_time, RESOLUTION_5MIN,limit)
 }
 
-export function getTradeAggregation15min(base,counter,start_time,end_time){
-    return getServer().tradeAggregation(base,counter,start_time,end_time,RESOLUTION_15MIN).call();
+export function getTradeAggregation15min(base,counter,start_time,end_time,limit){
+    return getTradeAggregation(base, counter, start_time, end_time, RESOLUTION_15MIN,limit)
 }
 
-export function getTradeAggregation1hour(base,counter,start_time,end_time){
-    return getServer().tradeAggregation(base,counter,start_time,end_time,RESOLUTION_1HOUR).call();
+export function getTradeAggregation1hour(base,counter,start_time,end_time,limit){
+    return getTradeAggregation(base, counter, start_time, end_time, RESOLUTION_1HOUR,limit)
 }
 
-export function getTradeAggregation1day(base,counter,start_time,end_time){
-    return getServer().tradeAggregation(base,counter,start_time,end_time,RESOLUTION_1DAY).call();
+export function getTradeAggregation1day(base,counter,start_time,end_time,limit){
+    return getTradeAggregation(base, counter, start_time, end_time, RESOLUTION_1DAY,limit)
 }
 
-export function getTradeAggregation1week(base,counter,start_time,end_time){
-    return getServer().tradeAggregation(base,counter,start_time,end_time,RESOLUTION_1WEEK).call();
+export function getTradeAggregation1week(base,counter,start_time,end_time,limit){
+    return getTradeAggregation(base, counter, start_time, end_time, RESOLUTION_1WEEK,limit)
 }
 
 
@@ -48,6 +49,9 @@ export const RESOLUTION_1HOUR =   3600000
 export const RESOLUTION_1DAY  =  86400000
 export const RESOLUTION_1WEEK = 604800000
 
+
+/*
+ * 后台不支持SSE，取消掉，采用定时循环的方式
 // == stream == 
 // tradeaggregation stream instance
 var _stream = undefined;
@@ -82,4 +86,4 @@ export function closeTradeAggregationStream(){
   }
 
 }
-
+*/

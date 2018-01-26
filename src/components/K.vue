@@ -3,23 +3,23 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-01-25 21:56:07
+ * @Last Modified time: 2018-01-26 17:54:33
  * @License: MIT 
  */
 <template>
   <div class="k">
-      <div class="kgraph" :id="id" :style="'height:' + height + ';'"></div>
+      <div class="kgraph" :id="id" v-bind:style="{height: height + 'px'}"></div>
   </div>
 </template>
 
 <script>
-var _ = require('lodash')
 var echarts = require('echarts')
 import { getTradeAggregation, getTradeAggregation5min, 
     getTradeAggregation15min, getTradeAggregation1hour, 
     getTradeAggregation1day, getTradeAggregation1week,
-    listenTradeAggregationStream,closeTradeAggregationStream } from '@/api/tradeAggregation'
+    RESOLUTION_5MIN } from '@/api/tradeAggregation'
 import { getAsset } from '@/api/assets'
+var moment = require('moment')
 
 
 export default {
@@ -27,82 +27,148 @@ export default {
         return {
             id: null,//元素主键
             ele: null,//echarts对象
+            opt: null,
             colors: ['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'],
             
             dates:[],//日期
             volumes: [],//成交量
             data: [],//每条数据是一个数组，[开盘价，收盘价，最低价，最高价]
+            tinterval: null,//定时器
+            lasttime: null,//上次的执行时间
             
         }
     },
     props: {
+        //交易资产
         base: {
             type: Object,
             require: true
         },
+        //交易对手资产
         counter: {
             type: Object,
             require: true
         },
+        //数据获取的起始时间，单位毫秒
+        start: {
+            type: Number,
+            default: -1
+        },
+        //数据获取的截止时间，单位毫秒
+        end: {
+            type: Number,
+            default: -1
+        },
+        //时间间隔，单位毫秒
+        interval: {
+            type: Number,
+            default: RESOLUTION_5MIN
+        },
+        //是否增量更新模式
+        incremental: {
+            type: Boolean,
+            default: false
+        },
+        fullscreen: {
+            type: Boolean,
+            default: false
+        },
+        //高度
         height: {
             type: Number,
-            default: 320
+            default: 360
         }
     },
     beforeMount () {
         //生成随机的id
-        this.id = 'k_'+ _.random(100)
-        let date1 = new Date()
-        date1.setHours(0)
-        date1.setMinutes(0)
-        date1.setSeconds(0)
-        date1.setMilliseconds(0)
-        let start_time = date1.getTime()
-        let date2 = new Date()
-        date2.setFullYear(date2.getFullYear()+1);
-        date2.setHours(25)
-        date2.setMinutes(59)
-        date2.setSeconds(59)
-        date2.setMilliseconds(999)
-        let end_time = date2.getTime()
-
-
-        //打开stream监听
-        let opt = {
-            base: getAsset(this.base),
-            counter: getAsset(this.counter),
-            start_time,
-            end_time,
+        this.id = 'k_'+ new Date().getTime()
+        //开启定时器
+        this.tinterval = setInterval(this.fetch, this.interval)
+        //如果是全屏模式，则切换为横屏
+        if(this.fullscreen){
+            screen.orientation.lock('landscape');
         }
-        listenTradeAggregationStream(opt,this.receiveData)
+        
     },
     beforeDestroy () {
-        //关闭stream监听
-        closeTradeAggregationStream()
+        //关闭定时器
+        if(this.tinterval){
+            clearInterval(this.tinterval)
+            this.tinterval = null
+        }
+        if(this.fullscreen){
+            screen.orientation.lock('portrait');
+        }
+        
     },
     mounted () {
-        this.init();
+        this.$nextTick(()=>{
+            this.init();
+            this.fetch()
+        })
     },
     methods: {
         init() {
             this.initView()
         },
-        receiveData(data){
-            console.log(`-----------receive data--`)
-            console.log(data)
-            data.map(item=>{
-                this.dates.push(item.timestamp)
-                this.volumes.push(item.base_volume)
-                this.data.push([Number(item.open), Number(item.close), Number(item.high), Number(item.low)])
+        //请求api，获取数据
+        fetch(){
+          let start_time = null, end_time=null;
+          if(this.lasttime){
+              start_time = this.lasttime;
+              end_time = new Date().getTime()
+          }else{//初次请求，判断start是否存在
+            if(this.start < 0){
+                //前24小时
+                start_time = Number(moment().subtract(24,"hours").format('x'))
+            }else{
+                start_time = this.start;
+            }
+            if(this.end < 0 ){
+                end_time = new Date().getTime()
+            }else{
+                end_time = this.end
+            }
+          }
+          getTradeAggregation(getAsset(this.base), getAsset(this.counter), 
+            start_time, end_time, this.interval, 200, 'desc')
+            .then(data => {
+                this.lasttime = end_time
+                let records = data.records
+                records.reserve().map(item=>{
+                    if(this.incremental){
+                        this.dates = []
+                        this.volumes = []
+                        this.data = []
+                    }
+                    this.dates.push(new Date(item.timestamp).Format('MM-dd hh:mm'))
+                    this.volumes.push(Number(item.base_volume))
+                    this.data.push([Number(item.open), Number(item.close), Number(item.high), Number(item.low)])
+                })
+                this.opt.xAxis[0].data = this.dates
+                this.opt.xAxis[1].data = this.dates
+                this.opt.series[0].data = this.volumes
+                this.opt.series[2].data = this.calculateMA(5)
+                this.opt.series[3].data = this.calculateMA(10)
+                this.opt.series[4].data = this.calculateMA(20)
+                
+                console.log(this.opt)
+                this.ele.setOption(this.opt)
+            })
+            .catch(err=>{
+                console.error(`-----err on get trade aggregation -- `)
+                console.error(err)
             })
         },
         initView() {
             this.ele = echarts.init(document.getElementById(this.id))
+            this.opt = this.koption()
+            this.ele.setOption(this.opt)
         },
         koption() {
             return {
                 animation: false,
-                color: colorList,
+                color: this.colors,
                 title: {left: 'center', text: this.base.code + '/' + this.counter.code },
                 legend: { top: 30,data: ['', 'MA5', 'MA10', 'MA20', 'MA30']},
                 tooltip: {
@@ -147,7 +213,10 @@ export default {
                     axisLine: { lineStyle: { color: '#777' } },
                     axisLabel: {
                         formatter: function (value) {
-                            return echarts.format.formatTime('MM-dd HH:mm', value);
+                            console.log(typeof value)
+                            console.log('----date xaxis --- ' + value)
+                            //return echarts.format.formatTime('MM-dd HH:mm', value);
+                            return value
                         }
                     },
                     min: 'dataMin',
@@ -212,17 +281,17 @@ export default {
                     children: [{
                         id: 'MA5',
                         type: 'text',
-                        style: {fill: colorList[1], font: labelFont},
+                        style: {fill: this.colors[1]},
                         left: 0
                     }, {
                         id: 'MA10',
                         type: 'text',
-                        style: {fill: colorList[2], font: labelFont},
+                        style: {fill: this.colors[2]},
                         left: 'center'
                     }, {
                         id: 'MA20',
                         type: 'text',
-                        style: {fill: colorList[3], font: labelFont},
+                        style: {fill: this.colors[3]},
                         right: 0
                     }]
                 }],
