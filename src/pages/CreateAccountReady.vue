@@ -146,7 +146,7 @@ import {address as genAddress} from '../api/account'
 import QRCode from '../components/QRCode'
 import { exportAccount } from '../api/qr'
 import Loading from '@/components/Loading'
-import StellarHDWallet from 'stellar-hd-wallet'
+//import StellarHDWallet from 'stellar-hd-wallet'
 import { closeStreams, initStreams,cleanStreamData } from '@/streams'
 export default {
   data(){
