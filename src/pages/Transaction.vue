@@ -54,6 +54,7 @@
 import Toolbar from '../components/Toolbar'
 import Card from '../components/Card'
 import { mapState, mapActions, mapGetters} from 'vuex'
+import { transactionDetail } from '@/api/transactions'
 
 export default {
   data(){
@@ -93,14 +94,7 @@ export default {
     }
   },
   mounted(){
-    this.payment.transaction()
-      .then(data=>{
-        console.log(data)
-        this.transaction = data
-      })
-      .catch(err=>{
-        console.error(err)
-      })
+    this.fetchTransactionDetail()
   },
   methods: {
     ...mapActions({
@@ -116,6 +110,11 @@ export default {
         cordova.plugins.clipboard.copy(value)
         this.$toasted.show(this.$t('CopySuccess'))
       }
+    },
+    fetchTransactionDetail() {
+      transactionDetail(this.payment.transaction_hash)
+        .then(data => this.transaction = data)
+        .catch(err => console.log(err))
     }
   },
   components: {
