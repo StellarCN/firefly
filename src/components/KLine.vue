@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-26 15:59:49 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-01-26 17:38:12
+ * @Last Modified time: 2018-01-29 13:53:57
  * @License MIT 
  */
 
@@ -19,7 +19,7 @@ var echarts = require('echarts')
 import { getTradeAggregation, getTradeAggregation5min, 
     getTradeAggregation15min, getTradeAggregation1hour, 
     getTradeAggregation1day, getTradeAggregation1week,
-    RESOLUTION_5MIN } from '@/api/tradeAggregation'
+    RESOLUTION_5MIN,RESOLUTION_1HOUR } from '@/api/tradeAggregation'
 import { getAsset } from '@/api/assets'
 
 
@@ -61,6 +61,10 @@ export default {
         interval: {
             type: Number,
             default: RESOLUTION_5MIN
+        },
+        resolution: {
+            type: Number,
+            default: RESOLUTION_1HOUR
         },
         //是否增量更新模式
         incremental: {
@@ -117,7 +121,7 @@ export default {
             }
           }
           getTradeAggregation(getAsset(this.base), getAsset(this.counter), 
-                start_time, end_time, this.interval, 200, 'desc')
+                start_time, end_time, this.resolution, 200, 'desc')
             .then(data => {
                 this.lasttime = end_time
                 let records = data.records
@@ -131,6 +135,8 @@ export default {
                 })
                 this.opt.xAxis.date = this.dates
                 this.opt.series[0].data = this.data
+                console.log(this.opt)
+                console.log(JSON.stringify(this.opt))
                 this.ele.setOption(this.opt)
             })
             .catch(err=>{
@@ -153,7 +159,10 @@ export default {
                 },
                 yAxis: {
                     show: false,
-                    type: 'value'
+                    type: 'value',
+                    max: function(value) {
+                        return value.max * 2;
+                    }
                 },
                 series: [{
                     data: this.data,
