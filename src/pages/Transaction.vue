@@ -33,14 +33,11 @@
           <div class="value" @click="copy(transaction.memo)">{{transaction.memo}}</div>
         </div>
       </card>
-      <div style="flex: 1;"></div>
-    <v-footer>
       <v-layout row  wrap>
         <v-flex xs12>
           <v-btn class='primary' block dark large @click="addContact" v-if="!this.contactName">{{$t('AddContact')}}</v-btn>
         </v-flex>
       </v-layout>
-    </v-footer>
     </div>
 
     <!-- <div class="btn-group">
@@ -51,8 +48,8 @@
 </template>
 
 <script>
-import Toolbar from '../components/Toolbar'
-import Card from '../components/Card'
+import Toolbar from '@/components/Toolbar'
+import Card from '@/components/Card'
 import { mapState, mapActions, mapGetters} from 'vuex'
 import { transactionDetail } from '@/api/transactions'
 
@@ -127,7 +124,7 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-@require '../stylus/color.styl'
+@require '~@/stylus/color.styl'
 .page
   background: $primarycolor.gray
   color: $primarycolor.font
