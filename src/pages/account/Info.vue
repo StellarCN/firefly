@@ -61,7 +61,7 @@
       </div>
 
 
-      <div class="pwdSheetWrapper"v-if="showPwdSheet">
+      <div class="pwdSheetWrapper" v-if="showPwdSheet">
         <v-bottom-sheet  v-model="showPwdSheet"  dark>
           <div class="sheet-content">
             <div class="sheet-input">
@@ -95,7 +95,7 @@
       </v-dialog>
 
       <!-- 修改密码 -->
-       <div class="pwdSheetWrapper rePwdSheetWrapper"v-if="showResetPwdSheet">
+       <div class="pwdSheetWrapper rePwdSheetWrapper" v-if="showResetPwdSheet">
         <v-bottom-sheet  v-model="showResetPwdSheet"  dark>
           <div class="sheet-title">
             <div class="stitle">
@@ -512,6 +512,7 @@ export default {
   bottom: 0
   right: 0
   left: 0
+  z-index: 100
   &.rePwdSheetWrapper
     height: 320px
 .sheet-content
