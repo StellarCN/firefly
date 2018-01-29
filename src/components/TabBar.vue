@@ -25,12 +25,14 @@ export default {
     watch: {
       $route(to,from){
           let path = to.path
+          let index = -1
           for(var i=0,n=this.menus.length; i<n; i++){
               if(path.indexOf(this.menus[i].path) === 0){
-                  this.active = i
+                  index = i
                   break
               }
           }
+          this.active = index
       }  
     },
     methods: {
