@@ -430,11 +430,10 @@ export default {
 
 
 <style lang="stylus" scoped>
-@require '../../stylus/color.styl'
+@require '~@/stylus/color.styl'
 .page
   background: $primarycolor.gray
   .content
-    padding: 10px 10px
     height: 100%
     overflow-y:auto
 

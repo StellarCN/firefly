@@ -1,7 +1,8 @@
-import * as accountapi from '../../api/account'
-import * as transactionsapi from '../../api/transactions'
-import * as paymentsapi from '../../api/payments'
+import * as accountapi from '@/api/account'
+import * as transactionsapi from '@/api/transactions'
+import * as paymentsapi from '@/api/payments'
 import * as ledgerapi from '@/api/ledger'
+import { isNativeAsset } from '@/api/assets'
 import { BASE_RESERVE } from '@/api/gateways'
 
 // 某个账户的相关操作
@@ -132,7 +133,10 @@ const getters = {
     if(!getters.balances)return {}
     let xlm = {}
     getters.balances.forEach((element) => {
-      if(element.code === 'XLM'){
+      console.log(`-----native --- `)
+      console.log(element)
+      console.log(isNativeAsset(element))
+      if(isNativeAsset(element)){
         xlm = Object.assign({},element)
       }
     })

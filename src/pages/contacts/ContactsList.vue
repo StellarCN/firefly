@@ -142,7 +142,6 @@ export default {
   font-size: 16px
   overflow-y: auto
   .content
-    padding: 10px 10px
     .infocard
       margin 0
       padding-left 15px

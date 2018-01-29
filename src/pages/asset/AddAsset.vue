@@ -233,7 +233,6 @@ export default {
 .page
   background: $primarycolor.gray
   .content
-    padding: 8px 8px
     color: $primarycolor.font
 .currency-ul
   padding-left:0

@@ -4,7 +4,7 @@ import { getServer} from './server'
 import { readAccountData } from './storage'
 import { encrypt, decrypt } from './crypt'
 import { importAccountFromData } from './qr'
-import { getAsset } from './assets'
+import { getAsset, isNativeAsset } from './assets'
 import { BASE_RESERVE } from './gateways'
 var Promise = require('es6-promise').Promise
 
@@ -72,7 +72,7 @@ export function getMemo (type, memo) {
 function checkBalance(assetdata,amount,balances){
   for(var i=0,n=balances.length;i<n;i++){
     let assettype = balances[i].asset_type
-    if('native' === assettype && assetdata.code === 'XLM'){
+    if('native' === assettype && isNativeAsset(assetdata)){
       if(Number(amount) > Number(balances[i].balance))throw new Error('Error.NotEnoughAsset')
     }
     let assetcode = balances[i].asset_code
@@ -84,15 +84,16 @@ function checkBalance(assetdata,amount,balances){
 }
 
 function checkAssetAvailable(assetdata,balances){
-  if('XLM' === assetdata.code)return true
+  if(isNativeAsset(assetdata))return true
   let flag = false
   for(var i=0,n=balances.length;i<n;i++){
     let assetcode = balances[i].asset_code
     let assetissuer = balances[i].asset_issuer
     if(assetdata.code === assetcode &&  assetdata.issuer === assetissuer){
-      
+      flag = true
     }
   }
+  return flag
 }
 
 // send asset 
@@ -105,11 +106,12 @@ export function send(seed,address,target,assetdata,amount,memo_type,memo_value,b
   return server.loadAccount(address).then(acc=>{
     //判断资产是否不够
     let balances = acc.balances
-    checkBalance(assetdata, amount, balances)
+    checkBalance(asset, amount, balances)
     return server.loadAccount(target)
       .then(tacc=>{
           //判断当前用户是否接收本资产？
-          checkAssetAvailable(assetdata,tacc.balances)
+          let flag = checkAssetAvailable(asset,tacc.balances)
+          if(!flag)throw new Error('')
          //acc.incrementSequenceNumber();
           var payment = StellarSdk.Operation.payment({destination: target,asset: asset,amount: amountstr})
           var memo = getMemo(memo_type, memo_value);
@@ -122,7 +124,9 @@ export function send(seed,address,target,assetdata,amount,memo_type,memo_value,b
         //账户状态是404才会调用创建账户功能
         if(err.data && err.data.status === 404){
           //新建用户只能发XLM
-          if(assetdata.code!='XLM')throw new Error('Error.AccountNotFund')
+          if(!isNativeAsset(asset)){
+            throw new Error('Error.AccountNotFund')
+          }
             //是否资产不足
             var reserve = 2 * ( base_reserve || BASE_RESERVE )
             if(Number(amount)< reserve)throw new Error('Error.NotEnoughAssetToFundAccount')

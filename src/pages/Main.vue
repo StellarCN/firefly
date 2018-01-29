@@ -17,12 +17,12 @@
           <h2 class="name">{{account.name}}</h2>
           <div class="address">{{account.address | shortaddress}}</div>
           <div class="assets">
-            <v-layout class="myassets-li" row wrap v-for="item in balances" :key="item.name" @click.stop="toAsset(item)">
+            <v-layout class="myassets-li" row wrap v-for="item in balances" :key="item.issuer||item.name" @click.stop="toAsset(item)">
               <v-flex xs4 class="myassets-wrapper">
                 <div class="myassets">
                   <div class="myassets-name">{{item.code}}</div>
-                  <div class="myassets-issuer" v-if="assethosts[item.code]">{{assethosts[item.code]}}</div>
-                  <div class="myassets-issuer" v-else-if="assethosts[item.issuer]">{{assethosts[item.issuer]}}</div>
+                  <div class="myassets-issuer" v-if="assethosts[item.issuer]">{{assethosts[item.issuer]}}</div>
+                  <div class="myassets-issuer" v-else-if="assethosts[item.code]">{{assethosts[item.code]}}</div>
                   <div class="myassets-issuer" v-else>{{item.issuer | miniaddress}}</div>
                 </div>
               </v-flex>

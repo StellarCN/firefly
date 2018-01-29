@@ -121,7 +121,6 @@ export default {
   color: $primarycolor.font
   font-size: 16px
   .content
-    padding: 10px
     display flex
     flex-direction column
     //min-height calc(100vh - 48px)

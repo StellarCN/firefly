@@ -46,7 +46,7 @@
 
       <card padding="0px 0px" margin="20px 0px" class="infocard thirdassets">
         <div class="assets" slot="card-content">
-          <div class="assets-row" v-for="item in assets" :key="item.code">
+          <div class="assets-row" v-for="item in assets" :key="item.issuer||item.code">
             <v-layout class="myassets-li third-li" row wrap v-swiper=3 @click.stop="toAsset(item)">
             <v-flex xs4 class="myassets-wrapper">
               <div class="myassets">
@@ -85,6 +85,7 @@ import { mapState, mapActions, mapGetters} from 'vuex'
 import Card from '@/components/Card'
 import BottomNotice from '@/components/BottomNotice'
 import  { miniAddress } from '@/api/account'
+import { isNativeAsset } from '@/api/assets'
 import Loading from '@/components/Loading'
 export default {
   data(){
@@ -121,7 +122,7 @@ export default {
        if(!this.balances)return []
        let data = []
        this.balances.forEach((element) => {
-        if(element.code != 'XLM'){
+        if(!isNativeAsset(element)){
           data.push(Object.assign({}, element))
         }
       })

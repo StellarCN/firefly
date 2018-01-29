@@ -16,22 +16,22 @@
               v-model="selectedasset"
               :label="$t('Asset')"
               class="selectasset"
-              item-value="code"
+              item-value="issuer"
               item-text="code"
               :return-object="assetChoseReturnObject"
               dark
             >
             <template slot="selection" slot-scope="data">
               <span class="asset-select-code">{{data.item.code}}</span>
-              <span class="asset-select-issuer" v-if="assethosts[data.item.code]">{{assethosts[data.item.code]}}</span>
-              <span class="asset-select-issuer" v-else-if="assethosts[data.item.issuer]">{{assethosts[data.item.issuer]}}</span>
+              <span class="asset-select-issuer" v-if="assethosts[data.item.issuer]">{{assethosts[data.item.issuer]}}</span>
+              <span class="asset-select-issuer" v-else-if="assethosts[data.item.code]">{{assethosts[data.item.code]}}</span>
               <span class="asset-select-issuer" v-else>{{data.item.issuer|miniaddress}}</span>
 
             </template>
             <template slot="item" slot-scope="data">
               <span class="asset-select-code">{{data.item.code}}</span>
-              <span class="asset-select-issuer" v-if="assethosts[data.item.code]">{{assethosts[data.item.code]}}</span>
-              <span class="asset-select-issuer" v-else-if="assethosts[data.item.issuer]">{{assethosts[data.item.issuer]}}</span>
+              <span class="asset-select-issuer" v-if="assethosts[data.item.issuer]">{{assethosts[data.item.issuer]}}</span>
+              <span class="asset-select-issuer" v-else-if="assethosts[data.item.code]">{{assethosts[data.item.code]}}</span>
               <span class="asset-select-issuer" v-else>{{data.item.issuer|miniaddress}}</span>
 
             </template>
@@ -72,6 +72,7 @@ import Toolbar from '@/components/Toolbar'
 import Card from '@/components/Card'
 import QRCode from '@/components/QRCode'
 import { mapState, mapActions, mapGetters} from 'vuex'
+import { isNativeAsset } from '@/api/assets'
 
 export default {
   data(){
@@ -110,7 +111,7 @@ export default {
       // use stargaze pattern
       //{"stellar":{"payment":{"destination":"GAD2....5UZ6","amount":1,"asset":{"code":"BTC","issuer":"GATEMH....MTCH"}}}}
       let data = {stellar:{payment:{destination:this.account.address,amount: this.num}}}
-      if(this.selectedasset.code != 'XLM'){
+      if(isNativeAsset(this.selectedasset)){
         data.stellar.payment.asset = {code:this.selectedasset, issuer: this.selectedasset.issuer}
       }
       return JSON.stringify(data)
@@ -201,11 +202,6 @@ export default {
 
 <style lang="stylus" scoped>
 @require '~@/stylus/color.styl'
-.page
-  background: $primarycolor.gray
-  .content
-    padding: 8px 8px
-    margin-bottom: 10px
 .card-content
   padding: 8px 8px
   .label

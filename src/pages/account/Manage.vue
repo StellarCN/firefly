@@ -216,8 +216,8 @@ export default {
               this.$toasted.error(this.$t('Error.PasswordWrong'))
             }else{
               this.$toasted.error(this.$t('Account.DeleteFailed'))
-              this.inpassword = null
             }
+            this.inpassword = null
             this.delok = true
             this.delerror = false
             setTimeout(()=>{
@@ -241,13 +241,11 @@ export default {
 
 
 <style lang="stylus" scoped>
-@require '../../stylus/color.styl'
+@require '~@/stylus/color.styl'
 .page
   background: $primarycolor.gray
   color: $primarycolor.font
   font-size: 16px
-  .content
-    padding: 10px 10px
 .right
   .material-icons
     font-size: 36px
@@ -320,6 +318,7 @@ export default {
   bottom: 0
   right: 0
   left: 0
+  z-index: 100
 .sheet-content
   padding: 10px 10px
 .sheet-btns

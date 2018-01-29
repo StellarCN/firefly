@@ -177,11 +177,7 @@ export default {
 
 
 <style lang="stylus" scoped>
-@require '../../stylus/color.styl'
-.page
-  background: $primarycolor.gray
-  .content
-    padding: 10px 10px
+@require '~@/stylus/color.styl'
 .hintinfo
   color: $secondarycolor.font
   margin-top: -20px
