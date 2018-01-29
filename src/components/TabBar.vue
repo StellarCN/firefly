@@ -14,18 +14,29 @@ export default {
     data () {
         return {
             menus : [
-                { title:'Menu.MyAssets', name: 'MyAsset', path: '/myassets', icon: 'account_balance_wallet' },
-                { title:'Menu.TradeCenter', name: 'TradeCenter', path: '/tradecenter', icon: 'trending_up' },
+                { title:'Menu.MyAssets', name: 'MyAssets', path: '/assets', icon: 'account_balance_wallet' },
+                { title:'Menu.TradeCenter', name: 'TradeCenter', path: '/trade', icon: 'trending_up' },
                 { title:'Menu.Funding', name: 'Funding', path: '/funding', icon: 'import_export' },
-                { title:'Menu.My', name: 'My', path: '/my', icon: 'account_box' },
+                { title:'Menu.My', name: 'My', path: '/mysettings', icon: 'account_box' },
             ],
-            active: 0
+            active: -1
         }
     },
-
+    watch: {
+      $route(to,from){
+          let path = to.path
+          for(var i=0,n=this.menus.length; i<n; i++){
+              if(path.indexOf(this.menus[i].path) === 0){
+                  this.active = i
+                  break
+              }
+          }
+      }  
+    },
     methods: {
         redirect(index,name){
             this.active = index
+            console.log({name})
             this.$router.push({name})
         },
     }
