@@ -2,8 +2,8 @@
 <template>
   <div class="page" v-bind:class="{hidebackground: showScanner}">
     <loading :show="onsend" :loading="sending" :success="sendsuccess" :fail='sendfail' />
-    <toolbar :title="$t(title)" 
-      :showmenuicon="showmenuicon" 
+    <toolbar :title="$t(title)"
+      :showmenuicon="showmenuicon"
       :showbackicon="showbackicon"
       color="error"
       @goback="back"
@@ -15,11 +15,11 @@
         </span>
       </div>
     </toolbar>
-    
-    <q-r-scan 
-      @finish="qrfinish" 
-      @close="qrclose" 
-      :validator="qrvalidator" 
+
+    <q-r-scan
+      @finish="qrfinish"
+      @close="qrclose"
+      :validator="qrvalidator"
       v-if="showScanner"></q-r-scan>
 
     <div class="content" v-if="!showScanner">
@@ -34,7 +34,7 @@
               item-text="code"
               required
               :color="'error'"
-              :return-object="assetChoseReturnObject" 
+              :return-object="assetChoseReturnObject"
             >
             <template slot="selection" slot-scope="data">
               <span class="asset-select-code show">{{data.item.code}}</span>
@@ -60,9 +60,9 @@
             type="text"
             :placeholder="(selectedasset.code === 'XLM'? (''+(selectedasset.balance - reserve - 0.00001)): (''+selectedasset.balance) )|| '0'"
             @input="amountInput"
-            
+
           ></v-text-field>
-            <!-- <v-slider v-model="num" 
+            <!-- <v-slider v-model="num"
                 class="amount-slider"
                 color="red"
                 dark
@@ -108,20 +108,20 @@
           </v-layout>
           <div v-if="memoswitch">
             <v-select v-bind:items="memotypes" v-model="memotype"
-                      :label="$t('MemoType')" dark 
+                      :label="$t('MemoType')" dark
                       v-on:input='onMemoTypeInput()'
                       :color="'error'"
-            /> 
+            />
             <v-text-field
               name="memo"
               :label="$t('MemoContent')"
               v-model="memo"
               :color="'error'"
-              dark 
+              dark
               type="text"
               append-icon="bookmark"
               :append-icon-cb="()=>{showmemobook=true}"
-              :hint="$t('required')" 
+              :hint="$t('required')"
               required
               :disabled="this.memotype === null || this.memotype === 'None'"
             ></v-text-field>
@@ -129,7 +129,7 @@
        </div>
 
       </card>
-      
+
       <div style="flex: 1;"></div>
      <div class="btn-group" v-if="!showContacts">
         <v-btn class="error btn-send" @click.stop="send">{{$t('Send')}}</v-btn>
@@ -138,9 +138,9 @@
     </div>
 
     <contact-book v-show="showContacts" :data="contactsdata" :close="()=>{showContacts=false}" :ok="selectContact"/>
-     
+
     <contact-book v-show="showmemobook" :data="memobookdata" :close="()=>{showmemobook=false}" :ok="selectmemo"/>
-    
+
   </div>
 </template>
 
@@ -177,14 +177,14 @@ export default {
       showmemobook: false,//是否显示myaddress
 
       memobookdata:['myaddress'],
-      memoswitch: false, //show memo 
+      memoswitch: false, //show memo
       memotype:null,     // default memo type
       memo:null,         // default memo content
       memotypes:['None','Text','ID','Hash','Return'], //Memo types, if choose 'None', will clear data and close menu
 
       assetChoseReturnObject: true,
       selectedasset:{},
-      
+
       destination:null,
       realDestination:null,//G开头的恒星地址，主要是为了如果输入联邦地址，可以支持查询对应的实际地址
       federationUrlResult:null,//如果destination是联邦地址，那么查询结果就是对应的值，结果为{stellar_address:'*',account_id:'G',memo_type:'',memo:''}
@@ -213,7 +213,7 @@ export default {
       'balances',
       'paymentsRecords',
       'reserve',
-    ]),  
+    ]),
 
   },
   mounted(){
@@ -388,7 +388,7 @@ export default {
       let params = {
         seed,
         address: this.account.address,
-        target: this.destination,
+        target: this.realDestination ? this.realDestination : this.destination,
         asset: {code: this.selectedasset.code, issuer: this.selectedasset.issuer},
         amount: this.amount,
         memo_type:  this.memoswitch ? this.memotype : null,
@@ -401,11 +401,12 @@ export default {
         .then(response=>{
           this.sending = false
           this.sendsuccess = true
+          this.realDestination = null
           this.getAccountInfo(this.account.address)
           setTimeout(()=>{
             this.onsend=false
             this.$toasted.show(this.$t('SendAssetSuccess'))
-            this.sendsuccess = false // 
+            this.sendsuccess = false //
             this.$router.back()
             },3000)
         })
@@ -413,6 +414,7 @@ export default {
           console.log(err)
           this.sending = false
           this.sendfail = true
+          this.realDestination = null
           setTimeout(()=>{
             this.onsend=false
             let msg = getXdrResultCode(err)
@@ -426,7 +428,7 @@ export default {
             this.sendfail = false
             },3000)
         })
-      
+
     },
     // hideLoading(){
     //   setTimeout(()=>{
@@ -467,10 +469,14 @@ export default {
               this.$toasted.error(err)
             })
         }
+        if(val && val.indexOf('*') === -1) {
+          this.fedSearching = false
+          this.realDestination = null
+        }
 
       }, 2000)
-    
-   
+
+
   },
   components: {
     Toolbar,

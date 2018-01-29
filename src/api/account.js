@@ -98,6 +98,7 @@ function checkAssetAvailable(assetdata,balances){
 // send asset
 // return Promise
 export function send(seed,address,target,assetdata,amount,memo_type,memo_value,base_reserve){
+  console.log(`address: ${address}, target: ${target}`)
   let amountstr = NP.round(Number(amount), 7).toString();//Math.round(amount, 7)
   address = address ? address : address(address)
   let asset = getAsset(assetdata.code , assetdata.issuer)
