@@ -43,7 +43,7 @@ export default {
       },
       {
         path: 'about',
-        name: 'Abount',
+        name: 'About',
         component: resolve => require(['../pages/settings/About'], resolve)
       }
     ]
