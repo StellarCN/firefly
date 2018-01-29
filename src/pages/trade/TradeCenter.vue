@@ -308,7 +308,7 @@ export default {
     },
     trade(index,tradepair){
       this.selectTradePair({index,tradepair})
-      this.$router.push(`/trade`)
+      this.$router.push({name: 'Trade'})
     }
    
   },

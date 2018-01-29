@@ -130,7 +130,7 @@
       },
       toTranscation(item) {
         this.selectPayment(item)
-        this.$router.push(`/transaction`)
+        this.$router.push({name: 'Transaction'})
       },
     },
     components: {

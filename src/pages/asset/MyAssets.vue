@@ -146,11 +146,11 @@ export default {
     }),
     toAddAsset(){
       //跳转到授权菜单
-      this.$router.push(`/assets/add`)
+      this.$router.push({name:'AddAsset'})
     },
     toAsset(item){
       this.selectAsset(item)
-      this.$router.push(`/asset`)
+      this.$router.push({name:'Asset'})
     },
     // 发送资产
     send(item){
@@ -160,12 +160,12 @@ export default {
         return
       }
       this.selectAsset(item)
-      this.$router.push(`/sendasset`)
+      this.$router.push({name: 'SendAsset'})
     },
     // 接收资产
     receive(item){
       this.selectAsset(item)
-      this.$router.push(`/receiveasset`)
+      this.$router.push({name: 'ReceiveAsset'})
     },
     // 删除授信
     del(item){

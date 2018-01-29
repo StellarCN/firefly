@@ -225,7 +225,7 @@ export default {
     ...mapActions(['createAccount','cleanGlobalState','coverAccount']),
     goback(){
       this.$router.back()
-      this.$router.push(`/createaccount`)
+      this.$router.push({name:'CreateAccount'})
     },
     copy(value){
       if(cordova.plugins.clipboard){
@@ -279,7 +279,7 @@ export default {
           cleanStreamData()
           closeStreams()
           initStreams(this.address)
-          this.$router.push(`/main`)
+          this.$router.push({name:'Main'})
         }).catch(err=>{
           this.$toasted.error(this.$t('Account.CreateAccountError'))
           this.fail()
@@ -295,7 +295,7 @@ export default {
           this.$toasted.show(this.$t('Account.CreateAccountSuccess'));
           this.cleanGlobalState()
           setTimeout(()=>{
-            this.$router.push(`/main`)
+            this.$router.push({name: 'Main'})
           },1500)
       })
       .catch(err=>{

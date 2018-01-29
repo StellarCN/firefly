@@ -207,7 +207,7 @@ export default {
       }
     },
     back(){
-      this.$router.push(`/main`)
+      this.$router.push({name: 'Main'})
     },
     switchMenu(action){
       this.active = action

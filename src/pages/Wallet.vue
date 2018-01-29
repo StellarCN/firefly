@@ -41,11 +41,11 @@ export default {
     }),
     importAccount(){
       this.doImportAccount()
-      this.$router.push(`/termsofservice`)
+      this.$router.push({name: 'TermsOfService'})
     },
     createAccount(){
       this.doCreateAccount()
-      this.$router.push(`/termsofservice`)
+      this.$router.push({name: 'TermsOfService'})
     },
     back(){
       this.$router.back()

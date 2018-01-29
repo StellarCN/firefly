@@ -90,7 +90,6 @@ export default {
     },
     send() {
       //跳转到添加联系人菜单
-      //this.$router.push(`/contacts/add`)
       console.log('ready to send asset to this contact')
       if(!this.islogin){
         //this.$toasted.error(this.$t('Error.NoPassword'))

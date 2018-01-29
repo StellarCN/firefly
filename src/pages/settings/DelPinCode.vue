@@ -49,7 +49,7 @@ export default {
         this.disablePing()
           .then(()=>{
             this.$toasted.show(this.$t('RemovePinCodeSuccess'))
-            this.$router.push(`/settings`)
+            this.$router.push({name:'Settings'})
           })
           .catch(err=>{
             this.$toasted.error(this.$t('Error.RemovePinCodeFailed'))

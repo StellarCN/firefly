@@ -248,15 +248,15 @@ export default {
         navigator.app.exitApp();  
     },  
     toNameCard(){
-      this.$router.push(`/account/namecard`)
+      this.$router.push({name:'AccountNameCard'})
     },
     toAsset(item){
       this.selectAsset(item)
-      this.$router.push(`/asset`)
+      this.$router.push({name:'Asset'})
     },
     toTranscation(item){
       this.selectPayment(item)
-      this.$router.push(`/transaction`)
+      this.$router.push({name:'Transaction'})
     },
 
   },

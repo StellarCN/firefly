@@ -1,7 +1,7 @@
 <template>
 <v-card class="menu-card">
   <v-bottom-nav :value="true" :active="active" color="primary">
-      <v-btn flat v-for="(item,index) in menus" :key="index" :value="index" @click="redirect(index,item.path)"> 
+      <v-btn flat v-for="(item,index) in menus" :key="index" :value="index" @click="redirect(index,item.name)"> 
         <span>{{$t(item.title)}}</span>
         <v-icon>{{item.icon}}</v-icon>
       </v-btn>
@@ -24,9 +24,9 @@ export default {
     },
 
     methods: {
-        redirect(index,url){
+        redirect(index,name){
             this.active = index
-            this.$router.push(url)
+            this.$router.push({name})
         },
     }
 }

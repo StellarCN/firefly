@@ -201,7 +201,6 @@ export default {
     },
     back(){
       this.$router.push({name:"MyAssets"})
-      // this.$router.push(`/myassets`)
     },
     switchAsset(item){
       this.selectAsset(item)
@@ -213,15 +212,15 @@ export default {
         this.$refs.toolbar.showPasswordLogin()
         return
       }
-      this.$router.push(`/sendasset`)
+      this.$router.push({name: 'SendAsset'})
     },
     // 接收资产
     receive(){
-      this.$router.push(`/receiveasset`)
+      this.$router.push({ name: 'ReceiveAsset' })
     },
     toTranscation(item){
       this.selectPayment(item)
-      this.$router.push(`/transaction`)
+      this.$router.push({name: 'Transaction'})
     },
    
   },

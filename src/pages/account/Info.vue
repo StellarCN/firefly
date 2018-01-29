@@ -46,9 +46,6 @@
 
       </card>
       
-      <!-- <div class="btn-group">
-         <v-btn class="primary btn-export" primary @click.stop="toAccount">{{$t('Export')}}</v-btn>
-      </div> -->
       <div :class="'footer' + (canModify ? ' active':' unactive') ">
         <v-layout row wrap>
           <v-flex xs4 @click="del">
@@ -266,9 +263,6 @@ export default {
     qrcodecallback(img){
       this.qrcodebase64 = img
     },
-    toAccount(){
-      this.$router.push(`/account`)
-    },
     copy(value){
       if(value && cordova.plugins.clipboard){
         cordova.plugins.clipboard.copy(value)
@@ -329,7 +323,7 @@ export default {
             }
             this.$toasted.show(this.$t('Account.DeleteSuccess'))
             if(this.accounts.length === 0){
-              this.$router.push(`/wallet`)
+              this.$router.push({name: 'Wallet'})
             }else{
               this.$router.back()
             }
@@ -345,8 +339,7 @@ export default {
         this.inpassword = null;
         return;
       }
-      this.$router.push({path: '/account/modify', 
-        query: {address: this.showaccount.address, seed: this.seed}});
+      this.$router.push({name: 'ModifyAccount', query: {address: this.showaccount.address, seed: this.seed}});
     },
     resetpwd(){
       this.dlgshow = true;

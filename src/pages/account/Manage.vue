@@ -126,10 +126,10 @@ export default {
       this.$router.back()
     },
     toAccount(){
-      this.$router.push(`/wallet`)
+      this.$router.push({name: 'Wallet'})
     },
     info(account){
-      this.$router.push({path: '/account/info', query: {address: account.address}});
+      this.$router.push({name: 'AccountInfo', query: {address: account.address}});
     },
     del(account,index){
       this.workindex = index
@@ -177,7 +177,7 @@ export default {
             setTimeout(()=>{
               this.working = false
               if(this.accounts.length === 0){
-                this.$router.push(`/wallet`)
+                this.$router.push({name: 'Wallet'})
               }else{
                 //重新读取数据
                 let address = this.account.address

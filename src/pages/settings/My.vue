@@ -2,8 +2,8 @@
  * 我的，显示界面，即：个人中心
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-23 11:14:24 
- * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2018-01-26 15:56:29
+ * @Last Modified by: mazhaoyong@gmail.com
+ * @Last Modified time: 2018-01-29 10:43:16
  * @License: MIT 
  */
 <template>
@@ -88,24 +88,24 @@ export default {
         switchPinCode(val){
             //value=true，跳转到设置ping界面
             if(val){
-                this.$router.push(`/setpincode`)
+                this.$router.push({name:'SetPinCode'})
                 return
             }
             // value=false，则要求输入ping码，正确后才可以取消
-            this.$router.push(`/delpincode`)
+            this.$router.push({name: 'DelPinCode'})
             
             },
         toManageAccount(){
-            this.$router.push(`/account/manage`)
+            this.$router.push({name: 'ManageAccount'})
         },
         toChangeLanguage(){
-            this.$router.push(`/language`)
+            this.$router.push({name: 'Language'})
         },
         toChangeHorizon(){
-            this.$router.push(`/horizon`)
+            this.$router.push({name: 'Horizon'})
         },
         toAbout(){
-            this.$router.push(`/about`)
+            this.$router.push({name: 'About'})
         },
         
     },

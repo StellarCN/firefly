@@ -123,7 +123,7 @@ export default {
         this.$toasted.error(this.$t('Error.NotValidSeed'))
         return
       }
-      this.$router.push('/createaccount')
+      this.$router.push({name: 'CreateAccount'})
     }
 
   },

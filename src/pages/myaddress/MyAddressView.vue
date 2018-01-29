@@ -94,7 +94,7 @@ export default {
      this.deleteMyAddress(this.myaddress)
       .then(data=>{
         this.$toasted.show(this.$t('MyAddress.DeleteSuccess'))
-        this.$router.push(`/myaddress/list`)
+        this.$router.push({name: 'MyAddressList'})
       })
       .catch(err=>{
         console.error(err)

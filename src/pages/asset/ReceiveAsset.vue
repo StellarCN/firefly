@@ -142,11 +142,11 @@ export default {
     },
     // 发送资产
     send(item){
-      this.$router.push(`/sendasset`)
+      this.$router.push({name:'SendAsset'})
     },
     // 接收资产
     receive(item){
-      this.$router.push(`/receiveasset`)
+      this.$router.push({name: 'ReceiveAsset'})
     },
     save(){
       let params = {
