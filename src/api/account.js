@@ -26,14 +26,14 @@ export function isValidateAddress(address){
   return StellarSdk.StrKey.isValidEd25519PublicKey(address)
 }
 
-// get account info 
+// get account info
 // return Pomise
 export function getAccountInfo(address){
   console.log(` get accountinfo ${address}`)
   return getServer().accounts().accountId(address).call();
 }
 
-// sign in 
+// sign in
 export function signin(address,password){
   return readAccountData(address,passowrd)
     .then(account => {
@@ -65,9 +65,9 @@ export function getMemo (type, memo) {
 
 /**
  * 校验余额是否足够
- * @param {*} assetdata 
- * @param {*} amount 
- * @param {*} balances 
+ * @param {*} assetdata
+ * @param {*} amount
+ * @param {*} balances
  */
 function checkBalance(assetdata,amount,balances){
   for(var i=0,n=balances.length;i<n;i++){
@@ -90,15 +90,15 @@ function checkAssetAvailable(assetdata,balances){
     let assetcode = balances[i].asset_code
     let assetissuer = balances[i].asset_issuer
     if(assetdata.code === assetcode &&  assetdata.issuer === assetissuer){
-      
+
     }
   }
 }
 
-// send asset 
+// send asset
 // return Promise
 export function send(seed,address,target,assetdata,amount,memo_type,memo_value,base_reserve){
-  let amountstr = NP.round(Number(amount), 7);//Math.round(amount, 7)
+  let amountstr = NP.round(Number(amount), 7).toString();//Math.round(amount, 7)
   address = address ? address : address(address)
   let asset = getAsset(assetdata.code , assetdata.issuer)
   let server  = getServer()
@@ -137,7 +137,7 @@ export function send(seed,address,target,assetdata,amount,memo_type,memo_value,b
           throw err
         }
       })
-   
+
   })// end of loadAccount
 }
 
@@ -167,7 +167,7 @@ export function getStream(){
 }
 
 
-// account fund 
+// account fund
 export function fund(seed,target, amount, memo_type, memo_value) {
   amount = round(amount, 7);
   var _address = address(seed)
