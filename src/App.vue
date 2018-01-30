@@ -113,7 +113,7 @@
              if(this.accounts.length === 0){
                this.$router.push({name: 'Wallet'})
              }else{
-               this.$router.push({name: 'Main'})
+               this.$router.push({name: 'MyAssets'})
              }
           }
         })

@@ -3,12 +3,22 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-23 11:14:24 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-01-29 10:43:16
+ * @Last Modified time: 2018-01-30 20:08:48
  * @License: MIT 
  */
 <template>
   <div class="page">
-      <toolbar :title="$t('Menu.My')" :showmenuicon="true" :showbackicon="false"  ref="toolbar"/>
+      <toolbar :title="$t('Menu.My')" :showbackicon="false"  ref="toolbar">
+          <div slot="left-tool">
+            <v-btn icon @click.native="showAccounts">
+                <i class="material-icons">menu</i>
+            </v-btn>
+          </div>
+      </toolbar>
+
+      <accounts-nav :show="showaccountsview" @close="closeView"/>
+
+
       <div class="content">
           <card padding="0px 0px"  class="infocard">
             <div slot="card-content">
@@ -61,13 +71,19 @@
 <script>
 import Toolbar from '@/components/Toolbar'
 import Card from '@/components/Card'
+import AccountsNav from '@/components/AccountsNav'
 import { mapState, mapActions, mapGetters } from 'vuex'
+import backbutton from '@/mixins/backbutton'
+import { listenPaymentStream, closePaymentStream, getPaymentStream, convertRecords } from '@/api/payments'
+import { ACCOUNT_IS_FUNDING,ACCOUNT_NOT_FUNDING } from '@/store/modules/AccountStore'
 export default {
     data(){
         return {
             pinEnable: false,
+            showaccountsview: false,
         }
     },
+    mixins: [backbutton],
     computed: {
         ...mapState({
             account: state => state.accounts.selectedAccount,
@@ -81,9 +97,93 @@ export default {
     beforeUpdate(){
         this.pinEnable = this.app.enablePin || false
     },
+    mounted(){
+        if(this.account.address){
+            this.fetchData()
+        }
+        this.$watch('account.address',()=>{
+            this.fetchData()
+        })
+    },
+    beforeDestroy(){
+        closePaymentStream()
+    },
     methods: {
+        ...mapActions([
+            'getAccountInfo',
+            'showLoading',
+            'hidenLoading',
+            'getTransactionsPage',
+            'getPayments',
+            'selectAsset',
+            'selectPayment',
+            'cleanAccount',
+            'paymentSteamData',
+            'updateAccount'
+        ]),
+
+        fetchData() {
+            if (this.account.address) {
+                this.load()
+                .then(data => {
+                    this.updateFederationAndInflationInfo()
+                    this.$store.commit(ACCOUNT_IS_FUNDING)
+                })
+                .catch(err => {
+                    console.log("errorhere");
+                    this.cleanAccount()
+                    console.log(err.message)
+                    let msg = err.message
+                    if (msg && 'Network Error' === msg) {
+                    this.$toasted.error(this.$t('Account.NetworkError'))
+                    return
+                    }
+                    console.error(err)
+                    if (err.data && err.data.status === 404) {
+                    this.noticeText = this.$t('Error.AccountNotFund')
+                    this.$store.commit(ACCOUNT_NOT_FUNDING)
+                    this.notice = true
+                    }
+                    // this.snackbarText = this.$t('Error.AccountNotFund')
+                    // this.snackbarColor = 'primary'
+                    // this.snackbar = true
+                    // this.$toasted.error(this.$t('Error.AccountNotFund'))
+                    // this.$toasted.error(this.$t('Error.GetAccountInfoError'))
+                })
+                // 处理stream
+                // listenPaymentStream(this.account.address, this.onPaymentStream)
+            }
+        },
+        updateFederationAndInflationInfo() {
+            // update home_domain and inflation_destination from horizon.
+            console.log("updateFederationAndInflationInfo")
+            console.log(this.accountData)
+            if (this.account.federationAddress !== this.accountData.inflation_destination || this.account.inflationAddress !== this.accountData.home_domain) {
+                let data = Object.assign({}, this.account, {
+                federationAddress: this.accountData.home_domain,
+                inflationAddress: this.accountData.inflation_destination
+                })
+                let params = {index: this.selectedAccountIndex, account: data}
+                console.log(params)
+                this.updateAccount(params)
+                .then(data => {
+                    console.log("success")
+                })
+                .catch(err => {
+                    console.log("failed")
+                    console.error(err)
+                })
+            }
+        },
+        load(){
+            //this.cleanAccount()
+            let address = this.account.address
+            // let process = [this.getAccountInfo(address),this.getPayments(address)]
+            //console.log(process)
+            return Promise.all([this.getAccountInfo(this.account.address)])//,this.getPayments(this.account.address)])
+        },
         toNameCard(){
-            
+              this.$router.push({name:'AccountNameCard'})
         },  
         switchPinCode(val){
             //value=true，跳转到设置ping界面
@@ -107,39 +207,26 @@ export default {
         toAbout(){
             this.$router.push({name: 'About'})
         },
+
+        showAccounts(){
+            this.showaccountsview = true
+        },
+        closeView(){
+            this.showaccountsview = false
+        }
         
     },
 
     components: {
         Toolbar,
         Card,
+        AccountsNav,
     }
 
 }
 </script>
 
 <style lang="stylus" scoped>
-@require '~@/stylus/color.styl'
-.avatar
-    font-size: 42px
-    color: $primarycolor.green
-.title
-  margin-top: 5px
-  height: 32px
-  line-height: 32px!important
-  font-size: 16px
-.address
-  height: 14px
-  line-height: 14px!important
-  font-size: 14px
-.settings-ul
-    padding-left: 10px
-    .settings-li
-        font-size: 16px
-        padding-top: 5px
-        padding-bottom: 5px
-        .pincodeswitch
-            float: right
-            width: 50px
-            padding-top: 0px
+@require '~@/stylus/settings.styl'
+
 </style>

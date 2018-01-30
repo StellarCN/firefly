@@ -279,7 +279,7 @@ export default {
           cleanStreamData()
           closeStreams()
           initStreams(this.address)
-          this.$router.push({name:'Main'})
+          this.$router.push({name:'MyAssets'})
         }).catch(err=>{
           this.$toasted.error(this.$t('Account.CreateAccountError'))
           this.fail()
@@ -295,7 +295,7 @@ export default {
           this.$toasted.show(this.$t('Account.CreateAccountSuccess'));
           this.cleanGlobalState()
           setTimeout(()=>{
-            this.$router.push({name: 'Main'})
+            this.$router.push({name: 'MyAssets'})
           },1500)
       })
       .catch(err=>{
