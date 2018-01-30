@@ -46,9 +46,6 @@
 
       </card>
       
-      <!-- <div class="btn-group">
-         <v-btn class="primary btn-export" primary @click.stop="toAccount">{{$t('Export')}}</v-btn>
-      </div> -->
       <div :class="'footer' + (canModify ? ' active':' unactive') ">
         <v-layout row wrap>
           <v-flex xs4 @click="del">
@@ -64,7 +61,7 @@
       </div>
 
 
-      <div class="pwdSheetWrapper"v-if="showPwdSheet">
+      <div class="pwdSheetWrapper" v-if="showPwdSheet">
         <v-bottom-sheet  v-model="showPwdSheet"  dark>
           <div class="sheet-content">
             <div class="sheet-input">
@@ -98,7 +95,7 @@
       </v-dialog>
 
       <!-- 修改密码 -->
-       <div class="pwdSheetWrapper rePwdSheetWrapper"v-if="showResetPwdSheet">
+       <div class="pwdSheetWrapper rePwdSheetWrapper" v-if="showResetPwdSheet">
         <v-bottom-sheet  v-model="showResetPwdSheet"  dark>
           <div class="sheet-title">
             <div class="stitle">
@@ -266,9 +263,6 @@ export default {
     qrcodecallback(img){
       this.qrcodebase64 = img
     },
-    toAccount(){
-      this.$router.push(`/account`)
-    },
     copy(value){
       if(value && cordova.plugins.clipboard){
         cordova.plugins.clipboard.copy(value)
@@ -329,7 +323,7 @@ export default {
             }
             this.$toasted.show(this.$t('Account.DeleteSuccess'))
             if(this.accounts.length === 0){
-              this.$router.push(`/wallet`)
+              this.$router.push({name: 'Wallet'})
             }else{
               this.$router.back()
             }
@@ -345,8 +339,7 @@ export default {
         this.inpassword = null;
         return;
       }
-      this.$router.push({path: '/account/modify', 
-        query: {address: this.showaccount.address, seed: this.seed}});
+      this.$router.push({name: 'ModifyAccount', query: {address: this.showaccount.address, seed: this.seed}});
     },
     resetpwd(){
       this.dlgshow = true;
@@ -437,11 +430,10 @@ export default {
 
 
 <style lang="stylus" scoped>
-@require '../../stylus/color.styl'
+@require '~@/stylus/color.styl'
 .page
   background: $primarycolor.gray
   .content
-    padding: 10px 10px
     height: 100%
     overflow-y:auto
 
@@ -520,6 +512,7 @@ export default {
   bottom: 0
   right: 0
   left: 0
+  z-index: 100
   &.rePwdSheetWrapper
     height: 320px
 .sheet-content

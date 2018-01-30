@@ -38,14 +38,13 @@ export default {
     goback(){
       this.backToAccount()
       this.$router.back()
-      //this.$router.push(`/wallet`)
     },
     wallet(){
      if(this.isImportAccount){
-        this.$router.push(`/importaccount`)
+        this.$router.push({name: 'ImportAccount'})
         return
       }
-      this.$router.push(`/createaccount`)
+      this.$router.push({name: 'CreateAccount'})
     }
   }
 }

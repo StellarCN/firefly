@@ -259,7 +259,6 @@ export default {
 .page
   background: $primarycolor.gray
   .content
-    padding: 8px 8px
     display flex
     flex-direction column
     //min-height calc(100vh - 48px)

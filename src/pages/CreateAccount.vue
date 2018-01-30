@@ -113,7 +113,7 @@ export default {
           let seed = random()
           this.setNewSeed(seed)
         }
-        this.$router.push(`/createaccountready`)
+        this.$router.push({name:'CreateAccountReady'})
       }
     },
   },

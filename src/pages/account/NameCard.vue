@@ -129,11 +129,13 @@ export default {
 
 
 <style lang="stylus" scoped>
-@require '../../stylus/color.styl'
+@require '~@/stylus/color.styl'
 .content
   position: fixed
   overflow-y: auto
-  padding: 20px 20px
+  padding-top: 20px
+  padding-left: 20px
+  padding-right: 20px
   background: $primarycolor.gray
   .label
     font-size: 14px

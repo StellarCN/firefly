@@ -108,12 +108,12 @@
             console.log(err)
           }
           if(this.alldata.app.enablePin){
-            this.$router.push(`/pinlock`)
+            this.$router.push({name: 'PinLock'})
           }else{
              if(this.accounts.length === 0){
-               this.$router.push(`wallet`)
+               this.$router.push({name: 'Wallet'})
              }else{
-               this.$router.push('/main')
+               this.$router.push({name: 'Main'})
              }
           }
         })
@@ -134,7 +134,7 @@
           })
           //保存默认的设置数据
 
-          this.$router.push('/wallet')
+          this.$router.push({name: 'Wallet'})
 
         });
 
@@ -167,7 +167,7 @@
           let pauseEnd = new Date().getTime()
           let total = (pauseEnd - this.pauseStart)/1000
           if(total >= this.pauseMaxSecond){
-            this.$router.push(`/pinlock`)
+            this.$router.push({name: 'PinLock'})
           }
         }
       },

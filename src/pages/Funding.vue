@@ -125,15 +125,16 @@
 </template>
 
 <script>
-import Toolbar from '../components/Toolbar'
-import Card from '../components/Card'
+import Toolbar from '@/components/Toolbar'
+import Card from '@/components/Card'
 import BottomNotice from '@/components/BottomNotice'
 import { mapState, mapActions, mapGetters} from 'vuex'
-import { queryDeposit,queryStandardDeposite } from '../api/deposit'
-import { getAssetWithdrawUrl,submitQuote } from '../api/withdraw'
-import { resolveByFedAddress, federation, resolveByFedDomain} from '../api/federation'
-import { send } from '../api/account'
-import WithdrawInput from '../components/WithdrawInput'
+import { queryDeposit,queryStandardDeposite } from '@/api/deposit'
+import { getAssetWithdrawUrl,submitQuote } from '@/api/withdraw'
+import { resolveByFedAddress, federation, resolveByFedDomain} from '@/api/federation'
+import { send } from '@/api/account'
+import { isNativeAsset } from '@/api/assets'
+import WithdrawInput from '@/components/WithdrawInput'
 export default {
   data(){
     return {
@@ -173,7 +174,7 @@ export default {
        if(!this.balances)return []
        let data = []
        this.balances.forEach((element) => {
-        if(element.code != 'XLM'){
+        if( isNativeAsset(element)){
           data.push(Object.assign({}, element))
         }
       })
@@ -207,7 +208,7 @@ export default {
       }
     },
     back(){
-      this.$router.push(`/main`)
+      this.$router.push({name: 'Main'})
     },
     switchMenu(action){
       this.active = action

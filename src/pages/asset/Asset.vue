@@ -19,8 +19,8 @@
         v-bind:key="item.code +'_'+item.issuer"
       >
         <div class="assets-code">{{item.code}}</div>
-        <div class="assets-issuer" v-if="assethosts[item.code]">{{assethosts[item.code]}}</div>
-        <div class="assets-issuer" v-else-if="assethosts[item.issuer]">{{assethosts[item.issuer]}}</div>
+        <div class="assets-issuer" v-if="assethosts[item.issuer]">{{assethosts[item.issuer]}}</div>
+        <div class="assets-issuer" v-else-if="assethosts[item.code]">{{assethosts[item.code]}}</div>
         <div class="assets-issuer" v-else>{{item.issuer|miniaddress}}</div>
       </swiper-slide>
     </swiper>
@@ -39,7 +39,7 @@
                 <v-flex xs2 class="label">{{$t('Total')}}</v-flex>
                 <v-flex class="amount">{{item.balance}}</v-flex>
             </v-flex>
-            <v-flex d-flex justify-center align-center xs12 class="row" v-if="item.code=='XLM'"> 
+            <v-flex d-flex justify-center align-center xs12 class="row" v-if="isNative(item)"> 
                 <v-flex xs2 class="label">{{$t('Available')}}</v-flex>
                 <v-flex class="available">{{item.balance - reserve}}</v-flex  >
                 <v-spacer></v-spacer>
@@ -91,6 +91,7 @@ import { mapState, mapActions, mapGetters} from 'vuex'
 
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import Loading from '@/components/Loading'
+import { isNativeAsset } from '@/api/assets'
 
 export default {
   data(){
@@ -151,7 +152,7 @@ export default {
       this.paymentsRecords.forEach((ele) => {
         let asset = ele.asset
         let sasset = this.selectedAsset.code ? this.selectedAsset : this.balances[this.swiperIndex]
-        if(('XLM' === asset.code && 'XLM' === sasset.code)||
+        if((isNativeAsset(asset) && isNativeAsset(sasset))||
           (asset.code === sasset.code && asset.issuer === sasset.issuer)){
             if(ele.type==='payment' || ele.type==='path_payment'){
               if(ele.isInbound){
@@ -201,7 +202,6 @@ export default {
     },
     back(){
       this.$router.push({name:"MyAssets"})
-      // this.$router.push(`/myassets`)
     },
     switchAsset(item){
       this.selectAsset(item)
@@ -213,16 +213,19 @@ export default {
         this.$refs.toolbar.showPasswordLogin()
         return
       }
-      this.$router.push(`/sendasset`)
+      this.$router.push({name: 'SendAsset'})
     },
     // 接收资产
     receive(){
-      this.$router.push(`/receiveasset`)
+      this.$router.push({ name: 'ReceiveAsset' })
     },
     toTranscation(item){
       this.selectPayment(item)
-      this.$router.push(`/transaction`)
+      this.$router.push({name: 'Transaction'})
     },
+    isNative(asset){
+      return isNativeAsset(asset)
+    }
    
   },
   components: {

@@ -76,24 +76,24 @@ export default {
     switchPinCode(val){
       //value=true，跳转到设置ping界面
       if(val){
-        this.$router.push(`/setpincode`)
+        this.$router.push({name: 'SetPinCode'})
         return
       }
       // value=false，则要求输入ping码，正确后才可以取消
-      this.$router.push(`/delpincode`)
+      this.$router.push({name: 'DelPinCode'})
       
     },
     toManageAccount(){
-      this.$router.push(`/account/manage`)
+      this.$router.push({name: 'ManageAccount'})
     },
     toChangeLanguage(){
-      this.$router.push(`/language`)
+      this.$router.push({name: 'Language'})
     },
     toChangeHorizon(){
-      this.$router.push(`/horizon`)
+      this.$router.push({name: 'Horizon'})
     },
     toAbout(){
-      this.$router.push(`/about`)
+      this.$router.push({name: 'About'})
     },
    
   },

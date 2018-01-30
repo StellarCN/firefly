@@ -46,7 +46,7 @@
 
       <card padding="0px 0px" margin="20px 0px" class="infocard thirdassets">
         <div class="assets" slot="card-content">
-          <div class="assets-row" v-for="item in assets" :key="item.code">
+          <div class="assets-row" v-for="item in assets" :key="item.issuer||item.code">
             <v-layout class="myassets-li third-li" row wrap v-swiper=3 @click.stop="toAsset(item)">
             <v-flex xs4 class="myassets-wrapper">
               <div class="myassets">
@@ -85,6 +85,7 @@ import { mapState, mapActions, mapGetters} from 'vuex'
 import Card from '@/components/Card'
 import BottomNotice from '@/components/BottomNotice'
 import  { miniAddress } from '@/api/account'
+import { isNativeAsset } from '@/api/assets'
 import Loading from '@/components/Loading'
 export default {
   data(){
@@ -121,7 +122,7 @@ export default {
        if(!this.balances)return []
        let data = []
        this.balances.forEach((element) => {
-        if(element.code != 'XLM'){
+        if(!isNativeAsset(element)){
           data.push(Object.assign({}, element))
         }
       })
@@ -146,11 +147,11 @@ export default {
     }),
     toAddAsset(){
       //跳转到授权菜单
-      this.$router.push(`/assets/add`)
+      this.$router.push({name:'AddAsset'})
     },
     toAsset(item){
       this.selectAsset(item)
-      this.$router.push(`/asset`)
+      this.$router.push({name:'Asset'})
     },
     // 发送资产
     send(item){
@@ -160,12 +161,12 @@ export default {
         return
       }
       this.selectAsset(item)
-      this.$router.push(`/sendasset`)
+      this.$router.push({name: 'SendAsset'})
     },
     // 接收资产
     receive(item){
       this.selectAsset(item)
-      this.$router.push(`/receiveasset`)
+      this.$router.push({name: 'ReceiveAsset'})
     },
     // 删除授信
     del(item){

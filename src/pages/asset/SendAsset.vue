@@ -30,7 +30,7 @@
               v-model="selectedasset"
               :label="$t('Asset')"
               class="selectasset"
-              item-value="code"
+              item-value="issuer"
               item-text="code"
               required
               :color="'error'"
@@ -38,14 +38,14 @@
             >
             <template slot="selection" slot-scope="data">
               <span class="asset-select-code show">{{data.item.code}}</span>
-              <span class="asset-select-issuer show" v-if="assethosts[data.item.code]">{{assethosts[data.item.code]}}</span>
-              <span class="asset-select-issuer show" v-else-if="assethosts[data.item.issuer]">{{assethosts[data.item.issuer]}}</span>
+              <span class="asset-select-issuer show" v-if="assethosts[data.item.issuer]">{{assethosts[data.item.issuer]}}</span>
+              <span class="asset-select-issuer show" v-else-if="assethosts[data.item.code]">{{assethosts[data.item.code]}}</span>
               <span class="asset-select-issuer show" v-else>{{data.item.issuer|miniaddress}}</span>
             </template>
             <template slot="item" slot-scope="data">
               <span class="asset-select-code">{{data.item.code}}</span>
-              <span class="asset-select-issuer show" v-if="assethosts[data.item.code]">{{assethosts[data.item.code]}}</span>
-              <span class="asset-select-issuer show" v-else-if="assethosts[data.item.issuer]">{{assethosts[data.item.issuer]}}</span>
+              <span class="asset-select-issuer show" v-if="assethosts[data.item.issuer]">{{assethosts[data.item.issuer]}}</span>
+              <span class="asset-select-issuer show" v-else-if="assethosts[data.item.code]">{{assethosts[data.item.code]}}</span>
               <span class="asset-select-issuer show" v-else>{{data.item.issuer|miniaddress}}</span>
             </template>
           </v-select>
@@ -58,7 +58,7 @@
             :suffix="selectedasset.code"
             required
             type="text"
-            :placeholder="(selectedasset.code === 'XLM'? (''+(selectedasset.balance - reserve - 0.00001)): (''+selectedasset.balance) )|| '0'"
+            :placeholder="( isNative(selectedasset) ? (''+(selectedasset.balance - reserve - 0.00001)): (''+selectedasset.balance) )|| '0'"
             @input="amountInput"
 
           ></v-text-field>
@@ -129,8 +129,7 @@
        </div>
 
       </card>
-
-      <div style="flex: 1;"></div>
+      
      <div class="btn-group" v-if="!showContacts">
         <v-btn class="error btn-send" @click.stop="send">{{$t('Send')}}</v-btn>
      </div>
@@ -155,6 +154,7 @@ import _ from 'lodash'
 import { resolveByFedAddress } from '@/api/federation'
 import ContactBook from '@/components/ContactBook'
 import { xdrMsg,getXdrResultCode } from '@/api/xdr'
+import { isNativeAsset } from '@/api/assets'
 
 //TODO 校验输入数据不能超过最大值
 
@@ -474,9 +474,10 @@ export default {
           this.realDestination = null
         }
 
-      }, 2000)
-
-
+      }, 2000),
+    isNative(asset){
+      return isNativeAsset(asset)
+    }
   },
   components: {
     Toolbar,
@@ -499,7 +500,6 @@ export default {
   //right: 0
   background: $primarycolor.gray
   color: $primarycolor.font
-  padding: 10px 10px
   display flex
   flex-direction column
   //min-height calc(100vh - 48px)
@@ -540,10 +540,7 @@ export default {
   padding-right: 0px
   padding-top:0px
 .btn-group
-  position: fixed
-  bottom: 10px
-  left: 10px
-  right: 10px
+  margin-top: 20px
   .btn-send
     width: 100%
     height: 36px

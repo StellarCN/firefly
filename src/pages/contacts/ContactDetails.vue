@@ -90,7 +90,6 @@ export default {
     },
     send() {
       //跳转到添加联系人菜单
-      //this.$router.push(`/contacts/add`)
       console.log('ready to send asset to this contact')
       if(!this.islogin){
         //this.$toasted.error(this.$t('Error.NoPassword'))
@@ -122,7 +121,6 @@ export default {
   color: $primarycolor.font
   font-size: 16px
   .content
-    padding: 10px
     display flex
     flex-direction column
     //min-height calc(100vh - 48px)
