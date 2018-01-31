@@ -94,6 +94,7 @@
       {{ snackbarText }}
         <v-btn outline dark small @click.native="snackbar = false">{{$t('Close')}}</v-btn>
       </v-snackbar>
+      <tab-bar/>
   </div>
 </template>
 
@@ -108,6 +109,7 @@ import TradePairPicker from '../../components/TradePairPicker'
 import { mapState, mapActions,mapGetters} from 'vuex'
 import { miniAddress } from '@/api/account'
 import KLine from '@/components/KLine'
+import TabBar from '@/components/TabBar'
 export default {
   data(){
     return {
@@ -317,7 +319,8 @@ export default {
     Card,
     Picker,
     TradePairPicker,
-    KLine
+    KLine,
+    TabBar
   }
 }
 </script>

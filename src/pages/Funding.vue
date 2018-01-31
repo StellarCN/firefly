@@ -119,6 +119,8 @@
       </card>
 
     </div>
+  
+    <tab-bar />
 
    <bottom-notice :show.sync="notice" :text="noticeText">    </bottom-notice>
   </div>
@@ -135,6 +137,7 @@ import { resolveByFedAddress, federation, resolveByFedDomain} from '@/api/federa
 import { send } from '@/api/account'
 import { isNativeAsset } from '@/api/assets'
 import WithdrawInput from '@/components/WithdrawInput'
+import TabBar from '@/components/TabBar'
 export default {
   data(){
     return {
@@ -371,6 +374,7 @@ export default {
     Card,
     BottomNotice,
     WithdrawInput,
+    TabBar,
   }
 }
 </script>

@@ -74,6 +74,8 @@
     </div>
     </scroll>
 
+  <tab-bar/>
+  
    <bottom-notice :show.sync="notice" :text="noticeText">    </bottom-notice>
    <loading :show="working" :loading="working" :success="delok" :fail='delerror' />
    <password-sheet v-if="needpwd" @cancel="cancelpwd" @ok="checkpwd" />
@@ -91,6 +93,7 @@ import Loading from '@/components/Loading'
 import backbutton from '@/mixins/backbutton'
 import loadaccount from '@/mixins/loadaccount'
 import Scroll from '@/components/Scroll'
+import TabBar from '@/components/TabBar'
 export default {
   data(){
     return {
@@ -225,6 +228,7 @@ export default {
     BottomNotice,
     Card,
     Scroll,
+    TabBar,
     'loading': Loading,
   }
 }

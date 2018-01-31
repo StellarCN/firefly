@@ -3,10 +3,8 @@
     <v-system-bar status :color="iosstatusbarcolor" v-show="isios">
       <v-spacer></v-spacer>
     </v-system-bar>
-
     <router-view></router-view>
 
-    <tab-bar v-if="showTabBar"/>
  </v-app>
 </template>
 
@@ -18,7 +16,7 @@
   import { closeStreams, initStreams } from '@/streams'
   import { initStorage,checkPlatform } from '@/api/storage'
   import { getDeviceLanguage } from '@/locales'
-  import  TabBar from '@/components/TabBar'
+
 
   export default {
     data () {
@@ -38,10 +36,6 @@
           iosstatusbarcolor: state => state.iosstatusbarcolor,
           accounts: state => state.accounts.data,
         }),
-        showTabBar: function () {
-          let hidePathName = ['Index', 'Wallet', 'TermsOfService', 'ImportAccount', 'CreateAccount', 'CreateAccountReady']
-          return !hidePathName.includes(this.$route.name)
-        }
     },
     beforeMount(){
       Vue.cordova.on('deviceready', () => {
@@ -175,7 +169,6 @@
     },
     components:{
       PinCode,
-      TabBar
     }
   }
 </script>

@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-23 11:14:24 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-01-31 10:58:23
+ * @Last Modified time: 2018-01-31 11:51:39
  * @License: MIT 
  */
 <template>
@@ -64,6 +64,7 @@
             </div>
           </card>
       </div>
+      <tab-bar/>
   </div>
 </template>
 
@@ -72,6 +73,7 @@ import Toolbar from '@/components/Toolbar'
 import Card from '@/components/Card'
 import AccountsNav from '@/components/AccountsNav'
 import { mapState, mapActions, mapGetters } from 'vuex'
+import  TabBar from '@/components/TabBar'
 export default {
     data(){
         return {
@@ -132,6 +134,7 @@ export default {
         Toolbar,
         Card,
         AccountsNav,
+        TabBar
     }
 
 }
