@@ -3,20 +3,15 @@
  */
 <template>
   <div class="page">
-    <toolbar :title="$t(title)" 
-      :showmenuicon="showmenuicon" 
-      :showbackicon="showbackicon"
-      />
+    <toolbar :title="$t(title)" :showbackicon="true" @goback="back"   />
     <div class="content">
       <card padding="10px 10px" class="mycard">
         <div class="card-content" slot="card-content">
           <ul class="settings-ul">
-            <li class="settings-li" @click="toManageAccount">
-              <span>{{$t('ManageAccount')}}</span>
-            </li>
+            
             <li class="settings-li">
               <span>{{$t('PinCode')}}</span>
-              <v-switch class="pincodeswitch"
+              <v-switch class="pincodeswitch f-right"
                         v-model="pinEnable"
                         color="primary"
                         hide-details
@@ -26,12 +21,15 @@
             </li>
             <li class="settings-li" @click="toChangeLanguage">
               <span>{{$t('Language')}}</span>
+              <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
             </li>
             <li class="settings-li" @click="toChangeHorizon">
               <span>{{$t('PublicNetUrl')}}</span>
+              <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
             </li>
             <li class="settings-li" @click="toAbout">
               <span>{{$t('About.Title')}}</span> 
+              <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
             </li>
           </ul>
         </div>
@@ -49,8 +47,6 @@ export default {
   data(){
     return {
       title: 'Menu.Settings',
-      showbackicon: false,
-      showmenuicon: true,
       pinEnable: false,
     }
   },
@@ -73,6 +69,9 @@ export default {
   methods: {
     ...mapActions({
     }),
+    back(){
+      this.$router.back()
+    },
     switchPinCode(val){
       //value=true，跳转到设置ping界面
       if(val){

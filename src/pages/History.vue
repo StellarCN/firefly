@@ -1,11 +1,7 @@
 <template>
   <div class="page" dark>
-    <toolbar :title="$t(title)"
-             :showmenuicon="showmenuicon"
-             :showbackicon="showbackicon"
-             style="z-index:999;"
-    >
-    </toolbar>
+    <toolbar :title="$t(title)" :showbackicon="true" style="z-index:999;" @goback="back"/>
+    
     <div class="menu-wrapper">
       <ul class="menu-ul">
         <li :class="'menu-li ' + (show.name=='offer'?'active':'')" @click="switchComponent('offer')">
@@ -39,8 +35,6 @@
     data() {
       return {
         title: 'History.Title',
-        showbackicon: false,
-        showmenuicon: true,
         loading: false,
         components: {
           offer: HistoryOffer,
@@ -66,6 +60,9 @@
       ...mapActions([
         'changeCurrentHistoryComponent'
       ]),
+      back(){
+        this.$router.back()
+      },
       switchComponent(name) {
         if (name == this.show.name) return
         this.show.name = name
@@ -81,12 +78,7 @@
   }
 </script>
 <style lang="stylus" scoped>
-  @require '../stylus/color.styl'
-  .page
-    background: $primarycolor.gray
-    color: $primarycolor.font
-    .content
-      padding: 10px 10px
+  @require '~@/stylus/color.styl'
     .menu-wrapper
       background: $primarycolor.green
       height: 56px

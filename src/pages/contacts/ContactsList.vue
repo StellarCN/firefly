@@ -3,13 +3,7 @@
  */
 <template>
   <div class="page">
-    <toolbar :title="$t(title)" 
-      :showmenuicon="showmenuicon" 
-      :showbackicon="showbackicon"
-    >
-      <!-- <div class="right" slot="right-tool" @click="toAddContact">
-        <i class="material-icons">&#xE145;</i>
-      </div> -->
+    <toolbar :title="$t(title)" :showbackicon="true"  @goback="back">
       <v-btn icon slot='right-tool' @click="toAddContact">
         <i class="material-icons">&#xE145;</i>
       </v-btn>
@@ -63,8 +57,6 @@ export default {
   data() {
     return {
       title: 'Menu.Contacts',
-      showbackicon: false,
-      showmenuicon: true,
       search: '',
       avatarSize: '64px',
 
@@ -90,6 +82,9 @@ export default {
   },
   methods: {
     ...mapActions(['deleteContact']),
+    back(){
+      this.$router.back()
+    },
     toAddContact() {
       //跳转到添加联系人菜单
       this.$router.push({name: 'AddContact'})

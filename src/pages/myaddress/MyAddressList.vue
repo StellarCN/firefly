@@ -3,10 +3,7 @@
  */
 <template>
   <div class="page">
-    <toolbar :title="$t(title)" 
-      :showmenuicon="showmenuicon" 
-      :showbackicon="showbackicon"
-      >
+    <toolbar :title="$t(title)" :showbackicon="true"  @goback="back"  >
       <!-- <div class="right" slot="right-tool" @click="toAdd">
         <i class="material-icons">&#xE145;</i>
       </div> -->
@@ -55,8 +52,6 @@ export default {
   data() {
     return {
       title: 'MyAddress.Title',
-      showbackicon: false,
-      showmenuicon: true,
       search: '',
       working: false,
       delok: false,
@@ -81,9 +76,12 @@ export default {
   },
   methods: {
     ...mapActions(['deleteMyAddress']),
+    back(){
+      this.$router.back()
+    },
     toAdd() {
       //跳转到添加联系人菜单
-      this.$router.push('/myaddress/add')
+      this.$router.push({name: 'MyAddressAdd'})
     },
     toEdit(data){
       this.$router.push({name: 'MyAddressEdit', params: {name: data.name}})

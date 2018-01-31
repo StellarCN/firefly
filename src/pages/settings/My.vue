@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-23 11:14:24 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-01-31 11:51:39
+ * @Last Modified time: 2018-01-31 15:17:16
  * @License: MIT 
  */
 <template>
@@ -19,7 +19,7 @@
       <accounts-nav :show="showaccountsview" @close="closeView"/>
 
       <div class="content">
-          <card padding="0px 0px"  class="infocard">
+          <card padding="20px 0px"  class="infocard">
             <div slot="card-content">
                 <div class="flex-row">
                     <div class="flex2 textcenter">
@@ -32,32 +32,25 @@
                         <div class="address">{{account.address | shortaddress}}</div>
                     </div>
                 </div>
+                <div class="flex-row line32 margin-t-10">
+                    <div class="flex1 textcenter" @click="toOffer">
+                        <i class="material-icons vcenter">&#xE85D;</i>
+                        <span>{{ $t('History.Offer') }}</span>
+                    </div>
+                    <div class="flex1 textcenter" @click="toHistory">
+                        <i class="material-icons  vcenter">&#xE889;</i>
+                        <span>{{$t('History.Title')}}</span>
+                    </div>
+                </div>
             </div>
           </card>
           <card padding="0px 0px" margin="20px 0px" class="infocard">
             <div slot="card-content">
                 <ul class="settings-ul">
-                    <li class="settings-li" @click="toManageAccount">
-                    <span>{{$t('ManageAccount')}}</span>
-                    </li>
-                    <li class="settings-li">
-                    <span>{{$t('PinCode')}}</span>
-                    <v-switch class="pincodeswitch"
-                                v-model="pinEnable"
-                                color="primary"
-                                hide-details
-                                @change="switchPinCode"
-                                ></v-switch>
-                    
-                    </li>
-                    <li class="settings-li" @click="toChangeLanguage">
-                    <span>{{$t('Language')}}</span>
-                    </li>
-                    <li class="settings-li" @click="toChangeHorizon">
-                    <span>{{$t('PublicNetUrl')}}</span>
-                    </li>
-                    <li class="settings-li" @click="toAbout">
-                    <span>{{$t('About.Title')}}</span> 
+                    <li class="settings-li" @click="redirect(item.name)" v-for="item in menus" :key="item.name">
+                        <i class="material-icons vcenter">{{item.icon}}</i>
+                        <span>{{$t(item.title)}}</span>
+                        <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
                     </li>
                 </ul>
                 
@@ -77,8 +70,37 @@ import  TabBar from '@/components/TabBar'
 export default {
     data(){
         return {
-            pinEnable: false,
             showaccountsview: false,
+            menus: [
+                {
+                    title: "ManageAccount",
+                    name: "ManageAccount",
+                    icon: "account_balance_wallet"
+                },
+                {
+                    title: "Menu.Contacts",
+                    name: "ContactsList",
+                    icon: "supervisor_account"    
+                },
+                {
+                    title: "Menu.MyAddress",
+                    name: "MyAddress",
+                    icon: "bookmark"    
+                },
+                {
+                    title: "Menu.Settings",
+                    name: "Settings",
+                    icon: "settings"    
+                },
+                {
+                    title: "Menu.Help",
+                    name: "Help",
+                    icon: "help"    
+                }
+            ],
+            myofferpage:{ name: 'History', params: { active: 'offer' } },
+            historypage:{ name: 'History', params: { active: 'transaction' } }
+
         }
     },
     computed: {
@@ -95,6 +117,9 @@ export default {
         this.pinEnable = this.app.enablePin || false
     },
     methods: {
+        ...mapActions([
+            'changeCurrentHistoryComponent'
+        ]),
         toNameCard(){
               this.$router.push({name:'AccountNameCard'})
         },  
@@ -106,27 +131,25 @@ export default {
             }
             // value=false，则要求输入ping码，正确后才可以取消
             this.$router.push({name: 'DelPinCode'})
-            
-            },
-        toManageAccount(){
-            this.$router.push({name: 'ManageAccount'})
         },
-        toChangeLanguage(){
-            this.$router.push({name: 'Language'})
+        redirect(name){
+            this.$router.push({name})
         },
-        toChangeHorizon(){
-            this.$router.push({name: 'Horizon'})
-        },
-        toAbout(){
-            this.$router.push({name: 'About'})
-        },
-
         showAccounts(){
             this.showaccountsview = true
         },
         closeView(){
             this.showaccountsview = false
-        }
+        },
+        toOffer(){
+            this.changeCurrentHistoryComponent(this.myofferpage.params.active)
+            this.$router.push(this.myofferpage)
+            
+        },
+        toHistory(){
+            this.changeCurrentHistoryComponent(this.historypage.params.active)
+            this.$router.push(this.historypage)
+        },
         
     },
 

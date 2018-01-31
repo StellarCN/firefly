@@ -1,7 +1,16 @@
 @require '~@/stylus/app.styl'
-.avatar
-    font-size: 42px
-    color: $primarycolor.green
+.avatar-wrapper
+    text-align: center
+    .avatar-back
+        background: $primarycolor.gray
+        height: 62px
+        line-height: 62px
+        display: inline-block
+        width: 62px
+        border-radius: 62px
+        .avatar
+            font-size: 38px
+            color: $primarycolor.green
 .title
   margin-top: 5px
   height: 32px
@@ -11,14 +20,22 @@
   height: 14px
   line-height: 14px!important
   font-size: 14px
+  color: $secondarycolor.font
 .settings-ul
-    padding-left: 10px
+    padding: 10px 10px
     .settings-li
         font-size: 16px
-        padding-top: 5px
-        padding-bottom: 5px
+        height: 42px
+        line-height: 42px
         .pincodeswitch
             float: right
             width: 50px
             padding-top: 0px
 
+.line32
+    height: 32px
+    line-height: 32px
+.vcenter
+    vertical-align: middle
+.margin-t-10
+    margin-top: 10px
