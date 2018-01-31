@@ -3,13 +3,13 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-30 19:59:57 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-01-30 20:02:55
+ * @Last Modified time: 2018-01-31 09:06:56
  * @License: MIT 
  */
 export default {
   data(){
     return {
-      intervalID: null,
+      bbInterval: null,
     }
   },
   mounted(){
@@ -17,8 +17,8 @@ export default {
     document.addEventListener("backbutton", this.onBackKeyDown, false); 
   },
   beforeDestroy(){
-    if(this.intervalID){
-      window.clearInterval(this.intervalID);
+    if(this.bbInterval){
+      window.clearInterval(this.bbInterval);
     }
     document.removeEventListener("backbutton", this.onBackKeyDown, false);
     document.removeEventListener("backbutton", this.exitApp, false); 
@@ -30,7 +30,7 @@ export default {
         document.removeEventListener("backbutton", this.onBackKeyDown, false); // 注销返回键  
         document.addEventListener("backbutton", this.exitApp, false);//绑定退出事件  
         // 3秒后重新注册  
-        this.intervalID = window.setInterval(() => {  
+        this.bbInterval = window.setInterval(() => {  
             document.removeEventListener("backbutton", this.exitApp, false); // 注销返回键  
             document.addEventListener("backbutton", this.onBackKeyDown, false); // 返回键  
             window.clearInterval(this.intervalID);  

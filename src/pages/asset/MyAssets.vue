@@ -87,6 +87,8 @@ import BottomNotice from '@/components/BottomNotice'
 import  { miniAddress } from '@/api/account'
 import { isNativeAsset } from '@/api/assets'
 import Loading from '@/components/Loading'
+import backbutton from '@/mixins/backbutton'
+import loadaccount from '@/mixins/loadaccount'
 export default {
   data(){
     return {
@@ -104,6 +106,7 @@ export default {
 
     }
   },
+  mixins: [backbutton, loadaccount],
   computed:{
     ...mapState({
       account: state => state.accounts.selectedAccount,
