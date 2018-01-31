@@ -7,6 +7,8 @@ export const APP_VERSION = '1.2.6'
 
 export const APP_GITHUB = 'https://github.com/stellarcn/firefly'
 
+export const OFFICIAL_SITE = 'https://fchain.io'
+
 // APP 最新版本信息
 export const CHECK_UPDATE = 'https://stellarcn.github.io/firefly/version.json'
 //default interval : 4000ms

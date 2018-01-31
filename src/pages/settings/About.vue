@@ -10,18 +10,37 @@
       ref="toolbar"
       >
     </toolbar>
-    <div class="logo-wrapper">
-            <img src="../../assets/img/logo-blank.png" alt="firefly" class="logo-img"/>
-    </div>
     <div class="content">
-      <card class="icard" padding="8px 8px">
+      <card class="icard" padding="20px 10px">
+        <div slot="card-content" class="">
+          <div class="logo-wrapper">
+            <img src="../../assets/img/logox.png" alt="firefly" class="logo-img"/>
+          </div>
+          <div class="textcenter appname">
+            FireFly
+          </div>
+          <div class="textcenter appversion">
+            {{$t('Version')}}:{{appversion}}
+          </div>
+        </div>
+      </card>
+      <card class="detail-card" padding="10px 10px" margin="10px 0 10px 0">
         <div class="card-content" slot="card-content">
             <div class="row">
                 <div class="label">
-                    {{$t('Version')}}
+                    {{$t('TermsOfServiceTitle')}}
                 </div>
                 <div class="value">
-                    {{appversion}}
+                    <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">
+                    {{$t('OfficialSite')}}
+                </div>
+                <div class="value">
+                    {{officialSite}}
+                    <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
                 </div>
             </div>
             <div class="row">
@@ -30,6 +49,7 @@
                 </div>
                 <div class="value" @click="openFireflyGithub">
                     {{fireflyGithub}}
+                     <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
                 </div>
             </div>
         </div>
@@ -49,7 +69,7 @@
 <script>
 import Toolbar from '@/components/Toolbar'
 import Card from '@/components/Card'
-import { APP_VERSION, APP_GITHUB, checkUpdate } from '@/api/gateways'
+import { APP_VERSION, APP_GITHUB, OFFICIAL_SITE, checkUpdate } from '@/api/gateways'
 
 export default {
   data(){
@@ -58,6 +78,7 @@ export default {
       showbackicon: true,
       appversion: APP_VERSION,
       fireflyGithub: APP_GITHUB,
+      officialSite: OFFICIAL_SITE,
       latestVersion: null,
       updateURL: null
     }
@@ -97,27 +118,27 @@ export default {
 
 <style lang="stylus" scoped>
 @require '~@/stylus/color.styl'
-.page
-  background: $primarycolor.gray
-  .content
-    padding: 8px 8px
-    color: $primarycolor.font
-  .logo-wrapper
-    height: 240px
-    width: 100%
-    background: $primarycolor.green
-    display: block
-    text-align: center
-    vertical-align: middle
-    padding-top: 42px
-    .logo-img
-      width: 120px
-      height:156px
+.logo-wrapper
+  height: 120px
+  width: 100%
+  display: block
+  text-align: center
+  vertical-align: middle
+  .logo-img
+    width: 120px
+    height:120px
+.appname
+  font-size: 24px
+  color: $primarycolor.green
+.appversion
+  color: $secondarycolor.font
 .row
   display: flex
-  border-bottom: 1px solid $secondarycolor.font
   padding-top: 5px
   padding-bottom: 5px
+  height: 46px
+  line-height: 46px
+  vertical-align: middle
   &:last-child
     border-bottom: 0px
   .label
@@ -125,6 +146,12 @@ export default {
   .value
     flex: 3
     color: $secondarycolor.font
+    font-size: 14px
+    height: 46px
+    line-height: 46px
+    vertical-align: middle
 .link
     color: $secondarycolor.font
+.material-icons
+  margin-top: 12px
 </style>
