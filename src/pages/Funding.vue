@@ -21,7 +21,7 @@
               v-model="selectedasset"
               :label="$t('Asset')"
               class="selectasset"
-              item-value="code"
+              item-value="issuer"
               item-text="code"
               dark
               :return-object="assetChoseReturnObject"
@@ -29,15 +29,15 @@
             >
             <template slot="selection" slot-scope="data">
               <span class="asset-select-code show">{{data.item.code}}</span>
-              <span class="asset-select-issuer show" v-if="assethosts[data.item.code]">{{assethosts[data.item.code]}}</span>
-              <span class="asset-select-issuer show" v-else-if="assethosts[data.item.issuer]">{{assethosts[data.item.issuer]}}</span>
+              <span class="asset-select-issuer show" v-if="assethosts[data.item.issuer]">{{assethosts[data.item.issuer]}}</span>
+              <span class="asset-select-issuer show" v-else-if="assethosts[data.item.code]">{{assethosts[data.item.code]}}</span>
               <span class="asset-select-issuer show" v-else>{{data.item.issuer|miniaddress}}</span>
 
             </template>
             <template slot="item" slot-scope="data">
               <span class="asset-select-code">{{data.item.code}}</span>
-              <span class="asset-select-issuer show" v-if="assethosts[data.item.code]">{{assethosts[data.item.code]}}</span>
-              <span class="asset-select-issuer show" v-else-if="assethosts[data.item.issuer]">{{assethosts[data.item.issuer]}}</span>
+              <span class="asset-select-issuer show" v-if="assethosts[data.item.issuer]">{{assethosts[data.item.issuer]}}</span>
+              <span class="asset-select-issuer show" v-else-if="assethosts[data.item.code]">{{assethosts[data.item.code]}}</span>
               <span class="asset-select-issuer show" v-else>{{data.item.issuer|miniaddress}}</span>
             </template>
           </v-select>
@@ -177,7 +177,7 @@ export default {
        if(!this.balances)return []
        let data = []
        this.balances.forEach((element) => {
-        if( isNativeAsset(element)){
+        if( !isNativeAsset(element)){
           data.push(Object.assign({}, element))
         }
       })
