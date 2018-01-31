@@ -37,15 +37,15 @@ let federations = {
 /**
  * 根据公网地址查询当前用户的联邦地址
  * @param {*} accountId
- * @return Promise 
+ * @return Promise
  */
-export function getAddressByAccountId(accountId){
+export function getAddressByAccountId(accountId, domain='fed.network'){
   if(federations[accountId]){
     return new Promise((resolve,reject)=>{
       resolve(federations[accountId])
     })
   }
-  return StellarSdk.FederationServer.resolveAccountId(accountId)
+  return federationServer(domain).then(server => server.resolveAccountId(accountId)
     .then(data=>{
       console.log('---------------- resolve account id ')
       console.log(data)
@@ -53,17 +53,21 @@ export function getAddressByAccountId(accountId){
         resolve(data)
       })
     })
+  )
 }
 
 /**
  * 根据联邦地址查询公网地址
  * @param {*} address 联邦地址，如  bind*fed.network
- * @return Promise 
+ * @return Promise
  */
 export function getAccountIdByAddress(address){
-  //TODO 
-  
-  return StellarSdk.FederationServer.resolveAddress(address)
+  // 返回的数据格式
+  // {
+  //   account_id: 'GAUXS***',
+  //   stellar_address: 'id*fed.network'
+  // }
+  return StellarSdk.FederationServer.resolve(address)
     .then(data=>{
       console.log('---------------- resolve address ')
       console.log(data)
@@ -85,7 +89,7 @@ export function getAccountIdByAddress(address){
 //      memo: 100
 //    }
 //  });
-// 
+//
 /**
  * 根据联邦地址查询相应的信息，主要用于提现部分
  * @param {*} address  like btc_withdraw*naobtc.com
