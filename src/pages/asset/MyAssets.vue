@@ -16,6 +16,7 @@
       </v-btn>
       <span slot="switch_password">{{$t('Account.Password')}}</span>
     </toolbar>
+    <scroll :refresh="refresh">
     <div class="content">
       <card padding="0px 0px" class="">
         <div class="assets" slot="card-content" v-if="balances && balances.length>0">
@@ -70,8 +71,8 @@
           </div>
         </div>
       </card>
-      
     </div>
+    </scroll>
 
    <bottom-notice :show.sync="notice" :text="noticeText">    </bottom-notice>
    <loading :show="working" :loading="working" :success="delok" :fail='delerror' />
@@ -89,6 +90,7 @@ import { isNativeAsset } from '@/api/assets'
 import Loading from '@/components/Loading'
 import backbutton from '@/mixins/backbutton'
 import loadaccount from '@/mixins/loadaccount'
+import Scroll from '@/components/Scroll'
 export default {
   data(){
     return {
@@ -212,15 +214,17 @@ export default {
             this.working = false
           },1000)
         })
-		
-
     },
+    refresh(){
+      this.load()
+    }
    
   },
   components: {
     Toolbar,
     BottomNotice,
     Card,
+    Scroll,
     'loading': Loading,
   }
 }
