@@ -30,7 +30,9 @@
         <div class="card-content" slot="card-content">
       
           <ul class="tradepairs-ul">
-            <li class="tradepair-li" v-for="(pair,index) in tradepairs" :key="index">
+            <draggable v-model="pairs">
+            <transition-group>
+            <li class="tradepair-li" v-for="(pair,index) in pairs" :key="pair.from.issuer+'-'+pair.to.issuer">
               <v-layout class="pair-wrapper" row wrap v-swiper=2  @click="trade(index,pair)">
                 <v-flex xs4 class="from-wrapper">
                   <div class="code">{{pair.from.code}}</div>
@@ -63,6 +65,8 @@
               </div>
               
             </li>
+            </transition-group>
+            </draggable>
           </ul>
 
         </div>
@@ -99,12 +103,11 @@
 </template>
 
 <script>
+import draggable from 'vuedraggable'
 import Toolbar from '@/components/Toolbar'
 import Card from '@/components/Card'
 import Picker from "@/components/picker"
 import TradePairPicker from '@/components/TradePairPicker'
-
-
 import { mapState, mapActions,mapGetters} from 'vuex'
 import { miniAddress } from '@/api/account'
 import { isNativeAsset } from '@/api/assets'
@@ -138,6 +141,15 @@ export default {
     ...mapGetters([
       'balances',
     ]),
+    pairs:{
+      get(){
+        return this.tradepairs
+      },
+      set(value){
+        this.$store.commit('SORT_TRADEPAIRS',value)
+
+      }
+    },
     items(){
       if(!this.balances)return []
       let values = []
@@ -322,7 +334,8 @@ export default {
     Picker,
     TradePairPicker,
     KLine,
-    TabBar
+    TabBar,
+    draggable
   }
 }
 </script>
