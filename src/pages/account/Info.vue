@@ -40,11 +40,12 @@
           </div>
         
           <div class="qrcode" v-if="showseed">
-            <qrcode :text="qrtext" :callback="qrcodecallback"/>
+            <qrcode :text="qrtext" :callback="qrcodecallback" color="red"/>
           </div>
         </div>
 
       </card>
+      
       
       <div :class="'footer' + (canModify ? ' active':' unactive') ">
         <v-layout row wrap>
@@ -471,6 +472,10 @@ export default {
   font-size:14px
   margin-top: 10px
   text-align:center
+  position: fixed
+  bottom: 0
+  left: 0
+  right: 0
   &.active
     color:$primarycolor.green
   &.unactive
