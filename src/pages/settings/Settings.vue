@@ -21,15 +21,15 @@
             </li>
             <li class="settings-li" @click="toChangeLanguage">
               <span>{{$t('Language')}}</span>
-              <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
+              <i class="material-icons vcenter f-right s-right">keyboard_arrow_right</i>
             </li>
             <li class="settings-li" @click="toChangeHorizon">
               <span>{{$t('PublicNetUrl')}}</span>
-              <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
+              <i class="material-icons vcenter f-right s-right">keyboard_arrow_right</i>
             </li>
             <li class="settings-li" @click="toAbout">
               <span>{{$t('About.Title')}}</span> 
-              <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
+              <i class="material-icons vcenter f-right s-right">keyboard_arrow_right</i>
             </li>
           </ul>
         </div>
@@ -129,6 +129,7 @@ export default {
               float: right
               width: 50px
               padding-top: 0px
-
+.s-right
+  margin-right: 10px
 </style>
 
