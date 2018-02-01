@@ -99,15 +99,15 @@
 </template>
 
 <script>
-import Toolbar from '../../components/Toolbar'
-import Card from '../../components/Card'
-// import Picker from '../../libs/vue-picker'
+import Toolbar from '@/components/Toolbar'
+import Card from '@/components/Card'
 import Picker from "@/components/picker"
-import TradePairPicker from '../../components/TradePairPicker'
+import TradePairPicker from '@/components/TradePairPicker'
 
 
 import { mapState, mapActions,mapGetters} from 'vuex'
 import { miniAddress } from '@/api/account'
+import { isNativeAsset } from '@/api/assets'
 import KLine from '@/components/KLine'
 import TabBar from '@/components/TabBar'
 export default {
@@ -143,14 +143,16 @@ export default {
       let values = []
       let hosts = []
       this.balances.forEach((element) => {
-          values.push(element.code)
-          if(this.assethosts[element.code]){
-            hosts.push(this.assethosts[element.code])
-          }else if(this.assethosts[element.issuer]){
+        values.push(element.code)
+        if(isNativeAsset(element)){
+          hosts.push(this.assethosts[element.code])
+        }else{
+          if(this.assethosts[element.issuer]){
             hosts.push(this.assethosts[element.issuer])
           }else{
             hosts.push(miniAddress(element.issuer))
           }
+        }
       })
       var x = []
       this.balances.forEach((element,i)=>{
