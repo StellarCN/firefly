@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 <template>
   <div class="page">
@@ -8,7 +8,7 @@
       <card padding="10px 10px" class="mycard">
         <div class="card-content" slot="card-content">
           <ul class="settings-ul">
-            
+
             <li class="settings-li">
               <span>{{$t('PinCode')}}</span>
               <v-switch class="pincodeswitch f-right"
@@ -17,7 +17,7 @@
                         hide-details
                         @change="switchPinCode"
                         ></v-switch>
-              
+
             </li>
             <li class="settings-li" @click="toChangeLanguage">
               <span>{{$t('Language')}}</span>
@@ -27,8 +27,12 @@
               <span>{{$t('PublicNetUrl')}}</span>
               <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
             </li>
+            <li class="settings-li" @click="toFederationService">
+              <span>{{$t('FederationName')}}</span>
+              <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
+            </li>
             <li class="settings-li" @click="toAbout">
-              <span>{{$t('About.Title')}}</span> 
+              <span>{{$t('About.Title')}}</span>
               <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
             </li>
           </ul>
@@ -56,7 +60,7 @@ export default {
       accountData: state => state.accounts.accountData,
       app: state => state.app
     }),
-  
+
   },
   beforeMount(){
     this.pinEnable = this.app.enablePin || false
@@ -80,7 +84,6 @@ export default {
       }
       // value=false，则要求输入ping码，正确后才可以取消
       this.$router.push({name: 'DelPinCode'})
-      
     },
     toManageAccount(){
       this.$router.push({name: 'ManageAccount'})
@@ -88,13 +91,15 @@ export default {
     toChangeLanguage(){
       this.$router.push({name: 'Language'})
     },
+    toFederationService() {
+      this.$router.push({name: 'Federation'})
+    },
     toChangeHorizon(){
       this.$router.push({name: 'Horizon'})
     },
     toAbout(){
       this.$router.push({name: 'About'})
     },
-   
   },
   components: {
     Toolbar,
@@ -131,4 +136,3 @@ export default {
               padding-top: 0px
 
 </style>
-

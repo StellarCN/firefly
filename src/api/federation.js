@@ -39,7 +39,8 @@ let federations = {
  * @param {*} accountId
  * @return Promise
  */
-export function getAddressByAccountId(accountId, domain='fed.network'){
+export function getAddressByAccountId(accountId, domain='fed.network') {
+  // 或许可以考虑获取用户的 home_domain 作为这里的 domain
   if(federations[accountId]){
     return new Promise((resolve,reject)=>{
       resolve(federations[accountId])
@@ -61,7 +62,7 @@ export function getAddressByAccountId(accountId, domain='fed.network'){
  * @param {*} address 联邦地址，如  bind*fed.network
  * @return Promise
  */
-export function getAccountIdByAddress(address){
+export function getAccountIdByAddress(address) {
   // 返回的数据格式
   // {
   //   account_id: 'GAUXS***',

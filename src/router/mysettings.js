@@ -22,6 +22,11 @@ export default {
         component: resolve => require(['../pages/settings/Horizon'], resolve)
       },
       {
+        path: 'federation',
+        name: 'Federation',
+        component: resolve => require(['../pages/settings/Federation'], resolve)
+      },
+      {
         path: 'language',
         name: 'Language',
         component: resolve => require(['../pages/settings/Language'], resolve)

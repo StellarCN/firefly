@@ -114,6 +114,16 @@
   "SaveHorizonSuccess":"save public network URL success",
   "Error.SaveHorizonFial": "save public network URL failed",
 
+  "FederationName": "Federation Name",
+  "FederationName.Description": "This service is provided by fed.network, you can visit this website for more information. Here you can register a username such as name*fed.network, and other users can send the asset to you with it. However, it should be noted that this service is only for the convenience of the user in inputting the address, please recheck the really address by yourself. To register for an address you need to pay 0.5 XLM.",
+  "FederationName.Address": "Your federation address:",
+  "FederationName.Connecting": "Connecting...",
+  "FederationName.ConnectionFailed": "Network connection failed. Please try later.",
+  "FederationName.Available": "The name is available，please pay as soon as possible",
+  "FederationName.Unavailable": "The name is unavailable，please change it",
+  "FederationName.NetworkError": "Network Error",
+  "FederationName.Error": "Error",
+
   "SaveSuccess":"save successful",
   "SaveFailed":"save failed",
 
