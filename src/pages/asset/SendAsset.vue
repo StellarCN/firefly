@@ -222,6 +222,10 @@ export default {
     if (this.$route.params.destination) {
       console.log('set destination')
       this.destination = this.$route.params.destination
+      if (this.$route.params.amount) {
+        console.log('set amount')
+        this.amount = this.$route.params.amount
+      }
       if (this.$route.params.memo_type && this.$route.params.memo) {
         console.log('set memotype and memo')
         this.memoswitch = true

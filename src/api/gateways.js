@@ -14,6 +14,7 @@ export const CHECK_UPDATE = 'https://stellarcn.github.io/firefly/version.json'
 //default interval : 4000ms
 export const DEFAULT_INTERVAL = 4000
 
+export const FED_NETWORK_BIND_ADDRESS = 'bind*fed.network'
 //通账池
 export const INFLATION_POOL = [
   {
