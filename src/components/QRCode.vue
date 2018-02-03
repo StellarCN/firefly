@@ -5,17 +5,20 @@
         dotScale='1' 
         :size="size" 
         :logoSrc="logo" 
-        colorDark="#000000" 
+        :colorDark="frontcolor" 
         :callback="qrcallback"
         margin="10"></vue-qr>
 </template>
 
 <script>
-import VueQR from '../libs/vue-qr/main'
+import VueQR from '@/libs/vue-qr/main'
+let GREEN = 'green', RED = 'red'
 export default {
   data(){
     return {
-      logo: require("../assets/img/logo.png"),
+      greenlogo: require("../assets/img/ff-green.png"),
+      redlogo: require("../assets/img/ff-red.png"),
+      frontcolor: '#21ce90'
     }
   },
   props:{
@@ -29,7 +32,26 @@ export default {
     },
     callback: {
       type: Function
+    },
+    color: {
+      type: String,
+      default: GREEN
     }
+  },
+  beforeMount () {
+    if(this.color === RED){
+        this.frontcolor = '#f35833'
+      }else{
+        this.frontcolor = '#21ce90'
+      }
+  },
+  computed: {
+    logo(){
+      if( this.color === RED){
+        return this.redlogo
+      }
+      return this.greenlogo
+    },
   },
   methods: {
     qrcallback(img){

@@ -61,6 +61,7 @@
     "vue-qr": "^1.2.3",
     "vue-router": "^2.7.0",
     "vue-toasted": "^1.1.21",
+    "vuedraggable": "^2.16.0",
     "vuetify": "^0.17.2",
     "vuex": "^2.4.0"
   },

@@ -26,7 +26,7 @@
       </card>
       <card class="detail-card" padding="10px 10px" margin="10px 0 10px 0">
         <div class="card-content" slot="card-content">
-            <div class="row">
+            <div class="row" @click="toTermOfServices">
                 <div class="label">
                     {{$t('TermsOfServiceTitle')}}
                 </div>
@@ -34,34 +34,32 @@
                     <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" @click="openURL(officialSite)">
                 <div class="label">
                     {{$t('OfficialSite')}}
                 </div>
-                <div class="value">
+                <div class="value"> 
                     {{officialSite}}
                     <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
                 </div>
             </div>
-            <div class="row">
+            <div class="row"  @click="openURL(fireflyGithub)">
                 <div class="label">
                     github
                 </div>
-                <div class="value" @click="openFireflyGithub">
+                <div class="value">
                     {{fireflyGithub}}
                      <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
                 </div>
             </div>
         </div>
       </card>
-      <div style="flex: 1;"></div>
-      <v-footer>
         <v-layout row wrap>
           <v-flex xs12>
             <v-btn class='primary' block dark large @click="openDownloadURL" v-if="latestVersion > appversion">{{$t('About.UpdateTo')}} {{latestVersion}}</v-btn>
           </v-flex>
         </v-layout>
-      </v-footer>
+
     </div>
   </div>
 </template>
@@ -91,10 +89,6 @@ export default {
       this.$router.back()
     },
 
-    openFireflyGithub(){
-      window.open(this.fireflyGithub, '_system')
-    },
-
     checkNewVersion() {
       checkUpdate().then(data => {
         this.latestVersion = data.version
@@ -104,6 +98,18 @@ export default {
 
     openDownloadURL() {
       window.open(this.updateURL, '_system')
+    },
+    openURL(url){
+      window.open(url, '_system')
+      
+    },
+    toTermOfServices(){
+      this.$router.push({
+        name: 'TermsOfService',
+        query: {
+          active: 'back'
+        }
+      })
     },
   },
   components: {

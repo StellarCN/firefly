@@ -334,6 +334,9 @@ const mutations = {
   },
   CHANGE_CURRENT_HISTORY_COMPONENT(state, data) {
     state.currentHistoryComponent = data
+  },
+  SORT_TRADEPAIRS(state,pairs){
+    state.accountData.tradepairs = pairs
   }
 }
 
@@ -359,3 +362,4 @@ export const RESET_PASSWORD = 'RESET_PASSWORD'
 export const QUERY_MY_EFFECTS = 'QUERY_MY_EFFECTS'
 export const CLEAN_MY_EFFECTS = 'CLEAN_MY_EFFECTS'
 export const CHANGE_CURRENT_HISTORY_COMPONENT = 'CHANGE_CURRENT_HISTORY_COMPONENT'
+export const SORT_TRADEPAIRS = 'SORT_TRADEPAIRS'

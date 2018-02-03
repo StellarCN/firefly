@@ -4,12 +4,15 @@
 <template>
   <div class="terms-service-page">
     <v-toolbar dark class="tbar primary" dense>
+      <v-btn icon v-show="showbackicon" @click="goback" class="white--text">
+            <v-icon class="back-icon">&#xE5CB;</v-icon>
+      </v-btn>
       <v-toolbar-title class="white--text title">{{$t('TermsOfServiceTitle')}}</v-toolbar-title>
       <v-spacer></v-spacer>
     </v-toolbar>
-    <div class="page-content" v-html="$t('TermsOfService')">
+    <div :class="'page-content ' + (showbackicon ? 'page-content-showback': '')" v-html="$t('TermsOfService')">
     </div>
-    <div class="footer">
+    <div class="footer" v-if="!showbackicon">
        <v-layout row wrap>
         <v-flex xs6 @click="goback">
           <span>{{$t('Return')}}</span>
@@ -25,11 +28,24 @@
 <script>
 import { mapState,mapActions} from 'vuex'
 export default {
+  data(){
+    return {
+      showbackicon: false
+    }
+  },
   computed: {
     ...mapState({
       isImportAccount: state => state.isImportAccount,
       isCreateAccount: state => state.isCreateAccount
     })
+  },
+  beforeMount () {
+    let active = this.$route.query.active
+    if(active === 'back'){
+      this.showbackicon = true
+    }
+
+
   },
   methods: {
     ...mapActions({
@@ -51,7 +67,7 @@ export default {
 </script>
 
 <style  lang="stylus" scoped>
-@require '../stylus/color.styl'
+@require '~@/stylus/color.styl'
 .terms-service-page
   background: $primarycolor.gray
 .tbar
@@ -66,6 +82,8 @@ export default {
   overflow-y:auto
   font-size: 14px
   padding: 20px 20px
+.page-content-showback
+  bottom: 10px
 .title
   width: 100%
   text-align: center

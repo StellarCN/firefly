@@ -129,7 +129,8 @@
        </div>
 
       </card>
-
+      
+      <div style="flex: 1;"></div>
      <div class="btn-group" v-if="!showContacts">
         <v-btn class="error btn-send" @click.stop="send">{{$t('Send')}}</v-btn>
      </div>
