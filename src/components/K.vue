@@ -3,22 +3,31 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-01-26 17:54:33
+ * @Last Modified time: 2018-02-05 17:56:05
  * @License: MIT 
  */
 <template>
   <div class="k">
+      <div class="flex-row" v-if="showTitle">
+          <div :class="'flex2 pricle ' + ( titleData.change >=0 ? 'up':'down') ">{{titleData.price}}{{counter.code}}</div>
+          <div class="flex1 change">{{titleData.change}}</div>
+          <div class="flex1 rate">{{titleData.rate}}</div>
+      </div>
       <div class="kgraph" :id="id" v-bind:style="{height: height + 'px'}"></div>
   </div>
 </template>
 
 <script>
 var echarts = require('echarts')
+import NP from 'number-precision'
 import { getTradeAggregation, getTradeAggregation5min, 
     getTradeAggregation15min, getTradeAggregation1hour, 
     getTradeAggregation1day, getTradeAggregation1week,
     RESOLUTION_5MIN } from '@/api/tradeAggregation'
 import { getAsset } from '@/api/assets'
+import { mapState, mapActions, mapGetters} from 'vuex'
+import { getTrades } from '@/api/trade'
+import { DEFAULT_INTERVAL } from '@/api/gateways'
 var moment = require('moment')
 
 
@@ -35,6 +44,10 @@ export default {
             data: [],//每条数据是一个数组，[开盘价，收盘价，最低价，最高价]
             tinterval: null,//定时器
             lasttime: null,//上次的执行时间
+
+            //最新的成交价格统计
+            lasetTrade:null,
+            tradeInterval: null,//查询最新一次交易数据的interval
             
         }
     },
@@ -69,6 +82,10 @@ export default {
             type: Boolean,
             default: false
         },
+        showTitle: {
+            type: Boolean,
+            default: false
+        },
         fullscreen: {
             type: Boolean,
             default: false
@@ -78,6 +95,20 @@ export default {
             type: Number,
             default: 360
         }
+    },
+    computed: {
+      titleData(){
+          if(this.data.length > 0 && this.lastTrade){
+            let price = NP.divide(Number(this.latestTrade.base_amount), Number(this.latestTrade.counter_amount))
+            price = NP.round(price,7)
+            let lastTradeAggregation = this.data[0]
+            let open = Number(lastTradeAggregation.open)
+            let change = NP.minus(price,open)
+            let rate = NP.times(100, NP.divide(change, open))
+            return  Object.assign({}, lastTradeAggregation, {price,chagne,rate })
+          }
+          return {}
+      }  
     },
     beforeMount () {
         //生成随机的id
@@ -99,15 +130,21 @@ export default {
         if(this.fullscreen){
             screen.orientation.lock('portrait');
         }
+        this.deleteTradeInterval()
         
     },
     mounted () {
         this.$nextTick(()=>{
             this.init();
-            this.fetch()
+            this.fetch();
+            this.fetchLastTrade()
         })
     },
     methods: {
+
+        ...mapActions({
+            getAccountInfo: 'getAccountInfo',
+        }),
         init() {
             this.initView()
         },
@@ -377,12 +414,50 @@ export default {
                 result.push((sum / dayCount).toFixed(2));
             }
             return result;
-        }
+        },
+
+        setupTradeInterval(){
+            if (!this.tradeInterval){
+                this.tradeInterval = setInterval(()=>{
+                this.fetchLastTrade()
+                console.log(this.account.address)
+                this.getAccountInfo(this.account.address)
+                },DEFAULT_INTERVAL)
+            }
+            this.fetchLastTrade()
+        },
+
+        deleteTradeInterval(){
+            if(this.tradeInterval!= null && typeof this.tradeInterval != 'undefined'){
+                clearInterval(this.tradeInterval)
+                this.lastTrade = null
+            }
+        },
+        //查询最新一次成交记录
+        fetchLastTrade(){
+            let counterasset = getAsset(this.counter.code,this.counter.issuer)
+            let baseasset = getAsset(this.base.code,this.base.issuer)
+            getTrades(baseasset,counterasset,"desc",1)
+                .then(data=>{
+                    if(data.records && data.records.length > 0){
+                        this.lastTrade = data.records[0]
+                    }
+                }).catch(err=>{
+                    console.log(err)
+                })
+        },
+        
 
     }
 }
 </script>
 
-<style>
-
+<style lang="stylus" scoped>
+@require '~@/stylus/color.styl'
+.price
+    font-size: 16px
+    &.up
+        color: $primarycolor.green
+    &.down
+        color.$primarycolor.red
 </style>
