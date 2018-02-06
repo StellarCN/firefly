@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-02-05 17:56:05
+ * @Last Modified time: 2018-02-06 17:32:17
  * @License: MIT 
  */
 <template>
@@ -29,6 +29,7 @@ import { mapState, mapActions, mapGetters} from 'vuex'
 import { getTrades } from '@/api/trade'
 import { DEFAULT_INTERVAL } from '@/api/gateways'
 var moment = require('moment')
+import _ from 'lodash'
 
 
 export default {
@@ -105,7 +106,7 @@ export default {
             let open = Number(lastTradeAggregation.open)
             let change = NP.minus(price,open)
             let rate = NP.times(100, NP.divide(change, open))
-            return  Object.assign({}, lastTradeAggregation, {price,chagne,rate })
+            return  _.defaultsDeep({}, lastTradeAggregation, {price,chagne,rate })
           }
           return {}
       }  
@@ -172,7 +173,7 @@ export default {
             .then(data => {
                 this.lasttime = end_time
                 let records = data.records
-                records.reserve().map(item=>{
+                records.reverse().map(item=>{
                     if(this.incremental){
                         this.dates = []
                         this.volumes = []
@@ -206,7 +207,7 @@ export default {
             return {
                 animation: false,
                 color: this.colors,
-                title: {left: 'center', text: this.base.code + '/' + this.counter.code },
+              //  title: {left: 'center', text: this.base.code + '/' + this.counter.code },
                 legend: { top: 30,data: ['', 'MA5', 'MA10', 'MA20', 'MA30']},
                 tooltip: {
                     triggerOn: 'none',
@@ -455,9 +456,9 @@ export default {
 <style lang="stylus" scoped>
 @require '~@/stylus/color.styl'
 .price
-    font-size: 16px
-    &.up
-        color: $primarycolor.green
-    &.down
-        color.$primarycolor.red
+  font-size: 16px
+  &.up
+    color: $primarycolor.green
+  &.down
+    color: $primarycolor.red
 </style>

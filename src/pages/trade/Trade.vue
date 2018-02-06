@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-05 10:51:54 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-02-05 15:01:42
+ * @Last Modified time: 2018-02-06 17:18:00
  * @License MIT 
  */
 <template>
@@ -61,11 +61,11 @@
     </v-dialog>
 
     <div class="content">
-      <!--成交信息区-->
-      
       <!--K线图-->
+      <k :base="BaseAsset" :counter="CounterAsset" :incremental="true" :showTitle="true" />
       
       <!--买单卖单委单成交-->
+      <order-book ref="orderbook"/>
 
     </div>
 
@@ -83,13 +83,14 @@ import Card from '@/components/Card'
 import BottomNotice from '@/components/BottomNotice'
 import Loading from '@/components/Loading'
 import OrderBook from '@/components/OrderBook'
-
 import { listenOrderbook } from '@/api/orderbook'
 import { getTrades } from '@/api/trade'
 import { cancel as cancelOffer, myofferConvert, offer as doOffer }  from '@/api/offer'
 import { getAsset, isNativeAsset } from '@/api/assets'
 import { DEFAULT_INTERVAL } from '@/api/gateways'
 import { getXdrResultCode } from '@/api/xdr'
+import _ from 'lodash'
+
 export default {
   data(){
     return {
@@ -171,14 +172,14 @@ export default {
       selectTradePair: 'selectTradePair',
     }),
     nativeBalance(){
-      let d = Object.assign({}, this.balances.filter(item=>isNativeAsset(item))[0])
+      let d = _.defaultsDeep({}, this.balances.filter(item=>isNativeAsset(item))[0])
       let t = this.native.balance - this.reserve - this.base_reserve - 0.0001
       if(t < 0 ) t = 0 
       d.balance = Number(t.toFixed(7))
       return d;
     },
     assetBalance(asset){
-      return Object.assign({}, this.balances.filter(item=> item.code === asset.code && item.issuer === asset.issuer)[0])
+      return _.defaultsDeep({}, this.balances.filter(item=> item.code === asset.code && item.issuer === asset.issuer)[0])
     },
     back(){
       this.$router.back()

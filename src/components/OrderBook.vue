@@ -128,14 +128,6 @@ export default {
       type:String,
       default: 'buy'
     },
-    pairIndex: {
-      type: Number,
-      default: null
-    },
-    blank:{
-      type: Boolean,
-      default: false
-    }
   },
   computed:{
     ...mapState({
@@ -161,14 +153,6 @@ export default {
       }
       return 4
     },
-    // active: {
-    //   getter: function(){
-    //     return this.activetab
-    //   },
-    //   setter: function(value){
-    //     this.emit()
-    //   }
-    // },
     BaseAsset(){
       return this.selectedTrade.from
     },
@@ -176,62 +160,52 @@ export default {
       return this.selectedTrade.to
     },
     myofferlen(){
-      if(this.blank)return 0;
       return this.myoffers.length;
     },
     myoffers(){
-      if(this.blank)return []
       if(this.my){
         return myofferConvert(this.BaseAsset,this.CounterAsset,this.my)
       }
       return []
     },
     bidsdata(){
-      if(this.blank)return []
-      let data = []
       let dep = 0
-      let n=this.bids.length
-      for(var i=0;i<n;i++){
-        let obj = Object.assign({}, this.bids[i])
-        obj.num = (NP.round(Number(obj.amount), 4)).toFixed(4)
-        obj.price = Number(obj.price).toFixed(this.decimal)
-        obj.amount = (NP.round((obj.num * obj.price_r.d / obj.price_r.n), 2)).toFixed(2)
-        dep = NP.plus(dep, Number(obj.num));
-        obj.depth = (NP.round(dep, 2)).toFixed(2)
-        obj.origin = this.bids[i]
-        data.push(obj)
-      }
-      data.forEach(ele=>{
+      let newdata = this.bids.map(obj=>{
+        dep = NP.plus(dep, Number(obj.amount));
+        return Object.assign({}, obj, {
+          origin: obj,
+          num: (NP.round(Number(obj.amount), 4)).toFixed(4),
+          price: Number(obj.price).toFixed(this.decimal),
+          amount: (NP.round((NP.divide(NP.times(Number(obj.amount), obj.price_r.d), obj.price_r.n)), 2)).toFixed(2),
+          depth: (NP.round(dep, 2)).toFixed(2),
+        })
+      })
+      newdata.forEach(ele=>{
         let p = ele.depth / dep
         ele.percent = Number(NP.round((p * 100), 2))
         ele.blank = 100 - ele.percent
       })
-      return data
+      return newdata
     },
     asksdata(){
-      if(this.blank)return []
-      let data = []
       let dep = 0
-      // for (ask of asks){
-
-      // }
-      let n=this.asks.length
-      for(var i=0;i<n;i++){
-        let obj = Object.assign({}, this.asks[i])
-        obj.amount = (NP.round(Number(obj.amount), 2)).toFixed(2)
-        obj.price = (NP.round(Number(obj.price), this.decimal)).toFixed(this.decimal)
-        obj.num = (NP.round((obj.price * obj.amount),4)).toFixed(4)
-        dep = NP.plus(dep,Number(obj.num));
-        obj.depth = (NP.round(dep,2)).toFixed(2)
-        obj.origin = this.asks[i]
-        data.push(obj)
-      }
-      data.forEach(ele=>{
+      let newdata = this.asks.map(obj => {
+        let num = NP.times(Number(obj.amount),Number(obj.price))
+        dep = NP.plus(dep,num);
+        return Object.assign({}, obj, {
+          amount: (NP.round(Number(obj.amount), 2)).toFixed(2),
+          price: (NP.round(Number(obj.price), this.decimal)).toFixed(this.decimal),
+          num: num.toFixed(4),
+          depth: (NP.round(dep,2)).toFixed(2),
+          origin: obj,
+        });
+      })
+      newdata.forEach(ele=>{
         let p = ele.depth / dep
         ele.percent = Number(NP.round((p * 100),2))
         ele.blank = 100 - ele.percent
       })
-      return data
+      return newdata
     },
 
   },
@@ -252,25 +226,17 @@ export default {
           clearInterval(this.timeInterval)
         }
       }else{
-        if(!this.timeInterval && !this.blank){
+        if(!this.timeInterval){
           this.setup()
         }
       }
     },
-    blank(val){
-      if(this.timeInterval){
-          clearInterval(this.timeInterval)
-       }
-      if(!val){
-        this.setup()
-      }
-    },//end of blank
   },
   mounted(){
     this.setup();
   },
   beforeUpdate(){
-    if(!this.blank && !this.timeInterval){
+    if(!this.timeInterval){
       this.setup()
     }
   },
@@ -288,16 +254,12 @@ export default {
 
     }),
     setup(){
-      if(this.blank)return
-      if(this.selectedTradeIndex === this.pairIndex){
-        this.fetchData()
-        this.timeInterval = setInterval(()=>{this.fetchData()},DEFAULT_INTERVAL)
-        this.$nextTick(function(){
-          this.$emit('intervalChanged',this.timeInterval)
-        })
-        this.fetchData()
-
-      }
+      this.fetchData()
+      this.timeInterval = setInterval(()=>{this.fetchData()},DEFAULT_INTERVAL)
+      this.$nextTick(function(){
+        this.$emit('intervalChanged',this.timeInterval)
+      })
+      this.fetchData()
     },
     //查询买单和卖单
     fetchData(){
@@ -343,7 +305,7 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-@require '../stylus/color.styl'
+@require '~@/stylus/color.styl'
 .ordermenu
   display: flex
   font-size: 16px
