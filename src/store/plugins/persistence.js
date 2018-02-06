@@ -5,7 +5,7 @@
  * @Date: 2018-01-16 09:59:52
  */
 import shvl from 'shvl'
-
+import _ from 'lodash'
 let index = Date.now()
 
 /**
@@ -135,39 +135,42 @@ export default function createPersist ({
       merge,
       expires
     })
-    console.log(`------ --replace------- `)
     store.replaceState(
       merge(store.state, storage.get())
     )
 
     store.subscribe((mutation, state) => {
-      storage.set(reducer(state, paths, blocks))
+      storage.set(reducer(_.defaultsDeep({},state), paths, blocks))
     })
   }
 }
 
 function defaultMerge (...args) {
-  return Object.assign({}, ...args)
+  return _.defaultsDeep({}, ...args)
 }
 
-function defaultReducer (state, paths, blocks) {
+function defaultReducer (state, paths = [], blocks = []) {
   let newstate = paths.length === 0
   ? state
   : paths.reduce((substate, path) => {
     if (state.hasOwnProperty(path)) {
-      return Object.assign(substate, { [path]: state[path] })
+      return _.defaultsDeep(substate, { [path]: state[path] })
     }
     return substate
   }, {})
-  let prostate = Object.assign({} , newstate)
-  //去掉不需要保存的数据
-  if(blocks && blocks.keys && blocks.keys.length > 0 ){
-    for(var i=0,n=blocks.keys.length; i<n; i++){
-      let key = blocks.keys[i]
-      let d = shvl.get(blocks.data, key)
-      shvl.set(prostate, key , d)
-    }
-  }
-
+  let prostate = _.defaultsDeep({} , newstate, {})
+  blocks.forEach(path=>{
+    deleteAttribute(prostate,path)
+  })
   return prostate
+}
+
+/**
+ * 从对象中删除某个属性
+ * @param {Object} object 
+ * @param {String} key 
+ */
+function deleteAttribute(object, path, obj){
+  path = path.split ? path.split('.') : path
+  delete path.slice(0,-1).reduce((obj,k1)=>obj[k1]||{},obj=object)[path.pop()]
 }

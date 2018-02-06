@@ -114,34 +114,32 @@ const mutations = {
   }
 }
 
-const blocks = {
-  keys:[
-    'error',
-    'seed',
-    'seedExtData',
-    'accountname',
-    'accountpassword',
-    'password',
-    'memo',
-    'accounts.password',
-    'accounts.error',
-    'account.accountData',
-    'account.account_not_funding',
-
-  
-  ],
-  data:{
-    accounts:{
-      accountData: { seed: null }
-    },
-    account: {
-      account_not_funding: false
-    }
-  }
-}
+const blocks = [
+  'error',
+  'seed',
+  'seedExtData',
+  'accountname',
+  'accountpassword',
+  'password',
+  'memo',
+  'accounts.password',
+  'accounts.error',
+  'accounts.accountData.seed',
+  'accounts.accountData.tradepairs',
+  'account.account_not_funding'
+]
 
 
-
+let persistencePlugin = createPersist({
+  namespace: APP_NAME + '-vuex-',
+  initialState: {},
+  serialize,
+  deserialize,
+  // never expire
+  expires: 0,
+  blocks
+})
+let plugins = [persistencePlugin]
 
 const store = new Vuex.Store({
   state,
@@ -155,24 +153,18 @@ const store = new Vuex.Store({
     asset: AssetStore,
     trades: TradesStore,
   },
-  plugins: [createPersist({
-    namespace: APP_NAME + '-vuex-',
-    initialState: {},
-    serialize,
-    deserialize,
-    // never expire
-    expires: 0,
-    blocks
-  })]
+  plugins
 
 })
 
 function serialize(value){
-  return Base64.encode(JSON.stringify(value))
+  //return Base64.encode(JSON.stringify(value))
+  return JSON.stringify(value)
 }
 
 function deserialize(value){
-  return JSON.parse(Base64.decode(value))
+  //return JSON.parse(Base64.decode(value))
+  return JSON.parse(value)
 }
 
 export const IMPORT_ACCOUNT_CHANGE = 'IMPORT_ACCOUNT_CHANGE'

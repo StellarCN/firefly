@@ -140,14 +140,15 @@
 </template>
 
 <script>
-import Toolbar from '../components/Toolbar'
+import Toolbar from '@/components/Toolbar'
 import { mapState, mapActions} from 'vuex'
-import {address as genAddress} from '../api/account'
-import QRCode from '../components/QRCode'
-import { exportAccount } from '../api/qr'
+import {address as genAddress} from '@/api/account'
+import QRCode from '@/components/QRCode'
+import { exportAccount } from '@/api/qr'
 import Loading from '@/components/Loading'
 //import StellarHDWallet from 'stellar-hd-wallet'
 import { closeStreams, initStreams,cleanStreamData } from '@/streams'
+import _ from 'lodash'
 export default {
   data(){
     return {
@@ -192,7 +193,7 @@ export default {
       if(!this.seed)return ''
       //类似于stargaza的格式
       var data = {stellar:{name:this.name,key:this.seed}}
-      let account = Object.assign({
+      let account = _.defaultsDeep({
         name: this.name,
         address: genAddress(this.seed)
       },this.extdata || {})

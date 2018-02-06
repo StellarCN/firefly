@@ -131,7 +131,7 @@ export default {
        let data = []
        this.balances.forEach((element) => {
         if(!isNativeAsset(element)){
-          data.push(Object.assign({}, element))
+          data.push(_.defaultsDeep({}, element))
         }
       })
       return data

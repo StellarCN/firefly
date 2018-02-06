@@ -50,11 +50,12 @@
 </template>
 
 <script>
-import Toolbar from '../../components/Toolbar'
+import Toolbar from '@/components/Toolbar'
 import { mapState, mapActions} from 'vuex'
-import Card from '../../components/Card'
-import { INFLATION_POOL } from '../../api/gateways'
+import Card from '@/components/Card'
+import { INFLATION_POOL } from '@/api/gateways'
 import { setOptions } from '@/api/operations'
+import _ from 'lodash'
 export default {
   data(){
     return {
@@ -86,7 +87,7 @@ export default {
       for(var i=0,n=this.accounts.length;i<n;i++){
         if(this.accounts[i].address === address){
           this.workindex = i
-          let showaccount = Object.assign({},this.accounts[i])
+          let showaccount = _.defaultsDeep({},this.accounts[i])
           this.workaccount = showaccount
           this.name  = showaccount.name
           this.address = showaccount.address
@@ -112,7 +113,7 @@ export default {
     },
     save(){
       //if(!this.password)return
-      let data = Object.assign({}, this.workaccount, {name: this.name,
+      let data = _.defaultsDeep({}, this.workaccount, {name: this.name,
       address: this.address,
       federationAddress: this.federation,
       inflationAddress: this.inflation})

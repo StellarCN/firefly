@@ -3,14 +3,14 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-31 09:07:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-01-31 09:47:18
+ * @Last Modified time: 2018-02-06 17:11:30
  * @License MIT 
  */
 
 import { mapState,mapActions,mapGetters } from 'vuex'
 import { listenPaymentStream,  closePaymentStream,  getPaymentStream,  convertRecords } from '@/api/payments'
 import {  ACCOUNT_IS_FUNDING,  ACCOUNT_NOT_FUNDING} from '@/store/modules/AccountStore'
-
+import _ from 'lodash'
 export default {
   
 
@@ -81,7 +81,7 @@ export default {
       console.log("updateFederationAndInflationInfo")
       console.log(this.accountData)
       if (this.account.federationAddress !== this.accountData.inflation_destination || this.account.inflationAddress !== this.accountData.home_domain) {
-        let data = Object.assign({}, this.account, {
+        let data = _.defaultsDeep({}, this.account, {
           federationAddress: this.accountData.home_domain,
           inflationAddress: this.accountData.inflation_destination
         })

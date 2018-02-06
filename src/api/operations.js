@@ -37,7 +37,7 @@ export function setData(seed,name,value){
 
 export function setDatas(seed,values){
   if(values === null)throw new Error('null value')
-  var opt = Object.assign({},values)
+  var opt = JSON.parse(JSON.stringify(values))
   console.debug(opt)
   var address = getAddress(seed)
   return getServer().loadAccount(address).then((account) => {
@@ -56,7 +56,7 @@ export function setOption(seed, name, value) {
 }
 
 export function setOptions(seed, values) {
-  let opt = Object.assign({},values)
+  let opt = JSON.parse(JSON.stringify(values))
   let address = getAddress(seed)
   return getServer().loadAccount(address).then((account) => {
     let op = StellarSdk.Operation.setOptions(opt);

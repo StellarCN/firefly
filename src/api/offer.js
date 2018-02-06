@@ -92,8 +92,8 @@ function undefinedToNull(val){
 }
 
 export function myofferConvert(_sellasset,_buyasset,my){
-  let sellasset = Object.assign({}, _sellasset)
-  let buyasset = Object.assign({}, _buyasset)
+  let sellasset = JSON.parse(JSON.stringify(_sellasset))
+  let buyasset = JSON.parse(JSON.stringify(_buyasset))
   let data = []
   my.forEach(ele=>{
     let sellcode = 'XLM'
@@ -122,7 +122,7 @@ export function myofferConvert(_sellasset,_buyasset,my){
 
     let obj = null
     if(codeandissuer_sb === codeandissuer_sb_target && codeandissuer_bs === codeandissuer_bs_target){
-      obj = Object.assign({}, ele, {type: 'sell'})
+      obj = JSON.parse(JSON.stringify(Object.assign({}, ele, {type: 'sell'})))
       obj.amount = Number(obj.amount)
       obj.price = Number(obj.price)
       obj.base = NP.round(Number(obj.amount * obj.price), 7)
@@ -130,9 +130,7 @@ export function myofferConvert(_sellasset,_buyasset,my){
     }else if(
       codeandissuer_sb === codeandissuer_bs_target && codeandissuer_bs === codeandissuer_sb_target
     ){
-      console.log("----------------xxxxxxx")
-      console.log(ele)
-      obj = Object.assign({}, ele, {type: 'buy'})
+      obj = JSON.parse(JSON.stringify(Object.assign({}, ele, {type: 'buy'})))
       obj.amount = Number(obj.amount)
       obj.price = Number(obj.price)
       obj.base = NP.round(Number(obj.amount * obj.price_r.n / obj.price_r.d), 7)
