@@ -24,6 +24,39 @@
       </slot>
     </v-toolbar>
 
+
+    <v-bottom-sheet  v-model="showPwdSheet" v-if="showPwdSheet" dark>
+      <div class="sheet-content">
+        <div class="sheet-title">
+          <h4 class="title">
+            <slot name='switch_password'> 
+          <!--if call for passowrd -->
+              <span>{{$t('ChangeAccount')}}</span>
+            </slot>
+          </h4>
+        </div>
+        <div class="sheet-title">
+          <div class="label">{{$t('Account.AccountName')}}</div>
+          <div class="value">{{selectedAccount.name || account.name}}</div>
+        </div>
+        <div class="sheet-input">
+          <v-text-field
+                name="password"
+                :label="$t('Account.Password')"
+                v-model="password"
+                :append-icon="pwdvisible ? 'visibility' : 'visibility_off'"
+                :append-icon-cb="() => (pwdvisible = !pwdvisible)"
+                :type="pwdvisible ? 'text':'password'"
+                required dark
+              ></v-text-field>
+        </div>
+        <div  class="sheet-btns">
+          <div class="sheet-btn" @click="canclePwdInput">{{$t('Button.Cancel')}}</div>
+          <div class="sheet-btn" @click="okPwdInput">{{$t('Button.OK')}}</div>
+        </div>
+      </div>
+    </v-bottom-sheet>
+
   </div>
 </template>
 
@@ -182,6 +215,42 @@ export default {
     showPasswordLogin(){
       this.showPwdSheet = true
     },
+    //取消输入密码，则直接无密码跳转账户
+    canclePwdInput(){
+      this.showPwdSheet=false
+      //this.choseAccountNoPwd({index:this.selectedIndex, account: this.selectedAccount.address})
+    },
+    //校验密码是否正确，不正确则提示，正确则跳转账户
+    okPwdInput(){
+      if(this.checkPwd)return
+      //无密码则报错
+      if(!this.password){ 
+        this.$toasted.error(this.$t('Error.PasswordWrong')) //请输入密码
+        return
+      }
+      //检验密码
+      this.checkPwd = true
+      let data = {
+        index: this.selectedIndex === null ? this.selectedAccountIndex : this.selectedIndex,
+        address: this.selectedAccount.address || this.account.address,
+        password: this.password
+      }
+      console.log(data)
+      this.choseAccount(data).then(account=>{
+        this.$toasted.show(this.$t('Info.ChangeAccountSuccess'))
+        this.showPwdSheet = false
+        this.checkPwd = false
+        this.password = null
+        this.showaccounts = false
+        //重新处理stream        closeStreams()
+        initStreams(this.account.address)
+      }).catch(err=>{
+        console.error('change account error')
+        console.error(err)
+        this.$toasted.error(this.$t('Error.PasswordWrong'))
+        this.checkPwd = false
+      })
+    },
   }
 }
 </script>
@@ -200,6 +269,36 @@ export default {
   text-align: center
   width: 100%
   flex:1
+
+.sheet-content
+  background: $secondarycolor.gray
+  color: $primarycolor.font
+  padding: 10px 10px
+  word-wrap: break-word
+  .sheet-title
+    .title
+      height: 40px
+      line-height: 40px
+      font-size: 32px
+      text-align: center
+      color: $primarycolor.green
+      padding: 10px 10px
+    .label
+      color: $secondarycolor.font
+    .value
+      font-size: 16px
+  .sheet-btns
+    margin-top: 10px
+    display: inline-block
+    width: 100%
+    .sheet-btn
+      float: left
+      width: 50%
+      height: 40px
+      line-height: 40px
+      text-align: center
+      font-size: 16px
+      color: $primarycolor.green
 
 
 </style>
