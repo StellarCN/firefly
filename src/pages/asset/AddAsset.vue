@@ -11,12 +11,18 @@
       <span slot="switch_password">{{$t('Account.Password')}}</span>
     </toolbar>
     <div class="content">
-      <card class="icard" padding="8px 8px">
+      <div class="flex-row textcenter menurow">
+        <div class="flex1" @click="activeFedAddType">
+          <span :class="'menu ' + ( addTypeFed ? 'active':'unactive' )" >{{$t('FederationUrl')}}</span></div>
+        <div class="flex1" @click="activeManullyAddType">
+          <span :class="'menu ' + ( addTypeManully ? 'active':'unactive' )" >{{$t('ManullayAddTrust')}}</span></div>
+        <div class="flex2"></div>
+      </div>
+      <card class="icard" padding="2px 8px" v-if="addTypeFed">
         <div class="card-content" slot="card-content">
          <v-text-field
               dark
               name="url"
-              :label="$t('FederationUrl')"
               v-model="url"
               append-icon="search"
               :append-icon-cb="search"
@@ -51,6 +57,32 @@
         </ul>
         </div>
       </card>
+
+       <card class="icard" padding="8px 8px" v-if="addTypeManully">
+        <div class="card-content" slot="card-content">
+           <v-text-field
+              dark
+              :label="$t('AssetCode')"
+              name="asset_code"
+              v-model="asset_code"
+              type="text"
+              primary
+            ></v-text-field>
+             <v-text-field
+              dark
+              :label="$t('AssetIssuer')"
+              name="asset_issuer"
+              v-model="asset_issuer"
+              type="text"
+              primary
+            ></v-text-field>
+            <div class="flex-row">
+              <v-btn class='btn_trust'  block dark large @click="doManuallyTrust">{{$t('Button.OK')}}</v-btn>
+            </div>
+        </div>
+       </card>
+
+
     </div>
   </div>
 </template>
@@ -62,6 +94,9 @@ import { mapState, mapActions, mapGetters} from 'vuex'
 import { federation } from '@/api/federation'
 import Loading from '@/components/Loading'
 import { xdrMsg,getXdrResultCode } from '@/api/xdr'
+
+const ADD_TRUST_FED = 'fed'
+const ADD_TRUST_MANUALLY = 'manually'
 
 export default {
   data(){
@@ -76,7 +111,11 @@ export default {
       trustfail: false,
 
       url:null,
-      currencies:[]
+      currencies:[],
+
+      addtype:ADD_TRUST_FED,
+      asset_code: null,
+      asset_issuer: null,
 
     }
   },
@@ -92,6 +131,13 @@ export default {
       'base_reserve',
       'native'
     ]),
+
+    addTypeFed(){
+      return this.addtype === ADD_TRUST_FED
+    },
+    addTypeManully(){
+      return this.addtype === ADD_TRUST_MANUALLY
+    },
   
   },
   mounted(){
@@ -214,7 +260,27 @@ export default {
         .finally(
           //this.working = false
         )
+    },
+
+    activeFedAddType(){
+      this.addtype = ADD_TRUST_FED
+    },
+    activeManullyAddType(){
+      this.addtype = ADD_TRUST_MANUALLY
+    },
+
+    doManuallyTrust(){
+      if(!this.asset_code){
+        this.$toasted.error(this.$t('Error.AssetCodeNull'))
+        return
+      }
+      if(!this.asset_issuer){
+        this.$toasted.error(this.$t('Error.AssetIssuerNull'))
+        return
+      }
+      this.addTrust({code: this.asset_code, issuer: this.asset_issuer})
     }
+
    
   },
   components: {
@@ -239,6 +305,8 @@ export default {
   .currency-li
     border-bottom: 1px solid $secondarycolor.font
     padding-top: 5px
+    &:last-child
+      border-bottom: 0px
 .currency
   display: -webkit-flex
   display: inline-flex
@@ -272,5 +340,14 @@ export default {
   .theme--dark.btn.btn--disabled 
     .icon
       color: $primarycolor.green !important
+.menurow
+  margin-bottom: 5px
+.menu
+  padding-left: 5px
+  padding-right: 5px
+  &.active
+    border-bottom: 2px solid $primarycolor.green
+.btn_trust
+  background-color: $primarycolor.green  !important
 </style>
 

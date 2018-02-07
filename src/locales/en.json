@@ -52,6 +52,12 @@
   "Error.SeedWrong":"wrong secret key",
   "Account.AccountAddress":"address",
 
+  "ManullayAddTrust":"Manully Add",
+  "AssetCode":"Asset Code",
+  "AssetIssuer":"Issuer Account ID",
+  "Error.AssetCodeNull":"asset code cannot be empty",
+  "Error.AssetIssuerNull":"issuer account id cannot be empty",
+
   "Add":"add",
   "Manage":"manage",
   "Button.Cancel":"CANCEL",

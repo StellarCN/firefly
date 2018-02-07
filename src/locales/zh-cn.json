@@ -51,6 +51,11 @@
 
   "Account.AccountAddress":"账户地址",
 
+  "ManullayAddTrust":"手动授信",
+  "AssetCode":"资产代码",
+  "AssetIssuer":"发行方账号",
+  "Error.AssetCodeNull":"资产代码不能为空",
+  "Error.AssetIssuerNull":"资产发行方不能为空",
 
   "Add":"添加",
   "Manage":"管理",
