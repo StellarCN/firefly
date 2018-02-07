@@ -3,15 +3,21 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-02-06 17:32:17
+ * @Last Modified time: 2018-02-07 21:23:58
  * @License: MIT 
  */
 <template>
   <div class="k">
       <div class="flex-row" v-if="showTitle">
-          <div :class="'flex2 pricle ' + ( titleData.change >=0 ? 'up':'down') ">{{titleData.price}}{{counter.code}}</div>
-          <div class="flex1 change">{{titleData.change}}</div>
-          <div class="flex1 rate">{{titleData.rate}}</div>
+          <div :class="'flex2 price textcenter ' + ( titleData.change >=0 ? 'up':'down') ">{{titleData.price}}{{counter.code}}</div>
+          <div :class="'flex1 change  textcenter ' + ( titleData.change >=0 ? 'up':'down')">
+              <span v-if="titleData.change>=0">+</span>
+              <span v-else="titleData.change<0">-</span>
+              {{titleData.change}}</div>
+          <div :class="'flex1 rate  textcenter ' + ( titleData.rate >=0 ? 'up':'down')">
+              <span v-if="titleData.rate>=0">+</span>
+              <span v-else="titleData.rate<0">-</span>
+              {{titleData.rate}}%</div>
       </div>
       <div class="kgraph" :id="id" v-bind:style="{height: height + 'px'}"></div>
   </div>
@@ -45,9 +51,10 @@ export default {
             data: [],//每条数据是一个数组，[开盘价，收盘价，最低价，最高价]
             tinterval: null,//定时器
             lasttime: null,//上次的执行时间
-
+            
+            lastTradeAggregation: null,
             //最新的成交价格统计
-            lasetTrade:null,
+            lastTrade:null,
             tradeInterval: null,//查询最新一次交易数据的interval
             
         }
@@ -100,13 +107,12 @@ export default {
     computed: {
       titleData(){
           if(this.data.length > 0 && this.lastTrade){
-            let price = NP.divide(Number(this.latestTrade.base_amount), Number(this.latestTrade.counter_amount))
+            let price = NP.divide(Number(this.lastTrade.base_amount), Number(this.lastTrade.counter_amount))
             price = NP.round(price,7)
-            let lastTradeAggregation = this.data[0]
-            let open = Number(lastTradeAggregation.open)
+            let open = Number(this.lastTradeAggregation.open)
             let change = NP.minus(price,open)
-            let rate = NP.times(100, NP.divide(change, open))
-            return  _.defaultsDeep({}, lastTradeAggregation, {price,chagne,rate })
+            let rate = NP.round(NP.times(100, NP.divide(change, open)),2)
+            return  _.defaultsDeep({}, this.lastTradeAggregation, {price,change,rate })
           }
           return {}
       }  
@@ -136,9 +142,7 @@ export default {
     },
     mounted () {
         this.$nextTick(()=>{
-            this.init();
-            this.fetch();
-            this.fetchLastTrade()
+           this.reload();
         })
     },
     methods: {
@@ -146,6 +150,23 @@ export default {
         ...mapActions({
             getAccountInfo: 'getAccountInfo',
         }),
+        reload(){
+            this.cleanData()
+            this.init();
+            this.fetch();
+            this.fetchLastTrade()
+        },
+        cleanData(){
+            this.ele = null
+            this.opt = null
+            this.dates = []
+            this.volumes = []
+            this.data = []
+            this.tinterval =  null
+            this.lasttime = null
+            this.lastTradeAggregation = null
+            this.lastTrade = null
+        },
         init() {
             this.initView()
         },
@@ -173,12 +194,18 @@ export default {
             .then(data => {
                 this.lasttime = end_time
                 let records = data.records
-                records.reverse().map(item=>{
-                    if(this.incremental){
-                        this.dates = []
-                        this.volumes = []
-                        this.data = []
-                    }
+                if(this.incremental){
+                    this.dates = []
+                    this.volumes = []
+                    this.data = []
+                }
+                records = records.reverse()
+                 if(records.length > 0){
+                    this.lastTradeAggregation = _.defaultsDeep({}, records[0])
+                }
+                
+                records.forEach(item=>{
+                   
                     this.dates.push(new Date(item.timestamp).Format('MM-dd hh:mm'))
                     this.volumes.push(Number(item.base_volume))
                     this.data.push([Number(item.open), Number(item.close), Number(item.high), Number(item.low)])
@@ -190,7 +217,6 @@ export default {
                 this.opt.series[3].data = this.calculateMA(10)
                 this.opt.series[4].data = this.calculateMA(20)
                 
-                console.log(this.opt)
                 this.ele.setOption(this.opt)
             })
             .catch(err=>{
@@ -251,9 +277,6 @@ export default {
                     axisLine: { lineStyle: { color: '#777' } },
                     axisLabel: {
                         formatter: function (value) {
-                            console.log(typeof value)
-                            console.log('----date xaxis --- ' + value)
-                            //return echarts.format.formatTime('MM-dd HH:mm', value);
                             return value
                         }
                     },
@@ -456,9 +479,16 @@ export default {
 <style lang="stylus" scoped>
 @require '~@/stylus/color.styl'
 .price
-  font-size: 16px
+  font-size: 20px
+.price
+.change
+.rate
   &.up
     color: $primarycolor.green
   &.down
     color: $primarycolor.red
+.change
+.rate
+    line-height: 30px
+    vertical-align: bottom
 </style>

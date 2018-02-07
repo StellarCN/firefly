@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-05 10:51:54 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-02-06 17:18:00
+ * @Last Modified time: 2018-02-07 21:28:44
  * @License MIT 
  */
 <template>
@@ -62,7 +62,7 @@
 
     <div class="content">
       <!--K线图-->
-      <k :base="BaseAsset" :counter="CounterAsset" :incremental="true" :showTitle="true" />
+      <k :base="BaseAsset" :counter="CounterAsset" :incremental="true" :showTitle="true" ref="kgraph"/>
       
       <!--买单卖单委单成交-->
       <order-book ref="orderbook"/>
@@ -192,6 +192,9 @@ export default {
     choseTrade(index,tradepair){//选择交易对
       this.selectTradePair({index, tradepair})
       this.showChoseTradeDlg = false
+      this.$nextTick(()=>{
+        this.$refs.kgraph.reload()
+      })
     },
 
   },
