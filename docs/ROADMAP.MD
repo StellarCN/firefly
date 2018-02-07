@@ -7,3 +7,4 @@
 * []improve operation and performance of trade
 * []k line graph
 * []reset password
+* []trust anchor from code and issuer
