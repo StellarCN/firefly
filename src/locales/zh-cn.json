@@ -87,6 +87,7 @@
   "AddAssetNotFound": "未探测到资产信息",
   "FederationUrl":"联邦地址",
   "Working":"正在处理...",
+  "Reset":"重置",
 
   "Info.ChangeAccountSuccess":"切换账户成功！",
   "Error.PasswordWrong":"密码错误！",
@@ -214,6 +215,7 @@
   "Error.LackOfBalance":"余额不足,无法继续",
   "Error.LackOfTrustline":"尚未增加此类型资产,请添加该资产或查看帮助",
   "Error.CounterLackOfTrustline":"尚未增加对手方资产,请添加该资产或查看帮助",
+  
 
   "Error.PleaseCompleteForm":"请完善表单",
 

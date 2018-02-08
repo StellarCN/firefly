@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-02-07 21:23:58
+ * @Last Modified time: 2018-02-08 15:57:29
  * @License: MIT 
  */
 <template>
@@ -11,15 +11,20 @@
       <div class="flex-row" v-if="showTitle">
           <div :class="'flex2 price textcenter ' + ( titleData.change >=0 ? 'up':'down') ">{{titleData.price}}{{counter.code}}</div>
           <div :class="'flex1 change  textcenter ' + ( titleData.change >=0 ? 'up':'down')">
-              <span v-if="titleData.change>=0">+</span>
-              <span v-else="titleData.change<0">-</span>
+              <span v-if="titleData.change>0">+</span>
               {{titleData.change}}</div>
           <div :class="'flex1 rate  textcenter ' + ( titleData.rate >=0 ? 'up':'down')">
-              <span v-if="titleData.rate>=0">+</span>
-              <span v-else="titleData.rate<0">-</span>
+              <span v-if="titleData.rate>0">+</span>
               {{titleData.rate}}%</div>
       </div>
-      <div class="kgraph" :id="id" v-bind:style="{height: height + 'px'}"></div>
+        
+      <v-btn class="btn-fullscreen" v-if="showChart && !fullscreen"  icon @click="toFullscreen">
+          <i class="material-icons">fullscreen</i>
+      </v-btn>
+      <v-btn class="btn-back" icon v-if="showChart && fullscreen" @click="back">
+          <v-icon>keyboard_arrow_left</v-icon>
+      </v-btn>
+      <div v-show="showChart" class="kgraph" :id="id" v-bind:style="{height: height}"></div>
   </div>
 </template>
 
@@ -36,6 +41,7 @@ import { getTrades } from '@/api/trade'
 import { DEFAULT_INTERVAL } from '@/api/gateways'
 var moment = require('moment')
 import _ from 'lodash'
+import {Decimal} from 'decimal.js'
 
 
 export default {
@@ -94,25 +100,32 @@ export default {
             type: Boolean,
             default: false
         },
+        // 是否显示图表
+        showChart: {
+            type: Boolean,
+            default: true
+        },
         fullscreen: {
             type: Boolean,
             default: false
         },
         //高度
         height: {
-            type: Number,
-            default: 360
+            type: String,
+            default: '360px'
         }
     },
     computed: {
       titleData(){
           if(this.data.length > 0 && this.lastTrade){
-            let price = NP.divide(Number(this.lastTrade.base_amount), Number(this.lastTrade.counter_amount))
-            price = NP.round(price,7)
-            let open = Number(this.lastTradeAggregation.open)
-            let change = NP.minus(price,open)
-            let rate = NP.round(NP.times(100, NP.divide(change, open)),2)
-            return  _.defaultsDeep({}, this.lastTradeAggregation, {price,change,rate })
+            let price = new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
+            let open = new Decimal(this.lastTradeAggregation.open)
+            let change = price.minus(open)
+            let rate = change.times(100).dividedBy(open)
+            return  _.defaultsDeep({}, this.lastTradeAggregation, {
+                price: new Decimal(price.toFixed(6)).toNumber(),
+                change: new Decimal(change.toFixed(4)).toNumber(),
+                rate: new Decimal(rate.toFixed(2)).toNumber() })
           }
           return {}
       }  
@@ -431,11 +444,11 @@ export default {
                     result.push('-');
                     continue;
                 }
-                var sum = 0;
+                var sum = new Decimal(0);
                 for (var j = 0; j < dayCount; j++) {
-                    sum += this.data[i - j][1];
+                    sum = sum.plus(this.data[i - j][1]);
                 }
-                result.push((sum / dayCount).toFixed(2));
+                result.push(sum.dividedBy(dayCount).toFixed(2))
             }
             return result;
         },
@@ -470,7 +483,14 @@ export default {
                     console.log(err)
                 })
         },
-        
+
+        toFullscreen(){
+            console.log(`------to fullscreen--`)
+            this.$router.push({name: 'TradeK'})
+        },
+        back(){
+            this.$router.back()
+        }
 
     }
 }
@@ -491,4 +511,18 @@ export default {
 .rate
     line-height: 30px
     vertical-align: bottom
+
+
+.btn-fullscreen
+    position: absolute
+    right: 5px
+    z-index: 9
+    .material-icons
+        color: $primarycolor.green
+.btn-back
+    position: absolute
+    left: 5px
+    z-index: 9
+    .material-icons
+        color: $primarycolor.green
 </style>

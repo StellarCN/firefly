@@ -3,73 +3,38 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-05 10:51:54 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-02-07 21:28:44
+ * @Last Modified time: 2018-02-08 16:49:22
  * @License MIT 
  */
 <template>
   <div class="page">
     <!-- toolbar -->
-    <v-toolbar color="primary" dark app dense :clipped-left='true'>
-      <v-btn icon @click="back"><v-icon>keyboard_arrow_left</v-icon></v-btn>
-      <div class="toolbar__title toolbar-title white--text textcenter tb-title flex-row">
-        <div class="flex1">&nbsp;</div>
-        <div class="flex2 textcenter">
-          <div class="tb-code">{{BaseAsset.code}}</div>
-          <div class="tb-issuer" v-if="assethosts[BaseAsset.code]">{{assethosts[BaseAsset.code]}}</div>
-          <div class="tb-issuer" v-else-if="assethosts[BaseAsset.issuer]">{{assethosts[BaseAsset.issuer]}}</div>
-          <div class="tb-issuer" v-else>{{BaseAsset.issuer | miniaddress}}</div>
-        </div>
-        <div class="flex1 textcenter tb-icon"><i class="icons material-icons">&#xE8D4;</i></div>
-        <div class="flex2 textcenter">
-          <div class="tb-code">{{CounterAsset.code}}</div>
-          <div class="tb-issuer" v-if="assethosts[CounterAsset.code]">{{assethosts[CounterAsset.code]}}</div>
-          <div class="tb-issuer" v-else-if="assethosts[CounterAsset.issuer]">{{assethosts[CounterAsset.issuer]}}</div>
-          <div class="tb-issuer" v-else>{{CounterAsset.issuer | miniaddress}}</div>
-        </div>
-        <div class="flex1 tb-icon" @click.stop="showChoseTradeDlg = true"><i class="icons material-icons">keyboard_arrow_down</i></div>
-        <div class="flex1">&nbsp;</div>
+    <trade-pair-tool-bar @choseTradePair="choseTradePair">
+      <div slot="right-tool">
+        <v-btn icon @click="switchKgraphShow">
+          <i class="material-icons" v-if="showKgraph">trending_up</i>
+          <i class="material-icons" v-else>visibility_off</i>
+        </v-btn>
       </div>
-      <v-btn icon style="visibility:hidden;"><v-icon class="back-icon"></v-icon></v-btn>
-    </v-toolbar>
-
-    <!--  选择交易队内容 -->
-    <v-dialog v-model="showChoseTradeDlg" fullscreen transition="dialog-bottom-transition" :overlay=false>
-      <v-toolbar color="primary" dark app dense :clipped-left='true'>
-        <v-btn icon @click="showChoseTradeDlg = false"><v-icon>keyboard_arrow_left</v-icon></v-btn>
-        <div class="toolbar__title toolbar-title white--text textcenter tb-title">{{$t("Trade.SelfSelection")}}</div>
-        <v-btn icon style="visibility:hidden;"><v-icon class="back-icon"></v-icon></v-btn>
-      </v-toolbar>
-      <v-card class="dlg-content">
-        <div v-for="(item,index) in tradepairs" :key="index" :class="'flex-row row100 ' + (isChoosenTrade(item.from,item.to) ? 'active':'')" @click="choseTrade(index,item)">
-          <div class="flex2">&nbsp;</div>
-          <div class="flex3 textcenter">
-            <div class="tb-code">{{item.from.code}}</div>
-            <div class="tb-issuer" v-if="assethosts[item.from.code]">{{assethosts[item.from.code]}}</div>
-            <div class="tb-issuer" v-else-if="assethosts[item.from.issuer]">{{assethosts[item.from.issuer]}}</div>
-            <div class="tb-issuer" v-else>{{item.from.issuer | miniaddress}}</div>
-          </div>
-          <div class="flex2 textcenter tb-icon"><i class="icons material-icons">&#xE8D4;</i></div>
-          <div class="flex3 textcenter">
-            <div class="tb-code">{{item.to.code}}</div>
-            <div class="tb-issuer" v-if="assethosts[item.to.code]">{{assethosts[item.to.code]}}</div>
-            <div class="tb-issuer" v-else-if="assethosts[item.to.issuer]">{{assethosts[item.to.issuer]}}</div>
-            <div class="tb-issuer" v-else>{{item.to.issuer | miniaddress}}</div>
-          </div>
-          <div class="flex2">&nbsp;</div>
-        </div>
-      </v-card>
-    </v-dialog>
+    </trade-pair-tool-bar>
 
     <div class="content">
       <!--K线图-->
-      <k :base="BaseAsset" :counter="CounterAsset" :incremental="true" :showTitle="true" ref="kgraph"/>
+      <k :base="BaseAsset" :counter="CounterAsset" :incremental="true" :showTitle="true" ref="kgraph" :showChart="showKgraph"/>
       
       <!--买单卖单委单成交-->
       <order-book ref="orderbook"/>
 
     </div>
-
-
+    <!-- 买卖按钮 -->
+    <div class="flex-row full-width footer-btns">
+      <div class="flex1 btn-flex">
+        <v-btn class="full-width btn-buy" color="primary" @click="toBuy">{{$t('Trade.Buy')}}{{BaseAsset.code}}</v-btn>
+      </div>
+      <div class="flex1 btn-flex">
+        <v-btn class="full-width btn-sell" color="error" @click="toSell">{{$t('Trade.Sell')}}{{BaseAsset.code}}</v-btn>
+      </div>
+    </div>
 
 
   </div>  
@@ -83,6 +48,7 @@ import Card from '@/components/Card'
 import BottomNotice from '@/components/BottomNotice'
 import Loading from '@/components/Loading'
 import OrderBook from '@/components/OrderBook'
+import TradePairToolBar from '@/components/TradePairToolBar'
 import { listenOrderbook } from '@/api/orderbook'
 import { getTrades } from '@/api/trade'
 import { cancel as cancelOffer, myofferConvert, offer as doOffer }  from '@/api/offer'
@@ -91,10 +57,11 @@ import { DEFAULT_INTERVAL } from '@/api/gateways'
 import { getXdrResultCode } from '@/api/xdr'
 import _ from 'lodash'
 
+
 export default {
   data(){
     return {
-      showChoseTradeDlg: false,
+      showKgraph: true,
 
     }
   },
@@ -107,12 +74,12 @@ export default {
       account: state => state.accounts.selectedAccount,
       accountData: state => state.accounts.accountData,
       assetAccounts: state => state.asset.assets,
-      tradepairs: state => state.accounts.accountData.tradepairs,
-      selectedTrade: state => state.accounts.selectedTradePair.tradepair,
-      selectedTradeIndex: state => state.accounts.selectedTradePair.index,
       bids: state => state.accounts.selectedTradePair.bids,//买单
       asks: state => state.accounts.selectedTradePair.asks,//卖单
       my: state => state.accounts.selectedTradePair.my.records,
+      tradepairs: state => state.accounts.accountData.tradepairs,
+      selectedTrade: state => state.accounts.selectedTradePair.tradepair,
+      selectedTradeIndex: state => state.accounts.selectedTradePair.index,
       assethosts: state => state.asset.assethosts,
 
     }),
@@ -167,10 +134,7 @@ export default {
   },
 
   methods: {
-    ...mapActions({
-      switchTradePair: 'switchTradePair',
-      selectTradePair: 'selectTradePair',
-    }),
+    ...mapActions({ }),
     nativeBalance(){
       let d = _.defaultsDeep({}, this.balances.filter(item=>isNativeAsset(item))[0])
       let t = this.native.balance - this.reserve - this.base_reserve - 0.0001
@@ -181,21 +145,22 @@ export default {
     assetBalance(asset){
       return _.defaultsDeep({}, this.balances.filter(item=> item.code === asset.code && item.issuer === asset.issuer)[0])
     },
-    back(){
-      this.$router.back()
-    },
-    isChoosenTrade(from, to){
-      let key = this.BaseAsset.code + this.BaseAsset.issuer + this.CounterAsset.code + this.CounterAsset.issuer
-      let key2 = from.code + from.issuer + to.code + to.issuer
-      return key === key2
-    },
-    choseTrade(index,tradepair){//选择交易对
-      this.selectTradePair({index, tradepair})
-      this.showChoseTradeDlg = false
+    choseTradePair({index,tradepair}){//选择交易对
       this.$nextTick(()=>{
         this.$refs.kgraph.reload()
       })
     },
+    switchKgraphShow(){
+      this.showKgraph = !this.showKgraph
+    },
+
+    toBuy(){
+      this.$router.push({name: 'TradeBuySell', params: {flag: 'buy'}})
+    },
+    toSell(){
+      this.$router.push({name: 'TradeBuySell', params: {flag: 'sell'}})
+    }
+
 
   },
 
@@ -205,9 +170,7 @@ export default {
     BottomNotice,
     Loading,
     OrderBook,
-    
-
-
+    TradePairToolBar,
   }
   
 
@@ -216,25 +179,5 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-@require '~@/stylus/color.styl'
-.tb-title
-  width: 100vw
-  padding-top: 2px
-.tb-code
-  font-size: 16px
-  line-height: 24px
-.tb-issuer
-  font-size: 14px
-  line-height: 16px
-  vertical-align: top
-.tb-icon
-  padding-top: 8px
-  .material-icons
-    font-size: 24px
-.dlg-content
-  padding-top: 20px!important
-.row100
-  width: 100vw
-  &.active
-    color: $primarycolor.green
+@require '~@/stylus/trade.styl'
 </style>

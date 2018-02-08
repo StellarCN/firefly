@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-26 15:59:49 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-01-29 13:53:57
+ * @Last Modified time: 2018-02-08 14:56:42
  * @License MIT 
  */
 
@@ -135,8 +135,6 @@ export default {
                 })
                 this.opt.xAxis.date = this.dates
                 this.opt.series[0].data = this.data
-                console.log(this.opt)
-                console.log(JSON.stringify(this.opt))
                 this.ele.setOption(this.opt)
             })
             .catch(err=>{
@@ -161,7 +159,7 @@ export default {
                     show: false,
                     type: 'value',
                     max: function(value) {
-                        return value.max * 2;
+                        return value.max * 1.5;
                     }
                 },
                 series: [{

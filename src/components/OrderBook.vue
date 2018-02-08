@@ -111,7 +111,8 @@ import { DEFAULT_INTERVAL } from '@/api/gateways'
 import { getAsset } from '@/api/assets'
 import Scroll from '@/components/Scroll'
 import { myofferConvert } from '@/api/offer'
-import NP from 'number-precision'
+import {Decimal} from 'decimal.js'
+
 export default {
   data(){
     return {
@@ -169,40 +170,40 @@ export default {
       return []
     },
     bidsdata(){
-      let dep = 0
+      let dep = new Decimal(0)
       let newdata = this.bids.map(obj=>{
-        dep = NP.plus(dep, Number(obj.amount));
+        let amount = new Decimal(obj.amount)
+        dep = dep.add(amount)
         return Object.assign({}, obj, {
           origin: obj,
-          num: (NP.round(Number(obj.amount), 4)).toFixed(4),
-          price: Number(obj.price).toFixed(this.decimal),
-          amount: (NP.round((NP.divide(NP.times(Number(obj.amount), obj.price_r.d), obj.price_r.n)), 2)).toFixed(2),
-          depth: (NP.round(dep, 2)).toFixed(2),
+          num: amount.toFixed(4),
+          price: new Decimal(obj.price).toFixed(this.decimal),
+          amount: amount.times(obj.price_r.d).dividedBy(obj.price_r.n).toFixed(2),
+          depth: Number(dep.toFixed(2)),
         })
       })
       newdata.forEach(ele=>{
-        let p = ele.depth / dep
-        ele.percent = Number(NP.round((p * 100), 2))
+        ele.percent = Number(new Decimal(ele.depth).times(100).dividedBy(dep).toFixed(2))
         ele.blank = 100 - ele.percent
       })
       return newdata
     },
     asksdata(){
-      let dep = 0
+      let dep = new Decimal(0)
       let newdata = this.asks.map(obj => {
-        let num = NP.times(Number(obj.amount),Number(obj.price))
-        dep = NP.plus(dep,num);
+        let amount = new Decimal(obj.amount)
+        let num = amount.times(obj.price)
+        dep = dep.add(num);
         return Object.assign({}, obj, {
-          amount: (NP.round(Number(obj.amount), 2)).toFixed(2),
-          price: (NP.round(Number(obj.price), this.decimal)).toFixed(this.decimal),
+          amount: amount.toFixed(2),
+          price: new Decimal(obj.price).toFixed(this.decimal),
           num: num.toFixed(4),
-          depth: (NP.round(dep,2)).toFixed(2),
+          depth: dep.toFixed(2),
           origin: obj,
         });
       })
       newdata.forEach(ele=>{
-        let p = ele.depth / dep
-        ele.percent = Number(NP.round((p * 100),2))
+        ele.percent =  Number(new Decimal(ele.depth).times(100).dividedBy(dep).toFixed(2))
         ele.blank = 100 - ele.percent
       })
       return newdata

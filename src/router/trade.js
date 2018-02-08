@@ -16,14 +16,14 @@ export default {
             component: resolve => require(['../pages/trade/Trade.vue'], resolve)
           },
           {
-            path: 'buy',
-            name: 'TradeBuy',
-            component: resolve => require(['../pages/trade/TradeBuy.vue'], resolve)
+            path: 'buysell',
+            name: 'TradeBuySell',
+            component: resolve => require(['../pages/trade/TradeBuySell.vue'], resolve)
           },
           {
-            path: 'sell',
-            name: 'TradeSell',
-            component: resolve => require(['../pages/trade/TradeSell.vue'], resolve)
+            path: 'full',
+            name: 'TradeK',
+            component: resolve => require(['../pages/trade/TradeK.vue'], resolve)
           }
     ]
 }

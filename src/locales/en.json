@@ -91,6 +91,7 @@
   "AddAssetNotFound": "asset info not found",
   "FederationUrl":"federation host URL",
   "Working":"working...",
+  "Reset":"reset",
 
 
   "Info.ChangeAccountSuccess":"success",
