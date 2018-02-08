@@ -236,7 +236,10 @@ export default {
           this.trustsuccess = true
           this.trustfail = false
           this.working = false
-          this.$toasted.success(this.$t('AddAssetSuccess'))//-------------------------
+          this.$toasted.success(this.$t('AddAssetSuccess'))
+          this.asset_code = null
+          this.asset_issuer = null
+
           setTimeout(()=>{
             this.showloading = false
           },3000)
