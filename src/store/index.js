@@ -180,20 +180,20 @@ export const CHANGE_IOSSTATUSBAR_COLOR = 'CHANGE_IOSSTATUSBAR_COLOR'
 export const ON_PAUSE = 'ON_PAUSE'
 export const ON_RESUME = 'ON_RESUME'
 
-if (module.hot) {
-  module.hot.accept([
-    './modules/AccountsStore',
-    './modules/AccountStore',
-    './modules/AppSettingStore',
-    './modules/AssetStore'
-  ], () => {
-    store.hotUpdate({
-      app: require('./modules/AppSettingStore'),
-      account: require('./modules/AccountStore'),
-      accounts: require('./modules/AccountsStore'),
-      asset: require('./modules/AssetStore')
-    })
-  })
-}
+// if (module.hot) {
+//   module.hot.accept([
+//     './modules/AccountsStore',
+//     './modules/AccountStore',
+//     './modules/AppSettingStore',
+//     './modules/AssetStore'
+//   ], () => {
+//     store.hotUpdate({
+//       app: require('./modules/AppSettingStore'),
+//       account: require('./modules/AccountStore'),
+//       accounts: require('./modules/AccountsStore'),
+//       asset: require('./modules/AssetStore')
+//     })
+//   })
+// }
 
 export default store

@@ -202,7 +202,8 @@ const actions = {
 
   //交换当前盘面资产
   async switchSelectedTradePair({dispatch,commit,state}){
-    let tradepair = {from: state.selectedTradePair.to, to: state.selectedTradePair.from}
+    let tradepair = {from: state.selectedTradePair.tradepair.to, to: state.selectedTradePair.tradepair.from}
+    let index = state.selectedTradePair.index
     commit(SELECT_TRADE_PAIR,{index, tradepair})
     await dispatch('queryOrderBook')
     await dispatch('queryMyOffers')

@@ -4,7 +4,13 @@
 <template>
   <div class="page">
    <!-- toolbar -->
-    <trade-pair-tool-bar @choseTradePair="choseTradePair" />
+    <trade-pair-tool-bar @choseTradePair="afterChoseTradePair">
+      <div slot="right-tool">
+        <v-btn icon @click="doSwitchTradePair">
+          <i class="material-icons">swap_vert</i>
+        </v-btn>
+      </div>
+    </trade-pair-tool-bar>
 
     <loading :show="working" :loading="sending" :success="sendsuccess" :fail='sendfail' :color="isSell?'red':'green'"/>
 
@@ -335,16 +341,6 @@ export default {
     assetBalance(asset){
       return _.defaultsDeep({}, this.balances.filter(item=> item.code === asset.code && item.issuer === asset.issuer)[0])
     },
-    choose({type,data}){
-      if('sell'!=type)return
-      console.log('-------choose---------')
-      console.log(data)
-      let origin = data.origin
-      this.price = Number(origin.price)
-      //this.amount = Number(origin.amount)
-      this.num =  data.amount
-
-    },
 
     setNum(){
       if(this.isBuy){
@@ -469,7 +465,6 @@ export default {
     choose({type,data}){
       if(this.justify) return
       this.justify = true
-      console.log('-------choose---------')
       let origin = data.origin
       this.price = Number(origin.price)
       if(this.isBuy){
@@ -485,6 +480,12 @@ export default {
       }
       this.resetJustify()
     },
+    doSwitchTradePair(){
+      this.switchSelectedTradePair()
+    },
+    afterChoseTradePair(){
+
+    }
    
   },
   components: {
