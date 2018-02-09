@@ -3,14 +3,11 @@
  */
 <template>
   <div class="page">
-    <toolbar :title="$t(title)" 
-      :showmenuicon="showmenuicon" 
-      :showbackicon="showbackicon"
-      ref="toolbar"
-      >
-      <!-- <div class="right" slot="right-tool" @click="add" v-if="islogin">
-        <i class="material-icons">&#xE145;</i>
-      </div> -->
+    <toolbar :title="$t(title)" :showbackicon="false" ref="toolbar">
+      <v-btn icon @click.native="showAccounts" slot="left-tool">
+          <i class="material-icons">repeat</i>
+      </v-btn>
+    
        <v-btn icon slot='right-tool' @click="pickershow()" v-if="islogin">
         <i class="material-icons">&#xE145;</i>
       </v-btn>
