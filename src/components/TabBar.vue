@@ -1,6 +1,6 @@
 <template>
 <v-card class="menu-card">
-  <v-bottom-nav :value="true" :active="active" color="primary">
+  <v-bottom-nav :value="true" :active="active" color="dark" class="tb-menu">
       <v-btn flat v-for="(item,index) in menus" :key="index" :value="index" @click="redirect(index,item.name)"> 
         <span>{{$t(item.title)}}</span>
         <v-icon>{{item.icon}}</v-icon>
@@ -36,7 +36,7 @@ export default {
           title: "Menu.My",
           name: "My",
           path: "/mysettings",
-          icon: "account_box"
+          icon: "account_circle"
         }
       ],
       active: -1
@@ -63,11 +63,17 @@ export default {
 };
 </script>
 
-<style lang="stylus">
-.menu-card.card {
+<style lang="stylus" scoped>
+@require('~@/stylus/color.styl')
+.menu-card.card 
     height: 60px;
     position: fixed;
     border-radius: 0px;
     z-index: 99;
-}
+.tb-menu
+  background: $secondarycolor.gray
+  box-shadow: 0px -2px 2px $primarycolor.gray
+  &.bottom-nav.bottom-nav--active.dark
+    .btn.btn--flat.btn--active
+      color: $primarycolor.green
 </style>
