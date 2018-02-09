@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-23 11:14:24 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-01-31 17:52:05
+ * @Last Modified time: 2018-02-09 15:12:39
  * @License: MIT 
  */
 <template>
@@ -11,7 +11,7 @@
       <toolbar :title="$t('Menu.My')" :showbackicon="false"  ref="toolbar">
           <div slot="left-tool">
             <v-btn icon @click.native="showAccounts">
-                <i class="material-icons">menu</i>
+                <i class="material-icons">repeat</i>
             </v-btn>
           </div>
       </toolbar>
