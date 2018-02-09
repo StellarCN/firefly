@@ -409,6 +409,8 @@ export default {
       }
 
       if(this.working)return
+      this.sendsuccess = false
+      this.sendfail = false
       this.working = true
       this.sending = true
       let option = {type:this.flag, // sell or buy
@@ -423,7 +425,8 @@ export default {
       doOffer(this.accountData.seed, option)
         .then(data=>{
           this.sending = false
-          this.submitSuccess = true
+          this.sendsuccess = true
+          this.sendfail = false
           this.clean()
           this.hideLoading()
           this.$toasted.show(this.$t('Trade.OfferSuccess'))
@@ -431,8 +434,9 @@ export default {
         })
         .catch(err=>{
           console.log(err)
-          this.submitting = false;
-          this.submitFail = true;
+          this.sending = false;
+          this.sendfail = true;
+          this.sendsuccess = false
           this.clean();
           this.hideLoading();
           this.$toasted.error(this.$t('Error.OfferFailed'));
@@ -446,7 +450,6 @@ export default {
     
     hideLoading(){
       setTimeout(()=>{
-          this.sendsuccess =false
           this.sending = false
           this.working = false
         },3000)
