@@ -4,7 +4,7 @@
 import axios from 'axios'
 
 
-const host = 'http://40.125.171.9:4000'
+const host = 'http://40.125.213.185:8081'
 
 export function getAssetPrice(assets){
   let uri = `${host}/api/price?data=`+encodeURIComponent(JSON.stringify(assets))
