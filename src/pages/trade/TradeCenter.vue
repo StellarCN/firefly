@@ -13,6 +13,8 @@
       </v-btn>
       <span slot="switch_password">{{$t('Account.Password')}}</span>
     </toolbar>
+    <accounts-nav :show="showaccountsview" @close="closeView"/>
+
     <div class="content">
       <picker @select="pairchosen" 
               :data="items" 
@@ -31,24 +33,28 @@
             <transition-group>
             <li class="tradepair-li" v-for="(pair,index) in pairs" :key="pair.from.issuer+'-'+pair.to.issuer">
               <v-layout class="pair-wrapper" row wrap v-swiper=2  @click="trade(index,pair)">
-                <v-flex xs4 class="from-wrapper">
-                  <div class="code">{{pair.from.code}}</div>
-                  <div class="issuer" v-if="assethosts[pair.from.code]">{{assethosts[pair.from.code]}}</div>
-                  <div class="issuer" v-else-if="assethosts[pair.from.issuer]">{{assethosts[pair.from.issuer]}}</div>
-                  <div class="issuer" v-else>{{pair.from.issuer | miniaddress}}</div>
-                </v-flex>
-                <v-flex xs1 class="exchange-wrapper">
-                  <div class="exchange">
-                    <i class="icons material-icons">&#xE8D4;</i>
+                <v-flex xs6>
+                  <div class="flex-row">
+                    <div class="flex3 from-wrapper">
+                      <div class="code">{{pair.from.code}}</div>
+                      <div class="issuer" v-if="assethosts[pair.from.code]">{{assethosts[pair.from.code]}}</div>
+                      <div class="issuer" v-else-if="assethosts[pair.from.issuer]">{{assethosts[pair.from.issuer]}}</div>
+                      <div class="issuer" v-else>{{pair.from.issuer | miniaddress}}</div>
+                    </div>
+                    <div class="flex1 exchange-wrapper">
+                      <div class="exchange">
+                        <i class="icons material-icons">&#xE8D4;</i>
+                      </div>
+                    </div>
+                    <div class="flex3 to-wrapper">
+                      <div class="code">{{pair.to.code}}</div>
+                      <div class="issuer" v-if="assethosts[pair.to.code]">{{assethosts[pair.to.code]}}</div>
+                      <div class="issuer" v-else-if="assethosts[pair.to.issuer]">{{assethosts[pair.to.issuer]}}</div>
+                      <div class="issuer" v-else>{{pair.to.issuer | miniaddress}}</div>
+                    </div>
                   </div>
                 </v-flex>
-                <v-flex xs4 class="to-wrapper">
-                  <div class="code">{{pair.to.code}}</div>
-                  <div class="issuer" v-if="assethosts[pair.to.code]">{{assethosts[pair.to.code]}}</div>
-                  <div class="issuer" v-else-if="assethosts[pair.to.issuer]">{{assethosts[pair.to.issuer]}}</div>
-                  <div class="issuer" v-else>{{pair.to.issuer | miniaddress}}</div>
-                </v-flex>
-                <v-flex xs3>
+                <v-flex xs6>
                   <k-line :base="pair.from" :counter="pair.to" :height="56"></k-line>
                 </v-flex>
 
@@ -105,11 +111,19 @@ import Toolbar from '@/components/Toolbar'
 import Card from '@/components/Card'
 import Picker from "@/components/picker"
 import TradePairPicker from '@/components/TradePairPicker'
+import AccountsNav from '@/components/AccountsNav'
 import { mapState, mapActions,mapGetters} from 'vuex'
 import { miniAddress } from '@/api/account'
 import { isNativeAsset } from '@/api/assets'
 import KLine from '@/components/KLine'
 import TabBar from '@/components/TabBar'
+import { getTradeAggregation,getTradeAggregation1day,RESOLUTION_1HOUR } from '@/api/tradeAggregation'
+import { getAsset } from '@/api/assets'
+import { getTrades } from '@/api/trade'
+var moment = require('moment')
+import _ from 'lodash'
+import {Decimal} from 'decimal.js'
+
 export default {
   data(){
     return {
@@ -122,7 +136,10 @@ export default {
       addpair:null,
       snackbarText: '',
       snackbar: false,
-      snackbarColor: 'primary'
+      snackbarColor: 'primary',
+
+
+      showaccountsview: false,
 
     }
   },
@@ -175,12 +192,14 @@ export default {
       if(!this.items.length) return
       return parseInt((this.items.length-1)/2)
     },
+
   },
   mounted(){
     if(!this.islogin){
       this.$refs.toolbar.showPasswordLogin()
       return
     }
+
   },
   methods: {
     ...mapActions({
@@ -191,6 +210,13 @@ export default {
       getAssetsAccount: 'assetsAccount'
 
     }),
+
+    showAccounts(){
+        this.showaccountsview = true
+    },
+    closeView(){
+        this.showaccountsview = false
+    },
     pickershow(){
       if(this.notfunding){
         this.snackbarText = this.$t('Error.AccountNotFund')
@@ -322,7 +348,7 @@ export default {
     trade(index,tradepair){
       this.selectTradePair({index,tradepair})
       this.$router.push({name: 'Trade'})
-    }
+    },
    
   },
   components: {
@@ -332,7 +358,8 @@ export default {
     TradePairPicker,
     KLine,
     TabBar,
-    draggable
+    draggable,
+    AccountsNav
   }
 }
 </script>
@@ -373,7 +400,7 @@ export default {
       .exchange
         text-align: center
         .icons.material-icons
-          font-size: 32px
+          font-size: 24px
           color: $secondarycolor.font
           padding-top: 10px
 
