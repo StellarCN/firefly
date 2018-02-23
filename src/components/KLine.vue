@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-26 15:59:49 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-02-15 22:43:23
+ * @Last Modified time: 2018-02-23 14:33:39
  * @License MIT 
  */
 
@@ -30,10 +30,11 @@ import { getTradeAggregation, getTradeAggregation5min,
     getTradeAggregation1day, getTradeAggregation1week,
     RESOLUTION_5MIN,RESOLUTION_1HOUR } from '@/api/tradeAggregation'
 import { getAsset } from '@/api/assets'
-import { DEFAULT_INTERVAL } from '@/api/gateways'
 import { getTrades } from '@/api/trade'
 import _ from 'lodash'
 import {Decimal} from 'decimal.js'
+
+const TRADE_INTERVAL = 60000
 
 export default {
     data(){
@@ -121,6 +122,7 @@ export default {
             clearInterval(this.tinterval)
             this.tinterval = null
         }
+        this.deleteTradeInterval()
     },
     mounted () {
         this.$nextTick(()=>{
@@ -225,7 +227,7 @@ export default {
             if (!this.tradeInterval){
                 this.tradeInterval = setInterval(()=>{
                 this.fetchLastTrade()
-                },DEFAULT_INTERVAL)
+                },TRADE_INTERVAL)
             }
             this.fetchLastTrade()
         },

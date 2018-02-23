@@ -24,7 +24,16 @@
               :cancelTxt="$t('Cancel')"
               :confirmTxt="$t('Confirm')"
       ></picker>
-      
+      <card class="trade-card" margin="10px 10px">
+        <div class="flex-row" slot="card-content">
+          <div class="flex1" @click="doFilter('All')">{{$t('All')}}</div>
+          <div class="flex1" @click="doFilter('XLM')">XLM</div>
+          <div class="flex1" @click="doFilter('XCN')">XCN</div>
+          <div class="flex1" @click="doFilter('BTC')">BTC</div>
+          <div class="flex1" @click="doFilter('ETH')">ETH</div>
+        </div>
+      </card>
+
       <card class="trade-card" padding="10px 10px">
         <div class="card-content" slot="card-content">
       
@@ -121,6 +130,9 @@ var moment = require('moment')
 import _ from 'lodash'
 import {Decimal} from 'decimal.js'
 
+const TAG_ALL = 'All', TAG_XCN = 'XCN', TAG_XLM = 'XLM', TAG_BTC = 'BTC', TAG_ETH = 'ETH'
+
+
 export default {
   data(){
     return {
@@ -134,7 +146,7 @@ export default {
       snackbarText: '',
       snackbar: false,
       snackbarColor: 'primary',
-
+      filterTag: TAG_ALL,
 
       showaccountsview: false,
 
@@ -152,14 +164,11 @@ export default {
     ...mapGetters([
       'balances',
     ]),
-    pairs:{
-      get(){
-        return this.tradepairs
-      },
-      set(value){
-        this.$store.commit('SORT_TRADEPAIRS',value)
-
-      }
+    pairs(){
+      return this.tradepairs.filter(item => {
+        if(this.filterTag === TAG_ALL) return true
+        return item.to.code === this.filterTag
+      })
     },
     items(){
       if(!this.balances)return []
@@ -345,6 +354,9 @@ export default {
     trade(index,tradepair){
       this.selectTradePair({index,tradepair})
       this.$router.push({name: 'Trade'})
+    },
+    doFilter(tag){
+      this.filterTag = tag
     },
    
   },
