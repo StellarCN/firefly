@@ -23,11 +23,9 @@ const actions = {
   selectAsset({commit}, asset){
     commit(SELECT_ASSET,asset)
   },
-  async sendAsset({dispatch,commit}, {seed,address,target,asset,amount,memo_type,memo_value}){
+  async sendAsset({dispatch,commit, rootState, rootGetters}, {seed,address,target,asset,amount,memo_type,memo_value}){
     //seed,address,target,asset,amount,memo_type,memo_value
-    let data = await send(seed,address,target,asset,amount,memo_type,memo_value)
-    console.log(`-----send--------`)
-    console.log(data)
+    let data = await send(seed,address,target,asset,amount,memo_type,memo_value,rootGetters.base_reserve)
     //刷新accountinfo
     await dispatch('getAccountInfo',address)
     await dispatch('getPayments', address)

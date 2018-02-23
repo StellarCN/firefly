@@ -4,6 +4,7 @@ import { readAccountData } from './storage'
 import { encrypt, decrypt } from './crypt'
 import { importAccountFromData } from './qr'
 import { getAsset } from './assets'
+import { BASE_RESERVE } from './gateways'
 var Promise = require('es6-promise').Promise
 
 // create random account
@@ -95,7 +96,7 @@ function checkAssetAvailable(assetdata,balances){
 
 // send asset 
 // return Promise
-export function send(seed,address,target,assetdata,amount,memo_type,memo_value){
+export function send(seed,address,target,assetdata,amount,memo_type,memo_value,base_reserve){
   let amountstr = Number(amount).toFixed(7);//Math.round(amount, 7)
   address = address ? address : address(address)
   let asset = getAsset(assetdata.code , assetdata.issuer)
@@ -122,7 +123,8 @@ export function send(seed,address,target,assetdata,amount,memo_type,memo_value){
           //新建用户只能发XLM
           if(assetdata.code!='XLM')throw new Error('Error.AccountNotFund')
             //是否资产不足
-            if(Number(amount)<20)throw new Error('Error.NotEnoughAssetToFundAccount')
+            var reserve = 2 * ( base_reserve || BASE_RESERVE )
+            if(Number(amount)< reserve)throw new Error('Error.NotEnoughAssetToFundAccount')
             console.log('创建账户')
             //创建账户
             var createaccount = StellarSdk.Operation.createAccount({destination: target,startingBalance: amount})

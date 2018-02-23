@@ -193,8 +193,7 @@ export default {
         let obj = Object.assign({}, this.bids[i])
         obj.num = Number(obj.amount).toFixed(4)
         obj.price = Number(obj.price).toFixed(this.decimal)
-       // obj.amount = (obj.num / obj.price).toFixed(2)
-        obj.amount = (obj.num * obj.price_r.n / obj.price_r.d).toFixed(2)
+        obj.amount = (obj.num * obj.price_r.d / obj.price_r.n).toFixed(2)
         dep += Number(obj.num)
         obj.depth = dep.toFixed(2)
         obj.origin = this.bids[i]

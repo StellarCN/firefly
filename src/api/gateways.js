@@ -1,7 +1,9 @@
 import axios from 'axios'
 
+export const APP_NAME = 'firefly'
+
 //app版本号
-export const APP_VERSION = '1.2.3'
+export const APP_VERSION = '1.2.5'
 
 export const APP_GITHUB = 'https://github.com/stellarcn/firefly'
 
@@ -84,7 +86,7 @@ export const ASSETS_ISSUER_HOST = {
 }
 
 
-export const BASE_RESERVE = 10
+export const BASE_RESERVE = 0.5
 
 // 默认axios超时时间
 export const AXIOS_DEFAULT_TIMEOUT = 5000

@@ -4,6 +4,9 @@ import AccountsStore from './modules/AccountsStore'
 import AppSettingStore from './modules/AppSettingStore'
 import AccountStore from './modules/AccountStore'
 import AssetStore from './modules/AssetStore'
+import createPersist from './plugins/persistence'
+import { APP_NAME, APP_VERSION } from '@/api/gateways'
+var Base64 = require('js-base64').Base64
 
 Vue.use(Vuex)
 
@@ -120,8 +123,25 @@ export default new Vuex.Store({
     app: AppSettingStore,
     account: AccountStore,
     asset: AssetStore
-  }
+  },
+  plugins: [createPersist({
+    namespace: APP_NAME + '-vuex-',
+    initialState: {},
+    serialize,
+    deserialize,
+    // never expire
+    expires: 0
+  })]
+
 })
+
+function serialize(value){
+  return Base64.encode(JSON.stringify(value))
+}
+
+function deserialize(value){
+  return JSON.parse(Base64.decode(value))
+}
 
 export const IMPORT_ACCOUNT_CHANGE = 'IMPORT_ACCOUNT_CHANGE'
 export const CREATE_ACCOUNT_CHANGE = 'CREATE_ACCOUNT_CHANGE'
