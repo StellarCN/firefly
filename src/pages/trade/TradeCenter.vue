@@ -29,7 +29,6 @@
         <div class="card-content" slot="card-content">
       
           <ul class="tradepairs-ul">
-            <draggable v-model="pairs">
             <transition-group>
             <li class="tradepair-li" v-for="(pair,index) in pairs" :key="pair.from.issuer+'-'+pair.to.issuer">
               <v-layout class="pair-wrapper" row wrap v-swiper=2  @click="trade(index,pair)">
@@ -66,10 +65,8 @@
                 </div>
                 <div class="trade" @click="trade(index,pair)">{{$t('Trade.Trade')}}</div>
               </div>
-              
-            </li>
+              </li>
             </transition-group>
-            </draggable>
           </ul>
 
         </div>
