@@ -115,6 +115,7 @@ const getters = {
       }
       obj.balance = Number(element.balance)
       obj.limit = Number(element.limit)
+      obj.type = element.asset_type
       data.push(obj)
     });
     return data.reverse()
