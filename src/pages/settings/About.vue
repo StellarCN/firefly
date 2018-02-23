@@ -52,14 +52,17 @@
                      <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
                 </div>
             </div>
+            <div class="row"  @click="openDownloadURL" v-if="latestVersion">
+                <div class="label">
+                    {{$t('LatestVersion')}}
+                </div>
+                <div class="value">
+                    {{latestVersion}}
+                     <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
+                </div>
+            </div>
         </div>
       </card>
-        <v-layout row wrap>
-          <v-flex xs12>
-            <v-btn class='primary' block dark large @click="openDownloadURL" v-if="latestVersion > appversion">{{$t('About.UpdateTo')}} {{latestVersion}}</v-btn>
-          </v-flex>
-        </v-layout>
-
     </div>
   </div>
 </template>
@@ -67,7 +70,8 @@
 <script>
 import Toolbar from '@/components/Toolbar'
 import Card from '@/components/Card'
-import { APP_VERSION, APP_GITHUB, OFFICIAL_SITE, checkUpdate } from '@/api/gateways'
+import { APP_VERSION, APP_GITHUB, OFFICIAL_SITE, getPackageJson } from '@/api/gateways'
+const semver = require('semver')
 
 export default {
   data(){
@@ -90,9 +94,10 @@ export default {
     },
 
     checkNewVersion() {
-      checkUpdate().then(data => {
+      getPackageJson().then(response => {
+        let data = response.data
         this.latestVersion = data.version
-        this.updateURL = data.url
+        this.updateURL = data.homepage
       }).catch(err => console.log(err))
     },
 
