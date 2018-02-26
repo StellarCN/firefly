@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-26 15:59:49 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-02-23 14:33:39
+ * @Last Modified time: 2018-02-26 17:45:38
  * @License MIT 
  */
 
@@ -12,7 +12,7 @@
       <div class="flex1">
           <div class="linegraph" :id="id" v-bind:style="{height: height + 'px'}"></div>
       </div>
-      <div class="flex1" v-if="titleData.change!==null">
+      <div class="flex1" v-if="titleData!==null && titleData.price!==null">
            <div :class="' price textcenter ' + ( titleData.change >=0 ? 'up':'down') ">{{titleData.price}}{{counter.code}}</div>
            <div :class="' rate  textcenter ' + ( titleData.rate >=0 ? 'up':'down')">
               <span v-if="titleData.rate>0">+</span>
@@ -28,7 +28,7 @@ var echarts = require('echarts')
 import { getTradeAggregation, getTradeAggregation5min, 
     getTradeAggregation15min, getTradeAggregation1hour, 
     getTradeAggregation1day, getTradeAggregation1week,
-    RESOLUTION_5MIN,RESOLUTION_1HOUR } from '@/api/tradeAggregation'
+    RESOLUTION_5MIN,RESOLUTION_1HOUR,RESOLUTION_1DAY } from '@/api/tradeAggregation'
 import { getAsset } from '@/api/assets'
 import { getTrades } from '@/api/trade'
 import _ from 'lodash'
@@ -47,6 +47,7 @@ export default {
             tinterval: null,//定时器
             lasttime: null,//上次的执行时间
             
+            lastTradeAggregation:null,
             //最新的成交价格统计
             lastTrade:null,
             tradeInterval: null,//查询最新一次交易数据的interval
@@ -95,7 +96,7 @@ export default {
     },
     computed: {
         titleData(){
-          if(this.data.length > 0 && this.lastTrade){
+          if(this.lastTradeAggregation && this.lastTrade){
             let price = new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
             let open = new Decimal(this.lastTradeAggregation.open)
             let change = price.minus(open)
@@ -114,6 +115,7 @@ export default {
         //开启定时器
         this.tinterval = setInterval(this.fetch, this.interval)
         this.setupTradeInterval()
+        this.fetchLastTradeAggregation()
        
     },
     beforeDestroy () {
@@ -160,9 +162,9 @@ export default {
                 this.lasttime = end_time
                 let records = data.records
                 let _data = records.reverse()
-                if(_data.length > 0){
-                    this.lastTradeAggregation = _.defaultsDeep({}, _data[0])
-                }
+                // if(_data.length > 0){
+                //     this.lastTradeAggregation = _.defaultsDeep({}, _data[0])
+                // }
                 _data.map(item=>{
                     if(this.incremental){
                         this.data = []
@@ -221,6 +223,23 @@ export default {
                 result.push((sum / dayCount).toFixed(2));
             }
             return result;
+        },
+        
+        // 查询24小时的统计数据
+        fetchLastTradeAggregation(){
+          let start_time = 0, end_time = new Date().getTime()
+          getTradeAggregation(getAsset(this.base), getAsset(this.counter), 
+                start_time, end_time, RESOLUTION_1DAY, 1, 'desc')
+            .then(data => {
+                let records = data.records
+                if(records && records.length > 0){
+                    this.lastTradeAggregation = records[0]
+                }
+            })
+            .catch(err=>{
+                console.error(`-----err on get trade aggregation -- `)
+                console.error(err)
+            })
         },
 
          setupTradeInterval(){

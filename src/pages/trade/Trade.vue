@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-05 10:51:54 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-02-08 16:49:22
+ * @Last Modified time: 2018-02-26 18:00:37
  * @License MIT 
  */
 <template>
@@ -29,10 +29,16 @@
     <!-- 买卖按钮 -->
     <div class="flex-row full-width footer-btns">
       <div class="flex1 btn-flex">
-        <v-btn class="full-width btn-buy" color="primary" @click="toBuy">{{$t('Trade.Buy')}}{{BaseAsset.code}}</v-btn>
+        <div class="full-width btn-buy" color="primary" @click="toBuy">
+          <div>{{$t('Trade.Buy')}}{{BaseAsset.code}}</div>
+          <div class="available">{{$t('Available')}}{{CounterAsset.code}}:{{CounterBalance.balance|| 0 }}</div>
+        </div>
       </div>
       <div class="flex1 btn-flex">
-        <v-btn class="full-width btn-sell" color="error" @click="toSell">{{$t('Trade.Sell')}}{{BaseAsset.code}}</v-btn>
+        <div class="full-width btn-sell" color="error" @click="toSell">
+          <div>{{$t('Trade.Sell')}}{{BaseAsset.code}}</div>
+          <div class="available">{{$t('Available')}}{{BaseAsset.code}}:{{BaseBalance.balance||0}}</div>
+        </div>
       </div>
     </div>
 
@@ -95,7 +101,7 @@ export default {
     },
     BaseBalance(){
       if(isNativeAsset(this.BaseAsset)){
-        return this.nativeBalance
+        return this.nativeBalance()
       }else{
         return this.assetBalance(this.BaseAsset)
       }
