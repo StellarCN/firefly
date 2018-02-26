@@ -12,7 +12,7 @@
       <div class="flex1">
           <div class="linegraph" :id="id" v-bind:style="{height: height + 'px'}"></div>
       </div>
-      <div class="flex1" v-if="titleData.change">
+      <div class="flex1" v-if="titleData.change!==null">
            <div :class="' price textcenter ' + ( titleData.change >=0 ? 'up':'down') ">{{titleData.price}}{{counter.code}}</div>
            <div :class="' rate  textcenter ' + ( titleData.rate >=0 ? 'up':'down')">
               <span v-if="titleData.rate>0">+</span>
@@ -101,8 +101,8 @@ export default {
             let change = price.minus(open)
             let rate = change.times(100).dividedBy(open)
             return  _.defaultsDeep({}, this.lastTradeAggregation, {
-                price: new Decimal(price.toFixed(6)).toNumber(),
-                change: new Decimal(change.toFixed(4)).toNumber(),
+                price: new Decimal(price.toFixed(7)).toNumber(),
+                change: new Decimal(change.toFixed(7)).toNumber(),
                 rate: new Decimal(rate.toFixed(2)).toNumber() })
           }
           return {}
@@ -274,6 +274,7 @@ export default {
     vertical-align: bottom
 .change
 .rate
-    line-height: 24px
+    line-height: 16px
+    font-size: 14px
 
 </style>

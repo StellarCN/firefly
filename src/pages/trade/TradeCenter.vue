@@ -24,8 +24,8 @@
               :cancelTxt="$t('Cancel')"
               :confirmTxt="$t('Confirm')"
       ></picker>
-      <card class="trade-card" margin="10px 10px">
-        <div class="flex-row" slot="card-content">
+      <card class="trade-card" margin="10px 0px" padding="2px 0px">
+        <div class="flex-row textcenter" slot="card-content">
           <div class="flex1" @click="doFilter('All')">{{$t('All')}}</div>
           <div class="flex1" @click="doFilter('XLM')">XLM</div>
           <div class="flex1" @click="doFilter('XCN')">XCN</div>
@@ -385,9 +385,13 @@ export default {
     position: relative
     z-index: 2
     padding: 2px 2px 
+    padding-bottom: 0px
     background: $secondarycolor.gray
     width: 100%
+    overflow:hidden
     .from-wrapper
+      width: 100%
+      overflow: hidden
       .code
         font-size: 16px
         color: $primarycolor.font
@@ -396,7 +400,11 @@ export default {
       .issuer
         color: $secondarycolor.font
         text-align: center
+        font-size: 14px
+        overflow: hidden
     .to-wrapper
+      width: 100%
+      overflow: hidden
       .code
         font-size: 16px
         color: $primarycolor.font
@@ -405,11 +413,13 @@ export default {
       .issuer
         color: $secondarycolor.font
         text-align: center
+        font-size: 14px
+        overflow: hidden
     .exchange-wrapper
       .exchange
         text-align: center
         .icons.material-icons
-          font-size: 24px
+          font-size: 20px
           color: $secondarycolor.font
           padding-top: 10px
 
