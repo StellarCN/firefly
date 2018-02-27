@@ -4,11 +4,7 @@
 <template>
   <div class="page">
    <!-- toolbar -->
-    <trade-pair-tool-bar @choseTradePair="afterChoseTradePair">
-      <v-btn icon @click="doSwitchTradePair" slot="right-tool">
-        <i class="material-icons">swap_vert</i>
-      </v-btn>
-    </trade-pair-tool-bar>
+    <trade-pair-tool-bar @choseTradePair="afterChoseTradePair"/>
 
     <loading :show="working" :loading="sending" :success="sendsuccess" :fail='sendfail' :color="isSell?'red':'green'"/>
 

@@ -18,6 +18,9 @@
   "day":"天",
   "hour":"小时",
   "minute":"分钟",
+  "high":"高",
+  "low":"低",
+  "volume":"量",
 
 
   "TermsOfServiceTitle":"服务条款",

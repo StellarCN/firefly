@@ -9,18 +9,11 @@
 <template>
   <div class="page">
     <!-- toolbar -->
-    <trade-pair-tool-bar @choseTradePair="choseTradePair">
-      <div slot="right-tool">
-        <v-btn icon @click="switchKgraphShow">
-          <i class="material-icons" v-if="showKgraph">trending_up</i>
-          <i class="material-icons" v-else>visibility_off</i>
-        </v-btn>
-      </div>
-    </trade-pair-tool-bar>
+    <trade-pair-tool-bar @choseTradePair="choseTradePair"/>
 
     <div class="content">
       <!--K线图-->
-      <k :base="BaseAsset" :counter="CounterAsset" :incremental="true" :showTitle="true" ref="kgraph" :showChart="showKgraph"/>
+      <k :base="BaseAsset" :counter="CounterAsset" :incremental="true" :showTitle="true" ref="kgraph"/>
       
       <!--买单卖单委单成交-->
       <order-book ref="orderbook"/>
@@ -30,13 +23,13 @@
     <div class="flex-row full-width footer-btns">
       <div class="flex1 btn-flex">
         <div class="full-width btn-buy" color="primary" @click="toBuy">
-          <div>{{$t('Trade.Buy')}}{{BaseAsset.code}}</div>
+          <div>{{$t('Trade.Buy')}}  {{BaseAsset.code}}</div>
           <div class="available">{{$t('Available')}}{{CounterAsset.code}}:{{CounterBalance.balance|| 0 }}</div>
         </div>
       </div>
       <div class="flex1 btn-flex">
         <div class="full-width btn-sell" color="error" @click="toSell">
-          <div>{{$t('Trade.Sell')}}{{BaseAsset.code}}</div>
+          <div>{{$t('Trade.Sell')}}  {{BaseAsset.code}}</div>
           <div class="available">{{$t('Available')}}{{BaseAsset.code}}:{{BaseBalance.balance||0}}</div>
         </div>
       </div>
@@ -67,8 +60,6 @@ import _ from 'lodash'
 export default {
   data(){
     return {
-      showKgraph: true,
-
     }
   },
 
@@ -156,10 +147,6 @@ export default {
         this.$refs.kgraph.reload()
       })
     },
-    switchKgraphShow(){
-      this.showKgraph = !this.showKgraph
-    },
-
     toBuy(){
       this.$router.push({name: 'TradeBuySell', params: {flag: 'buy'}})
     },

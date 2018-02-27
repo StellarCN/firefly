@@ -82,21 +82,6 @@
       </card>
     </div>
 
-    <div class="mask" v-if="isadd">
-     
-     
-      <!-- <picker class="picker" v-model="isadd" :data-items="items" @change="onPicker">
-        <div class="bottom-content" slot="bottom-content">
-          <div class="btn-group">
-            <div class="btn-cancel" @click="addCancel">{{$t('Button.Cancel')}}</div>
-            <div class="btn-ok" @click="addOK">{{$t('Button.OK')}}</div>
-          </div>
-        </div>
-      </picker> -->
-     <!--
-     <trade-pair-picker :items="items"></trade-pair-picker>
-     -->
-    </div>
      <v-snackbar
       :timeout="5000"
       bottom

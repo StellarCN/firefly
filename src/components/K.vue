@@ -9,25 +9,46 @@
 <template>
 <card class="k-card" padding="5px 5px">
   <div slot="card-content" class="k">
-      <div class="flex-row" v-if="showTitle">
-          <div :class="'flex2 price textcenter ' + ( titleData.change >=0 ? 'up':'down') ">{{titleData.price}}{{counter.code}}</div>
-          <div :class="'flex1 change  textcenter ' + ( titleData.change >=0 ? 'up':'down')">
-              <span v-if="titleData.change>0">+</span>
-              {{titleData.change}}</div>
-          <div :class="'flex1 rate  textcenter ' + ( titleData.rate >=0 ? 'up':'down')">
-              <span v-if="titleData.rate>0">+</span>
-              {{titleData.rate}}%</div>
+      <div class="flex-row atitle" v-if="showTitle && titleData && titleData.price !== null && lastTradeAggregation">
+          <div :class="'flex3 textcenter ' + ( titleData.change >=0 ? 'up':'down') ">
+              <div class="price textcenter">
+                  <span class="price">{{titleData.price}}</span>
+                  <span class="code">{{counter.code}}</span>
+              </div>
+              <div class="flex-row">
+                  <div class="flex1">
+                        <span v-if="titleData.change>0">+</span>
+                        <span>{{titleData.change}}</span>
+                  </div>
+                  <div class="flex1">
+                        <span v-if="titleData.rate>0">+</span>
+                        <span>{{titleData.rate}}%</span>
+                  </div>
+              </div>
+          </div>
+          <div class="flex3 values">
+              <div class=""><span class="label">24H {{$t('high')}} </span><span>{{Number(lastTradeAggregation.high).toFixed(4)}}</span></div>
+              <div class=""><span class="label">24H {{$t('low')}} </span><span>{{Number(lastTradeAggregation.low).toFixed(4)}}</span></div>
+              <div class=""><span class="label">24H {{$t('volume')}} </span><span>{{Number(lastTradeAggregation.base_volume).toFixed(4)}}</span></div>
+          </div>
+          <div class="flex1 title-btn-div">
+              <v-btn icon @click="switchKgraphShow">
+                <i class="material-icons k-icon" v-if="showKgraph">trending_up</i>
+                <i class="material-icons  k-icon" v-else>visibility_off</i>
+              </v-btn>
+          </div>
+         
       </div>
        
-      <v-btn class="btn-fullscreen" v-if="showChart && !fullscreen"  icon @click="toFullscreen">
+      <v-btn class="btn-fullscreen" v-if="showKgraph && !fullscreen"  icon @click="toFullscreen">
           <i class="material-icons">fullscreen</i>
       </v-btn>
-      <v-btn class="btn-back" icon v-if="showChart && fullscreen" @click="back">
+      <v-btn class="btn-back" icon v-if="showKgraph && fullscreen" @click="back">
           <v-icon>keyboard_arrow_left</v-icon>
       </v-btn>
      
-      <div v-show="showChart" class="kgraph" :id="id" v-bind:style="{height: height}"></div>
-      <div class="flex-row textcenter chgresolution">
+      <div v-show="showKgraph" class="kgraph" :id="id" v-bind:style="{height: height}"></div>
+      <div class="flex-row textcenter chgresolution"  v-show="showKgraph">
           <div :class="'flex1 ' + (resolution_key === 'week' ? 'active' : '')" @click="chgResolution('week')">{{$t('week')}}</div>
           <div :class="'flex1 ' + (resolution_key === 'day' ? 'active' : '')" @click="chgResolution('day')">{{$t('day')}}</div>
           <div :class="'flex1 ' + (resolution_key === 'hour' ? 'active' : '')" @click="chgResolution('hour')">{{$t('hour')}}</div>
@@ -84,6 +105,7 @@ export default {
             lastTrade:null,
             tradeInterval: null,//查询最新一次交易数据的interval
             
+            showKgraph: true,
         }
     },
     props: {
@@ -110,16 +132,11 @@ export default {
         //是否增量更新模式
         incremental: {
             type: Boolean,
-            default: false
+            default: true
         },
         showTitle: {
             type: Boolean,
             default: false
-        },
-        // 是否显示图表
-        showChart: {
-            type: Boolean,
-            default: true
         },
         fullscreen: {
             type: Boolean,
@@ -159,6 +176,7 @@ export default {
         
     },
     beforeDestroy () {
+        console.log('---------before destory --------')
         //关闭定时器
         if(this.tinterval){
             clearInterval(this.tinterval)
@@ -171,6 +189,7 @@ export default {
         
     },
     mounted () {
+        console.log('----before mounted------')
         this.$nextTick(()=>{
            this.reload();
         })
@@ -195,8 +214,6 @@ export default {
             this.data = []
             this.tinterval =  null
             this.lasttime = null
-            this.lastTradeAggregation = null
-            this.lastTrade = null
         },
         init() {
             this.initView()
@@ -225,18 +242,14 @@ export default {
             .then(data => {
                 this.lasttime = end_time
                 let records = data.records
-                if(this.incremental){
+                if(!this.incremental){
+                    console.log(`--------清理 data为空-------`)
                     this.dates = []
                     this.volumes = []
                     this.data = []
                 }
                 records = records.reverse()
-                //  if(records.length > 0){
-                //     this.lastTradeAggregation = _.defaultsDeep({}, records[0])
-                // }
-                
-                records.forEach(item=>{
-                   
+                records.forEach(item=>{                   
                     this.dates.push(new Date(item.timestamp).Format('MM-dd hh:mm'))
                     this.volumes.push(Number(item.base_volume))
                     this.data.push([Number(item.open), Number(item.close), Number(item.high), Number(item.low), Number(item.base_volume)])
@@ -516,6 +529,10 @@ export default {
         chgResolution(key){
             this.resolution_key = key
             this.resolution = RESOLUTIONS[key]
+            this.reload()
+        },
+        switchKgraphShow(){
+            this.showKgraph = !this.showKgraph
         }
 
     },
@@ -530,25 +547,30 @@ export default {
 @require '~@/stylus/color.styl'
 .k
   width: 100%
-
+.atitle
+  padding-bottom: 8px
 .price
-  font-size: 20px
-.price
-.change
-.rate
-  &.up
-    color: $primarycolor.green
-  &.down
-    color: $primarycolor.red
+  font-size: 24px
+.code
+  font-size: 16px
+.up
+  color: $primarycolor.green
+.down
+  color: $primarycolor.red
 .change
 .rate
     line-height: 30px
     vertical-align: bottom
-
+.label
+  color: $secondarycolor.font
+  padding-left: 2px
+  padding-right: 2px
+.values
+  font-size: 14px
 
 .btn-fullscreen
     position: absolute
-    right: 5px
+    right: 12px
     z-index: 9
     .material-icons
         color: $primarycolor.green
@@ -564,4 +586,8 @@ export default {
     color: $secondarycolor.font
     .active
         color: $primarycolor.green
+.material-icons.k-icon
+    color: $primarycolor.green
+.title-btn-div
+  line-height: 60px
 </style>
