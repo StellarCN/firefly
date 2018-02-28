@@ -75,11 +75,11 @@
       -->
         <!--=======================================================-->
    
-   <div class="content"> 
+   <div class="content test_myassets_content"> 
    
       
 
-      <card padding="0px 0px" margin="0px 0px" class="infocard_thirdassets">
+      <card padding="0px 0px" margin="0px 0px" class="test_myassets_infocard_thirdassets">
         <div class="assets" slot="card-content">
           <div class="assets-row" v-for="item in assets" :key="item.issuer+item.code">
             <v-layout class="myassets-li third-li" row wrap v-swiper=3 @click.stop="toAsset(item)">
@@ -163,7 +163,7 @@ export default {
       needpwd: false,
       is_Flag: FLAG_DEFAULT,
       sort_flag: SORT_DEFAULT,
-    
+      price:[]
       }
   },
   mixins: [backbutton, loadaccount],
@@ -177,6 +177,7 @@ export default {
         //  data=data+this.balances[i].balance
         console.log(this.price);
         for (var j = 0; j < this.price.length; j++) {
+        // for (var j = 0; j < this.price.length; j++) {
           if (
             this.price[j].code === this.balances[i].code &&
             this.price[j].issuer === this.balances[i].issuer

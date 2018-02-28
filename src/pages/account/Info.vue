@@ -49,14 +49,17 @@
       
       <div :class="'footer' + (canModify ? ' active':' unactive') ">
         <v-layout row wrap>
-          <v-flex xs4 @click="del">
+          <!-- <v-flex xs4 @click="del">
             <span>{{$t('Delete')}}</span>
-          </v-flex>
+          </v-flex> -->
           <v-flex xs4 @click="modify">
             <span>{{$t('Modify')}}</span>
           </v-flex>
           <v-flex xs4 @click="resetpwd">
             <span>{{$t('ResetPassword')}}</span>
+          </v-flex>
+           <v-flex xs4 @click="modify">
+            <span>{{$t('ViewKey')}}</span>
           </v-flex>
         </v-layout>  
       </div>

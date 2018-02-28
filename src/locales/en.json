@@ -359,6 +359,8 @@
   "DefaultSort":"DefaultSort",
   "SortByName":"SortByName",
   "SortByAsset":"SortByAsset",
-  "TotalAssets":"TotalAssets"
+  "TotalAssets":"TotalAssets",
+  "StellarAddressBarCode":"StellarAddressBarCode",
+  "ViewKey":"ViewKey"
 
 }

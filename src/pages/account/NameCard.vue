@@ -15,8 +15,8 @@
       <div class="value" @click="copy(account.address)">{{account.address}}</div>
       <div class="label">{{$t('FederationAddress')}}</div>
       <div class="value" @click="copy(account.federationAddress)">{{account.federationAddress}}&nbsp;</div>
-      <div class="label">{{$t('Memo')}}</div>
-      <div class="value" @click="copy(account.memo)">{{account.memo}}&nbsp;</div>
+      <div class="label test_namecard_barcode">{{$t('StellarAddressBarCode')}}</div>
+      <!-- <div class="value" @click="copy(account.memo)">{{account.memo}}&nbsp;</div> -->
       
       <div class="qrcode">
         <qrcode :text="qrtext" :callback="qrcodecallback"/>
@@ -164,6 +164,8 @@ export default {
   font-size:20px
   text-align:center
   color:$primarycolor.green
+.test_namecard_barcode
+  text-align:center
 
 
 </style>

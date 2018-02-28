@@ -4,6 +4,7 @@
 // json数据格式
 import StellarSdk from 'stellar-sdk'
 export function exportNameCard(account){
+ /*
   let data = {
     "stellar": {
       "account":  {
@@ -14,6 +15,8 @@ export function exportNameCard(account){
       }
     }
   }
+  */
+  let data =account.address
   return JSON.stringify(data)
 }
 
