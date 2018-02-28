@@ -62,14 +62,12 @@
           <!--可用-->
           <div class="flex-row full-width">
             <div class="flex1 available">
-              {{$t('Available')}}:{{BaseBalance.balance||0}}&nbsp;{{BaseAsset.code}}
+              {{$t('Available')}}{{BaseAsset.code}}: {{BaseBalance.balance||0}}
             </div>
               <div class="flex1 available">
-              {{$t('Available')}}:{{CounterBalance.balance||0}}&nbsp;{{CounterAsset.code}}
+              {{$t('Available')}}{{CounterAsset.code}}: {{CounterBalance.balance||0}}
             </div>
           </div>
-
-          
         </div>
       </card>
 
@@ -83,8 +81,8 @@
           <v-btn :class="'full-width btn-reset ' + ( isBuy ? 'btn-green' : 'btn-red' )"  @click="clean">{{$t('Reset')}}</v-btn>
         </div>
         <div class="flex2 btn-flex">
-          <v-btn class="full-width btn-buy" color="primary" v-if="isBuy" @click="doTrade">{{$t('Trade.Buy')}}{{BaseAsset.code}}</v-btn>
-          <v-btn class="full-width btn-sell" color="error" v-if="isSell" @click="doTrade">{{$t('Trade.Sell')}}{{BaseAsset.code}}</v-btn>
+          <v-btn class="full-width btn-buy" color="primary" v-if="isBuy" @click="doTrade">{{$t('Trade.Buy')}} {{BaseAsset.code}}</v-btn>
+          <v-btn class="full-width btn-sell" color="error" v-if="isSell" @click="doTrade">{{$t('Trade.Sell')}} {{BaseAsset.code}}</v-btn>
         </div>
       </div>
 
@@ -102,8 +100,12 @@ import TradePairToolBar from '@/components/TradePairToolBar'
 import { offer as doOffer } from '@/api/offer'
 import { mapState, mapActions, mapGetters} from 'vuex'
 import { getAsset, isNativeAsset } from '@/api/assets'
+import { Decimal } from 'decimal.js'
+
 const FLAG_BUY = 'buy'
 const FLAG_SELL = 'sell'
+Decimal.rounding = Decimal.ROUND_DOWN
+
 export default {
   data(){
     return {
@@ -169,7 +171,7 @@ export default {
 
     maxamount(){
       if(this.price!=null&&this.price>0){
-        return Number((this.CounterBalance.balance / this.price).toFixed(7))
+        return Number(new Decimal(this.CounterBalance.balance).div(new Decimal(this.price)).toFixed(7))
       }
       return 0
     },
@@ -185,7 +187,8 @@ export default {
       }
     },
     tradeBalanceInt(){
-      return this.tradeBalance - this.tradeBalance % (10 ** (String(parseInt(this.tradeBalance * 10**7)).length -1 )  /10**7)
+      return new Decimal(this.tradeBalance).floor().toNumber()
+//      return this.tradeBalance - this.tradeBalance % (10 ** (String(parseInt(this.tradeBalance * 10**7)).length -1 )  /10**7)
     },
 
     
@@ -195,10 +198,12 @@ export default {
     price(newvalue,oldvalue){
       if(this.justify) return
       this.justify = true
-      if(isNaN(parseFloat(newvalue))){
+      //if(isNaN(parseFloat(newvalue))){
+      let decvalue = new Decimal(newvalue||0)
+      if(decvalue.isNaN() || !decvalue.isFinite()){
           this.price = 0
       }else{
-          this.price = parseFloat(newvalue)
+          this.price = decvalue.toNumber()
       }
       console.log('price watch:',this.price, this.amount ,this.total, this.num)
       if(this.isBuy){
@@ -209,8 +214,9 @@ export default {
           this.setTotal()
           this.setNum()
           this.setAmount()
-        }else{
-
+        }else if(this.num > 0){
+          //this.setTotal()
+          this.setAmount()
         }
       console.log('price watch:',this.price, this.amount ,this.total, this.num)
       }
@@ -224,25 +230,29 @@ export default {
     num(newvalue,oldvalue){
       if(this.justify) return
       this.justify = true
-      if(isNaN(parseFloat(newvalue))){
+      let decvalue = new Decimal(newvalue||0)
+      if(decvalue.isNaN() || !decvalue.isFinite()){
         this.num = 0
-      }
-      if(newvalue > 100){
+      }else if(decvalue.comparedTo(100) > 0){
         this.num = 100
         this.resetJustify()
         return
       }
       console.log("num watch:" + this.price, this.amount,this.total)
       if (this.isBuy){
-        this.total = Number(Number(this.tradeBalanceInt * this.num / 100).toFixed(7))
+        //this.total = Number(Number(this.tradeBalanceInt * this.num / 100).toFixed(7))
+        this.total = Number(new Decimal(this.tradeBalanceInt).times(this.num).div(100).toFixed(7))
         console.log(this.num, this.total)
         this.setAmount()
       }else if (this.isSell){
-        if(newvalue === Number ((this.amount / this.tradeBalance * 100).toFixed(0))){
+        //if(newvalue === Number ((this.amount / this.tradeBalance * 100).toFixed(0))){
+        let numInt = Number(new Decimal(this.amount||0).times(100).div(this.tradeBalance).toFixed(0))
+        if(newvalue === numint){
           this.resetJustify()
           return
         }
-        this.amount = Number(Number(this.tradeBalanceInt * this.num / 100).toFixed(7))
+        //this.amount = Number(Number(this.tradeBalanceInt * this.num / 100).toFixed(7))
+        this.amount = Number(new Decimal(this.tradeBalanceInt).times(this.num).div(100).toFixed(7))
         this.setTotal()
       }
       console.log("num watch:" + this.price, this.amount,this.total)
@@ -251,12 +261,12 @@ export default {
     amount(newvalue,oldvalue){
       if(this.justify) return
       this.justify = true
-      if(isNaN(parseFloat(newvalue))){
+      if(new Decimal(newvalue||0).isNaN()){
         this.amount = 0
       }
       console.log("amount watch: "+ this.price, this.amount,this.total)
       if(this.isBuy){
-        let t = Number(Number(this.total / this.price).toFixed(7))
+        let t = Number(new Decimal(this.total||0).div(this.price||0).toFixed(7))
         if( newvalue === t || isNaN(t)){
           this.resetJustify()
           return
@@ -266,7 +276,9 @@ export default {
         this.setAmount()
       }else if(this.isSell){
         if(newvalue > this.tradeBalance){
-          this.$nextTick(function(){this.amount = this.tradeBalance})
+          this.$nextTick(()=>{
+            this.amount = this.tradeBalance
+          })
           this.resetJustify()
           return
         }
@@ -279,7 +291,7 @@ export default {
     total(newvalue,oldvalue){
       if(this.justify) return
       this.justify = true
-      if(isNaN(parseFloat(newvalue))){
+      if(new Decimal(newvalue||0).isNaN()){
         this.total = 0
       }
       console.log("total watch: " + this.price, this.amount,this.total)
@@ -289,9 +301,11 @@ export default {
         this.setAmount()
       }
       if(this.isSell){
-        let t = Number((this.price * this.tradeBalance).toFixed(7))
+        let t = Number(new Decimal(this.price||0).times(this.tradeBalance).toFixed(7))
         if( newvalue > t ){
-          this.$nextTick(function(){this.total=t})
+          this.$nextTick(()=>{
+            this.total=t
+          })
           console.log('----------------------------------------> balance')
           this.resetJustify()
           return
@@ -338,35 +352,42 @@ export default {
 
     setNum(){
       if(this.isBuy){
-        this.num = parseInt(this.total / this.tradeBalanceInt * 100)
-        this.num = this.num - this.num % 10
+        //this.num = parseInt(this.total / this.tradeBalanceInt * 100)
+        let n = new Decimal(this.total||0).times(100).div(this.tradeBalanceInt).round()//.toNumber()
+        //this.num = this.num - this.num % 10
+        this.num = n.minus(n.div(10)).toNumber()
       }else if(this.isSell){
-        this.num = Number((this.amount / this.tradeBalanceInt * 100))
-        this.num = this.num > 100 ? 100 : (this.num - this.num % 10)
+        //this.num = Number((this.amount / this.tradeBalanceInt * 100))
+        let n = new Decimal(this.amount||0).times(100).div(this.tradeBalanceInt).round()
+        //this.num = this.num > 100 ? 100 : (this.num - this.num % 10)
+        this.num = n.comparedTo(100) > 0 ? 100 : n.minus(n.div(10)).toNumber()
       }
     }, 
     setAmount(){
+      if(this.total === null || this.price === null)return
+      
       if(this.isBuy){
         this.$nextTick(()=>{
-          this.amount = Number(Number(this.total /this.price).toFixed(7))
+          this.amount = Number(new Decimal(this.total||0).div(this.price).toFixed(7))
+//          this.amount = Number(Number(this.total /this.price).toFixed(7))
+          if(isNaN(this.amount)) this.amount = 0
+          console.log(this.amount +'----this.amount')
         })
-        // this.amount = Number(Number(this.total /this.price).toFixed(7))
-        if(isNaN(this.amount)) this.amount = 0
-        console.log(this.amount +'----this.amount')
-      }
-      if(this.isSell){
-        let amount = Number(Number(this.total / this.price).toFixed(7))
+        
+      }else if(this.isSell){
+        let amount = Number(new Decimal(this.total||0).div(this.price).toFixed(7))
         if(isNaN(amount)) amount = 0
         this.amount = amount < this.tradeBalance? amount : this.tradeBalance
       }
     },
     setTotal(){
       if(this.isBuy){
-        let total = Number(Number(this.amount * this.price ).toFixed(7))
+        //let total = Number(Number(this.amount * this.price ).toFixed(7))
+        let total = Number(new Decimal(this.amount||0).times(this.price).toFixed(7))
         this.total = total < this.tradeBalance ? total : this.tradeBalance
         console.log('setTotal:   '+this.total)
       }else if(this.isSell){
-        this.total = Number(Number(this.amount * this.price ).toFixed(7))
+        this.total = Number(new Decimal(this.amount||0).times(this.price).toFixed(7))
       }
     },
     resetJustify(){
@@ -449,12 +470,15 @@ export default {
       this.num = 0
       this.amount = null
       this.price = null
+      this.total = null
     },
     switchBuy(){
       this.flag = FLAG_BUY
+      this.clean()
     },
     switchSell(){
       this.flag = FLAG_SELL
+      this.clean()
     },
     choose({type,data}){
       if(this.justify) return
