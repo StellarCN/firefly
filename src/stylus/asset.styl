@@ -1,17 +1,28 @@
 // 资产界面的样式表
 @require '~@/stylus/app.styl'
 .assets
+  border-radius: 10px    
+
 .assets-row
   overflow: hidden
   position: relative
+  
+  background: $primarycolor.gray
+  
+
   .myassets-li
     position: relative
     z-index: 2
     padding: 5px 5px
+    border-radius: 5px 5px 5px 5px
     background: $secondarycolor.gray
+  
     width: 100%
+    
     .myassets-wrapper
+      
       .myassets
+        margin-top: 5px
         .myassets-name
           font-size: 16px
         .myassets-issuer
@@ -31,7 +42,7 @@
           padding-right: 10px
 .myassets-balance.third
   height: 100%
-  padding-top: 10px
+  padding-top: 5px
 .assets-row
   border-bottom: 1px solid $secondarycolor.font
 .assets-row:last-child
@@ -85,6 +96,8 @@
 .infocard
    min-height 10em
    max-width: 100%
+.infocard_thirdassets
+  background-color:$primarycolor.gray
 
 .asset-amount
   padding: 10px
@@ -130,12 +143,46 @@
   color: $primarycolor.green
 .history-amount.minus
   color: $primarycolor.red
+.page
+  
+  background-color:  $primarycolor.gray
+.accountandtotalasset
+  border-radius:1px
+  background-color:$secondarycolor.gray
+  margin:10px 10px
+  border-radius: 5px
+.accountnameaddress
+    z-index: 2
+    padding-left:0px
+    padding-top:15px
+    background: $secondarycolor.gray
+    margin-left:5px
+    margin-right:5px
+    border:none
+    //   border-radius:1px
+    
+    
   //这里是wdp改动的地方--------------------------------------------------------------------------
 .test_TotalSum
   font-size: 20px
   padding-left: 20px
-  left: 20px
+  left: 0px
   color: $primarycolor.green
+  background-color:  $secondarycolor.gray
+  padding-top:0px
+  padding-bottom:10px
+  margin-left:5px
+  margin-right:5px
+  border:none
+ 
+  .test_TotalSumWord
+    font-size: 16px
+    color:$secondarycolor.font
+
+  .test_Balances
+    position:relative
+    float:right
+    padding-right:100px
   .test_select
     font-size: 22px
     color: $primarycolor.green
@@ -143,11 +190,35 @@
     position: absolute
     // padding-right: -100px
     padding-left: 140px
+    
+.content
+  // background-color: $primarycolor.gray
+  // background-color: $primarycolor.gray
 .test_sort
-  padding-left: 50px
+  height:40px
+  padding-left: 180px
+  padding-top:10px
+
+
+  left:0px
   color: $primarycolor.green 
   position: relative
-  right: -170px
+  
+  background-color: $primarycolor.gray  
+  position: absoluted 
+  
+.test_sort_hidden
+
+
+.test_sort_select
+  position:relative
+  background-color: $primarycolor.gray
+  margin-left:5px
+.test_sort_byValue
+  background-color: $primarycolor.gray
+  font-size: 10px
+  font-family: simei   
+  width:30px
 
 
 
