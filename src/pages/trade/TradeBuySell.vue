@@ -71,8 +71,10 @@
         </div>
       </card>
 
-      <!--盘面-->
+      <!--盘面
       <order-book ref="orderbook"  @choose="choose"/>
+      -->
+      <order-book-lite ref="orderbook"  @choose="choose"/>
 
 
        <!-- 买卖按钮 -->
@@ -81,11 +83,44 @@
           <v-btn :class="'full-width btn-reset ' + ( isBuy ? 'btn-green' : 'btn-red' )"  @click="clean">{{$t('Reset')}}</v-btn>
         </div>
         <div class="flex2 btn-flex">
-          <v-btn class="full-width btn-buy" color="primary" v-if="isBuy" @click="doTrade">{{$t('Trade.Buy')}} {{BaseAsset.code}}</v-btn>
-          <v-btn class="full-width btn-sell" color="error" v-if="isSell" @click="doTrade">{{$t('Trade.Sell')}} {{BaseAsset.code}}</v-btn>
+          <v-btn class="full-width btn-buy" color="primary" v-if="isBuy" @click="showConfirmSheet = true">{{$t('Trade.Buy')}} {{BaseAsset.code}}</v-btn>
+          <v-btn class="full-width btn-sell" color="error" v-if="isSell" @click="showConfirmSheet = true">{{$t('Trade.Sell')}} {{BaseAsset.code}}</v-btn>
         </div>
       </div>
 
+    </div>
+
+    <!-- 确认内容 -->
+    <div class="confirm-wrapper"  v-if="showConfirmSheet">
+      <div class="confirm-blank"></div>
+      <div  class="confirm-dlg">
+      <v-bottom-sheet v-model="showConfirmSheet"  dark>
+        <div class="confirm-title" v-if="flag === 'buy'">{{$t('Trade.Confirm')}}{{$t('Trade.Buy')}}</div>
+        <div class="confirm-title" v-else>{{$t('Trade.Confirm')}}{{$t('Trade.Sell')}}</div>
+        <div class="confirm-content">
+          <div class="confirm-row">
+            <span class="label">{{$t('Trade.Price')}}</span>
+            <span class="value"> {{price}}</span>
+            <span class="code">{{CounterAsset.code}}</span>
+          </div>
+          <div class="confirm-row">
+            <span class="label"  v-if="flag === 'buy'">{{$t('Trade.Buy')}}</span>
+            <span class="label"  v-else>{{$t('Trade.Sell')}}</span>
+            <span class="value"> {{amount}}</span>
+            <span class="code">{{BaseAsset.code}}</span>
+          </div>
+          <div class="confirm-row">
+            <span class="label">{{$t('Trade.Total')}}</span>
+            <span class="value"> {{total}}</span>
+            <span class="code"> {{CounterAsset.code}}</span>
+          </div>
+        </div>
+        <div class="confirm-btns flex-row textcenter">
+          <div class="confirm-btn flex1" @click="doTrade">{{$t('Button.OK')}}</div>
+          <div class="confirm-btn flex1" @click="showConfirmSheet = false">{{$t('Button.Cancel')}}</div>
+        </div>
+      </v-bottom-sheet>
+      </div>
     </div>
 
   </div>
@@ -95,6 +130,7 @@
 import Toolbar from '@/components/Toolbar'
 import Card from '@/components/Card'
 import OrderBook from '@/components/OrderBook'
+import OrderBookLite from '@/components/OrderBookLite'
 import Loading from '@/components/Loading'
 import TradePairToolBar from '@/components/TradePairToolBar'
 import { offer as doOffer } from '@/api/offer'
@@ -122,6 +158,7 @@ export default {
       flag: FLAG_BUY,
       justify: false,
       total: 0,
+      showConfirmSheet: false,
 
     }
   },
@@ -247,7 +284,7 @@ export default {
       }else if (this.isSell){
         //if(newvalue === Number ((this.amount / this.tradeBalance * 100).toFixed(0))){
         let numInt = Number(new Decimal(this.amount||0).times(100).div(this.tradeBalance).toFixed(0))
-        if(newvalue === numint){
+        if(newvalue === numInt){
           this.resetJustify()
           return
         }
@@ -355,12 +392,12 @@ export default {
         //this.num = parseInt(this.total / this.tradeBalanceInt * 100)
         let n = new Decimal(this.total||0).times(100).div(this.tradeBalanceInt).round()//.toNumber()
         //this.num = this.num - this.num % 10
-        this.num = n.minus(n.div(10)).toNumber()
+        this.num = n.minus(n.modulo(10)).toNumber()
       }else if(this.isSell){
         //this.num = Number((this.amount / this.tradeBalanceInt * 100))
         let n = new Decimal(this.amount||0).times(100).div(this.tradeBalanceInt).round()
         //this.num = this.num > 100 ? 100 : (this.num - this.num % 10)
-        this.num = n.comparedTo(100) > 0 ? 100 : n.minus(n.div(10)).toNumber()
+        this.num = n.comparedTo(100) > 0 ? 100 : n.minus(n.modulo(10)).toNumber()
       }
     }, 
     setAmount(){
@@ -401,11 +438,11 @@ export default {
       if(this.justify) return
       this.justify = true
       this.num = 100
+      console.log(`-----`)
       if(this.isBuy){
         this.total = this.tradeBalance
         this.setAmount()
-      }
-      if(this.tradeType === 'sell'){
+      }else {
         this.amount = this.tradeBalance
         this.setNum()
         this.setTotal()
@@ -512,6 +549,7 @@ export default {
     OrderBook,
     Loading,
     TradePairToolBar,
+    OrderBookLite,
   }
 }
 </script>
@@ -551,6 +589,54 @@ export default {
 .buy-amount-slider
   padding-top: 0px
   padding-bottom: 0px
+.confirm-wrapper
+  position: fixed
+  bottom: 0
+  right: 0
+  left: 0
+  top: 0
+  z-index: 9
+.confirm-blank
+  background: $primarycolor.gray
+  opacity: .8
+  position: fixed
+  bottom: 260px
+  right: 0
+  left: 0
+  top: 0
+  z-index: 9
+.confirm-dlg
+  background: $secondarycolor.gray
+  height: 260px
+  position: fixed
+  bottom: 0
+  right: 0
+  left: 0
+  opacity: 1
+.confirm-title
+  height: 46px
+  line-height: 46px
+  font-size: 18px
+  color: $primarycolor.green
+  text-align: center
+.confirm-content
+  padding-top: 24px
+  padding-bottom: 24px
+  font-size: 16px
+  .confirm-row
+    padding: 8px 8px
+    .label
+      color: $secondarycolor.font
+    .value
+      padding-left: 12px
+      color: $primarycolor.green
+.confirm-btns
+  color: $primarycolor.green
+  text-align: center
+  font-size: 16px
+  height: 42px
+  line-height: 42px
+
 
 </style>
 
