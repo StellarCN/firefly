@@ -29,4 +29,5 @@ export default {
   
 .test_asset_card_f-card
   height:320px    
+
 </style>
