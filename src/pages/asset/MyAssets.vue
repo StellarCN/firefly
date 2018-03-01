@@ -31,20 +31,20 @@
                     </div>
                 </div>
     </div>
-    <div id="TotalSum" class="test_TotalSum" >
-      <span class="test_TotalSumWord" >{{$t('TotalAssets')}}≈</span>
+    <div id="TotalSum" class="myassets_totalSum" >
+      <span class="myassets_TotalSumWord" >{{$t('TotalAssets')}}≈</span>
       <span>{{TotalSum.toFixed(7)}}</span><!-- 要改成资产数组数据的累加的和-->
-      <span class="test_Balances">XCN</span>
+      <span class="myassets_balances">XCN</span>
      
     </div>
     </div>
-    <div class="test_sort">
-        <!-- <input  type="button" value="隐藏资产" class="test_sort_hidden" v-on:click="hiddenMyAssets(item)"/>  -->
-        <input  type="button" :value="is_Flag === 'filter_zero'? $t('ShowZeroAsset'): $t('HideZeroAsset')" class="test_sort_hidden" @click="hiddenMyAssets"/> 
-        <select  v-model="sort_flag" class="test_sort_select" >
-          <option class="test_sort_byValue" value="none" >{{$t('DefaultSort')}}</option>
-          <option class="test_sort_byValue" value="name">{{$t('SortByName')}}</option>
-          <option class="test_sort_byValue" value="balance">{{$t('SortByAsset')}}</option>
+    <div class="myassets_sort">
+        <!-- <input  type="button" value="隐藏资产" class="myassets_sort_hidden" v-on:click="hiddenMyAssets(item)"/>  -->
+        <input  type="button" :value="is_Flag === 'filter_zero'? $t('ShowZeroAsset'): $t('HideZeroAsset')" class="myassets_sort_hidden" @click="hiddenMyAssets"/> 
+        <select  v-model="sort_flag" class="myassets_sort_select" >
+          <option class="myassets_sort_byValue" value="none" >{{$t('DefaultSort')}}</option>
+          <option class="myassets_sort_byValue" value="name">{{$t('SortByName')}}</option>
+          <option class="myassets_sort_byValue" value="balance">{{$t('SortByAsset')}}</option>
         </select>
         
     </div>
@@ -75,11 +75,11 @@
       -->
         <!--=======================================================-->
    
-   <div class="content test_myassets_content"> 
+   <div class="content"> 
    
       
 
-      <card padding="0px 0px" margin="0px 0px" class="test_myassets_infocard_thirdassets">
+      <card padding="0px 0px" margin="0px 0px" class="myassets_infocard_thirdassets">
         <div class="assets" slot="card-content">
           <div class="assets-row" v-for="item in assets" :key="item.issuer+item.code">
             <v-layout class="myassets-li third-li" row wrap v-swiper=3 @click.stop="toAsset(item)">
@@ -112,7 +112,7 @@
     </scroll>
 
   
-  <tab-bar class="test_tab_bar"/>
+  <tab-bar />
   
   
    <bottom-notice :show.sync="notice" :text="noticeText">    </bottom-notice>

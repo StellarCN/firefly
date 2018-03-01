@@ -25,26 +25,26 @@
       </swiper-slide>
     </swiper>
 
-    <div class="content test_asset_content">
+    <div class="content asset_content">
       <swiper :options="swiperOptionContent" class="gallery-content" ref="swiperContent">
         <swiper-slide 
           v-for="(item,index) in this.balances"
           v-bind:item="item"
           v-bind:index="index"
           v-bind:key="item.code +'_'+item.issuer"
-          class="infocard test_asset_infocard"
+          class="infocard asset_infocard"
         >
-          <v-layout row wrap class="asset-amount test_asset_amount">
-            <v-flex xs12 class="row test_row" d-flex justify-center align-center>
-                <v-flex xs2 class="label test_label">{{$t('Total')}}</v-flex>
-                <v-flex class="amount test_amount">{{item.balance}}</v-flex>
+          <v-layout row wrap class="asset-amount asset_amount">
+            <v-flex xs12 class="row asset_row" d-flex justify-center align-center>
+                <v-flex xs2 class="label asset_label">{{$t('Total')}}</v-flex>
+                <v-flex class="amount asset_amount">{{item.balance}}</v-flex>
             </v-flex>
             <v-flex d-flex justify-center align-center xs12 class="row" v-if="isNative(item)"> 
-                <v-flex xs2 class="label test_label">{{$t('Available')}}</v-flex>
-                <v-flex class="available test_available">{{(item.balance - reserve).toFixed(5)}}</v-flex  >
+                <v-flex xs2 class="label asset_label">{{$t('Available')}}</v-flex>
+                <v-flex class="available asset_available">{{(item.balance - reserve).toFixed(5)}}</v-flex  >
                 <v-spacer></v-spacer>
-                <v-flex xs2 class="label-reserve test_label_reserve" >{{$t('Reserve')}}</v-flex>
-                <v-flex xs1 class="reserve test_reserve">{{reserve}}</v-flex>
+                <v-flex xs2 class="label-reserve asset_label_reserve" >{{$t('Reserve')}}</v-flex>
+                <v-flex xs1 class="reserve asset_reserve">{{reserve}}</v-flex>
             </v-flex>
             <v-flex xs12 class="knowledge_of_assets" ><a href="http://www.baidu.com" target="_blank">了解XLM&nbsp;></a>
 
@@ -64,7 +64,7 @@
 
 
       <h4 class="subtitle">{{$t('History')}}</h4>
-       <card padding="10px 10px" class="infocard test_asset_infocard test_asset_card_f-card">
+       <card padding="10px 10px" class="infocard asset_infocard asset_card_f-card">
         <div class="history" slot="card-content">
           <v-layout class="history-li" row wrap v-for="item in history" :key="item.id" @click.stop="toTranscation(item)">
               <v-flex xs4 class="history-wrapper">
