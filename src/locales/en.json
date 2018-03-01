@@ -361,6 +361,15 @@
 	"op_no_account": "operation error,no account",
 	"op_immutable_set": "operation error, immutable set",
 	"op_has_sub_entries": "operation error, has sub entries",
-	"op_not_time": "operation error, not time"
+  "op_not_time": "operation error, not time",
+
+  "ShowZeroAsset":"ShowZeroAsset",
+  "HideZeroAsset":"HideZeroAsset",
+  "DefaultSort":"DefaultSort",
+  "SortByName":"SortByName",
+  "SortByAsset":"SortByAsset",
+  "TotalAssets":"TotalAssets",
+  "StellarAddressBarCode":"StellarAddressBarCode",
+  "ViewKey":"ViewKey"
 
 }

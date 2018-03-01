@@ -352,6 +352,15 @@
 	"op_no_account": "无目标对象",
 	"op_immutable_set": "账号不可更改",
 	"op_has_sub_entries": "存在数据条目",
-	"op_not_time": "未指定时间"
+  "op_not_time": "未指定时间",
+  
+  "ShowZeroAsset":"显示0资产",
+  "HideZeroAsset":"隐藏0资产",
+  "DefaultSort":"默认排序",
+  "SortByName":"按名称排序",
+  "SortByAsset":"按资产排序",
+  "TotalAssets":"总资产",
+  "StellarAddressBarCode":"恒星地址二维码",
+  "ViewKey":"查看密钥"
 
 }

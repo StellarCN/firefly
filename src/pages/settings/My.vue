@@ -19,7 +19,7 @@
       <accounts-nav :show="showaccountsview" @close="closeView"/>
 
       <div class="content">
-          <card padding="20px 0px"  class="infocard">
+          <card padding="20px 0px"  class="infocard test_my_infocard">
             <div slot="card-content">
                 <div class="flex-row">
                     <div class="flex2 textcenter">
@@ -44,7 +44,7 @@
                 </div>
             </div>
           </card>
-          <card padding="0px 0px" margin="20px 0px" class="infocard">
+          <card padding="0px 0px" margin="20px 0px" class="infocard test_my_tabbar">
             <div slot="card-content">
                 <ul class="settings-ul">
                     <li class="settings-li" @click="redirect(item.name)" v-for="item in menus" :key="item.name">
@@ -57,7 +57,7 @@
             </div>
           </card>
       </div>
-      <tab-bar/>
+      <tab-bar />
   </div>
 </template>
 

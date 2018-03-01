@@ -22,9 +22,11 @@ export default {
 <style lang="stylus" scoped>
 @require '../stylus/color.styl'
 .f-card
-  background: $secondarycolor.gray
   border-radius: 5px
   -moz-box-shadow:2px 2px 20px $primarycolor.gray
   -webkit-box-shadow:2px 2px 20px $primarycolor.gray
   box-shadow:2px 2px 20px $primarycolor.gray
+  
+.test_asset_card_f-card
+  height:320px    
 </style>
