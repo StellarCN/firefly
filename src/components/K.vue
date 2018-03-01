@@ -3,24 +3,29 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-02-26 17:51:04
+ * @Last Modified time: 2018-03-01 11:31:52
  * @License: MIT 
  */
 <template>
 <card class="k-card" padding="5px 5px">
   <div slot="card-content" class="k">
       <div class="flex-row atitle" v-if="showTitle && titleData && titleData.price !== null && lastTradeAggregation">
+          <div class="flex1 title-btn-div"  v-if="fullscreen">
+              <v-btn class="btn-back k-icon" icon @click="back">
+                <i class="material-icons  k-icon">keyboard_arrow_left</i>
+            </v-btn>
+          </div>
           <div :class="'flex3 textcenter ' + ( titleData.change >=0 ? 'up':'down') ">
               <div class="price textcenter">
                   <span class="price">{{titleData.price}}</span>
                   <span class="code">{{counter.code}}</span>
               </div>
               <div class="flex-row">
-                  <div class="flex1">
+                  <div class="flex1 textright pr-2">
                         <span v-if="titleData.change>0">+</span>
                         <span>{{titleData.change}}</span>
                   </div>
-                  <div class="flex1">
+                  <div class="flex1 textleft pl-2">
                         <span v-if="titleData.rate>0">+</span>
                         <span>{{titleData.rate}}%</span>
                   </div>
@@ -43,10 +48,7 @@
       <v-btn class="btn-fullscreen" v-if="showKgraph && !fullscreen"  icon @click="toFullscreen">
           <i class="material-icons">fullscreen</i>
       </v-btn>
-      <v-btn class="btn-back" icon v-if="showKgraph && fullscreen" @click="back">
-          <v-icon>keyboard_arrow_left</v-icon>
-      </v-btn>
-     
+      
       <div v-show="showKgraph" class="kgraph" :id="id" v-bind:style="{height: height}"></div>
       <div class="flex-row textcenter chgresolution"  v-show="showKgraph">
           <div :class="'flex1 ' + (resolution_key === 'week' ? 'active' : '')" @click="chgResolution('week')">{{$t('week')}}</div>
@@ -571,12 +573,6 @@ export default {
 .btn-fullscreen
     position: absolute
     right: 12px
-    z-index: 9
-    .material-icons
-        color: $primarycolor.green
-.btn-back
-    position: absolute
-    left: 5px
     z-index: 9
     .material-icons
         color: $primarycolor.green
