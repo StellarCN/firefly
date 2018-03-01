@@ -1,21 +1,31 @@
 //加载界面
 <template>
-  <v-dialog v-model="show" width="200px" persistent >
-    <div class="load" v-if="color==='green'">
-      <img v-if="working" src="../assets/img/green_working.gif" class="img"/>
-      <img v-else-if="init" src="../assets/img/green_init.gif" class="img"/>
-      <img v-else-if="success" src="../assets/img/green_success.gif" class="img"/>
-      <img v-else-if="fail" src="../assets/img/green_fail.gif" class="img"/>
-      <img v-else  src="../assets/img/logo.png" class="img"/>
+  <v-dialog v-model="show" fullscreen persistent class="load-dlg">
+    <div class="load-content">
+      <div class="load-blank flex4">&nbsp;</div>
+      <div class="load flex2" v-if="color==='green'">
+        <img v-if="working" src="../assets/img/green_working.gif" class="img"/>
+        <img v-else-if="init" src="../assets/img/green_init.gif" class="img"/>
+        <img v-else-if="success" src="../assets/img/green_success.gif" class="img"/>
+        <img v-else-if="fail" src="../assets/img/green_fail.gif" class="img"/>
+        <!-- <img v-else  src="../assets/img/logo.png" class="img"/> -->
+      </div>
+      <div class="load flex2" v-else>
+        <img v-if="working" src="../assets/img/red_working.gif" class="img"/>
+        <img v-else-if="init" src="../assets/img/red_init.gif" class="img"/>
+        <img v-else-if="success" src="../assets/img/red_success.gif" class="img"/>
+        <img v-else-if="fail" src="../assets/img/red_fail.gif" class="img"/>
+        <!-- <img v-else  src="../assets/img/logo.png" class="img"/> -->
+      </div>
+      <div :class="'load-title flex2 ' + color  + '-color'">{{title}}</div>
+      <div class="load-msg flex1">{{msg}}</div>
+      <div :class="'load-close-btn flex1 ' + color  + '-color'" v-if="closeable" @click="back">
+        {{$t('Return')}}
+      </div>
     </div>
-    <div class="load" v-else>
-      <img v-if="working" src="../assets/img/red_working.gif" class="img"/>
-      <img v-else-if="init" src="../assets/img/red_init.gif" class="img"/>
-      <img v-else-if="success" src="../assets/img/red_success.gif" class="img"/>
-      <img v-else-if="fail" src="../assets/img/red_fail.gif" class="img"/>
-      <img v-else  src="../assets/img/logo.png" class="img"/>
-    </div>
+    
   </v-dialog>
+
 </template>
 
 <script>
@@ -47,6 +57,17 @@ export default {
     fail:{
       type: Boolean,
       default: false
+    },
+    title:{
+      type: String,
+    },
+    msg: {
+      type: String,
+    },
+    // show back text when it's true
+    closeable:{
+      type: Boolean,
+      default: false
     }
   },
   watch: {
@@ -60,17 +81,47 @@ export default {
       }
     },
   },
+  methods: {
+    back(){
+      this.$emit('close')
+    }
+  }
 }
 </script>
 
 <style lang="stylus" scoped>
 @require '../stylus/color.styl'
-.load
+.load-content
+  height: 100vh
+  background: $secondarycolor.gray
   display: flex
+  flex-direction: column
+  text-align: center
+  .load-blank
+    height: 30vh
+.load
   justify-content center
   opacity: 1
   overflow: hidden
+  height: 30vh
   .img
     width: 200px
     height: 200px
+.load-title
+  font-size: 20px
+  text-align: center 
+  &.green-color
+    color: $primarycolor.green
+  &.red-color
+    color: $primarycolor.red
+.load-msg
+  padding-top: 20vh
+  color: $secondarycolor.font
+.load-close-btn
+  padding-top: 5vh
+  &.green-color
+    color: $primarycolor.green
+  &.red-color
+    color: $primarycolor.red
+
 </style>
