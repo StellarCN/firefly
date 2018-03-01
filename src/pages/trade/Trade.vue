@@ -3,24 +3,17 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-05 10:51:54 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-02-08 16:49:22
+ * @Last Modified time: 2018-02-26 18:00:37
  * @License MIT 
  */
 <template>
   <div class="page">
     <!-- toolbar -->
-    <trade-pair-tool-bar @choseTradePair="choseTradePair">
-      <div slot="right-tool">
-        <v-btn icon @click="switchKgraphShow">
-          <i class="material-icons" v-if="showKgraph">trending_up</i>
-          <i class="material-icons" v-else>visibility_off</i>
-        </v-btn>
-      </div>
-    </trade-pair-tool-bar>
+    <trade-pair-tool-bar @choseTradePair="choseTradePair"/>
 
     <div class="content">
       <!--K线图-->
-      <k :base="BaseAsset" :counter="CounterAsset" :incremental="true" :showTitle="true" ref="kgraph" :showChart="showKgraph"/>
+      <k :base="BaseAsset" :counter="CounterAsset" :incremental="true" :showTitle="true" ref="kgraph"/>
       
       <!--买单卖单委单成交-->
       <order-book ref="orderbook"/>
@@ -29,10 +22,16 @@
     <!-- 买卖按钮 -->
     <div class="flex-row full-width footer-btns">
       <div class="flex1 btn-flex">
-        <v-btn class="full-width btn-buy" color="primary" @click="toBuy">{{$t('Trade.Buy')}}{{BaseAsset.code}}</v-btn>
+        <div class="full-width btn-buy" color="primary" @click="toBuy">
+          <div>{{$t('Trade.Buy')}}  {{BaseAsset.code}}</div>
+          <div class="available">{{$t('Available')}}{{CounterAsset.code}}:{{CounterBalance.balance|| 0 }}</div>
+        </div>
       </div>
       <div class="flex1 btn-flex">
-        <v-btn class="full-width btn-sell" color="error" @click="toSell">{{$t('Trade.Sell')}}{{BaseAsset.code}}</v-btn>
+        <div class="full-width btn-sell" color="error" @click="toSell">
+          <div>{{$t('Trade.Sell')}}  {{BaseAsset.code}}</div>
+          <div class="available">{{$t('Available')}}{{BaseAsset.code}}:{{BaseBalance.balance||0}}</div>
+        </div>
       </div>
     </div>
 
@@ -61,8 +60,6 @@ import _ from 'lodash'
 export default {
   data(){
     return {
-      showKgraph: true,
-
     }
   },
 
@@ -95,7 +92,7 @@ export default {
     },
     BaseBalance(){
       if(isNativeAsset(this.BaseAsset)){
-        return this.nativeBalance
+        return this.nativeBalance()
       }else{
         return this.assetBalance(this.BaseAsset)
       }
@@ -150,10 +147,6 @@ export default {
         this.$refs.kgraph.reload()
       })
     },
-    switchKgraphShow(){
-      this.showKgraph = !this.showKgraph
-    },
-
     toBuy(){
       this.$router.push({name: 'TradeBuySell', params: {flag: 'buy'}})
     },

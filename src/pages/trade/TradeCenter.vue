@@ -13,6 +13,8 @@
       </v-btn>
       <span slot="switch_password">{{$t('Account.Password')}}</span>
     </toolbar>
+    <accounts-nav :show="showaccountsview" @close="closeView"/>
+
     <div class="content">
       <picker @select="pairchosen" 
               :data="items" 
@@ -22,33 +24,45 @@
               :cancelTxt="$t('Cancel')"
               :confirmTxt="$t('Confirm')"
       ></picker>
-      
+      <card class="trade-card" margin="10px 0px" padding="2px 0px">
+        <div class="flex-row textcenter" slot="card-content">
+          <div class="flex1" @click="doFilter('All')">{{$t('All')}}</div>
+          <div class="flex1" @click="doFilter('XLM')">XLM</div>
+          <div class="flex1" @click="doFilter('XCN')">XCN</div>
+          <div class="flex1" @click="doFilter('BTC')">BTC</div>
+          <div class="flex1" @click="doFilter('ETH')">ETH</div>
+        </div>
+      </card>
+
       <card class="trade-card" padding="10px 10px">
         <div class="card-content" slot="card-content">
       
           <ul class="tradepairs-ul">
-            <draggable v-model="pairs">
             <transition-group>
             <li class="tradepair-li" v-for="(pair,index) in pairs" :key="pair.from.issuer+'-'+pair.to.issuer">
               <v-layout class="pair-wrapper" row wrap v-swiper=2  @click="trade(index,pair)">
-                <v-flex xs4 class="from-wrapper">
-                  <div class="code">{{pair.from.code}}</div>
-                  <div class="issuer" v-if="assethosts[pair.from.code]">{{assethosts[pair.from.code]}}</div>
-                  <div class="issuer" v-else-if="assethosts[pair.from.issuer]">{{assethosts[pair.from.issuer]}}</div>
-                  <div class="issuer" v-else>{{pair.from.issuer | miniaddress}}</div>
-                </v-flex>
-                <v-flex xs1 class="exchange-wrapper">
-                  <div class="exchange">
-                    <i class="icons material-icons">&#xE8D4;</i>
+                <v-flex xs6>
+                  <div class="flex-row">
+                    <div class="flex3 from-wrapper">
+                      <div class="code">{{pair.from.code}}</div>
+                      <div class="issuer" v-if="assethosts[pair.from.code]">{{assethosts[pair.from.code]}}</div>
+                      <div class="issuer" v-else-if="assethosts[pair.from.issuer]">{{assethosts[pair.from.issuer]}}</div>
+                      <div class="issuer" v-else>{{pair.from.issuer | miniaddress}}</div>
+                    </div>
+                    <div class="flex1 exchange-wrapper">
+                      <div class="exchange">
+                        <i class="icons material-icons">&#xE8D4;</i>
+                      </div>
+                    </div>
+                    <div class="flex3 to-wrapper">
+                      <div class="code">{{pair.to.code}}</div>
+                      <div class="issuer" v-if="assethosts[pair.to.code]">{{assethosts[pair.to.code]}}</div>
+                      <div class="issuer" v-else-if="assethosts[pair.to.issuer]">{{assethosts[pair.to.issuer]}}</div>
+                      <div class="issuer" v-else>{{pair.to.issuer | miniaddress}}</div>
+                    </div>
                   </div>
                 </v-flex>
-                <v-flex xs4 class="to-wrapper">
-                  <div class="code">{{pair.to.code}}</div>
-                  <div class="issuer" v-if="assethosts[pair.to.code]">{{assethosts[pair.to.code]}}</div>
-                  <div class="issuer" v-else-if="assethosts[pair.to.issuer]">{{assethosts[pair.to.issuer]}}</div>
-                  <div class="issuer" v-else>{{pair.to.issuer | miniaddress}}</div>
-                </v-flex>
-                <v-flex xs3>
+                <v-flex xs6>
                   <k-line :base="pair.from" :counter="pair.to" :height="56"></k-line>
                 </v-flex>
 
@@ -60,31 +74,14 @@
                 </div>
                 <div class="trade" @click="trade(index,pair)">{{$t('Trade.Trade')}}</div>
               </div>
-              
-            </li>
+              </li>
             </transition-group>
-            </draggable>
           </ul>
 
         </div>
       </card>
     </div>
 
-    <div class="mask" v-if="isadd">
-     
-     
-      <!-- <picker class="picker" v-model="isadd" :data-items="items" @change="onPicker">
-        <div class="bottom-content" slot="bottom-content">
-          <div class="btn-group">
-            <div class="btn-cancel" @click="addCancel">{{$t('Button.Cancel')}}</div>
-            <div class="btn-ok" @click="addOK">{{$t('Button.OK')}}</div>
-          </div>
-        </div>
-      </picker> -->
-     <!--
-     <trade-pair-picker :items="items"></trade-pair-picker>
-     -->
-    </div>
      <v-snackbar
       :timeout="5000"
       bottom
@@ -105,11 +102,22 @@ import Toolbar from '@/components/Toolbar'
 import Card from '@/components/Card'
 import Picker from "@/components/picker"
 import TradePairPicker from '@/components/TradePairPicker'
+import AccountsNav from '@/components/AccountsNav'
 import { mapState, mapActions,mapGetters} from 'vuex'
 import { miniAddress } from '@/api/account'
 import { isNativeAsset } from '@/api/assets'
 import KLine from '@/components/KLine'
 import TabBar from '@/components/TabBar'
+import { getTradeAggregation,getTradeAggregation1day,RESOLUTION_1HOUR } from '@/api/tradeAggregation'
+import { getAsset } from '@/api/assets'
+import { getTrades } from '@/api/trade'
+var moment = require('moment')
+import _ from 'lodash'
+import {Decimal} from 'decimal.js'
+
+const TAG_ALL = 'All', TAG_XCN = 'XCN', TAG_XLM = 'XLM', TAG_BTC = 'BTC', TAG_ETH = 'ETH'
+
+
 export default {
   data(){
     return {
@@ -122,7 +130,10 @@ export default {
       addpair:null,
       snackbarText: '',
       snackbar: false,
-      snackbarColor: 'primary'
+      snackbarColor: 'primary',
+      filterTag: TAG_ALL,
+
+      showaccountsview: false,
 
     }
   },
@@ -138,14 +149,11 @@ export default {
     ...mapGetters([
       'balances',
     ]),
-    pairs:{
-      get(){
-        return this.tradepairs
-      },
-      set(value){
-        this.$store.commit('SORT_TRADEPAIRS',value)
-
-      }
+    pairs(){
+      return this.tradepairs.filter(item => {
+        if(this.filterTag === TAG_ALL) return true
+        return item.to.code === this.filterTag
+      })
     },
     items(){
       if(!this.balances)return []
@@ -175,12 +183,14 @@ export default {
       if(!this.items.length) return
       return parseInt((this.items.length-1)/2)
     },
+
   },
   mounted(){
     if(!this.islogin){
       this.$refs.toolbar.showPasswordLogin()
       return
     }
+
   },
   methods: {
     ...mapActions({
@@ -191,6 +201,13 @@ export default {
       getAssetsAccount: 'assetsAccount'
 
     }),
+
+    showAccounts(){
+        this.showaccountsview = true
+    },
+    closeView(){
+        this.showaccountsview = false
+    },
     pickershow(){
       if(this.notfunding){
         this.snackbarText = this.$t('Error.AccountNotFund')
@@ -322,7 +339,10 @@ export default {
     trade(index,tradepair){
       this.selectTradePair({index,tradepair})
       this.$router.push({name: 'Trade'})
-    }
+    },
+    doFilter(tag){
+      this.filterTag = tag
+    },
    
   },
   components: {
@@ -332,7 +352,8 @@ export default {
     TradePairPicker,
     KLine,
     TabBar,
-    draggable
+    draggable,
+    AccountsNav
   }
 }
 </script>
@@ -349,9 +370,13 @@ export default {
     position: relative
     z-index: 2
     padding: 2px 2px 
+    padding-bottom: 0px
     background: $secondarycolor.gray
     width: 100%
+    overflow:hidden
     .from-wrapper
+      width: 100%
+      overflow: hidden
       .code
         font-size: 16px
         color: $primarycolor.font
@@ -360,7 +385,11 @@ export default {
       .issuer
         color: $secondarycolor.font
         text-align: center
+        font-size: 14px
+        overflow: hidden
     .to-wrapper
+      width: 100%
+      overflow: hidden
       .code
         font-size: 16px
         color: $primarycolor.font
@@ -369,11 +398,13 @@ export default {
       .issuer
         color: $secondarycolor.font
         text-align: center
+        font-size: 14px
+        overflow: hidden
     .exchange-wrapper
       .exchange
         text-align: center
         .icons.material-icons
-          font-size: 32px
+          font-size: 20px
           color: $secondarycolor.font
           padding-top: 10px
 

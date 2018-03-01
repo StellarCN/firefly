@@ -2,8 +2,16 @@
   "name": "firefly",
   "version": "1.2.6",
   "description": "stellar mobile wallet",
-  "author": "",
-  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stellarcn/firefly.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stellarcn/firefly/issues"
+  },
+  "github":"https://github.com/stellarcn/firefly",
+  "homepage": "https://wallet.fchain.io",
   "scripts": {
     "dev": "node build/dev-server.js",
     "start": "node build/dev-server.js",

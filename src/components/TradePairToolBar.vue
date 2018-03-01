@@ -13,7 +13,7 @@
     <!-- toolbar -->
     <v-toolbar color="primary" dark app dense :clipped-left='true'>
       <v-btn icon @click="back"><v-icon>keyboard_arrow_left</v-icon></v-btn>
-      <div class="toolbar__title toolbar-title white--text textcenter tb-title flex-row">
+      <div class="toolbar__title toolbar-title white--text textcenter tb-title flex-row" @click.stop="showChoseTradeDlg = true">
         <div class="flex1">&nbsp;</div>
         <div class="flex2 textcenter">
           <div class="tb-code">{{BaseAsset.code}}</div>
@@ -28,20 +28,13 @@
           <div class="tb-issuer" v-else-if="assethosts[CounterAsset.issuer]">{{assethosts[CounterAsset.issuer]}}</div>
           <div class="tb-issuer" v-else>{{CounterAsset.issuer | miniaddress}}</div>
         </div>
-        <div class="flex1 tb-icon" @click.stop="showChoseTradeDlg = true"><i class="icons material-icons">keyboard_arrow_down</i></div>
+        <div class="flex1 tb-icon"><i class="icons material-icons">keyboard_arrow_down</i></div>
         <div class="flex1">&nbsp;</div>
       </div>
-      <!--
-      <v-btn icon @click="switchKgraphShow">
-        <i class="material-icons" v-if="showKgraph">trending_up</i>
-        <i class="material-icons" v-else>visibility_off</i>
+      
+      <v-btn icon @click="doSwitchTradePair">
+        <i class="material-icons">swap_horiz</i>
       </v-btn>
-      -->
-      <slot name="right-tool">
-        <v-btn icon style="visibility: hidden;">
-            <v-icon class="back-icon"></v-icon>
-        </v-btn>
-      </slot>
     </v-toolbar>
 
     <!--  选择交易队内容 -->
@@ -121,6 +114,7 @@ export default {
     ...mapActions({
       switchTradePair: 'switchTradePair',
       selectTradePair: 'selectTradePair',
+      switchSelectedTradePair: 'switchSelectedTradePair',
     }),
     back(){
       this.$router.back()
@@ -144,6 +138,9 @@ export default {
     },
     assetBalance(asset){
       return _.defaultsDeep({}, this.balances.filter(item=> item.code === asset.code && item.issuer === asset.issuer)[0])
+    },
+    doSwitchTradePair(){
+      this.switchSelectedTradePair()
     },
 
 

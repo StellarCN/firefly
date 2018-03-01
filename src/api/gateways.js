@@ -1,16 +1,17 @@
 import axios from 'axios'
+import pkg from '../../package'
 
 export const APP_NAME = 'firefly'
 
 //app版本号
-export const APP_VERSION = '1.2.6'
+export const APP_VERSION = pkg.version
 
-export const APP_GITHUB = 'https://github.com/stellarcn/firefly'
+export const APP_GITHUB = pkg.github
 
 export const OFFICIAL_SITE = 'https://fchain.io'
 
 // APP 最新版本信息
-export const CHECK_UPDATE = 'https://stellarcn.github.io/firefly/version.json'
+export const CHECK_UPDATE = 'https://raw.githubusercontent.com/StellarCN/firefly/master/package.json'
 //default interval : 4000ms
 export const DEFAULT_INTERVAL = 4000
 
@@ -119,12 +120,6 @@ export function getDefaultTradePairs(){
   return _default_trade_pair || TRADE_PAIRS
 }
 
-export function checkUpdate(){
+export function getPackageJson(){
   return axios.get(CHECK_UPDATE)
-    .then(response => {
-      // let platform = 'android'
-      let platform = cordova.platformId
-      let data = response.data[platform]
-      return Promise.resolve(data)
-    })
 }

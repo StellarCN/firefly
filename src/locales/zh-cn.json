@@ -12,6 +12,15 @@
   "ImportAccount":"导入账户",
   "CreateAccount":"创建账户",
   "ResetPassword":"重置密码",
+  "LatestVersion":"最新版本",
+  "All":"全部",
+  "week":"周",
+  "day":"天",
+  "hour":"小时",
+  "minute":"分钟",
+  "high":"高",
+  "low":"低",
+  "volume":"量",
 
 
   "TermsOfServiceTitle":"服务条款",

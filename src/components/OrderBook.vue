@@ -306,64 +306,6 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-@require '~@/stylus/color.styl'
-.ordermenu
-  display: flex
-  font-size: 16px
-  padding-top: 10px
-  margin-bottom: 3px
-  color: $secondarycolor.font
-  .offermenu
-    display: flex
-    padding-left: 20px
-    padding-right: 20px
-  .offermenu.active
-    border-bottom: 2px solid $primarycolor.green
-.table-head
-  display: flex
-  font-size: 18px
-  color: $secondarycolor.font
-  padding-top: 2px
-  padding-bottom: 2px
-  .headcol
-    flex: 1
-    text-align: right
-  .headcol:nth-child(1)
-    text-align: left
-.table-row
-  display: flex
-  font-size: 18px
-  color: $secondarycolor.font
-  padding-top: 10px
-  /*margin-bottom: 20px*/
-  .b-row
-    flex: 1
-    text-align: right
-    padding-right: 1px
-  .b-row.price
-    text-align: left
-  .b-row.depth
-    text-align: right
-    &>a
-      color: $primarycolor.green
-    
-
-.working
-    display: block
-    width: 20px
-    height: 20px
-    float: right
-    background: url(../assets/img/refresh-icon.png) no-repeat center center
-    background-size: 16px 16px
-    animation: rotate 2s infinite
-    animation-timing-function: linear
-    margin: auto auto
-
-.buy
-  padding: 5px;
-  color: $primarycolor.green
-.sell
-  padding: 5px;
-  color: $primarycolor.red
+@require './orderbook.styl'
 </style>
  

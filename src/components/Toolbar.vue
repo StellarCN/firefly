@@ -5,10 +5,7 @@
   <div class="cp-toolbar">
 
     <v-toolbar  dark app :class="color" :flat="!shadow" dense :clipped-left='true'>
-      <v-btn icon style="visibility:hidden;" v-if="showmenuicon">
-         <v-icon class="back-icon"></v-icon>
-      </v-btn>
-      <v-btn icon v-show="showbackicon" @click="back" class="white--text">
+      <v-btn icon v-if="showbackicon" @click="back" class="white--text">
             <v-icon class="back-icon">&#xE5CB;</v-icon>
       </v-btn>
       <slot name="left-tool">

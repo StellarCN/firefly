@@ -3,29 +3,60 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-02-08 15:57:29
+ * @Last Modified time: 2018-02-26 17:51:04
  * @License: MIT 
  */
 <template>
-  <div class="k">
-      <div class="flex-row" v-if="showTitle">
-          <div :class="'flex2 price textcenter ' + ( titleData.change >=0 ? 'up':'down') ">{{titleData.price}}{{counter.code}}</div>
-          <div :class="'flex1 change  textcenter ' + ( titleData.change >=0 ? 'up':'down')">
-              <span v-if="titleData.change>0">+</span>
-              {{titleData.change}}</div>
-          <div :class="'flex1 rate  textcenter ' + ( titleData.rate >=0 ? 'up':'down')">
-              <span v-if="titleData.rate>0">+</span>
-              {{titleData.rate}}%</div>
+<card class="k-card" padding="5px 5px">
+  <div slot="card-content" class="k">
+      <div class="flex-row atitle" v-if="showTitle && titleData && titleData.price !== null && lastTradeAggregation">
+          <div :class="'flex3 textcenter ' + ( titleData.change >=0 ? 'up':'down') ">
+              <div class="price textcenter">
+                  <span class="price">{{titleData.price}}</span>
+                  <span class="code">{{counter.code}}</span>
+              </div>
+              <div class="flex-row">
+                  <div class="flex1">
+                        <span v-if="titleData.change>0">+</span>
+                        <span>{{titleData.change}}</span>
+                  </div>
+                  <div class="flex1">
+                        <span v-if="titleData.rate>0">+</span>
+                        <span>{{titleData.rate}}%</span>
+                  </div>
+              </div>
+          </div>
+          <div class="flex3 values">
+              <div class=""><span class="label">24H {{$t('high')}} </span><span>{{Number(lastTradeAggregation.high).toFixed(4)}}</span></div>
+              <div class=""><span class="label">24H {{$t('low')}} </span><span>{{Number(lastTradeAggregation.low).toFixed(4)}}</span></div>
+              <div class=""><span class="label">24H {{$t('volume')}} </span><span>{{Number(lastTradeAggregation.base_volume).toFixed(4)}}</span></div>
+          </div>
+          <div class="flex1 title-btn-div">
+              <v-btn icon @click="switchKgraphShow">
+                <i class="material-icons k-icon" v-if="showKgraph">trending_up</i>
+                <i class="material-icons  k-icon" v-else>visibility_off</i>
+              </v-btn>
+          </div>
+         
       </div>
-        
-      <v-btn class="btn-fullscreen" v-if="showChart && !fullscreen"  icon @click="toFullscreen">
+       
+      <v-btn class="btn-fullscreen" v-if="showKgraph && !fullscreen"  icon @click="toFullscreen">
           <i class="material-icons">fullscreen</i>
       </v-btn>
-      <v-btn class="btn-back" icon v-if="showChart && fullscreen" @click="back">
+      <v-btn class="btn-back" icon v-if="showKgraph && fullscreen" @click="back">
           <v-icon>keyboard_arrow_left</v-icon>
       </v-btn>
-      <div v-show="showChart" class="kgraph" :id="id" v-bind:style="{height: height}"></div>
+     
+      <div v-show="showKgraph" class="kgraph" :id="id" v-bind:style="{height: height}"></div>
+      <div class="flex-row textcenter chgresolution"  v-show="showKgraph">
+          <div :class="'flex1 ' + (resolution_key === 'week' ? 'active' : '')" @click="chgResolution('week')">{{$t('week')}}</div>
+          <div :class="'flex1 ' + (resolution_key === 'day' ? 'active' : '')" @click="chgResolution('day')">{{$t('day')}}</div>
+          <div :class="'flex1 ' + (resolution_key === 'hour' ? 'active' : '')" @click="chgResolution('hour')">{{$t('hour')}}</div>
+          <div :class="'flex1 ' + (resolution_key === '15min' ? 'active' : '')" @click="chgResolution('15min')">15{{$t('minute')}}</div>
+          <div :class="'flex1 ' + (resolution_key === '5min' ? 'active' : '')" @click="chgResolution('5min')">5{{$t('minute')}}</div>
+      </div>
   </div>
+</card>
 </template>
 
 <script>
@@ -34,7 +65,7 @@ import NP from 'number-precision'
 import { getTradeAggregation, getTradeAggregation5min, 
     getTradeAggregation15min, getTradeAggregation1hour, 
     getTradeAggregation1day, getTradeAggregation1week,
-    RESOLUTION_5MIN } from '@/api/tradeAggregation'
+    RESOLUTION_5MIN, RESOLUTION_15MIN, RESOLUTION_1HOUR, RESOLUTION_1DAY, RESOLUTION_1WEEK } from '@/api/tradeAggregation'
 import { getAsset } from '@/api/assets'
 import { mapState, mapActions, mapGetters} from 'vuex'
 import { getTrades } from '@/api/trade'
@@ -42,7 +73,14 @@ import { DEFAULT_INTERVAL } from '@/api/gateways'
 var moment = require('moment')
 import _ from 'lodash'
 import {Decimal} from 'decimal.js'
-
+import Card from '@/components/Card'
+const RESOLUTIONS = {
+    "week": RESOLUTION_1WEEK,
+    "day": RESOLUTION_1DAY,
+    "hour": RESOLUTION_1HOUR,
+    "15min": RESOLUTION_15MIN,
+    "5min": RESOLUTION_5MIN
+}
 
 export default {
     data(){
@@ -52,17 +90,22 @@ export default {
             opt: null,
             colors: ['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'],
             
+            resolution_key: '5min',
+            resolution: RESOLUTION_5MIN,
+
             dates:[],//日期
             volumes: [],//成交量
             data: [],//每条数据是一个数组，[开盘价，收盘价，最低价，最高价]
             tinterval: null,//定时器
             lasttime: null,//上次的执行时间
             
+            //24小时的成交记录
             lastTradeAggregation: null,
             //最新的成交价格统计
             lastTrade:null,
             tradeInterval: null,//查询最新一次交易数据的interval
             
+            showKgraph: true,
         }
     },
     props: {
@@ -86,24 +129,14 @@ export default {
             type: Number,
             default: -1
         },
-        //时间间隔，单位毫秒
-        interval: {
-            type: Number,
-            default: RESOLUTION_5MIN
-        },
         //是否增量更新模式
         incremental: {
             type: Boolean,
-            default: false
+            default: true
         },
         showTitle: {
             type: Boolean,
             default: false
-        },
-        // 是否显示图表
-        showChart: {
-            type: Boolean,
-            default: true
         },
         fullscreen: {
             type: Boolean,
@@ -112,12 +145,12 @@ export default {
         //高度
         height: {
             type: String,
-            default: '360px'
+            default: '220px'
         }
     },
     computed: {
       titleData(){
-          if(this.data.length > 0 && this.lastTrade){
+          if(this.lastTradeAggregation && this.lastTrade){
             let price = new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
             let open = new Decimal(this.lastTradeAggregation.open)
             let change = price.minus(open)
@@ -134,14 +167,16 @@ export default {
         //生成随机的id
         this.id = 'k_'+ new Date().getTime()
         //开启定时器
-        this.tinterval = setInterval(this.fetch, this.interval)
+        this.tinterval = setInterval(this.fetch, this.resolution)
         //如果是全屏模式，则切换为横屏
         if(this.fullscreen){
             screen.orientation.lock('landscape');
         }
+        this.fetchLastTradeAggregation()
         
     },
     beforeDestroy () {
+        console.log('---------before destory --------')
         //关闭定时器
         if(this.tinterval){
             clearInterval(this.tinterval)
@@ -154,6 +189,7 @@ export default {
         
     },
     mounted () {
+        console.log('----before mounted------')
         this.$nextTick(()=>{
            this.reload();
         })
@@ -170,6 +206,7 @@ export default {
             this.fetchLastTrade()
         },
         cleanData(){
+            console.log('----------------clean Data----')
             this.ele = null
             this.opt = null
             this.dates = []
@@ -177,8 +214,6 @@ export default {
             this.data = []
             this.tinterval =  null
             this.lasttime = null
-            this.lastTradeAggregation = null
-            this.lastTrade = null
         },
         init() {
             this.initView()
@@ -203,32 +238,28 @@ export default {
             }
           }
           getTradeAggregation(getAsset(this.base), getAsset(this.counter), 
-            start_time, end_time, this.interval, 200, 'desc')
+            start_time, end_time, this.resolution, 200, 'desc')
             .then(data => {
                 this.lasttime = end_time
                 let records = data.records
-                if(this.incremental){
+                if(!this.incremental){
+                    console.log(`--------清理 data为空-------`)
                     this.dates = []
                     this.volumes = []
                     this.data = []
                 }
                 records = records.reverse()
-                 if(records.length > 0){
-                    this.lastTradeAggregation = _.defaultsDeep({}, records[0])
-                }
-                
-                records.forEach(item=>{
-                   
+                records.forEach(item=>{                   
                     this.dates.push(new Date(item.timestamp).Format('MM-dd hh:mm'))
                     this.volumes.push(Number(item.base_volume))
-                    this.data.push([Number(item.open), Number(item.close), Number(item.high), Number(item.low)])
+                    this.data.push([Number(item.open), Number(item.close), Number(item.high), Number(item.low), Number(item.base_volume)])
                 })
                 this.opt.xAxis[0].data = this.dates
                 this.opt.xAxis[1].data = this.dates
                 this.opt.series[0].data = this.volumes
+                this.opt.series[1].data = this.data
                 this.opt.series[2].data = this.calculateMA(5)
                 this.opt.series[3].data = this.calculateMA(10)
-                this.opt.series[4].data = this.calculateMA(20)
                 
                 this.ele.setOption(this.opt)
             })
@@ -243,11 +274,13 @@ export default {
             this.ele.setOption(this.opt)
         },
         koption() {
+
             return {
-                animation: false,
+                animation: true,
                 color: this.colors,
+                backgroundColor: "#212122",
               //  title: {left: 'center', text: this.base.code + '/' + this.counter.code },
-                legend: { top: 30,data: ['', 'MA5', 'MA10', 'MA20', 'MA30']},
+                legend: { show: false, top: 30,data: ['分时', 'MA5', 'MA10']},
                 tooltip: {
                     triggerOn: 'none',
                     transitionDuration: 0,
@@ -266,21 +299,21 @@ export default {
                 axisPointer: { link: [{xAxisIndex: [0, 1]}]
                 },
                 dataZoom: [{
-                    type: 'slider',
-                    xAxisIndex: [0, 1],
-                    realtime: false,
-                    start: 20,
-                    end: 70,
-                    top: 65,
-                    height: 20,
-                    handleIcon: 'M10.7,11.9H9.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4h1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
-                    handleSize: '120%'
-                }, {
+                //     type: 'slider',
+                //     xAxisIndex: [0, 1],
+                //     realtime: false,
+                //     start: 20,
+                //     end: 70,
+                //     top: 20,//65,
+                //     height: 20,
+                //     handleIcon: 'M10.7,11.9H9.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4h1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+                //     handleSize: '120%'
+                // }, {
                     type: 'inside',
                     xAxisIndex: [0, 1],
-                    start: 40,
-                    end: 70,
-                    top: 30,
+                    start: 0,
+                    end: 100,
+                    top: 10,
                     height: 20
                 }],
                 xAxis: [{
@@ -313,14 +346,14 @@ export default {
                         type: 'shadow',
                         label: {show: false},
                         triggerTooltip: true,
-                        handle: {show: true,margin: 30,color: '#B80C00'}
+                        handle: {show: false,margin: 30,color: '#B80C00'}
                     }
                 }],
                 yAxis: [{
                     scale: true,
                     splitNumber: 2,
                     axisLine: { lineStyle: { color: '#777' } },
-                    splitLine: { show: true },
+                    splitLine: { show: false },
                     axisTick: { show: false },
                     axisLabel: {
                         inside: true,
@@ -336,15 +369,17 @@ export default {
                     splitLine: {show: false}
                 }],
                 grid: [{
-                    left: 20,
-                    right: 20,
-                    top: 110,
-                    height: 120
+                    left: 0,
+                    right: 0,
+                    top: 30,//110,
+                    height: 120,
+                    bottom: 0
                 }, {
-                    left: 20,
-                    right: 20,
+                    left: 0,
+                    right: 0,
                     height: 40,
-                    top: 260
+                    top: 180,//260
+                    bottom: 0
                 }],
                 graphic: [{
                     type: 'group',
@@ -362,11 +397,6 @@ export default {
                         type: 'text',
                         style: {fill: this.colors[2]},
                         left: 'center'
-                    }, {
-                        id: 'MA20',
-                        type: 'text',
-                        style: {fill: this.colors[3]},
-                        right: 0
                     }]
                 }],
                 series: [{
@@ -385,7 +415,7 @@ export default {
                     data: this.volumes
                 }, {
                     type: 'candlestick',
-                    name: '',
+                    name: '分时',
                     data: this.data,
                     itemStyle: {
                         normal: {
@@ -423,17 +453,6 @@ export default {
                             width: 1
                         }
                     }
-                }, {
-                    name: 'MA20',
-                    type: 'line',
-                    data: this.calculateMA(20),
-                    smooth: true,
-                    showSymbol: false,
-                    lineStyle: {
-                        normal: {
-                            width: 1
-                        }
-                    }
                 }]
             }
         }, // end of koption
@@ -451,6 +470,22 @@ export default {
                 result.push(sum.dividedBy(dayCount).toFixed(2))
             }
             return result;
+        },
+        // 查询24小时的统计数据
+        fetchLastTradeAggregation(){
+          let start_time = 0, end_time = new Date().getTime()
+          getTradeAggregation(getAsset(this.base), getAsset(this.counter), 
+                start_time, end_time, RESOLUTION_1DAY, 1, 'desc')
+            .then(data => {
+                let records = data.records
+                if(records && records.length > 0){
+                    this.lastTradeAggregation = records[0]
+                }
+            })
+            .catch(err=>{
+                console.error(`-----err on get trade aggregation -- `)
+                console.error(err)
+            })
         },
 
         setupTradeInterval(){
@@ -490,32 +525,52 @@ export default {
         },
         back(){
             this.$router.back()
+        },
+        chgResolution(key){
+            this.resolution_key = key
+            this.resolution = RESOLUTIONS[key]
+            this.reload()
+        },
+        switchKgraphShow(){
+            this.showKgraph = !this.showKgraph
         }
 
+    },
+    components: {
+        Card
     }
+
 }
 </script>
 
 <style lang="stylus" scoped>
 @require '~@/stylus/color.styl'
+.k
+  width: 100%
+.atitle
+  padding-bottom: 8px
 .price
-  font-size: 20px
-.price
-.change
-.rate
-  &.up
-    color: $primarycolor.green
-  &.down
-    color: $primarycolor.red
+  font-size: 24px
+.code
+  font-size: 16px
+.up
+  color: $primarycolor.green
+.down
+  color: $primarycolor.red
 .change
 .rate
     line-height: 30px
     vertical-align: bottom
-
+.label
+  color: $secondarycolor.font
+  padding-left: 2px
+  padding-right: 2px
+.values
+  font-size: 14px
 
 .btn-fullscreen
     position: absolute
-    right: 5px
+    right: 12px
     z-index: 9
     .material-icons
         color: $primarycolor.green
@@ -525,4 +580,14 @@ export default {
     z-index: 9
     .material-icons
         color: $primarycolor.green
+.chgresolution
+    padding-top: 8px
+    padding-bottom: 5px
+    color: $secondarycolor.font
+    .active
+        color: $primarycolor.green
+.material-icons.k-icon
+    color: $primarycolor.green
+.title-btn-div
+  line-height: 60px
 </style>

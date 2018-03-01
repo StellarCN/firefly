@@ -3,13 +3,22 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-26 15:59:49 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-02-08 14:56:42
+ * @Last Modified time: 2018-02-26 17:45:38
  * @License MIT 
  */
 
 <template>
-  <div class="line">
-      <div class="linegraph" :id="id" v-bind:style="{height: height + 'px'}"></div>
+  <div class="line flex-row">
+      <div class="flex1">
+          <div class="linegraph" :id="id" v-bind:style="{height: height + 'px'}"></div>
+      </div>
+      <div class="flex1" v-if="titleData!==null && titleData.price!==null">
+           <div :class="' price textcenter ' + ( titleData.change >=0 ? 'up':'down') ">{{titleData.price}}{{counter.code}}</div>
+           <div :class="' rate  textcenter ' + ( titleData.rate >=0 ? 'up':'down')">
+              <span v-if="titleData.rate>0">+</span>
+              {{titleData.rate}}%</div>
+      </div>
+      <div class="flex1" v-else>&nbsp;</div>
   </div>
 </template>
 
@@ -19,9 +28,13 @@ var echarts = require('echarts')
 import { getTradeAggregation, getTradeAggregation5min, 
     getTradeAggregation15min, getTradeAggregation1hour, 
     getTradeAggregation1day, getTradeAggregation1week,
-    RESOLUTION_5MIN,RESOLUTION_1HOUR } from '@/api/tradeAggregation'
+    RESOLUTION_5MIN,RESOLUTION_1HOUR,RESOLUTION_1DAY } from '@/api/tradeAggregation'
 import { getAsset } from '@/api/assets'
+import { getTrades } from '@/api/trade'
+import _ from 'lodash'
+import {Decimal} from 'decimal.js'
 
+const TRADE_INTERVAL = 60000
 
 export default {
     data(){
@@ -34,6 +47,10 @@ export default {
             tinterval: null,//定时器
             lasttime: null,//上次的执行时间
             
+            lastTradeAggregation:null,
+            //最新的成交价格统计
+            lastTrade:null,
+            tradeInterval: null,//查询最新一次交易数据的interval
         }
     },
     props: {
@@ -77,11 +94,28 @@ export default {
             default: 60
         }
     },
+    computed: {
+        titleData(){
+          if(this.lastTradeAggregation && this.lastTrade){
+            let price = new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
+            let open = new Decimal(this.lastTradeAggregation.open)
+            let change = price.minus(open)
+            let rate = change.times(100).dividedBy(open)
+            return  _.defaultsDeep({}, this.lastTradeAggregation, {
+                price: new Decimal(price.toFixed(7)).toNumber(),
+                change: new Decimal(change.toFixed(7)).toNumber(),
+                rate: new Decimal(rate.toFixed(2)).toNumber() })
+          }
+          return {}
+      }  
+    },
     beforeMount () {
         //生成随机的id
         this.id = 'k_'+ new Date().getTime()
         //开启定时器
         this.tinterval = setInterval(this.fetch, this.interval)
+        this.setupTradeInterval()
+        this.fetchLastTradeAggregation()
        
     },
     beforeDestroy () {
@@ -90,11 +124,13 @@ export default {
             clearInterval(this.tinterval)
             this.tinterval = null
         }
+        this.deleteTradeInterval()
     },
     mounted () {
         this.$nextTick(()=>{
             this.init();
             this.fetch();
+            this.fetchLastTrade();
         })
     },
     methods: {
@@ -125,7 +161,11 @@ export default {
             .then(data => {
                 this.lasttime = end_time
                 let records = data.records
-                records.reverse().map(item=>{
+                let _data = records.reverse()
+                // if(_data.length > 0){
+                //     this.lastTradeAggregation = _.defaultsDeep({}, _data[0])
+                // }
+                _data.map(item=>{
                     if(this.incremental){
                         this.data = []
                         this.dates = []
@@ -183,12 +223,77 @@ export default {
                 result.push((sum / dayCount).toFixed(2));
             }
             return result;
-        }
+        },
+        
+        // 查询24小时的统计数据
+        fetchLastTradeAggregation(){
+          let start_time = 0, end_time = new Date().getTime()
+          getTradeAggregation(getAsset(this.base), getAsset(this.counter), 
+                start_time, end_time, RESOLUTION_1DAY, 1, 'desc')
+            .then(data => {
+                let records = data.records
+                if(records && records.length > 0){
+                    this.lastTradeAggregation = records[0]
+                }
+            })
+            .catch(err=>{
+                console.error(`-----err on get trade aggregation -- `)
+                console.error(err)
+            })
+        },
+
+         setupTradeInterval(){
+            if (!this.tradeInterval){
+                this.tradeInterval = setInterval(()=>{
+                this.fetchLastTrade()
+                },TRADE_INTERVAL)
+            }
+            this.fetchLastTrade()
+        },
+
+        deleteTradeInterval(){
+            if(this.tradeInterval!= null && typeof this.tradeInterval != 'undefined'){
+                clearInterval(this.tradeInterval)
+                this.lastTrade = null
+                this.tradeInterval = null
+            }
+        },
+        //查询最新一次成交记录
+        fetchLastTrade(){
+            let counterasset = getAsset(this.counter.code,this.counter.issuer)
+            let baseasset = getAsset(this.base.code,this.base.issuer)
+            getTrades(baseasset,counterasset,"desc",1)
+                .then(data=>{
+                    if(data.records && data.records.length > 0){
+                        this.lastTrade = data.records[0]
+                    }
+                }).catch(err=>{
+                    console.log(err)
+                })
+        },
 
     }
 }
 </script>
 
-<style>
+<style lang="stylus" scoped>
+@require '~@/stylus/color.styl'
+.price
+  font-size: 16px
+.price
+.change
+.rate
+  vertical-align: middle
+  &.up
+    color: $primarycolor.green
+  &.down
+    color: $primarycolor.red
+.price
+    line-height: 30px
+    vertical-align: bottom
+.change
+.rate
+    line-height: 16px
+    font-size: 14px
 
 </style>
