@@ -4,6 +4,8 @@ import * as paymentsapi from '@/api/payments'
 import * as ledgerapi from '@/api/ledger'
 import { isNativeAsset } from '@/api/assets'
 import { BASE_RESERVE } from '@/api/gateways'
+import { getDepositeAndWithdrawRecords, getAllEffectOffers } from '@/api/fchain'
+
 
 // 某个账户的相关操作
 const state = {
@@ -15,6 +17,9 @@ const state = {
   selectedPayment:null,//当前选择的payment的
   ledger: null,
   account_not_funding: false,//账户是否未激活
+  alloffers:[],//查询账户某个时间段内的成交记录
+  //depositeRecords:[],//某种资产充值记录
+  //withdrawRecords:[],//某种资产提现记录
 }
 
 const actions = {
@@ -54,6 +59,10 @@ const actions = {
   paymentSteamData({commit,state},rows){
     commit(GET_PAYMENT_STREAM, rows)
   },
+  async getAllOffers({commit,state}, {account,start_time,end_time}){
+    let data = await getAllEffectOffers(account, start_time, end_time)
+    commit(GET_ALL_OFFERS, data)
+  }
 
 
 }
@@ -97,6 +106,9 @@ const mutations = {
   ACCOUNT_NOT_FUNDING(state){
     state.account_not_funding = true
   },
+  GET_ALL_OFFERS(state, data){
+    state.alloffers = data
+  }
 
 }
 
@@ -171,6 +183,7 @@ const getters = {
     return null
   },
   
+  
 }
 
 export const ACCOUNT_INFO_SUCCESS = 'ACCOUNT_INFO_SUCCESS'
@@ -183,6 +196,7 @@ export const GET_PAYMENT_STREAM = 'GET_PAYMENT_STREAM'
 export const CLEAN_PAYMENTS = 'CLEAN_PAYMENTS'
 export const ACCOUNT_IS_FUNDING = 'ACCOUNT_IS_FUNDING'
 export const ACCOUNT_NOT_FUNDING = 'ACCOUNT_NOT_FUNDING'
+export const GET_ALL_OFFERS = 'GET_ALL_OFFERS'
 
 export default {
   state,
