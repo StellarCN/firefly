@@ -74,10 +74,9 @@ export default {
     loading(){
       if(this.loading){
         this.init=true
-        setTimeout(()=>{this.working=true;this.init=false},1000)
+        setTimeout(()=>{this.working=true;this.init=false},500)
       }else{
-        this.init = false
-        this.working = false
+        setTimeout(()=>{this.working=false;this.init=false},500)
       }
     },
   },
@@ -115,10 +114,12 @@ export default {
   &.red-color
     color: $primarycolor.red
 .load-msg
-  padding-top: 20vh
+  padding-top: 10vh
   color: $secondarycolor.font
+  font-size: 16px
 .load-close-btn
-  padding-top: 5vh
+  padding-top: 15vh
+  font-size: 16px
   &.green-color
     color: $primarycolor.green
   &.red-color

@@ -508,6 +508,7 @@ export default {
       setTimeout(()=>{
           this.sending = false
           this.working = false
+         
         },3000)
     },
     
@@ -551,6 +552,8 @@ export default {
     },
     hiddenLoading(){
       this.sending = false
+      this.sendfail = false
+      this.working = false
     }
    
   },
