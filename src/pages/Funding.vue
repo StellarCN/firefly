@@ -56,8 +56,11 @@
                 <div class="extra_info" v-if="standardDepositData.max_amount!=undefined">{{$t('DW.DepositInfo.max', [standDepositData.max_amount])}}</div>
                 <div class="extra_info" v-if="standardDepositData.fee_fixed!=undefined">{{$t('DW.DepositInfo.feefixed', [standDepositData.fee_fixed])}}</div>
                 <div class="extra_info" v-if="standardDepositData.fee_percent!=undefined">{{$t('DW.DepositInfo.feepercent', [standDepositData.fee_percent * 100])}}</div>
-                <div v-if="standardDepositData.extra_info!=undefined">
-                  <div class="extra_info" v-for="(value,index) in standardDepositData.extra_info" :key="index" >{{value}}</div>
+                <div v-if="Array.isArray(standardDepositData.extra_info)">
+                  <div class="extra_info" v-for="(value,index) in standardDepositData.extra_info" :key="index" :id="index">{{value}}</div>
+                </div>
+                <div v-else>
+                  <div class="extra_info">{{standardDepositData.extra_info}}</div>
                 </div>
               </div>
  
@@ -389,6 +392,7 @@ export default {
   color: $primarycolor.font
   .content
     padding: 10px 10px
+    padding-bottom: 40px
 
   .mytoolbar
     background: $primarycolor.green
