@@ -370,6 +370,9 @@
   "SortByAsset":"SortByAsset",
   "TotalAssets":"TotalAssets",
   "StellarAddressBarCode":"StellarAddressBarCode",
-  "ViewKey":"ViewKey"
+  "ViewKey":"ViewKey",
+  "Warning_msg":"Warning_msg",
+  "Account_secretkey":"Account_secretkey",
+  "Account_secretkeycode":"Account_secretkeycode"
 
 }

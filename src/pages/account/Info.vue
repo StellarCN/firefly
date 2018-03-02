@@ -25,13 +25,16 @@
           <div class="label">{{$t('Account.AccountAddress')}}</div>
           <div class="value" @click="copy(showaccount.address)">{{showaccount.address}}</div> <!-- 账户地址-->
 
-          <div class="label">{{$t('FederationAddress')}}</div>
-          <div class="value" @click="copy(showaccount.federationAddress)">{{showaccount.address}}</div><!-- 联邦地址-->
+          <div class="label" v-if="showaccount.federationAddress">{{$t('FederationAddress')}}</div>
+          <div class="value" v-if="showaccount.federationAddress" @click="copy(showaccount.federationAddress)">{{showaccount.federationAddress}}&nbsp;</div><!-- 联邦地址-->
          
           
-          <div class="label">{{$t('InflationAddress')}}</div>
-          <div class="value" @click="copy(showaccount.inflationAddress)">{{showaccount.address}}</div><!-- 通胀地址-->
-          <!-- <div class="label">{{$t('SecretKey')}}</div>
+          <div class="label" v-if="showaccount.inflationAddress">{{$t('InflationAddress')}}</div>
+          <div class="value" v-if="showaccount.inflationAddress" @click="copy(showaccount.inflationAddress)">
+            {{inflationPoolSite}}
+          </div><!-- 通胀地址-->
+          <!--
+          <div class="label">{{$t('SecretKey')}}</div>
           <div class="value seed" >
             <div class="secret" @click="copySeed">{{showseedinfo}}</div>
             <div class="secreticon" @click="seedIconClick">
@@ -39,13 +42,14 @@
               <v-icon class="secreticons" v-else>visibility_off</v-icon>
             </div>
           </div>
+         
           <div class="label" v-if="showaccount.federationAddress">{{$t('FederationAddress')}}</div>
           <div class="value" v-if="showaccount.federationAddress" @click="copy(showaccount.federationAddress)">{{showaccount.federationAddress}}&nbsp;</div>
           <div class="label" v-if="showaccount.inflationAddress">{{$t('InflationAddress')}}</div>
           <div class="value" v-if="showaccount.inflationAddress" @click="copy(showaccount.inflationAddress)">
             {{inflationPoolSite}}
-          </div> -->
-        
+          </div>
+         -->
           <!-- <div class="qrcode" v-if="showseed">
             <qrcode :text="qrtext" :callback="qrcodecallback" color="red"/>
           </div> -->
@@ -106,21 +110,20 @@
                     required dark
                   ></v-text-field> -->
               <!-- <v-text-field   required dark>账户密钥为重要信息，请做好备份并谨慎保存，切勿与他人分享</v-text-field> -->
-              <!-- <div class="viewkeySheetWrapper" >账户密钥为重要信息，请做好备份并谨慎保存，切勿与他人分享</div>
-        </v-bottom-sheet>
+        <!-- </v-bottom-sheet>
       </div> -->
       <div class="text-xs-center" v-if="showViewkeySheet">
           <v-bottom-sheet v-model="showViewkeySheet" dark>
                <!-- <div class="viewkeySheetWrapper" >{{this.warning_msg}}</div> -->
             <!-- <v-btn slot="activator" color="purple" dark>{{$t('ViewKey')}}</v-btn> -->
             <v-list >
-              <v-subheader class="info_warning_msg_style">{{this.warning_msg}}</v-subheader>
-              <v-subheader class="info_account_miyao_style">{{this.account_miyao}}</v-subheader>
+              <v-subheader class="info_warning_msg_style">{{$t("Warning_msg")}}</v-subheader>
+              <v-subheader class="info_account_miyao_style">{{$t("Account_secretkey")}}</v-subheader>
               <v-subheader class="info_showaccount_address_style">{{showaccount.address}}</v-subheader>
               <!-- <div>{{showaccount.address}}</div> -->
-              <v-subheader class="info_showaccount_barcode_style">{{this.account_barcode}}</v-subheader>
+              <v-subheader class="info_showaccount_barcode_style">{{$t("Account_secretkeycode")}}</v-subheader>
               <qrcode class="info_qrcode_style" :text="qrtext" :callback="qrcodecallback" color="red"/>
-              <v-subheader class="info_account_close_style" @click="change_value0f_vk">{{this.account_close}}</v-subheader>
+              <v-subheader class="info_account_close_style" @click="change_value0f_vk">{{$t("Close")}}</v-subheader>
               <!-- <v-list-tile
                 v-for="tile in tiles"
                 :key="tile.title"
@@ -220,21 +223,6 @@ const QUESTION_RESET_PASSWORD = 'Q.ResetPassword';
 export default {
   data(){
     return {
-        sheet: false,
-      tiles: [
-        { img: 'keep.png', title: 'Keep' },
-        { img: 'inbox.png', title: 'Inbox' },
-        { img: 'hangouts.png', title: 'Hangouts' },
-        { img: 'messenger.png', title: 'Messenger' },
-        { img: 'google.png', title: 'Google+' }
-      ],
-      warning_msg:"账户密钥为重要信息，请做好备份并谨慎保存，切勿与他人分享",
-      account_miyao:"账户密钥",
-      account_barcode:"密钥二维码",
-      account_close:"关闭",
-
-
-
       title: 'Title.Account',
       showbackicon: true,
       showmenuicon: false,
@@ -310,6 +298,9 @@ export default {
   },
   beforeMount(){
       let address = this.$route.query.address || this.account.address
+      // federationAddress&inflationAddress
+      // let federationAddress = this.$route.query.federationAddress || this.account.federationAddress
+      // let inflationAddress = this.$route.query.inflationAddress || this.account.inflationAddress
       for(var i=0,n=this.accounts.length;i<n;i++){
         if(this.accounts[i].address === address){
           this.showaccount = this.accounts[i]
@@ -319,6 +310,8 @@ export default {
           break
         }
       }
+      console.log(this.accounts)
+      
   },
   mounted(){ 
   },
@@ -687,7 +680,7 @@ export default {
   text-align:center
 .info_account_close_style
   color:$primarycolor.red
-  font-size:18px
+  font-size:16px
   // text-align:center
   padding-left:175px
 </style>
