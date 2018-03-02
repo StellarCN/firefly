@@ -661,7 +661,7 @@ export default {
 
 .info_warning_msg_style
   color:$primarycolor.red
-  font-size:18px
+  font-size:16px
   text-align :center
 .info_account_miyao_style
   color:$primarycolor.red
