@@ -28,6 +28,7 @@ export default {
   box-shadow:2px 2px 20px $primarycolor.gray
   
 .asset_card_f-card
-  height:320px    
+  height:320px
+
 
 </style>

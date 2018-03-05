@@ -9,7 +9,7 @@
 
     <div class="content">
       
-      <card :class="[mycard, { Info_mycard: isB, Info_mycardB:isC }]" padding="20px 10px 20px 10px">
+      <card :class="[{ Info_mycard: isB, Info_mycardB:isC }]" padding="20px 10px 20px 10px">
 
         <div class="card-content" slot="card-content">
           <div class="avatar-wrapper">{{$t("Account.AccountName")}}
@@ -119,7 +119,7 @@
             <v-list >
               <v-subheader class="info_warning_msg_style">{{$t("Warning_msg")}}</v-subheader>
               <v-subheader class="info_account_miyao_style">{{$t("Account_secretkey")}}</v-subheader>
-              <v-subheader class="info_showaccount_address_style">{{showaccount.address}}</v-subheader>
+              <v-subheader @click="copy(showaccount.address)"  class="info_showaccount_address_style">{{showaccount.address}}</v-subheader>
               <!-- <div>{{showaccount.address}}</div> -->
               <v-subheader class="info_showaccount_barcode_style">{{$t("Account_secretkeycode")}}</v-subheader>
               <qrcode class="info_qrcode_style" :text="qrtext" :callback="qrcodecallback" color="red"/>
