@@ -4,7 +4,7 @@
 */
 <template>
   <div class="content">
-  <scroll :refresh="setup">
+  <scroll :refresh="queryAllOffers">
     <div v-for="(item, index) in records" :key="index">
       <card class="offer-card" padding="10px 10px">
         <div class="myoffer-table offer-table" slot="card-content">
