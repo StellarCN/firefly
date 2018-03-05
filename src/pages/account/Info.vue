@@ -9,13 +9,13 @@
 
     <div class="content">
       
-      <card class="mycard" padding="20px 10px 20px 10px">
+      <card :class="[{ Info_mycard: isB, Info_mycardB:isC }]" padding="20px 10px 20px 10px">
 
         <div class="card-content" slot="card-content">
-          <div class="avatar-wrapper">
-            <span class="avatar">
+          <div class="avatar-wrapper">{{$t("Account.AccountName")}}
+            <!-- <span class="avatar">
               <i class="iconfont icon-erweima"></i>
-            </span>
+            </span> -->
           </div>
           <div class="name">
               {{showaccount.name}}
@@ -23,7 +23,17 @@
 
           
           <div class="label">{{$t('Account.AccountAddress')}}</div>
-          <div class="value" @click="copy(showaccount.address)">{{showaccount.address}}</div>
+          <div class="value" @click="copy(showaccount.address)">{{showaccount.address}}</div> <!-- 账户地址-->
+
+          <div class="label" v-if="showaccount.federationAddress">{{$t('FederationAddress')}}</div>
+          <div class="value" v-if="showaccount.federationAddress" @click="copy(showaccount.federationAddress)">{{showaccount.federationAddress}}&nbsp;</div><!-- 联邦地址-->
+         
+          
+          <div class="label" v-if="showaccount.inflationAddress">{{$t('InflationAddress')}}</div>
+          <div class="value" v-if="showaccount.inflationAddress" @click="copy(showaccount.inflationAddress)">
+            {{inflationPoolSite}}
+          </div><!-- 通胀地址-->
+          <!--
           <div class="label">{{$t('SecretKey')}}</div>
           <div class="value seed" >
             <div class="secret" @click="copySeed">{{showseedinfo}}</div>
@@ -32,16 +42,17 @@
               <v-icon class="secreticons" v-else>visibility_off</v-icon>
             </div>
           </div>
+         
           <div class="label" v-if="showaccount.federationAddress">{{$t('FederationAddress')}}</div>
           <div class="value" v-if="showaccount.federationAddress" @click="copy(showaccount.federationAddress)">{{showaccount.federationAddress}}&nbsp;</div>
           <div class="label" v-if="showaccount.inflationAddress">{{$t('InflationAddress')}}</div>
           <div class="value" v-if="showaccount.inflationAddress" @click="copy(showaccount.inflationAddress)">
             {{inflationPoolSite}}
           </div>
-        
-          <div class="qrcode" v-if="showseed">
+         -->
+          <!-- <div class="qrcode" v-if="showseed">
             <qrcode :text="qrtext" :callback="qrcodecallback" color="red"/>
-          </div>
+          </div> -->
         </div>
 
       </card>
@@ -53,13 +64,13 @@
             <span>{{$t('Delete')}}</span>
           </v-flex> -->
           <v-flex xs4 @click="modify">
-            <span>{{$t('Modify')}}</span>
+            <span class="Info_menu_color">{{$t('Modify')}}</span>
           </v-flex>
           <v-flex xs4 @click="resetpwd">
-            <span>{{$t('ResetPassword')}}</span>
+            <span class="Info_menu_color">{{$t('ResetPassword')}}</span>
           </v-flex>
-           <v-flex xs4 @click="modify">
-            <span>{{$t('ViewKey')}}</span>
+           <v-flex xs4 @click="viewkey">
+            <span class="Info_menu_color">{{$t('ViewKey')}}</span>
           </v-flex>
         </v-layout>  
       </div>
@@ -85,6 +96,48 @@
             </div>
           </div>
         </v-bottom-sheet>
+      </div>
+        <!--尝试添加的bottom-sheet的例子，可以弹出来的是密钥信息和密钥二维码 -->
+      <!-- <div v-if="showViewkeySheet">
+        <v-bottom-sheet class="showViewkeySheetPosition" v-model="showViewkeySheet">                   -->
+              <!-- <v-text-field
+                    name="password"
+                    :label="$t('Account.Password')"
+                    v-model="inpassword"
+                    :append-icon="pwdvisible ? 'visibility' : 'visibility_off'"
+                    :append-icon-cb="() => (pwdvisible = !pwdvisible)"
+                    :type="pwdvisible ? 'text':'password'"
+                    required dark
+                  ></v-text-field> -->
+              <!-- <v-text-field   required dark>账户密钥为重要信息，请做好备份并谨慎保存，切勿与他人分享</v-text-field> -->
+        <!-- </v-bottom-sheet>
+      </div> -->
+      <div class="text-xs-center" v-if="showViewkeySheet">
+          <v-bottom-sheet v-model="showViewkeySheet" dark>
+               <!-- <div class="viewkeySheetWrapper" >{{this.warning_msg}}</div> -->
+            <!-- <v-btn slot="activator" color="purple" dark>{{$t('ViewKey')}}</v-btn> -->
+            <v-list >
+              <v-subheader class="info_warning_msg_style">{{$t("Warning_msg")}}</v-subheader>
+              <v-subheader class="info_account_miyao_style">{{$t("Account_secretkey")}}</v-subheader>
+              <v-subheader @click="copy(showaccount.address)"  class="info_showaccount_address_style">{{showaccount.address}}</v-subheader>
+              <!-- <div>{{showaccount.address}}</div> -->
+              <v-subheader class="info_showaccount_barcode_style">{{$t("Account_secretkeycode")}}</v-subheader>
+              <qrcode class="info_qrcode_style" :text="qrtext" :callback="qrcodecallback" color="red"/>
+              <v-subheader class="info_account_close_style" @click="change_value0f_vk">{{$t("Close")}}</v-subheader>
+              <!-- <v-list-tile
+                v-for="tile in tiles"
+                :key="tile.title"
+                @click="sheet = false"
+              >
+                <v-list-tile-avatar>
+                  <v-avatar size="32px" tile>
+                    <img :alt="tile.title">
+                  </v-avatar>
+                </v-list-tile-avatar>
+                <v-list-tile-title>{{ tile.title }}</v-list-tile-title>
+              </v-list-tile> -->
+            </v-list>
+          </v-bottom-sheet>
       </div>
 
       <v-dialog v-model="dlgshow" persistent max-width="260">
@@ -179,6 +232,8 @@ export default {
       qrcodebase64:null,
 
       showPwdSheet:false,//是否显示输入密码窗口
+      showViewkeySheet:false,//是否显示密钥信息
+
       inpassword:null,
       pwdvisible:false,
       seed:null,
@@ -195,6 +250,9 @@ export default {
       pwd2visible: false,
       inpassword3: null,
       pwd3visible: false,
+
+      isB:true,
+      isC:false,
 
     }
   },
@@ -243,6 +301,9 @@ export default {
   },
   beforeMount(){
       let address = this.$route.query.address || this.account.address
+      // federationAddress&inflationAddress
+      // let federationAddress = this.$route.query.federationAddress || this.account.federationAddress
+      // let inflationAddress = this.$route.query.inflationAddress || this.account.inflationAddress
       for(var i=0,n=this.accounts.length;i<n;i++){
         if(this.accounts[i].address === address){
           this.showaccount = this.accounts[i]
@@ -252,8 +313,10 @@ export default {
           break
         }
       }
+      console.log(this.accounts)
+      
   },
-  mounted(){
+  mounted(){ 
   },
   methods: {
     ...mapActions({
@@ -345,6 +408,26 @@ export default {
       }
       this.$router.push({name: 'ModifyAccount', query: {address: this.showaccount.address, seed: this.seed}});
     },
+    viewkey(){
+      if(!this.canModify){
+        // this.showPwdSheet = true;
+        // this.inpassword = null;
+        this.showViewkeySheet = true;
+        this.isB=false;
+        this.isC=true;
+        return;
+      }
+      
+      // this.showViewkeySheet =true;
+      //this.$router.push({name: 'ModifyAccount', query: {address: this.showaccount.address, seed: this.seed}});
+    },
+    change_value0f_vk(){
+      if(this.showViewkeySheet == true)
+      this.showViewkeySheet = false;
+      this.isB=true;
+        this.isC=false;
+      // console.log(this.showaccount);
+    },
     resetpwd(){
       this.dlgshow = true;
       this.action = ACTION_RESET_PASSWORD;
@@ -393,6 +476,7 @@ export default {
               this.seed = data.seed
               this.showPwdSheet = false
               this.showseed = true
+              
             }else{
               this.$toasted.error(this.$t('Error.PasswordWrong'))
             }
@@ -403,6 +487,27 @@ export default {
           })
       }
     },
+    // viewkey_okPwdInput(){
+    //   if(this.inpassword!=null){
+    //     readAccountData(this.showaccount.address,this.inpassword)
+    //       .then(data=>{
+    //         this.inpassword = false
+    //         if(data.seed){
+    //           this.seed = data.seed
+    //           this.showPwdSheet = false
+    //           this.showseed = false
+    //           this.showViewkeySheet = true
+              
+    //         }else{
+    //           this.$toasted.error(this.$t('Error.PasswordWrong'))
+    //         }
+    //       })
+    //       .catch(err=>{
+    //         this.$toasted.error(this.$t('Error.PasswordWrong'))
+    //         // this.inpassword = false
+    //       })
+    //   }
+    // },
     seedIconClick(){
       //showseed=!showseed
       if(this.showseed){
@@ -443,8 +548,8 @@ export default {
 
 .card-content
   .label
-    font-size: 14px
-    color: $secondarycolor.font
+    font-size: 16px
+    color: $primarycolor.green
     padding-top: 2px
     padding-bottom: 2px
   .value
@@ -470,15 +575,16 @@ export default {
     text-align: center
 .footer
   background: $primarycolor.gray
-  height:36px
-  line-height:36px
+  height:40px
+  line-height:40px
   font-size:14px
-  margin-top: 10px
+  margin-top: 3px
   text-align:center
   position: fixed
-  bottom: 0
+  bottom: 5px
   left: 0
   right: 0
+  
   &.active
     color:$primarycolor.green
   &.unactive
@@ -489,7 +595,8 @@ export default {
   color:$secondarycolor.green
 .avatar-wrapper
   display: block
-  text-align: center
+  text-align: left
+  color:$primarycolor.green
   .avatar
     width: 56px
     height: 56px
@@ -500,8 +607,8 @@ export default {
       font-size: 32px
 .name
   display: block
-  text-align: center
-  font-size: 16px
+  text-align: left
+  font-size: 14px
   color: $primarycolor.font
   padding-top: 10px
   padding-bottom: 10px
@@ -541,6 +648,52 @@ export default {
   height: 32px
   line-height: 32px
   padding-top: 10px
+
+
+.Info_mycard
+  background-color:$secondarycolor.gray  
+  height:550px
+.Info_mycardB
+  background-color:$secondarycolor.black
+  opacity:0.3
+.Info_menu_color
+  color:$primarycolor.green
+  font-size:18px
+.showViewkeySheetPosition
+  height:5000px
+  width:3750px
+  background-color:green
+.viewkeySheetWrapper
+  height:100px
+  width:100px
+  font-size:20px
+  color:red
+
+.info_warning_msg_style
+  padding-top:10px
+  color:$primarycolor.red
+  font-size:16px
+  text-align :center
+.info_account_miyao_style
+  color:$primarycolor.red
+  font-size:15px
+.info_showaccount_address_style
+  color:$primarycolor.font
+  font-size:17px
+  text-align:center
+  word-break:break-all
+.info_showaccount_barcode_style
+  color:$primarycolor.red
+  font-size:16px
+  // text-align:center
+  padding-left:150px
+.info_qrcode_style
+  text-align:center
+.info_account_close_style
+  color:$primarycolor.red
+  font-size:16px
+  // text-align:center
+  padding-left:175px
   
 </style>
 

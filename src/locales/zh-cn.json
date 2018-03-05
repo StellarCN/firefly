@@ -365,6 +365,9 @@
   "SortByAsset":"按资产排序",
   "TotalAssets":"总资产",
   "StellarAddressBarCode":"恒星地址二维码",
-  "ViewKey":"查看密钥"
+  "ViewKey":"查看密钥",
+  "Warning_msg":"账户密钥为重要信息，请做好备份并谨慎保存，勿与他人分享",
+  "Account_secretkey":"账户密钥",
+  "Account_secretkeycode":"密钥二维码"
 
 }
