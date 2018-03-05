@@ -3,6 +3,7 @@
  */
 import axios from 'axios'
 var moment = require('moment')
+import { Decimal } from 'decimal.js'
 
 
 const host = 'http://40.125.213.185:8081'
@@ -25,7 +26,7 @@ export function getAssetPrice(assets){
  * @param { String } asset issuer
  * @return { Object } { 'deposit':[{'amount':'1','tx_id':1,'time':1}], 'withdraw': [{'amount':'1','tx_id':1,'time':1}] }
  */
-export function getDepositeAndWithdrawRecords(account, asset_code, asset_issuer){
+export function getDepositAndWithdrawRecords(account, asset_code, asset_issuer){
   if(account === null || asset_code  === null || asset_issuer === null)throw new Error('params invalid')
   let uri = `${host}/api/dwrecords/?account=${account}&asset_code=${asset_code}&asset_issuer=${asset_issuer}`
   return axios.get(uri)
@@ -59,6 +60,8 @@ export function getAllEffectOffers(account,start_time,end_time){
   if(!end_time){
     end_time = new Date().getTime()
   }
+  start_time = new Decimal(start_time).div( 1000).round().toNumber()
+  end_time = new Decimal(end_time).div( 1000).round().toNumber()
   if(account === null)throw new Error('params invalid')
   let uri = `${host}/api/effectrecords/?account=${account}&start_time=${start_time}&end_time=${end_time}`
   return axios.get(uri)

@@ -9,12 +9,12 @@
     <div class="content">
       <card class="title">
         <div class="title-content" slot="card-content">
-          <div class="flag">{{$t(selected.flag)}}</div>
-          <div :class="'amount' + (selected.isInbound ? ' add ':' minus ') ">
-              <span class="inbound" v-if="selected.isInbound">+</span>
+          <div class="flag">{{$t(flag)}}</div>
+          <div :class="'amount' + (isInbound ? ' add ':' minus ') ">
+              <span class="inbound" v-if="isInbound">+</span>
               <span class="inbound" v-else>-</span>
-              <span class="amount">{{selected.amount}}</span>
-              <span class="code">{{selected.asset.code}}</span>
+              <span class="amount">{{amount}}</span>
+              <span class="code">{{asset.code}}</span>
           </div>
           <div class="address" @click="copy(account.address)">{{account.address | shortaddress}}</div>
         </div>
@@ -24,9 +24,9 @@
         <div class="card-content" slot="card-content">
           <div class="label">TX</div>
           <div class="value" @click="copy(transaction.id)">{{transaction.id  | shortaddress}}</div>
-          <div class="label" v-if="!selected.isInbound">{{$t('To')}}</div>
-          <div class="label" v-else>{{$t('From')}}</div>
-          <div class="value" @click="copy(selected.counterparty)">{{selected.counterparty | shortaddress}}<span v-if="this.contactName"> ({{$t('Transaction.ContactName')}}: {{this.contactName}})</span></div>
+          <div class="label" v-if="!isInbound && selected.counterparty">{{$t('To')}}</div>
+          <div class="label" v-if="isInbound && selected.counterparty">{{$t('From')}}</div>
+          <div class="value" @click="copy(selected.counterparty)" v-if="isInbound && selected">{{selected.counterparty | shortaddress}}<span v-if="this.contactName"> ({{$t('Transaction.ContactName')}}: {{this.contactName}})</span></div>
           <div class="label">{{$t('DateTime')}}</div>
           <div class="value">{{date}}</div>
           <div class="label">{{$t('Memo')}}</div>
@@ -59,6 +59,13 @@ export default {
       title: 'History',
       showmenuicon: false,
       showbackicon: true,
+
+      tx_hash: null,
+      flag: null,
+      isInbound: null,
+      asset: {},
+      amount: null,
+
       transaction:{}
     }
   },
@@ -66,8 +73,8 @@ export default {
     ...mapState({
       account: state => state.accounts.selectedAccount,
       accountData: state => state.accounts.accountData,
-      asset: state => state.asset.selected,
-      selected: state => state.account.selectedPayment,
+      selectedAsset: state => state.asset.selected,
+      selected: state => state.account.selectedPayment || {},
       allcontacts: state => state.app.contacts
     }),
     ...mapGetters([
@@ -91,6 +98,20 @@ export default {
     }
   },
   mounted(){
+    let tx = this.$route.params.tx
+    if(tx){
+      this.tx_hash = tx
+      this.flag = this.$route.params.flag
+      this.isInbound = this.$route.params.isInbound
+      this.asset = this.$route.params.asset
+      this.amount = this.$route.params.amount
+    }else{
+      this.tx_hash = this.payment.transaction_hash
+      this.flag = this.selected.flag
+      this.isInbound = this.selected.isInbound
+      this.asset = this.selected.asset
+      this.amount = this.selected.amount
+    }
     this.fetchTransactionDetail()
   },
   methods: {
@@ -109,7 +130,7 @@ export default {
       }
     },
     fetchTransactionDetail() {
-      transactionDetail(this.payment.transaction_hash)
+      transactionDetail(this.tx_hash)
         .then(data => this.transaction = data)
         .catch(err => console.log(err))
     }
