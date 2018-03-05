@@ -27,7 +27,7 @@
                   <div v-if='contact.memo' class="contactdetails_memolabelposition">
                     <v-subheader dark class="grey--text text--lighten-1 ">
                     <span class="contactdetails_memolabel">{{$t(memoLabel)}}</span></v-subheader><!--备注 -->
-                    <span class="contactdetails_momolabelvalue">{{$t(contact.memo)}}</span><!-- 备注value-->
+                    <span class="contactdetails_momolabelvalue">{{contact.memo}}</span><!-- 备注value-->
                   </div>
                   <div class="contactdetails_stellaraddressbarcode">
                       <div class="contactdetails_stellaraddressbarcode_text" >{{$t("StellarAddressBarCode")}}</div><!--恒星地址二维码 -->

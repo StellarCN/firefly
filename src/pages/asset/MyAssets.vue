@@ -34,7 +34,7 @@
     <div id="TotalSum" class="myassets_totalSum" >
       <span class="myassets_TotalSumWord" >{{$t('TotalAssets')}}≈</span>
       <span>{{TotalSum.toFixed(7)}}</span><!-- 要改成资产数组数据的累加的和-->
-      <span class="myassets_balances">XCN</span>
+      <span>XCN</span>
      
     </div>
     </div>

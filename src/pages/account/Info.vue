@@ -9,7 +9,7 @@
 
     <div class="content">
       
-      <card class="mycard Info_mycard" padding="20px 10px 20px 10px">
+      <card :class="[mycard, { Info_mycard: isB, Info_mycardB:isC }]" padding="20px 10px 20px 10px">
 
         <div class="card-content" slot="card-content">
           <div class="avatar-wrapper">{{$t("Account.AccountName")}}
@@ -251,6 +251,9 @@ export default {
       inpassword3: null,
       pwd3visible: false,
 
+      isB:true,
+      isC:false,
+
     }
   },
   computed:{
@@ -410,6 +413,8 @@ export default {
         // this.showPwdSheet = true;
         // this.inpassword = null;
         this.showViewkeySheet = true;
+        this.isB=false;
+        this.isC=true;
         return;
       }
       
@@ -419,6 +424,8 @@ export default {
     change_value0f_vk(){
       if(this.showViewkeySheet == true)
       this.showViewkeySheet = false;
+      this.isB=true;
+        this.isC=false;
       // console.log(this.showaccount);
     },
     resetpwd(){
@@ -646,6 +653,9 @@ export default {
 .Info_mycard
   background-color:$secondarycolor.gray  
   height:550px
+.Info_mycardB
+  background-color:$secondarycolor.black
+  opacity:0.3
 .Info_menu_color
   color:$primarycolor.green
   font-size:18px
@@ -660,6 +670,7 @@ export default {
   color:red
 
 .info_warning_msg_style
+  padding-top:10px
   color:$primarycolor.red
   font-size:16px
   text-align :center
@@ -683,5 +694,6 @@ export default {
   font-size:16px
   // text-align:center
   padding-left:175px
+  
 </style>
 
