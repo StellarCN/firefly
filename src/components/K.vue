@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-01 11:31:52
+ * @Last Modified time: 2018-03-05 16:17:56
  * @License: MIT 
  */
 <template>
@@ -21,12 +21,12 @@
                   <span class="code">{{counter.code}}</span>
               </div>
               <div class="flex-row">
-                  <div class="flex1 textright pr-2">
+                  <div class="flex1 textright">
                         <span v-if="titleData.change>0">+</span>
-                        <span>{{titleData.change}}</span>
+                        <span>{{titleData.change}}&nbsp;&nbsp;</span>
                   </div>
-                  <div class="flex1 textleft pl-2">
-                        <span v-if="titleData.rate>0">+</span>
+                  <div class="flex1 textleft">
+                        <span v-if="titleData.rate>0"> +</span>
                         <span>{{titleData.rate}}%</span>
                   </div>
               </div>
@@ -586,4 +586,6 @@ export default {
     color: $primarycolor.green
 .title-btn-div
   line-height: 60px
+.divinline
+  display: inherit
 </style>

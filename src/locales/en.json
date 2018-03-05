@@ -279,6 +279,7 @@
 
   "canceled":"Canceled",
   "finished":"Finished",
+  "status":"status",
 
   "required": "Required",
   "Next": "next",
