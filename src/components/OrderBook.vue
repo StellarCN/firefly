@@ -212,9 +212,7 @@ export default {
 
   },
   beforeDestroy: function() {
-    if(this.timeInterval!=null){
-      clearInterval(this.timeInterval)
-    }
+    this.clean()
   },
  
   watch: {
@@ -255,6 +253,15 @@ export default {
       orderBookStreamHandler: 'orderBookStreamHandler'
 
     }),
+    reload(){
+      this.clean()
+      this.setup()
+    },
+    clean(){
+      if(this.timeInterval!=null){
+        clearInterval(this.timeInterval)
+      }
+    },
     setup(){
       this.fetchData()
       this.timeInterval = setInterval(()=>{this.fetchData()},DEFAULT_INTERVAL)
