@@ -31,6 +31,7 @@
   "Finish":"完成",
   "NextStep": "下一步",
   "SecretKey": "钱包密钥",
+  "Validate":"验证",
 
   "Title.Scan": "扫描二维码",
   "Title.MyWallet":"我的钱包",
@@ -55,7 +56,7 @@
   "Account.CreateAccountReadyHint":"以上为账户重要信息，遗失后无法找回并造成钱包内资产遗失。请勿与他人分享，妥善保管并备份！",
   "Account.CreateAccountSuccess":"账户创建成功!",
   "Account.CreateAccountError":"账户创建失败！",
-  "Account.InputSecretKey":"请输入密钥",
+  "Account.InputSecretKey":"请输入您以S开头的账户密钥",
   "Error.SeedWrong":"密钥错误",
 
   "Account.AccountAddress":"账户地址",
@@ -173,6 +174,7 @@
   "Account.PasswordResetSuccess":"密码重置成功！",
   "Account.PasswordResetFail":"密码重置失败！",
   "Account.SecretStoredAndExit":"已经备份密钥，跳过这一步",
+  "Account.Skip":"跳过",
 
 
   "Error.NotEnoughAssetToFundAccount":"发送XLM必须大于20才可以激活账户",

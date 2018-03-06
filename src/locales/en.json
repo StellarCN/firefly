@@ -30,6 +30,7 @@
   "Finish":"Finish",
   "NextStep": "Next step",
   "SecretKey": "Secret key",
+  "Validate":"Validate",
 
   "Title.Scan": "Scan",
   "Title.MyWallet":"My wallet",
@@ -57,7 +58,7 @@
   "Account.CreateAccountReadyHint":"this message is very import, save these details and never share them with anyone!",
   "Account.CreateAccountSuccess":"account creation successful",
   "Account.CreateAccountError":"error occured while creating account",
-  "Account.InputSecretKey":"input secret key",
+  "Account.InputSecretKey":"please input your secret key start with 'S'",
   "Error.SeedWrong":"wrong secret key",
   "Account.AccountAddress":"address",
 
@@ -178,6 +179,7 @@
   "Account.PasswordResetSuccess":"reset password successed",
   "Account.PasswordResetFail":"reset password failed",
   "Account.SecretStoredAndExit":"backed up the secret, skip this step",
+  "Account.Skip":"Skip",
 
   "Error.NotEnoughAssetToFundAccount":"send more than 20 XLM to fund the target",
 
