@@ -12,8 +12,8 @@ export const OFFICIAL_SITE = 'https://fchain.io'
 
 // APP 最新版本信息
 export const CHECK_UPDATE = 'https://raw.githubusercontent.com/StellarCN/firefly/master/package.json'
-//default interval : 4000ms
-export const DEFAULT_INTERVAL = 4000
+//default interval : 1分钟
+export const DEFAULT_INTERVAL = 60000
 
 export const FED_NETWORK_BIND_ADDRESS = 'bind*fed.network'
 //通账池

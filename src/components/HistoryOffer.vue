@@ -3,70 +3,89 @@
 * 我的委单
 */
 <template>
+  <div class="content">
   <scroll :refresh="setup">
-    <div v-for="(offer, offer_index) in offersData" :key="offer_index">
-      <card class="offer-card" padding="10px 10px" margin="2px 0px">
+    <div v-for="(offer, index) in offers" :key="index">
+      <card class="offer-card" padding="10px 10px">
         <div class="myoffer-table offer-table" slot="card-content">
-          <div class="pair-show">
-            <div class="pair-from">
-              <div class="code">{{offer.pair.from.code}}</div>
-              <div class="issuer" v-if="assethosts[offer.pair.from.code]">{{assethosts[offer.pair.from.code]}}</div>
-              <div class="issuer" v-else-if="assethosts[offer.pair.from.issuer]">
-                {{assethosts[offer.pair.from.issuer]}}
+          <div class="flex-row">
+            <div class="flex4">
+              <div class="pair-show">
+                <div class="pair-from">
+                  <div class="code">{{offer.from.code}}</div>
+                  <div class="issuer" v-if="assethosts[offer.from.code]">{{assethosts[offer.from.code] | miniaddress}}</div>
+                  <div class="issuer" v-else-if="assethosts[offer.from.issuer]">
+                    {{assethosts[offer.from.issuer] | miniaddress}}
+                  </div>
+                  <div class="issuer" v-else>{{offer.from.issuer | miniaddress}}</div>
+                </div>
+                <div class="pair-icon">
+                  <i class="icons material-icons">&#xE8D4;</i>
+                </div>
+                <div class="pair-to">
+                  <div class="code">{{offer.to.code}}</div>
+                  <div class="issuer" v-if="assethosts[offer.to.code]">{{assethosts[offer.to.code] | miniaddress}}</div>
+                  <div class="issuer" v-else-if="assethosts[offer.to.issuer]">{{assethosts[offer.to.issuer] | miniaddress}}
+                  </div>
+                  <div class="issuer" v-else>{{offer.to.issuer | miniaddress}}</div>
+                </div>
               </div>
-              <div class="issuer" v-else>{{offer.pair.from.issuer | miniaddress}}</div>
             </div>
-            <div class="pair-icon" @click.stop="switchPair(offer)">
-              <i class="icons material-icons">&#xE8D4;</i>
-            </div>
-            <div class="pair-to">
-              <div class="code">{{offer.pair.to.code}}</div>
-              <div class="issuer" v-if="assethosts[offer.pair.to.code]">{{assethosts[offer.pair.to.code]}}</div>
-              <div class="issuer" v-else-if="assethosts[offer.pair.to.issuer]">{{assethosts[offer.pair.to.issuer]}}
+            <div class="flex4 pl-1 textright">
+              <div>
+                <span class="value">{{offer.price}}{{offer.to.code}}</span>
+                <span class="label">{{$t('Trade.UnitPrice')}}</span>
               </div>
-              <div class="issuer" v-else>{{offer.pair.to.issuer | miniaddress}}</div>
+              <div>
+                <span class="value up">+{{offer.amount}}{{offer.from.code}}</span>
+                <span class="label">{{$t('Amount')}}</span>
+              </div>
+              <div>
+                <span class="value down">-{{offer.total}}{{offer.to.code}}</span>
+                <span class="label">{{$t('Trade.Total')}}</span>
+              </div>
+            </div>
+            <div class="flex1 textcenter pt-4">
+              <a href="javascript:void(0)" @click.stop="cancelMyOffer(offer)">{{$t('Trade.Cancel')}}</a>
             </div>
           </div>
-          <div class="table-head body-2">
-            <div class="headcol">{{$t('Trade.Price')}}</div>
-            <div class="headcol">{{offer.pair.from.code}}</div>
-            <div class="headcol">{{offer.pair.to.code}}</div>
-            <div class="headcol">&nbsp;</div>
-          </div>
-
-          <div class="table-row body-2"
-               v-for="(item, item_index) in offer.records" :key="item_index" :class='item.type'>
-            <div class="b-row price">{{Number(item.price.toFixed(4))}}</div>
-            <div class="b-row" v-if="item.type==='buy'">+{{Number(item.base.toFixed(4)) | KNumber}}</div>
-            <div class="b-row" v-else>-{{Number(item.amount.toFixed(4)) | KNumber}}</div>
-            <div class="b-row" v-if="item.type==='buy'">-{{Number(item.amount.toFixed(4)) | KNumber}}</div>
-            <div class="b-row" v-else>+{{Number(item.base.toFixed(4)) | KNumber}}</div>
-            <div class="b-row depth">
-              <span class="working" v-if="working && delindex===item_index && offer_delindex === offer_index"></span>
-              <a v-else href="javascript:void(0)" @click.stop="cancelMyOffer(item, item_index, offer_index)">{{$t('Trade.Cancel')}}</a>
-            </div>
-          </div>
+          
         </div>
       </card>
     </div>
   </scroll>
+
+   <loading :show="working" :loading="sending" :success="dealok" :fail='dealfail' 
+      color="red" :title="loadingTitle" :msg="loadingError" :closeable="dealfail" @close="hiddenLoadingView"/>
+
+
+  </div>
 </template>
 
 
 <script>
-  import Card from './Card'
-  import {mapState, mapActions, mapGetters} from 'vuex'
-  import {cancel as cancelOffer} from '@/api/offer'
-  import {DEFAULT_INTERVAL} from '@/api/gateways'
-  import Scroll from '@/components/Scroll'
-  import {myofferConvert} from '@/api/offer'
+import Card from './Card'
+import {mapState, mapActions, mapGetters} from 'vuex'
+import {cancel as cancelOffer} from '@/api/offer'
+import {DEFAULT_INTERVAL} from '@/api/gateways'
+import Scroll from '@/components/Scroll'
+import {myofferConvert} from '@/api/offer'
+import Loading from './Loading'
+import { Decimal } from 'decimal.js'
+import { getXdrResultCode } from '@/api/xdr'
 
   export default {
     data() {
       return {
         offers: [],
+      
         working: false,
-        timeInterval: null,
+        sending: false,
+        dealok: false,
+        dealfail: false,
+        loadingTitle: null,
+        loadingMsg: null,
+      
       }
     },
     computed: {
@@ -79,7 +98,7 @@
       ...mapGetters([]),
       offersData() {
         let data = []
-        if (!this.my) return
+        if (!this.my) return []
         for (let i = 0; i < this.tradepairs.length; i++) {
           let aPairData = myofferConvert(this.tradepairs[i].from, this.tradepairs[i].to, this.my)
           // console.log(aPairData);
@@ -94,13 +113,13 @@
         return data
       },
     },
-    beforeDestroy: function () {
-      if (this.timeInterval != null) {
-        clearInterval(this.timeInterval)
+    watch:{
+      my(){
+        this.offers = this.my.map(item=>this.convertOffer(item))
       }
     },
     mounted() {
-      this.setup()
+       this.queryMyOffers()
     },
     methods: {
       ...mapActions({
@@ -108,16 +127,9 @@
         switchTradePair: 'switchTradePair'
       }),
       setup() {
-        if (!this.timeInterval) {
-          this.timeInterval = setInterval(() => {
-            // console.log("fresh");
-            return this.queryMyOffers()
-          }, DEFAULT_INTERVAL)
-        }
-        return this.queryMyOffers()
+        this.queryMyOffers()
       },
       switchPair(offer) {
-        clearInterval(this.timeInterval)
         let index = offer.pair_id
         let tradepair = {from: offer.pair.to, to: offer.pair.from}
         this.switchTradePair({index, tradepair})
@@ -125,42 +137,94 @@
             this.setup()
           })
       },
-      cancelMyOffer(item, item_index, offer_index) {
+      cancelMyOffer(item) {
         if (this.working) return
         if (!this.accountData.seed) return
-        clearInterval(this.timeInterval)
-        this.working = true
-        this.offer_index = offer_index
-        this.delindex = item_index
-        this.offer_delindex = offer_index
+        this.onWorking()
         cancelOffer(this.accountData.seed, item)
           .then(data => {
-            this.$toasted.show(this.$t('Trade.CancelOfferSuccess'))
-            this.working = false
-            this.delindex = -1
-            this.offer_delindex = -1
+            this.onSuccess()
             this.setup()
           })
           .catch(err => {
-            console.log('-----cancel----- error-----')
             console.log(err)
-            this.$toasted.show(this.$t('Error.CancelOfferFailed'))
-            this.working = false
-            this.delindex = -1
-            this.offer_delindex = -1
+            this.onFail()
             this.setup()
           })
       },
+
+      convertOffer(offer){
+        let data = {}
+        if(offer.buying.asset_type === 'native'){
+          data.from = { code: 'XLM', issuer: 'stellar.org'}  
+        }else{
+          data.from = {code: offer.buying.asset_code, issuer: offer.buying.asset_issuer }
+        } 
+        if(offer.selling.asset_type === 'native'){
+          data.to = { code: 'XLM', issuer: 'stellar.org'}  
+        }else{
+          data.to =  {code: offer.selling.asset_code, issuer: offer.selling.asset_issuer }
+        }
+
+        data.amount = offer.amount
+        data.id = offer.id
+        data.price = Number(offer.price)
+        data.price_r = offer.price_r
+        data.seller = offer.seller
+        data.total = new Decimal(offer.amount).times(offer.price_r.n).div(offer.price_r.d).toFixed(7)
+        return data
+      },
+
+      onWorking(){
+        this.working = true
+        this.sending = true
+        this.dealok = false
+        this.dealfail = false
+        this.loadingTitle = null
+        this.loadingMsg = null
+      },
+      onSuccess(){
+        this.sending = false
+        this.dealok = true
+        this.loadingTitle = this.$t('Trade.CancelOfferSuccess')
+        setTimeout(()=>{
+          this.loadingTitle = null
+          this.loadingMsg = null
+          this.dealok = false
+          this.working = false
+        },1000)
+      },
+      onFail(err){
+        this.sending = false
+        this.dealfail = true
+        this.loadingTitle = this.$t('Error.CancelOfferFailed')
+        let msg = getXdrResultCode(err)
+        if(msg){
+          this.loadingMsg = this.$t(msg)
+        }else if(err){
+          this.loadingMsg = this.$t(err.message)
+        }
+      },
+      hiddenLoadingView(){
+        this.working = false
+        this.loadingTitle = null
+        this.loadingMsg = null
+      }
+
     },
     components: {
       Card,
-      Scroll
+      Scroll,
+      Loading
     }
   }
 </script>
 
 <style lang="stylus" scoped>
-  @require '../stylus/color.styl'
+@require '../stylus/color.styl'
+.offer-card
+  background: $secondarycolor.gray
+
   .table-head
     display: flex
     font-size: 18px
@@ -201,12 +265,9 @@
     animation-timing-function: linear
     margin: auto auto
 
-  .buy
-    padding: 5px;
+  .up
     color: $primarycolor.green
-
-  .sell
-    padding: 5px;
+  .down
     color: $primarycolor.red
 
   .pair-show
@@ -217,21 +278,27 @@
     padding-top: 10px
     padding-bottom: 10px
     .pair-from
-      flex: 2
+      flex: 3
       .code
         font-size: 16px
       .issuer
         color: $secondarycolor.font
+        font-size: 14px
     .pair-icon
       flex: 1
       .material-icons
-        color: $primarycolor.green
-        font-size: 32px
+        //color: $primarycolor.green
+        font-size: 20px
         padding-top: 8px
     .pair-to
-      flex: 2
+      flex: 3
       .code
         font-size: 16px
       .issuer
         color: $secondarycolor.font
+        font-size: 14px
+.myoffer-table
+  font-size: 14px
+.label
+  color: $secondarycolor.font
 </style>

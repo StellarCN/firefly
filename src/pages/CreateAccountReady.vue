@@ -134,7 +134,8 @@
       </v-card>
     </v-dialog>
 
-  <loading :show="working" :loading="working" :success="dealok" :fail='dealfail' />
+  <loading :show="showLoading" :loading="working" :success="dealok" :fail='dealfail' 
+      :title="loadingTitle" :msg="loadingMsg" :closeable="dealfail" @close="hiddenLoadingView"/>
 
 </div>
 </template>
@@ -165,7 +166,10 @@ export default {
       working: false,
       dealok: false,
       dealfail: false,
-
+      showLoading: false,
+      loadingTitle: null,
+      loadingMsg: null,
+      
       //新增账户的情况下，要求用户输入密钥
       seedInputDlgShow: false,
       seedInput: null,
@@ -272,52 +276,72 @@ export default {
       }
       let account = {name: this.name,address: this.address,seed: this.seed,password: this.password}
       this.working = true
+      this.dealok = false
+      this.dealfail = false
+      this.showLoading = true
+      this.loadingTitle = null
+      this.loadingMsg = null
       this.createAccount(account)
         .then(data=>{
          this.ok()
-          this.$toasted.show(this.$t('Account.CreateAccountSuccess'));
+         //this.$toasted.show(this.$t('Account.CreateAccountSuccess'));
+         this.loadingTitle = this.$t('Account.CreateAccountSuccess')
           this.cleanGlobalState()
           cleanStreamData()
           closeStreams()
           initStreams(this.address)
           this.$router.push({name:'MyAssets'})
         }).catch(err=>{
-          this.$toasted.error(this.$t('Account.CreateAccountError'))
+          //this.$toasted.error(this.$t('Account.CreateAccountError'))
+          this.loadingTitle = this.$t('Account.CreateAccountError')
+          this.fail()
+        })
+      },
+
+    doCoverAccount(){
+      if(this.working)return
+      this.working = true
+      this.showLoading = true
+      this.dealok = false
+      this.dealfail = false
+      this.loadingTitle = null
+      this.loadingMsg = null
+      this.coverAccount({name: this.name,address: this.address,seed: this.seed,password: this.password})
+        .then(data=>{
+            this.ok()
+            //this.$toasted.show(this.$t('Account.CreateAccountSuccess'));
+            this.loadingTitle = this.$t('Account.CreateAccountSuccess')
+            this.cleanGlobalState()
+            setTimeout(()=>{
+              this.$router.push({name: 'MyAssets'})
+            },1500)
+        })
+        .catch(err=>{
+          //this.$toasted.error(this.$t('Account.CreateAccountError'))
+          this.loadingTitle = this.$t('Account.CreateAccountError')
           this.fail()
         })
     },
-
-  doCoverAccount(){
-    if(this.working)return
-    this.working = true
-    this.coverAccount({name: this.name,address: this.address,seed: this.seed,password: this.password})
-      .then(data=>{
-          this.ok()
-          this.$toasted.show(this.$t('Account.CreateAccountSuccess'));
-          this.cleanGlobalState()
-          setTimeout(()=>{
-            this.$router.push({name: 'MyAssets'})
-          },1500)
-      })
-      .catch(err=>{
-         this.$toasted.error(this.$t('Account.CreateAccountError'))
-         this.fail()
-      })
-  },
-  ok(){
-    this.dealok = true
-    this.dealfail = false
-    setTimeout(()=>{
+    ok(){
+      this.dealok = true
+      this.dealfail = false
       this.working = false
-    },1000)
-  },
-  fail(){
-    this.dealok = false
-    this.dealfail = true
-    setTimeout(()=>{
+      setTimeout(()=>{
+        this.showLoading = false
+      },1000)
+    },
+    fail(){
+      this.dealok = false
+      this.dealfail = true
       this.working = false
-    },1000)
-  },
+    },
+    
+    hiddenLoadingView(){
+      this.loadingTitle = null
+      this.loadingMsg = null
+      this.dealfail = false
+      this.showLoading = false
+    }
 
   },
   

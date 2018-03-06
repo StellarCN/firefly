@@ -1,7 +1,8 @@
 // 发送资产
 <template>
   <div class="page" v-bind:class="{hidebackground: showScanner}">
-    <loading :show="onsend" :loading="sending" :success="sendsuccess" :fail='sendfail' />
+    <loading :show="onsend" :loading="sending" :success="sendsuccess" :fail='sendfail'
+       :title="loadingTitle" :msg="loadingMsg" :closeable="sendfail" @close="hiddenLoadingView" />
     <toolbar :title="$t(title)"
       :showmenuicon="showmenuicon"
       :showbackicon="showbackicon"
@@ -198,6 +199,10 @@ export default {
 
       iscontact: false,
       contactname: null,
+
+      loadingTitle: null,
+      loadingMsg: null,
+
 
     }
   },
@@ -402,15 +407,17 @@ export default {
       console.log(params)
       this.onsend = true
       this.sending = true
+      this.loadingTitle = null
+      this.loadingMsg = null
       this.sendAsset(params)
         .then(response=>{
           this.sending = false
           this.sendsuccess = true
           this.realDestination = null
+          this.loadingTitle = this.$t('SendAssetSuccess')
           this.getAccountInfo(this.account.address)
           setTimeout(()=>{
             this.onsend=false
-            this.$toasted.show(this.$t('SendAssetSuccess'))
             this.sendsuccess = false //
             this.$router.back()
             },3000)
@@ -420,18 +427,13 @@ export default {
           this.sending = false
           this.sendfail = true
           this.realDestination = null
-          setTimeout(()=>{
-            this.onsend=false
-            let msg = getXdrResultCode(err)
-            if(msg){
-              this.$toasted.error(this.$t(msg))
-            }else{
-              this.$toasted.error(this.$t('Error.SendAssetFail'))
-              this.$toasted.error(this.$t(err.message))
-            }
-            //this.$toasted.error(err)
-            this.sendfail = false
-            },3000)
+          let msg = getXdrResultCode(err)
+          this.loadingTitle = this.$t('Error.SendAssetFail')
+          if(msg){
+            this.loadingMsg = this.$t(msg)
+          }else{
+            this.loadingMsg = this.$t(err.message)
+          }
         })
 
     },
@@ -482,6 +484,12 @@ export default {
       }, 2000),
     isNative(asset){
       return isNativeAsset(asset)
+    },
+    hiddenLoadingView(){
+      this.onsend=false
+      this.sendfail = false
+      this.loadingTitle = null
+      this.loadingMsg = null
     }
   },
   components: {

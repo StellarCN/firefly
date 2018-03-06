@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div>
     <scroll :refresh="onRefresh">
       <div class="content">
         <card padding="10px 10px" class="infocard">
@@ -144,43 +144,10 @@
 
 <style lang="stylus" scoped>
   @require '~@/stylus/color.styl'
-  .page
-    // position: absolute
-    //top: 0
-    //left: 0
-    //right: 0
-    //bottom: 0
-    background: $primarycolor.gray
-    color: $primarycolor.font
-
-  .content
-    padding: 8px 8px
-    overflow-y: auto
-    .infocard
-      text-algin: center
-      .title
-        padding-top: 20px
-        .avatar-wrapper
-          text-align: center
-          .avatar-back
-            background: $primarycolor.gray
-            height: 70px
-            line-height: 70px
-            display: inline-block
-            width: 70px
-            border-radius: 70px
-            .avatar
-              font-size: 38px
-              color: $primarycolor.green
-
-  .subtitle
-    padding-left: 10px
-    padding-top: 10px
-    padding-bottom: 5px
-    margin-bottom: 0px
-    color: $secondarycolor.font
-    font-size: 16px
-
+.infocard
+  text-algin: center
+  background: $secondarycolor.gray
+   
   .history-li
     padding-top: 5px
     padding-bottom: 5px

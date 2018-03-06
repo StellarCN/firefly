@@ -9,7 +9,7 @@ export function xdrMsg(err){
 }
 
 export function getXdrResultCode(err){
-    if(err.data.extras && err.data.extras.result_codes){
+    if(err.data && err.data.extras && err.data.extras.result_codes){
         let codes = err.data.extras.result_codes
         if(codes.transaction){
             return codes.transaction

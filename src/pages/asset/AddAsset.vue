@@ -1,7 +1,8 @@
 // 添加资产
 <template>
   <div class="page" >
-    <loading color="green" :show="showloading" :loading="working" :success="trustsuccess" :fail='trustfail' />
+    <loading color="green" :show="showloading" :loading="working" :success="trustsuccess" :fail='trustfail'
+            :title="loadingTitle" :msg="loadingMsg" :closable="trustfail" @close="hiddenLoadingView" />
     <toolbar :title="$t(title)" 
       :showmenuicon="showmenuicon" 
       :showbackicon="showbackicon"
@@ -109,6 +110,9 @@ export default {
       working: false,
       trustsuccess: false,
       trustfail: false,
+      loadingTitle: null,
+      loadingMsg: null,
+
 
       url:null,
       currencies:[],
@@ -225,6 +229,8 @@ export default {
       this.trustfail = false
       this.showloading = true
       this.working = true 
+      this.loadingTitle = null
+      this.loadingMsg = null
       let params = {
           seed: this.accountData.seed,
           address: this.account.address,
@@ -236,7 +242,7 @@ export default {
           this.trustsuccess = true
           this.trustfail = false
           this.working = false
-          this.$toasted.success(this.$t('AddAssetSuccess'))
+          this.loadingTitle = this.$t('AddAssetSuccess')
           this.asset_code = null
           this.asset_issuer = null
 
@@ -249,15 +255,11 @@ export default {
           this.trustsuccess = false
           this.trustfail = true
           this.working = false
-          setTimeout(()=>{
-            this.showloading = false
-          },3000)
           //有可能返回超时，这时候也需要处理一下
           let msg = getXdrResultCode(err)
+          this.loadingTitle = this.$t('AddAsset')+this.$t('SaveFailed')
           if(msg){
-            this.$toasted.error(this.$t(msg))
-          }else{
-            this.$toasted.error(this.$t('AddAsset')+this.$t('SaveFailed'))
+           this.loadingMsg = this.$t(msg)
           }     
         })
         .finally(
@@ -282,6 +284,13 @@ export default {
         return
       }
       this.addTrust({code: this.asset_code, issuer: this.asset_issuer})
+    },
+
+    hiddenLoadingView(){
+      this.showloading = false
+      this.trustfail = false
+      this.loadingTitle = null
+      this.loadingMsg = null
     }
 
    

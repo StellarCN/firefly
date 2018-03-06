@@ -276,6 +276,11 @@
   "Cancel":"Cancel",
   "Confirm":"Confirm",
 
+
+  "canceled":"Canceled",
+  "finished":"Finished",
+  "status":"status",
+
   "required": "Required",
   "Next": "next",
   "Back": "back",

@@ -13,8 +13,8 @@
           @click.stop="active='sell'">{{$t('Trade.SellOffer')}}</div>
       <div :class="'myoffer offermenu' + (active==='myoffer'?' active':'')" 
           @click.stop="active='myoffer'">{{$t('Trade.MyOffer')}}({{myofferlen}})</div>
-      <!-- <div :class="'myoffer offermenu' + (active==='myTradeHistory'?' active':'')" 
-          @click.stop="active='myTradeHistory'">{{$t('Trade.MyTradeHistory')}}</div> -->
+      <div :class="'myoffer offermenu' + (active==='myTradeHistory'?' active':'')" 
+          @click.stop="active='myTradeHistory'">{{$t('History.Trade')}}</div>
     </div>
 
     <card class="offer-card" padding="10px 10px">
@@ -61,7 +61,7 @@
           <div class="headcol">{{$t('Trade.Price')}}</div>
           <div class="headcol">{{BaseAsset.code}}</div>
           <div class="headcol">{{CounterAsset.code}}</div>
-          <div class="headcol">&nbsp;</div>
+          <div class="headcol"></div>
         </div>
         <div class="table-row body-2" 
           v-for="(item,index) in myoffers" :key="index" :class='item.type'>
@@ -76,27 +76,24 @@
           </div>
         </div>
       </div>
-      <!-- <div class="myoffer-table offer-table" v-if="active === 'myTradeHistoryr'" slot="card-content">
+      
+      <div class="myoffer-table offer-table" v-if="active === 'myTradeHistory'" slot="card-content">
         <div class="table-head body-2">
           <div class="headcol">{{$t('Trade.Price')}}</div>
           <div class="headcol">{{BaseAsset.code}}</div>
-          <div class="headcol">{{CounterAsset.code}}</div>
-          <div class="headcol">&nbsp;</div>
-          
+          <div class="headcol">{{CounterAsset.code}}</div>    
+          <div class="headcol">{{$t('status')}}</div>      
         </div>
         <div class="table-row body-2" 
-          v-for="(item,index) in myoffers" :key="index" :class='item.type'>
+          v-for="(item,index) in deals" :key="index" :class='item.type'>
           <div class="b-row price" >{{Number(item.price.toFixed(4))}}</div>
-          <div class="b-row" v-if="item.type==='buy'">{{item.base}}</div>
-          <div class="b-row" v-else>{{item.amount}}</div>
-          <div class="b-row" v-if="item.type==='buy'">{{item.amount}}</div>
-          <div class="b-row" v-else>{{item.base}}</div>
-          <div class="b-row depth">
-            <span class="working" v-if="working && delindex===index"></span>
-            <a v-else href="javascript:void(0)" error @click.stop="cancelMyOffer(item,index)">{{$t('Trade.Cancel')}}</a>
-          </div>
+          <div class="b-row" v-if="item.base_asset === BaseAsset.code && item.base_issuer === BaseAsset.issuer">+{{Number(item.amount).toFixed(4)}}</div>
+          <div class="b-row" v-else>-{{Number(item.total).toFixed(4)}}</div>
+          <div class="b-row" v-if="item.base_asset === CounterAsset.code && item.base_issuer === CounterAsset.issuer">+{{Number(item.amount).toFixed(4)}}</div>
+          <div class="b-row" v-else>-{{Number(item.total).toFixed(4)}}</div>
+          <div class="b-row">{{$t(item.type)}}</div>
         </div>
-      </div> -->
+      </div>
 
     </card>
   </scroll>
@@ -112,6 +109,9 @@ import { getAsset } from '@/api/assets'
 import Scroll from '@/components/Scroll'
 import { myofferConvert } from '@/api/offer'
 import {Decimal} from 'decimal.js'
+import { getAllEffectOffers } from '@/api/fchain'
+var moment = require('moment')
+import _ from 'lodash'
 
 export default {
   data(){
@@ -122,6 +122,7 @@ export default {
       working: false,
       delindex: -1,
       timeInterval: null,
+      deals:[],
     }
   },
   props:{
@@ -270,7 +271,7 @@ export default {
       })
     },
     load(){
-      return Promise.all([this.queryOrderBook(), this.queryMyOffers()])
+      return Promise.all([this.queryOrderBook(), this.queryMyOffers(), this.queryAllOffers()])
     },
     //撤消委单
     cancelMyOffer(item,index){
@@ -295,6 +296,44 @@ export default {
     },
     chooseItem(type,data){
       this.$emit('choose',{type,data})
+    },
+    queryAllOffers(){
+      //暂时只查询一周的委单数据
+      let start_time = Number(moment().subtract(100,"days").format('x'))
+      let end_time = Number(moment().format('x'))
+      getAllEffectOffers(this.account.address, start_time, end_time)
+        .then(response=>{
+          if(!response.data)return;
+          this.deals = response.data.map(item=>{
+            return Object.assign({}, item, { total: new Decimal(item.amount).times(item.price).toFixed(7), 
+              counter_issuer: item.counter_issuer ? item.counter_issuer : 'stellar.org',
+              base_issuer: item.base_issuer ? item.base_issuer : 'stellar.org',
+              price: Number(item.price)
+            })
+          }).filter(item=>{
+            let key1 = item.base_asset + item.base_issuer + item.counter_asset+item.counter_issuer
+            let key2 = item.counter_asset + item.counter_issuer + item.base_asset+item.base_issuer
+            let from = this.selectedTrade.from
+            let to = this.selectedTrade.to
+            let key01 = from.code + from.issuer + to.code + to.issuer
+            let key02 = to.code + to.issuer + from.code + from.issuer
+            if(key01===key1 && key02 === key2){
+              item.itype = 'buy'
+              return true
+            }else if(key01===key2 && key02 === key1){
+              item.itype = 'sell'
+              return true
+            }else{
+              return false
+            }
+          })
+        })
+        .catch(err=>{
+          console.error(err)
+          if(err.message){
+            this.$toasted.error(err.message)
+          }
+        })
     }
    
   },

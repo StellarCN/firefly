@@ -6,7 +6,8 @@
    <!-- toolbar -->
     <trade-pair-tool-bar @choseTradePair="afterChoseTradePair"/>
 
-    <loading :show="working" :loading="sending" :success="sendsuccess" :fail='sendfail' :color="isSell?'red':'green'"/>
+    <loading :show="working" :loading="sending" :success="sendsuccess" :fail='sendfail' 
+      :color="isSell?'red':'green'" :title="loadingTitle" :msg="loadingError" :closeable="sendfail" @close="hiddenLoading"/>
 
     <!--买卖切换-->
     <div class="flex-row full-width tmenu">
@@ -159,6 +160,8 @@ export default {
       justify: false,
       total: 0,
       showConfirmSheet: false,
+      loadingTitle: null,
+      loadingError: null,
 
     }
   },
@@ -457,6 +460,8 @@ export default {
       }
 
       if(this.working)return
+      this.loadingTitle = null
+      this.loadingError = null
       this.sendsuccess = false
       this.sendfail = false
       this.working = true
@@ -477,20 +482,23 @@ export default {
           this.sendfail = false
           this.clean()
           this.hideLoading()
-          this.$toasted.show(this.$t('Trade.OfferSuccess'))
+          //this.$toasted.show(this.$t('Trade.OfferSuccess'))
+          this.loadingTitle = this.$t('Trade.OfferSuccess')
           this.queryMyOffers()
         })
         .catch(err=>{
           console.log(err)
-          this.sending = false;
+          //this.sending = false;
           this.sendfail = true;
           this.sendsuccess = false
-          this.clean();
-          this.hideLoading();
-          this.$toasted.error(this.$t('Error.OfferFailed'));
+          //this.clean();
+          //this.hideLoading();
+          //this.$toasted.error(this.$t('Error.OfferFailed'));
+          this.loadingTitle = this.$t('Error.OfferFailed')
           let errcode = getXdrResultCode(err);
           if(errcode){
-            this.$toasted.error(this.$t(errcode));
+            //this.$toasted.error(this.$t(errcode));
+            this.loadingError = this.$t(errorcode)
           }
         })
 
@@ -500,6 +508,7 @@ export default {
       setTimeout(()=>{
           this.sending = false
           this.working = false
+         
         },3000)
     },
     
@@ -540,6 +549,11 @@ export default {
     },
     afterChoseTradePair(){
 
+    },
+    hiddenLoading(){
+      this.sending = false
+      this.sendfail = false
+      this.working = false
     }
    
   },

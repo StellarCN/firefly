@@ -46,7 +46,8 @@
         </div>
       </card>
     </div>
-    <loading :show="working" :loading="working" :success="delok" :fail='delerror' />
+    <loading :show="showLoading" :loading="working" :success="delok" :fail='delerror' 
+      :title="loadingTitle" :msg="loadingMsg" :closeable="delerror" @close="hideLoadingView"/>
 
      <div class="pwdSheetWrapper"v-if="showPwdSheet">
         <v-bottom-sheet  v-model="showPwdSheet"  dark>
@@ -99,6 +100,11 @@ export default {
       workindex:null,
       workaccount: null,
 
+      showLoading: false,
+      loadingTitle: null,
+      loadingMsg: null,
+
+
     }
   },
   computed:{
@@ -148,7 +154,10 @@ export default {
     },
     okPwdInput(){
       if(this.inpassword ===  null)return
+      this.showLoading = true
       this.working = true
+      this.loadingTitle = null
+      this.loadingMsg = null
       let selected = this.workaccount.address === this.account.address
       if('del' === this.worktype){
         readAccountData(this.workaccount.address,this.inpassword)
@@ -169,13 +178,14 @@ export default {
             if(selected){
               this.cleanAccount()
             }
-            this.$toasted.show(this.$t('Account.DeleteSuccess'))
+            this.loadingTitle = this.$t('Account.DeleteSuccess')
             this.delok = true
             this.delerror = false
             this.inpassword = null
             this.showPwdSheet = false
+            this.working = false
             setTimeout(()=>{
-              this.working = false
+              this.showLoading = false
               if(this.accounts.length === 0){
                 this.$router.push({name: 'Wallet'})
               }else{
@@ -212,24 +222,24 @@ export default {
           .catch(err=>{
             this.showPwdSheet = false
             console.error(err)
+             this.loadingTitle = this.$t('Account.DeleteFailed')
             if(err === 'Error.PasswordWrong'){
-              this.$toasted.error(this.$t('Error.PasswordWrong'))
-            }else{
-              this.$toasted.error(this.$t('Account.DeleteFailed'))
+              this.loadingMsg = this.$t('Error.PasswordWrong')
             }
             this.inpassword = null
-            this.delok = true
-            this.delerror = false
-            setTimeout(()=>{
-              this.working = false
-            },1000)
+            this.working = false
+            this.delok = false
+            this.delerror = true
           })
 
-      }
+      }        
+    },
+    hideLoadingView(){
+      this.delerror = false
+      this.working = false
+      this.showLoading = false
+    },
       
-      
-        
-    }
   },
   components: {
     Toolbar,
@@ -251,6 +261,7 @@ export default {
     font-size: 36px
 .card-content
   overflow: hidden
+  background: $secondarycolor.gray
 .account-row
   overflow: hidden
   position: relative

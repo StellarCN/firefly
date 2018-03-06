@@ -18,7 +18,9 @@
         </li>
       </ul>
     </div>
+
     <component v-bind:is="show.component"></component>
+     
   </div>
 </template>
 
@@ -30,6 +32,7 @@
   import HistoryTransaction from '@/components/HistoryTransaction'
   import HistoryTrade from '@/components/HistoryTrade'
   import HistoryDepositAndWithdraw from '@/components/HistoryDepositAndWithdraw'
+  import Card from '@/components/Card'
 
   export default {
     data() {
@@ -73,32 +76,30 @@
       this.changeCurrentHistoryComponent(this.show.name)
     },
     components: {
-      Toolbar
+      Toolbar,
+      Card
     }
   }
 </script>
 <style lang="stylus" scoped>
   @require '~@/stylus/color.styl'
     .menu-wrapper
-      background: $primarycolor.green
-      height: 56px
-      line-height: 56px
-      margin-top: -1px
+      margin-top: 10px
       .menu-ul
         width: 100%
         display: flex;
         justify-content: center;
         .menu-li
           float: left
-          color: $primarycolor.font
+          color: $secondarycolor.font
           padding-left: 10px
           padding-right: 10px
-          height: 55px
-          line-height: 55px
-          width: 42%
+          height: 32x
+          line-height: 32px
           text-align: center
+          font-size: 16px
         .menu-li.active
-          border-bottom: 2px solid $primarycolor.font
-
+          border-bottom: 2px solid $primarycolor.green
+          color: $primarycolor.green
 
 </style>

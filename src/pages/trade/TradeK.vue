@@ -3,13 +3,29 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-01 17:03:07 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-02-08 11:39:38
+ * @Last Modified time: 2018-03-01 11:40:33
  * @License MIT 
  */
 <template>
   <div class="page">
     <k :base="BaseAsset" :counter="CounterAsset" :incremental="true" 
-      :showTitle="true" ref="kgraph" :fullscreen="true" height="100vh"/>
+      :showTitle="true" ref="kgraph" :fullscreen="true"/>
+    <div class="clear"></div>
+    <!-- 买卖按钮 -->
+    <div class="flex-row full-width footer-btns">
+      <div class="flex1 btn-flex">
+        <div class="full-width btn-buy" color="primary" @click="toBuy">
+          <div>{{$t('Trade.Buy')}}  {{BaseAsset.code}}</div>
+          <div class="available">{{$t('Available')}}{{CounterAsset.code}}:{{CounterBalance.balance|| 0 }}</div>
+        </div>
+      </div>
+      <div class="flex1 btn-flex">
+        <div class="full-width btn-sell" color="error" @click="toSell">
+          <div>{{$t('Trade.Sell')}}  {{BaseAsset.code}}</div>
+          <div class="available">{{$t('Available')}}{{BaseAsset.code}}:{{BaseBalance.balance||0}}</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -60,7 +76,7 @@ export default {
     },
     BaseBalance(){
       if(isNativeAsset(this.BaseAsset)){
-        return this.nativeBalance
+        return this.nativeBalance()
       }else{
         return this.assetBalance(this.BaseAsset)
       }
@@ -79,7 +95,24 @@ export default {
     
   },
   methods: {
-    
+    nativeBalance(){
+      let d = _.defaultsDeep({}, this.balances.filter(item=>isNativeAsset(item))[0])
+      let t = this.native.balance - this.reserve - this.base_reserve - 0.0001
+      if(t < 0 ) t = 0 
+      d.balance = Number(t.toFixed(7))
+      return d;
+    },
+    assetBalance(asset){
+      return _.defaultsDeep({}, this.balances.filter(item=> item.code === asset.code && item.issuer === asset.issuer)[0])
+    },
+
+    toBuy(){
+      this.$router.push({name: 'TradeBuySell', params: {flag: 'buy'}})
+    },
+    toSell(){
+      this.$router.push({name: 'TradeBuySell', params: {flag: 'sell'}})
+    }
+
   },
   components: {
     K
@@ -88,5 +121,7 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-
+@require '~@/stylus/trade.styl'
+.footer-btns
+  position: relative
 </style>

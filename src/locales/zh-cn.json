@@ -270,6 +270,10 @@
   "Cancel":"撤消",
   "Confirm":"确认",
 
+  "canceled":"已撤销",
+  "finished":"已完成",
+  "status":"状态",
+
   "required": "必要项",
 
   "Next": "继续",
