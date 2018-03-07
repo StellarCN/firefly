@@ -104,7 +104,7 @@
     <!-- 密钥输入窗口 -->
     <v-dialog class="si-dlg" v-model="seedInputDlgShow" persistent max-width="95%"  fullscreen transition="dialog-bottom-transition" :overlay=false>
       <toolbar :title="$t(title)" :showbackicon="showbackicon">
-        <div class="si-text" slot="right-tool"  @click="doSave">
+        <div class="si-text" slot="right-tool"  @click="showSkipDlg = true">
           {{$t('Account.Skip')}}
         </div>
       </toolbar>
@@ -113,9 +113,7 @@
 
         <div class="si-card">
           <div class="headline">{{$t('Account.InputSecretKey')}}</div>
-          <v-alert color="error" icon="warning" value="true" v-if="seedInputErr">
-              {{$t(seedInputErr)}}
-          </v-alert>
+         
           <v-layout wrap>
             <v-flex xs12 sm6 md4>
               <secret-key-input ref="secretkeyRef"></secret-key-input>
@@ -129,6 +127,61 @@
         </div>
       </div>
 
+    </v-dialog>
+
+    <!-- 是否跳过验证窗口 -->
+    <v-dialog v-model="showSkipDlg" max-width="95%" persistent>
+      <card padding="20px 10px">
+        <div class="card-content" slot="card-content">
+          <div class="avatar-div textcenter">
+            <v-avatar>
+              <img src="../assets/img/ff-red.png" />
+            </v-avatar>
+          </div>
+          <div class="t1 skip-red textcenter">{{$t('Account.ConfirmSkip')}}</div>
+          <div class="t2 skip-white pt-2 pb-4">{{$t('Account.SkipValidHint')}}</div>
+          <div class="btns flex-row">
+            <div class="flex1 skip-red textcenter" @click="doSave">{{$t('Button.OK')}}</div>
+            <div class="flex1 skip-red textcenter" @click="showSkipDlg = false">{{$t('Account.Later')}}</div>
+          </div>
+        </div>
+      </card>
+    </v-dialog>
+
+    <!-- 验证通过窗口 -->
+    <v-dialog v-model="showSeedValidDlg" max-width="95%" persistent>
+      <card padding="20px 10px">
+        <div class="card-content" slot="card-content">
+          <div class="avatar-div textcenter">
+            <v-avatar>
+              <img src="../assets/img/ff-green.png" />
+            </v-avatar>
+          </div>
+          <div class="t1 dlg-green textcenter">{{$t('Congratulations')}}!</div>
+          <div class="t2 skip-white pt-2 pb-4">{{$t('Account.SecretKeyValidHint')}}</div>
+          <div class="btns dlg-green textcenter" @click="toNextPage">
+            {{$t('Account.Start')}}
+          </div>
+        </div>
+      </card>
+    </v-dialog>
+
+    <!-- 验证失败窗口 -->
+    <v-dialog v-model="showSeedInValidDlg" max-width="95%" persistent>
+      <card padding="20px 10px">
+        <div class="card-content" slot="card-content">
+          <div class="avatar-div textcenter">
+            <v-avatar>
+              <img src="../assets/img/ff-red.png" />
+            </v-avatar>
+          </div>
+          <div class="t1 skip-red textcenter">{{$t('Error.SeedWrong')}}!</div>
+          <div class="t2 skip-white pt-2 pb-4">{{$t('Account.SecretKeyUnValidHint')}}</div>
+          <div class="btns textcenter skip-red" @click="showSeedInValidDlg = false">
+            {{$t('Account.ReVerify')}}
+          </div>
+        </div>
+      </card>
     </v-dialog>
 
   <loading :show="showLoading" :loading="working" :success="dealok" :fail='dealfail' 
@@ -171,7 +224,12 @@ export default {
       //新增账户的情况下，要求用户输入密钥
       seedInputDlgShow: false,
       seedInput: null,
-      seedInputErr: null,
+
+      showSkipDlg: false,
+      showSeedValidDlg: false,
+      showSeedInValidDlg: false,
+
+
     
     }
   },
@@ -248,7 +306,8 @@ export default {
       
       this.seedInput = this.$refs.secretkeyRef.seedInput
       if(this.seed != this.seedInput){
-        this.seedInputErr = 'Error.SeedWrong'
+        //this.seedInputErr = 'Error.SeedWrong'
+        this.showSeedInValidDlg = true
         return;
       }
       this.seedInputDlgShow = false
@@ -284,14 +343,17 @@ export default {
          //this.$toasted.show(this.$t('Account.CreateAccountSuccess'));
          this.loadingTitle = this.$t('Account.CreateAccountSuccess')
           this.cleanGlobalState()
-          cleanStreamData()
-          closeStreams()
-          initStreams(this.address)
-          this.$router.push({name:'MyAssets'})
+          this.showSeedValidDlg = true
         }).catch(err=>{
           //this.$toasted.error(this.$t('Account.CreateAccountError'))
           this.loadingTitle = this.$t('Account.CreateAccountError')
           this.fail()
+          setTimeout(()=>{
+            this.showLoading = false
+            this.showSeedInValidDlg = true
+          },1000)
+          
+
         })
       },
 
@@ -331,6 +393,7 @@ export default {
       this.dealok = false
       this.dealfail = true
       this.working = false
+     
     },
     
     hiddenLoadingView(){
@@ -338,6 +401,13 @@ export default {
       this.loadingMsg = null
       this.dealfail = false
       this.showLoading = false
+    },
+    toNextPage(){
+      this.showSeedValidDlg = false
+      cleanStreamData()
+      closeStreams()
+      initStreams(this.address)
+      this.$router.push({name:'MyAssets'})
     }
 
   },
@@ -444,6 +514,19 @@ export default {
   .btn-ok
     font-size: 16px
     color: $primarycolor.green
-
+.card-content
+  padding: 20px 10px
+.t1
+  font-size: 20px
+  padding-top: 5px
+  padding-bottom: 5px
+.t2
+  font-size: 16px
+.skip-red
+  color: $primarycolor.red
+.btns
+  font-size: 16px
+.dlg-green
+  color: $primarycolor.green
 </style>
 
