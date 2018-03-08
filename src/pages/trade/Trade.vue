@@ -145,6 +145,7 @@ export default {
     choseTradePair({index,tradepair}){//选择交易对
       this.$nextTick(()=>{
         this.$refs.kgraph.reload()
+        this.$refs.orderbook.reload()
       })
     },
     toBuy(){

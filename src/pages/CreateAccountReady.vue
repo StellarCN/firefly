@@ -36,7 +36,7 @@
     </div>
 
     <v-dialog v-model="dialog" max-width="95%" >
-        <v-stepper v-model="guide" dark>
+        <v-stepper v-model="guide" dark >
           <v-stepper-header class="guide-header">
             <v-stepper-step step="1" :complete="guide >1"></v-stepper-step>
             <hr class='divider' :class="guide>1 ? primary : null"></hr>
@@ -102,36 +102,33 @@
     </v-dialog>
 
     <!-- 密钥输入窗口 -->
-    <v-dialog v-model="seedInputDlgShow" persistent max-width="95%"  fullscreen transition="dialog-bottom-transition" :overlay=false>
-      <v-card>
-        <v-card-title class="headline">{{$t('Account.InputSecretKey')}}</v-card-title>
-        <v-card-text>
-          <v-container grid-list-md>
-            <v-alert color="error" icon="warning" value="true" v-if="seedInputErr">
+    <v-dialog class="si-dlg" v-model="seedInputDlgShow" persistent max-width="95%"  fullscreen transition="dialog-bottom-transition" :overlay=false>
+      <toolbar :title="$t(title)" :showbackicon="showbackicon">
+        <div class="si-text" slot="right-tool"  @click="doSave">
+          {{$t('Account.Skip')}}
+        </div>
+      </toolbar>
+      
+      <div class="si-bg">
+
+        <div class="si-card">
+          <div class="headline">{{$t('Account.InputSecretKey')}}</div>
+          <v-alert color="error" icon="warning" value="true" v-if="seedInputErr">
               {{$t(seedInputErr)}}
-            </v-alert>
-            <v-layout wrap>
-              <v-flex xs12 sm6 md4>
-                <v-text-field dark
-                :label="$t('SecretKey')"
-                v-model="seedInput"
-                required
-                multi-line
-                onpaste="return false"
-                rows=2></v-text-field>
-              </v-flex>
-            </v-layout>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="green" flat @click.native="seedInputDlgShow = false">{{$t('Button.Cancel')}}</v-btn>
-          <v-btn color="red" flat @click.native="btnOKSeedInput">{{$t('Button.OK')}}</v-btn>
-        </v-card-actions>
-        <v-card-actions>
-          <v-btn color="green" flat @click.native="doSave">{{$t('Account.SecretStoredAndExit')}}</v-btn>
-        </v-card-actions>
-      </v-card>
+          </v-alert>
+          <v-layout wrap>
+            <v-flex xs12 sm6 md4>
+              <secret-key-input ref="secretkeyRef"></secret-key-input>
+            </v-flex>
+          </v-layout>
+          
+        </div>
+        <div class="btn-group flex-row textcenter">
+          <div class="flex1 btn-cancel" @click="seedInputDlgShow = false">{{$t('Return')}}</div>
+          <div class="flex1 btn-ok" @click="btnOKSeedInput">{{$t('Validate')}}</div>
+        </div>
+      </div>
+
     </v-dialog>
 
   <loading :show="showLoading" :loading="working" :success="dealok" :fail='dealfail' 
@@ -147,6 +144,7 @@ import {address as genAddress} from '@/api/account'
 import QRCode from '@/components/QRCode'
 import { exportAccount } from '@/api/qr'
 import Loading from '@/components/Loading'
+import SecretKeyInput from '@/components/SecretKeyInput'
 //import StellarHDWallet from 'stellar-hd-wallet'
 import { closeStreams, initStreams,cleanStreamData } from '@/streams'
 import _ from 'lodash'
@@ -248,9 +246,8 @@ export default {
       }
     },
     btnOKSeedInput(){
-      console.log('check--btn input--')
-      console.log(this.seed)
-      console.log(this.seedInput)
+      
+      this.seedInput = this.$refs.secretkeyRef.seedInput
       if(this.seed != this.seedInput){
         this.seedInputErr = 'Error.SeedWrong'
         return;
@@ -350,6 +347,7 @@ export default {
     Toolbar,
     qrcode: QRCode,
     Loading,
+    SecretKeyInput,
   }
 }
 </script>
@@ -402,6 +400,8 @@ export default {
   font-size: 12px
 .headline
   color: $primarycolor.green
+  font-size: 16px !important 
+  padding-bottom: 10px
 .notice
   font-size:14px
   color: $primarycolor.font
@@ -420,5 +420,31 @@ export default {
   min-height: 150px
 .guide-header
   box-shadow 0 0 0 0
+.si-text
+  font-size: 14px
+.si-bg
+  position: absolute
+  top: 48px
+  left: 0
+  right: 0
+  bottom: 0
+  background: $primarycolor.gray
+  padding: 10px 10px
+  padding-bottom: 0px
+.si-card
+  background: $secondarycolor.gray
+  border-radius: 5px
+  padding: 5px 5px
+  height: 90%
+.btn-group
+  position: absolute
+  left: 0
+  right: 0
+  bottom: 10px
+  .btn-cancel
+  .btn-ok
+    font-size: 16px
+    color: $primarycolor.green
+
 </style>
 

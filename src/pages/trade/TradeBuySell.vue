@@ -199,7 +199,7 @@ export default {
     },
     choseTradePair({index,tradepair}){//选择交易对
       this.$nextTick(()=>{
-        //TODO
+        this.$refs.orderbook.reload()
       })
     },
     isBuy(){
