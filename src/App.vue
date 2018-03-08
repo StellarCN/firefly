@@ -1,11 +1,16 @@
 <template>
- <v-app class="app" dark>
-    <v-system-bar status :color="iosstatusbarcolor" v-show="isios">
-      <v-spacer></v-spacer>
-    </v-system-bar>
-    <router-view></router-view>
+<div>
 
- </v-app>
+
+        <v-app class="app" dark>
+            <v-system-bar status :color="iosstatusbarcolor" v-show="isios">
+              <v-spacer></v-spacer>
+            </v-system-bar>
+            <router-view></router-view>
+
+        </v-app>
+  
+</div>
 </template>
 
 <script>
@@ -25,8 +30,19 @@
         pauseMaxSecond: 60,//最大
         isios: false,
         devicelang: null,
+        // items:Store.fetch(),
+      
       }
     },
+    // watch : {
+    //     items : {
+    //       handler:function(items){
+    //         // console.log(val,oldVal)
+    //         Store.save(items)
+    //       },
+    //       deep:true
+    //     }
+    // },
     computed:{
       ...mapState({
           showloading: state => state.showloading,
@@ -38,6 +54,8 @@
         }),
     },
     beforeMount(){
+      // if(window.localStorage.getItem('login_flag')==1){
+      //   console.log(window.localStorage.getItem('login_flag'))
       Vue.cordova.on('deviceready', () => {
         checkPlatform()
         try{
@@ -58,7 +76,7 @@
           this.onResume()
         }, false);
 
-        console.log('Cordova : device is ready !')
+        console.log('Cordova : device is ready !') /**执行了。 */
         console.log(cordova)
         if('ios'===cordova.platformId){
            this.isios = true
@@ -74,7 +92,9 @@
           .then((locale) => {
             this.devicelang = locale
             return this.loadAppSetting()
-          }).then(data=>{
+            
+          })
+          .then(data=>{
           //if(this.alldata.app.enablePin){
           //  this.showConfirmPin = true
           //}
@@ -86,7 +106,7 @@
           return this.loadAccounts()
         })
         .then(data=>{
-          console.log('read accounts')
+          console.log('read accounts')    /**执行了。 */
           console.log(data)
           navigator.splashscreen.hide();
 
@@ -105,9 +125,17 @@
             this.$router.push({name: 'PinLock'})
           }else{
              if(this.accounts.length === 0){
-               this.$router.push({name: 'Wallet'})
+               
+              //  this.$router.push({name: 'Wallet'})
+                          if(window.localStorage.getItem('login_flag')==1){
+                                    this.$router.push({name: 'Wallet'})
+                                    }else{
+                                      this.$router.push({name:'Picklanguage'})
+                                    }
+
              }else{
                this.$router.push({name: 'MyAssets'})
+               
              }
           }
         })
@@ -127,8 +155,12 @@
             this.saveAppSetting({locale: this.devicelang})
           })
           //保存默认的设置数据
-
+          // this.$router.push({name: 'Wallet'})
+          if(window.localStorage.getItem('login_flag')==1){
           this.$router.push({name: 'Wallet'})
+          }else{
+            this.$router.push({name:'Picklanguage'})
+          }
 
         });
 
@@ -136,8 +168,25 @@
 
 
       })
-
+      // }else{
+          
+        
+      //     this.$router.push({name: 'Picklanguage'})       
+        
+      //     // var t=setInterval("console.log(\"------\")",3000)  
+      //     // clearInterval(t)
+      
+      // }
+    
     },
+    mounted(){
+      // if(window.localStorage.getItem('login_flag')!=1){
+      //   setInterval('toPicklanguage',10000)
+      // }
+    },
+    // destroyed : {
+    //     clearInterval(setInterval_value)
+    // },
     methods: {
       ...mapActions([
         'deviceLang',
@@ -165,8 +214,17 @@
           }
         }
       },
+      // toPicklanguage(){
+      //   this.$router.push({name:'Picklanguage'})
+      // },
+     
 
     },
+    // beforeCreate(){
+    //     var  toPicklanguage =function(){
+    //     this.$router.push({name: 'Picklanguage'})
+    //   }
+    // },
     components:{
       PinCode,
     }

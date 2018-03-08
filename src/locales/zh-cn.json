@@ -370,6 +370,25 @@
   "ViewKey":"查看密钥",
   "Warning_msg":"账户密钥为重要信息，请做好备份并谨慎保存，勿与他人分享",
   "Account_secretkey":"账户密钥",
-  "Account_secretkeycode":"密钥二维码"
+  "Account_secretkeycode":"密钥二维码",
+
+  "Start":"开始",
+  "TransactionPassword":"交易密码",
+  "TransactionPassword_MsgOne":"重要！",
+  "TransactionPassword_MsgTwo":"交易密码，如果遗忘则不能找回;",
+  "TransactionPassword_MsgThree":"仅能通过密钥重新找回账户",
+  
+  
+  "Account_secretkey_MsgOne":"非常重要！",
+  "Account_secretkey_MsgTwo":"丢失密钥，即丢失一切！",
+  "Account_secretkey_MsgThree":"将密钥抄写或打印出来，并存放于安全的地方。切勿截图保存或直接存放于手机、网盘、邮箱中。",
+ 
+  "TDO":"To da moon!",
+  "TDO_MsgOne":"祝贺您！",
+  "TDO_MsgTwo":"保存好信息后，",
+  "TDO_MsgThree":"您就可以开始使用萤火钱包了",
+  
+  "LastStep":"上一步",
+  "AllRight":"明白了"
 
 }
