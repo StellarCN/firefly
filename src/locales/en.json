@@ -378,6 +378,25 @@
   "ViewKey":"ViewKey",
   "Warning_msg":"Warning_msg",
   "Account_secretkey":"Account_secretkey",
-  "Account_secretkeycode":"Account_secretkeycode"
+  "Account_secretkeycode":"Account_secretkeycode",
+
+  "Start":"Start",
+  "TransactionPassword":"TransactionPassword",
+  "TransactionPassword_MsgOne":"Important",
+  "TransactionPassword_MsgTwo":"Transaction password, if forgotten, can not be recovered;",
+  "TransactionPassword_MsgThree":"You can retrieve your account only with the key",
+  
+  
+  "Account_secretkey_MsgOne":"Very important!",
+  "Account_secretkey_MsgTwo":"Lose the key, lose everything!",
+  "Account_secretkey_MsgThree":"Copy or print the key and store it in a secure place. Do not save the screenshot or store it directly in your cell phone, disk, or mailbox.",
+ 
+  "TDO":"To da moon!",
+  "TDO_MsgOne":"Congratulations!",
+  "TDO_MsgTwo":"After keeping the information,",
+  "TDO_MsgThree":"You can start using a firefly wallet.",
+  
+  "LastStep":"LastStep.",
+  "AllRight":"AllRight"
 
 }

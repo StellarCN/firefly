@@ -220,7 +220,8 @@ export default {
     // console.log(wallet.getPublicKey(0)) // => GDKYMXOAJ5MK4EVIHHNWRGAAOUZMNZYAETMHFCD6JCVBPZ77TUAZFPKT
     //  console.log(wallet.getSecret(0)) // => SCVVKNLBHOWBNJYHD3CNROOA2P3K35I5GNTYUHLLMUHMHWQYNEI7LVED
     //  console.log(wallet.getKeypair(0) )// => StellarBase.Keypair for account 0
-
+    window.localStorage.setItem('login_flag','1')
+    console.log(window.localStorage.getItem('login_flag'))
   },
   mounted(){
     this.dialog = true;

@@ -13,6 +13,9 @@ import contacts from './contacts'
 import addresses from './addresses'
 import account from './account'
 
+import Picklanguage from '../pages/Picklanguage'
+import Guidepage from '../pages/Guidepage'
+
 Vue.use(Router)
 
 
@@ -35,6 +38,16 @@ const router = new Router({
       path: '/wallet',
       name: 'Wallet',
       component: Wallet
+    },
+    {
+      path: 'picklanguage',
+      name: 'Picklanguage',
+      component: Picklanguage
+    },
+    {
+      path: 'guidepage',
+      name: 'Guidepage',
+      component: Guidepage
     },
     {
       path: '/termsofservice',
