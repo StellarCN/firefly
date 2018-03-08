@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-05 16:17:56
+ * @Last Modified time: 2018-03-08 19:55:22
  * @License: MIT 
  */
 <template>
@@ -97,6 +97,7 @@ export default {
 
             dates:[],//日期
             volumes: [],//成交量
+            subVolumes:[],//base_volumes与counter_volumes
             data: [],//每条数据是一个数组，[开盘价，收盘价，最低价，最高价]
             tinterval: null,//定时器
             lasttime: null,//上次的执行时间
@@ -147,7 +148,7 @@ export default {
         //高度
         height: {
             type: String,
-            default: '220px'
+            default: '260px'
         }
     },
     computed: {
@@ -253,7 +254,8 @@ export default {
                 records = records.reverse()
                 records.forEach(item=>{                   
                     this.dates.push(new Date(item.timestamp).Format('MM-dd hh:mm'))
-                    this.volumes.push(Number(item.base_volume))
+                    this.volumes.push(new Decimal(item.base_volume).add(item.counter_volume))
+                    this.subVolumes.push(Number(item.base_volume),Number(item.counter_volume))
                     this.data.push([Number(item.open), Number(item.close), Number(item.high), Number(item.low), Number(item.base_volume)])
                 })
                 this.opt.xAxis[0].data = this.dates
@@ -546,46 +548,5 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-@require '~@/stylus/color.styl'
-.k
-  width: 100%
-.atitle
-  padding-bottom: 8px
-.price
-  font-size: 24px
-.code
-  font-size: 16px
-.up
-  color: $primarycolor.green
-.down
-  color: $primarycolor.red
-.change
-.rate
-    line-height: 30px
-    vertical-align: bottom
-.label
-  color: $secondarycolor.font
-  padding-left: 2px
-  padding-right: 2px
-.values
-  font-size: 14px
-
-.btn-fullscreen
-    position: absolute
-    right: 12px
-    z-index: 9
-    .material-icons
-        color: $primarycolor.green
-.chgresolution
-    padding-top: 8px
-    padding-bottom: 5px
-    color: $secondarycolor.font
-    .active
-        color: $primarycolor.green
-.material-icons.k-icon
-    color: $primarycolor.green
-.title-btn-div
-  line-height: 60px
-.divinline
-  display: inherit
+@require './K.styl'
 </style>
