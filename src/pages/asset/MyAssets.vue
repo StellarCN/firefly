@@ -82,7 +82,7 @@
       <card padding="0px 0px" margin="0px 0px" class="myassets_infocard_thirdassets">
         <div class="assets" slot="card-content">
           <div class="assets-row" v-for="item in assets" :key="item.issuer+item.code">
-            <v-layout class="myassets-li third-li" row wrap v-swiper=3 @click.stop="toAsset(item)">
+            <v-layout class="myassets-li third-li " row wrap v-swiper=3 @click.stop="toAsset(item)">
             <v-flex xs4 class="myassets-wrapper">
               <div class="myassets">
                 <div class="myassets-name">{{item.code}}</div>
@@ -99,7 +99,7 @@
               </div>
             </v-flex>
           </v-layout>
-          <div class="operate-box">
+          <div class="myassets-operate-box">
             <div class="del" @click.stop="del(item)">{{$t('Delete')}}</div>
             <div class="send"@click.stop="send(item)">{{$t('Send')}}</div>
             <div class="receive" @click.stop="receive(item)">{{$t('Receive')}}</div>

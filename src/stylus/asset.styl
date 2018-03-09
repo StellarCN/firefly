@@ -16,7 +16,7 @@
     padding: 5px 5px
     border-radius: 5px 5px 5px 5px
     background: $secondarycolor.gray
-  
+    
     width: 100%
     
     .myassets-wrapper
@@ -62,12 +62,38 @@
     align-items: center
     background-color: $secondarycolor.green
     color: $primarycolor.font
-    padding: 0 12px
+    padding: 0 1px
   .receive
     border-left: 1px solid $secondarycolor.gray
   .del
     background-color: $secondarycolor.red
     border-right: 1px solid $secondarycolor.gray
+
+.myassets-operate-box 
+  position: absolute
+  z-index: 1
+  height: 100%
+  right: 0
+  top: 0
+  display: flex
+  .send
+  .receive
+  .del
+    display: flex
+    justify-content: center
+    align-items: center
+    // background-color: $secondarycolor.green
+    color: $primarycolor.font
+    padding: 0 12px
+  .receive
+    // border-left: 1px solid $secondarycolor.gray
+    color:$primarycolor.green
+  .del
+    // background-color: $secondarycolor.red
+    // border-right: 1px solid $secondarycolor.gray
+    color:$primarycolor.red
+  .send
+    color:$primarycolor.green
 
 //=== asset page==
 
