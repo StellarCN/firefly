@@ -43,8 +43,8 @@
            <v-flex xs6 class="guidepage_bottombutton" @click="slideprv">{{$t("LastStep")}}</v-flex>
            <!-- <v-flex xs6 class="guidepage_bottombutton" v-if="get_progresscount!=1" @click="slidenext" >{{$t("NextStep")}}</v-flex>
            <v-flex xs6 class="guidepage_bottombutton"  v-if="get_progresscount==1" @click="toWallet" >{{$t("AllRight")}}</v-flex> -->
-           <v-flex xs6 class="guidepage_bottombutton"  v-if="this.progress_count!=1" @click="slidenext" >{{$t("NextStep")}}</v-flex>
-           <v-flex xs6 class="guidepage_bottombutton"  v-if="this.progress_count==1" @click="toWallet" >{{$t("AllRight")}}</v-flex>
+           <v-flex xs6 class="guidepage_bottombutton"  v-if="progress_count < 1" @click="slidenext" >{{$t("NextStep")}}</v-flex>
+           <v-flex xs6 class="guidepage_bottombutton"  v-else @click="toWallet" >{{$t("AllRight")}}</v-flex>
            </v-layout>
        </div>
         <!-- <div class="test">
@@ -59,12 +59,10 @@ import Toolbar from '@/components/Toolbar'
 import Card from '@/components/Card'
 
 import Vue from 'vue'
-import VueAwesomeSwiper from 'vue-awesome-swiper'
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 // require styles
 import 'swiper/dist/css/swiper.css'
  
-Vue.use(VueAwesomeSwiper, /* { default global options } */)
 
 export default {
 
@@ -74,7 +72,6 @@ export default {
             showbackicon: true,
             showmenuicon: false,
             progress_count:0,
-            input_value:'',
 
             swiperOption: {
                 // NotNextTick is a component's own property, and if notNextTick is set to true, the component will not instantiate the swiper through NextTick, which means you can get the swiper object the first time (if you need to use the get swiper object to do what Things, then this property must be true)
@@ -97,14 +94,18 @@ export default {
                 // scrollbar:'.swiper-scrollbar',
                 mousewheelControl : true,
                 observeParents:true,
+                onTransitionEnd:(value)=>{
+                    // console.log(this.progress_count+'----'+value)
+                    // console.log(value.progress)
+                    this.progress_count = value.progress
+                }
                 // if you need use plugins in the swiper, you can config in here like this
                 // 如果自行设计了插件，那么插件的一些配置相关参数，也应该出现在这个对象中，如下debugger
                 // debugger: true,
                 // swiper callbacks
                 // swiper的各种回调函数也可以出现在这个对象中，和swiper官方一样
-                // onTransitionStart(swiper){
-                //   console.log(swiper)
-                // },
+               
+                
                 // more Swiper configs and callbacks...
                 // ...
                 }
@@ -136,6 +137,18 @@ export default {
         },
         retprogress_count(){
             this.progress_count = this.swiper.progress
+        },
+         onTransitionStart(swiper){
+            console.log(swiper.progress)
+            if(swiper.progress==1){
+            //   console.log(this.progress_count)
+            //   console.log("++++++"+this.progress_count)
+            this.progress_count=1
+            console.log("----"+this.progress_count)
+            }
+        },
+        last_progress(){
+            return this.$refs.mySwiper.swiper.progress === 1
         }
         // progress_count() {
         //     console.log(this.swiper.progress)
@@ -143,25 +156,13 @@ export default {
         //     return false
         // },
       
-
     },
     computed : {
         swiper() {
+            console.log('--------s--')
         return this.$refs.mySwiper.swiper
-      },
-        // swiper: function(){
-        //     return this.$refs.mySwiper.swiper
-        // },
-        // get_progresscount: function(){
-          
-        //     this.progresscount =2
-        //     return this.progresscount
-            
-        //     }
-        
-      
-      
-    },
+      }
+    } ,   
     watch : {
         input_value : function(newValue,oldValue){
             if(newValue==10){
@@ -177,8 +178,14 @@ export default {
     mounted() {
       // current swiper instance
       // 然后你就可以使用当前上下文内的swiper对象去做你想做的事了
-      console.log('this is current swiper instance object', this.swiper)
+    //   console.log('this is current swiper instance object', this.swiper)
       this.swiper.slideTo(0, 1000, false)
+      this.$watch(()=>this.$refs.mySwiper.swiper.progress, (value)=>{
+          console.log('---------------value--'+value)
+      })
+      this.swiper.on('click', (value)=>{
+          console.log('-0----------------'+value)
+      })
     },
     components: {
         Toolbar,
