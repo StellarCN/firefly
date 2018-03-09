@@ -391,6 +391,8 @@
   "LastStep":"上一步",
   "AllRight":"明白了",
 
-  "BackedUp":"已备份"
+  "BackedUp":"已备份",
+  "ReceiveAssetMsg":"扫描二维码向我发送"
+  
 
 }

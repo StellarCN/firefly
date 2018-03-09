@@ -402,6 +402,8 @@
   "AllRight":"AllRight",
 
   
-  "BackedUp":"BackedUp"
+  "BackedUp":"BackedUp",
+  "ReceiveAssetMsg":"Scan the QR code to send me"
+  
 
 }
