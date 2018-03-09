@@ -20,7 +20,7 @@
       <div class="label">{{$t('SecretKey')}}</div>
       <div class="value" @click="copy(seed)">{{seed}}</div>
       <div class="qrcode">
-        <qrcode :text="qrtext" :size="200" />
+        <qrcode :text="qrtext" :size="200" color="red"/>
       </div>
       <div class="hint">{{$t('Account.CreateAccountReadyHint')}}</div>
     </div>
@@ -30,11 +30,12 @@
           <span>{{$t('Return')}}</span>
         </v-flex>
         <v-flex xs6 @click="save">
-          <span>{{$t('Finish')}}</span>
+          <span>{{$t('BackedUp')}}</span>
         </v-flex>
        </v-layout>  
     </div>
 
+    <!--
     <v-dialog v-model="dialog" max-width="95%" >
         <v-stepper v-model="guide" dark >
           <v-stepper-header class="guide-header">
@@ -89,7 +90,7 @@
           </v-stepper-items>
         </v-stepper>
     </v-dialog>
-
+    -->
     <v-dialog v-model="coveringDlg" persistent max-width="95%">
       <v-card>
         <v-card-title class="headline">{{$t('Account.WhetherCoverAccount')}}</v-card-title>
@@ -379,6 +380,7 @@ export default {
     word-break: break-all
   .qrcode
     text-align: center
+
 .footer
   position:fixed
   bottom:0
@@ -396,7 +398,7 @@ export default {
 .btn-unavailable
   color:$secondarycolor.green
 .hint
-  color:$secondarycolor.green
+  color:$primarycolor.red
   font-size: 12px
 .headline
   color: $primarycolor.green
