@@ -263,7 +263,6 @@ export default {
       }
     },
     setup(){
-      this.fetchData()
       this.timeInterval = setInterval(()=>{this.fetchData()},DEFAULT_INTERVAL)
       this.$nextTick(function(){
         this.$emit('intervalChanged',this.timeInterval)

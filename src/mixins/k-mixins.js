@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-03-08 15:52:16 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-08 18:07:31
+ * @Last Modified time: 2018-03-09 11:36:11
  * @License MIT 
  */
 
@@ -169,12 +169,13 @@ export default {
                 records = records.reverse()
                 records.forEach(item=>{                   
                     this.dates.push(new Date(item.timestamp).Format('MM-dd hh:mm'))
-                    this.volumes.push(new Decimal(item.base_volume).add(item.counter_volume))
-                    this.subVolumes.push(Number(item.base_volume),Number(item.counter_volume))
+                    this.volumes.push(new Decimal(item.base_volume).add(item.counter_volume).toNumber())
+                    this.subVolumes.push([Number(item.base_volume),Number(item.counter_volume)])
                     this.data.push([Number(item.open), Number(item.close), Number(item.high), Number(item.low), Number(item.base_volume)])
                 })
-                this.macd = indicator.MACD(this.data)
-                this.boll = indicator.BOLL(this.data)
+                let closeData = this.data.map(item=>item[1])
+                this.macd = indicator.MACD(closeData)
+                this.boll = indicator.BOLL(closeData)
                 this.lasttime = end_time
                 //this.opt.xAxis[0].data = this.dates
                 //this.opt.xAxis[1].data = this.dates

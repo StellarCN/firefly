@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-08 19:55:22
+ * @Last Modified time: 2018-03-09 10:46:20
  * @License: MIT 
  */
 <template>
@@ -254,8 +254,8 @@ export default {
                 records = records.reverse()
                 records.forEach(item=>{                   
                     this.dates.push(new Date(item.timestamp).Format('MM-dd hh:mm'))
-                    this.volumes.push(new Decimal(item.base_volume).add(item.counter_volume))
-                    this.subVolumes.push(Number(item.base_volume),Number(item.counter_volume))
+                    this.volumes.push(new Decimal(item.base_volume).add(item.counter_volume).toNumber())
+                    this.subVolumes.push([Number(item.base_volume),Number(item.counter_volume)])
                     this.data.push([Number(item.open), Number(item.close), Number(item.high), Number(item.low), Number(item.base_volume)])
                 })
                 this.opt.xAxis[0].data = this.dates
@@ -410,10 +410,13 @@ export default {
                     yAxisIndex: 1,
                     itemStyle: {
                         normal: {
-                            color: '#7fbe9e'
-                        },
-                        emphasis: {
-                            color: '#140'
+                            color: (params)=>{
+                                let obj = this.subVolumes[params.dataIndex]
+                                if(obj && obj[0] > obj[1]){
+                                    return "#733520"
+                                }
+                                return '#216549'
+                            }
                         }
                     },
                     data: this.volumes

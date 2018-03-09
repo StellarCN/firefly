@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-08 19:53:50
+ * @Last Modified time: 2018-03-09 17:16:08
  * @License: MIT 
  */
 <template>
@@ -42,7 +42,7 @@
          
       </div>
              
-      <div class="kgraph" :id="id" v-bind:style="{height: height}"></div>
+      <div class="kgraph" :id="id" v-bind:style="{height: height+'px'}"></div>
       <div class="flex-row textcenter chgresolution">
           <div :class="'flex1 ' + (resolution_key === 'week' ? 'active' : '')" @click="chgResolution('week')">{{$t('week')}}</div>
           <div :class="'flex1 ' + (resolution_key === 'day' ? 'active' : '')" @click="chgResolution('day')">{{$t('day')}}</div>
@@ -74,7 +74,13 @@ export default {
     mixins: [orderbookMixins, kmixins],
     data(){
         return {
-           height: '360px',
+           height: 290,//默认的K张图完整高度
+           topH: 71,//底部工具条的高度
+           blank: 30,//图中的空白
+           kH: 120, //K线图高度
+           vH: 40,//交易量高度
+           mH: 40,//macd图的高度
+           toolH: 37,//底部切换区间的工具条的高度
         }
     },
     computed: {
@@ -87,6 +93,15 @@ export default {
       screen.orientation.lock('portrait');        
     },
     mounted () {
+      let clientH = document.documentElement.clientHeight
+      let allkH = new Decimal(clientH).minus(this.topH).minus(this.toolH)
+      let h = this.height - this.blank*3
+      let allkHB = allkH.minus(this.blank*3)
+      this.kH = allkHB.times(this.kH).div(h).toNumber()
+      this.vH = allkHB.times(this.vH).div(h).toNumber()
+      this.mH = allkHB.times(this.mH).div(h).toNumber()
+      this.height = allkH.toNumber()
+
         this.$nextTick(()=>{
            //加载界面
           this.initView()
@@ -131,7 +146,9 @@ export default {
                 color: this.colors,
                 backgroundColor: "#212122",
               //  title: {left: 'center', text: this.base.code + '/' + this.counter.code },
-                legend: { show: false, top: 30,data: ['分时', 'MA5', 'MA10']},
+                legend: { show: true, top: 2,data: ['MA5', 'MA10','BollUpper','BollMid','BollLower'], textStyle: {
+                  color: "#777"
+                }, inactiveColor: '#555'},
                 tooltip: {
                     triggerOn: 'none',
                     transitionDuration: 0,
@@ -151,11 +168,9 @@ export default {
                 },
                 dataZoom: [{
                     type: 'inside',
-                    xAxisIndex: [0, 1],
-                    start: 0,
-                    end: 100,
-                    top: 10,
-                    height: 20
+                    xAxisIndex: [0, 1, 2],
+                    start: 50,
+                    end: 100
                 }],
                 xAxis: [{
                     type: 'category',
@@ -189,6 +204,25 @@ export default {
                         triggerTooltip: true,
                         handle: {show: false,margin: 30,color: '#B80C00'}
                     }
+                }, {
+                    type: 'category',
+                    gridIndex: 2,
+                    data: this.dates,
+                    scale: true,
+                    boundaryGap : false,
+                    splitLine: {show: false},
+                    axisLabel: {show: false},
+                    axisTick: {show: false},
+                    axisLine: { lineStyle: { color: '#777' } },
+                    splitNumber: 20,
+                    min: 'dataMin',
+                    max: 'dataMax',
+                    axisPointer: {
+                        type: 'shadow',
+                        label: {show: false},
+                        triggerTooltip: true,
+                        handle: {show: false,margin: 30,color: '#B80C00'}
+                    }
                 }],
                 yAxis: [{
                     scale: true,
@@ -204,47 +238,39 @@ export default {
                     scale: true,
                     gridIndex: 1,
                     splitNumber: 2,
-                    axisLabel: {show: false},
-                    axisLine: {show: false},
+                    axisLabel: { inside: true,
+                        formatter: '{value}\n'},
+                    axisLine: {show: true,lineStyle: { color: '#777' }},
                     axisTick: {show: false},
                     splitLine: {show: false}
+                }, {
+                    scale: true,
+                    gridIndex: 2,
+                    splitNumber: 4,
+                    axisLine: {onZero: true,lineStyle: { color: '#777' }},
+                    axisTick: {show: false},
+                    splitLine: {show: false},
+                    axisLabel: { inside: true,
+                        formatter: '{value}\n'}
                 }],
                 grid: [{
                     left: 0,
                     right: 0,
-                    top: 30,//110,
-                    height: 120,
+                    top: this.blank,
+                    height: this.kH,
                     bottom: 0
                 }, {
                     left: 0,
                     right: 0,
-                    height: 40,
-                    top: 180,//260
+                    height: this.vH,
+                    top: this.blank*2+this.kH,
                     bottom: 0
                 }, {
                     left: 0,
                     right: 0,
-                    height: 40,
-                    top: 280,//260
+                    height: this.mH,
+                    top: this.blank*3+this.kH+this.vH,
                     bottom: 0
-                }],
-                graphic: [{
-                    type: 'group',
-                    left: 'center',
-                    top: 70,
-                    width: 300,
-                    bounding: 'raw',
-                    children: [{
-                        id: 'MA5',
-                        type: 'text',
-                        style: {fill: this.colors[1]},
-                        left: 0
-                    }, {
-                        id: 'MA10',
-                        type: 'text',
-                        style: {fill: this.colors[2]},
-                        left: 'center'
-                    }]
                 }],
                 series: [{
                     name: 'Volume',
@@ -253,10 +279,13 @@ export default {
                     yAxisIndex: 1,
                     itemStyle: {
                         normal: {
-                            color: '#7fbe9e'
-                        },
-                        emphasis: {
-                            color: '#140'
+                          color: (params)=>{
+                            let obj = this.subVolumes[params.dataIndex]
+                            if(obj && obj[0] > obj[1]){
+                                return "#733520"
+                            }
+                            return '#216549'
+                          }
                         }
                     },
                     data: this.volumes
@@ -346,8 +375,8 @@ export default {
                 {
                   name: 'MACD',
                   type: 'bar',
-                  xAxisIndex:1,
-                  yAxisIndex: 1,
+                  xAxisIndex: 2,
+                  yAxisIndex: 2,
                   data: this.macd.bars,
                   itemStyle: {
                   normal: {
@@ -365,14 +394,14 @@ export default {
                 },{
                     name: 'DIF',
                     type: 'line',
-                    xAxisIndex: 1,
-                    yAxisIndex: 1,
+                    xAxisIndex: 2,
+                    yAxisIndex: 2,
                     data: this.macd.diffs
                 },{
                     name: 'DEA',
                     type: 'line',
-                    xAxisIndex: 1,
-                    yAxisIndex: 1,
+                    xAxisIndex: 2,
+                    yAxisIndex: 2,
                     data: this.macd.deas
                 }
                 // macd end===
