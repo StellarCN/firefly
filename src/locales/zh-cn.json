@@ -52,7 +52,7 @@
   "Account.AccountName":"账户名称",
   "Account.Password":"密码",
   "Account.ConfirmPassword":"确认密码",
-  "Account.CreateAccountHint":"此密码为账户密钥加密密码，丢失后无法找回，请妥善保存！",
+  "Account.CreateAccountHint":"交易密码为账户密钥加密密码，丢失后无法找回，请妥善保存！",
   "Account.CreateAccountReadyHint":"以上为账户重要信息，遗失后无法找回并造成钱包内资产遗失。请勿与他人分享，妥善保管并备份！",
   "Account.CreateAccountSuccess":"账户创建成功!",
   "Account.CreateAccountError":"账户创建失败！",

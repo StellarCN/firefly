@@ -78,7 +78,7 @@ export default {
             this.$router.back()
             },
         isChosed(item){
-            if(item.key === this.app.locale.key){
+            if(item && this.app.locale && item.key === this.app.locale.key){
                 return true
             }
             return false
@@ -111,13 +111,14 @@ export default {
   background: $primarycolor.gray
   color: $primarycolor.font
   font-size: 16px
-  .content
+  height:100%
+.content
     padding : 7px 7px
     background: $primarycolor.gray
-    
+    height:88%
     .mycard
         background:$secondarycolor.gray
-        height:550px
+        height:100% 
       .card-content
         .lang
           padding-top: 10px
@@ -132,8 +133,12 @@ export default {
               color: $primarycolor.green
 
 .bottom_start
-    padding-top:5px
+    position:absolute
+    height:10%
+    margin-bottom:0px
     text-align:center
+    // background:$primarycolor.green
+    width:100%
 
 .iconfont_style_color
     color:$primarycolor.green

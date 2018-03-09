@@ -1,10 +1,6 @@
 <template>
   <div class="page">
-      <toolbar :title="$t(title)" 
-      :showmenuicon="showmenuicon" 
-      :showbackicon="showbackicon"
-      @goback="back"
-      />
+ 
       <div  class="guidepage_swiper">
        
         <swiper :options="swiperOption" ref="mySwiper">
@@ -45,11 +41,16 @@
        <div>
            <v-layout>
            <v-flex xs6 class="guidepage_bottombutton" @click="slideprv">{{$t("LastStep")}}</v-flex>
-           <v-flex xs6 class="guidepage_bottombutton" v-if="this.progress_count!=1" @click="slidenext" >{{$t("NextStep")}}</v-flex>
+           <!-- <v-flex xs6 class="guidepage_bottombutton" v-if="get_progresscount!=1" @click="slidenext" >{{$t("NextStep")}}</v-flex>
+           <v-flex xs6 class="guidepage_bottombutton"  v-if="get_progresscount==1" @click="toWallet" >{{$t("AllRight")}}</v-flex> -->
+           <v-flex xs6 class="guidepage_bottombutton"  v-if="this.progress_count!=1" @click="slidenext" >{{$t("NextStep")}}</v-flex>
            <v-flex xs6 class="guidepage_bottombutton"  v-if="this.progress_count==1" @click="toWallet" >{{$t("AllRight")}}</v-flex>
            </v-layout>
        </div>
- 
+        <!-- <div class="test">
+            
+            <input class="test_input" v-model="progress_count">&nbsp;&nbsp;&nbsp;<span>{{progress_count}}</span>
+        </div> -->
   </div>
 </template>
 
@@ -73,6 +74,7 @@ export default {
             showbackicon: true,
             showmenuicon: false,
             progress_count:0,
+            input_value:'',
 
             swiperOption: {
                 // NotNextTick is a component's own property, and if notNextTick is set to true, the component will not instantiate the swiper through NextTick, which means you can get the swiper object the first time (if you need to use the get swiper object to do what Things, then this property must be true)
@@ -132,6 +134,9 @@ export default {
             // }
             // console.log("this.progress_count  "+this.progress_count)
         },
+        retprogress_count(){
+            this.progress_count = this.swiper.progress
+        }
         // progress_count() {
         //     console.log(this.swiper.progress)
         //     // return this.$refs.mySwiper.swiper.progress
@@ -144,12 +149,29 @@ export default {
         swiper() {
         return this.$refs.mySwiper.swiper
       },
-   
+        // swiper: function(){
+        //     return this.$refs.mySwiper.swiper
+        // },
+        // get_progresscount: function(){
+          
+        //     this.progresscount =2
+        //     return this.progresscount
+            
+        //     }
         
       
       
     },
     watch : {
+        input_value : function(newValue,oldValue){
+            if(newValue==10){
+            this.progress_count=1;
+            }
+            },
+
+        progress : function(newValue,oldValue){
+            this.retprogress_count()
+        }
         
     },
     mounted() {
@@ -172,11 +194,12 @@ export default {
 .page
   background: $primarycolor.gray
   color: $primarycolor.font
-  font-size: 16px   
+  font-size: 16px 
+  height:100%  
 
 .guidepage_swiper
     border-radius:5px
-    height:550px
+    height:90%
     margin:10px 10px
     padding:5px 5px
     background:$secondarycolor.gray
@@ -210,4 +233,12 @@ export default {
     padding-top:5px
     text-align:center
 
+
+.test
+    color:$primarycolor.green
+    background-color:white
+    text-align:center
+
+.test_input
+    border:2px solid red
 </style>
