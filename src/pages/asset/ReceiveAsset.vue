@@ -45,6 +45,18 @@
               :suffix="selectedasset.code"
               type="Number"
             ></v-text-field>
+            <div class="receive_asset_msg_one">
+                <span>{{$t("Available")}}</span> 
+                <span>{{selectedasset.code}}:</span>               
+                <span>{{selectedasset.balance}}</span>
+
+            </div>
+            <div class="receive_asset_msg">
+              <span>{{$t("ReceiveAssetMsg")}}</span><br/>
+              <span>{{num}}&nbsp;</span>
+              <span>{{selectedasset.code}}</span>
+              
+            </div>
             <div class="qrcode">
               <qrcode :text="qrtext" :callback="qrcodecallback"/>
             </div>
@@ -75,6 +87,7 @@ import { mapState, mapActions, mapGetters} from 'vuex'
 import { isNativeAsset } from '@/api/assets'
 
 export default {
+  
   data(){
     return {
       title: 'Receive',
@@ -84,6 +97,7 @@ export default {
       num:null,
       qrcodebase64:null,
       assetChoseReturnObject: true,
+
 
     }
   },
@@ -120,6 +134,7 @@ export default {
   },
   mounted(){
     this.selectedasset = this.asset
+          // console.log(this.selectedasset)
   },
   methods: {
     ...mapActions({
@@ -240,5 +255,12 @@ export default {
 //   color:$primarycolor.green
 .qrcode
   text-align: center
+
+.receive_asset_msg
+  text-align:center
+  color:$primarycolor.green
+
+.receive_asset_msg_one
+  color:$secondarycolor.font
 </style>
 

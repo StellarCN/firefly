@@ -82,7 +82,7 @@
       <card padding="0px 0px" margin="0px 0px" class="myassets_infocard_thirdassets">
         <div class="assets" slot="card-content">
           <div class="assets-row" v-for="item in assets" :key="item.issuer+item.code">
-            <v-layout class="myassets-li third-li" row wrap v-swiper=3 @click.stop="toAsset(item)">
+            <v-layout class="myassets-li third-li " row wrap v-swiper=3 @click.stop="toAsset(item)">
             <v-flex xs4 class="myassets-wrapper">
               <div class="myassets">
                 <div class="myassets-name">{{item.code}}</div>
@@ -99,7 +99,7 @@
               </div>
             </v-flex>
           </v-layout>
-          <div class="operate-box">
+          <div class="myassets-operate-box">
             <div class="del" @click.stop="del(item)">{{$t('Delete')}}</div>
             <div class="send"@click.stop="send(item)">{{$t('Send')}}</div>
             <div class="receive" @click.stop="receive(item)">{{$t('Receive')}}</div>
@@ -175,19 +175,22 @@ export default {
       let data = 0;
       for (var i = 0; i < this.balances.length; i++) {
         //  data=data+this.balances[i].balance
-        console.log(this.price);
+        // console.log(this.price);
         for (var j = 0; j < this.price.length; j++) {
         // for (var j = 0; j < this.price.length; j++) {
           if (
             this.price[j].code === this.balances[i].code &&
             this.price[j].issuer === this.balances[i].issuer
           ) {
+            console.log(this.price[j].price)
+            console.log(this.balances[i].balance)
+            console.log(this.balances)
+            console.log(this.price)
             data =
-              Number(this.price[j].price) * this.balances[i].balance + data;
+              Number(this.price[j].price)*this.balances[i].balance + data;
           }
         }
       }
-
       return data;
     },
 
