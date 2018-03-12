@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-09 17:16:08
+ * @Last Modified time: 2018-03-12 17:27:28
  * @License: MIT 
  */
 <template>
@@ -42,7 +42,7 @@
          
       </div>
              
-      <div class="kgraph" :id="id" v-bind:style="{height: height+'px'}"></div>
+      <div class="kgraph" :id="id" v-bind:style="{height: height+'px', width: width+'px'}"></div>
       <div class="flex-row textcenter chgresolution">
           <div :class="'flex1 ' + (resolution_key === 'week' ? 'active' : '')" @click="chgResolution('week')">{{$t('week')}}</div>
           <div :class="'flex1 ' + (resolution_key === 'day' ? 'active' : '')" @click="chgResolution('day')">{{$t('day')}}</div>
@@ -75,6 +75,7 @@ export default {
     data(){
         return {
            height: 290,//默认的K张图完整高度
+           width: 100,//K张图宽度
            topH: 71,//底部工具条的高度
            blank: 30,//图中的空白
            kH: 120, //K线图高度
@@ -94,6 +95,7 @@ export default {
     },
     mounted () {
       let clientH = document.documentElement.clientHeight
+      this.width = document.documentElement.clientWidth
       let allkH = new Decimal(clientH).minus(this.topH).minus(this.toolH)
       let h = this.height - this.blank*3
       let allkHB = allkH.minus(this.blank*3)
@@ -254,20 +256,20 @@ export default {
                         formatter: '{value}\n'}
                 }],
                 grid: [{
-                    left: 0,
-                    right: 0,
+                    left: 5,
+                    right: 5,
                     top: this.blank,
                     height: this.kH,
                     bottom: 0
                 }, {
-                    left: 0,
-                    right: 0,
+                    left: 5,
+                    right: 5,
                     height: this.vH,
                     top: this.blank*2+this.kH,
                     bottom: 0
                 }, {
-                    left: 0,
-                    right: 0,
+                    left: 5,
+                    right: 5,
                     height: this.mH,
                     top: this.blank*3+this.kH+this.vH,
                     bottom: 0
