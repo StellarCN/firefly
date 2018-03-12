@@ -218,7 +218,8 @@ export default {
 <style lang="stylus" scoped>
 @require '~@/stylus/color.styl'
 .card-content
-  padding: 8px 8px
+  padding: 8px 8px 0px 8px
+  background-color:$secondarycolor.gray
   .label
     font-size: 14px
     color: $secondarycolor.font
@@ -255,6 +256,8 @@ export default {
 //   color:$primarycolor.green
 .qrcode
   text-align: center
+  padding-top:20px
+  padding-bottom:20px
 
 .receive_asset_msg
   text-align:center

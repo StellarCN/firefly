@@ -20,7 +20,7 @@
             </v-text-field>
             <div class="contracts-list">
                <div class="contacts-row" v-for="contact in filteredContacts" :key="contact.id">
-                <v-layout class="mycontacts-li third-li" row wrap v-swiper=3 @click.stop="toContactDetail(contact.id)">
+                <v-layout class="mycontacts-li third-li" row wrap v-swiper=2.2 @click.stop="toContactDetail(contact.id)">
                   <v-flex xs2 class="mycontacts-wrapper">
                     <v-avatar :tile=false class="grey darken-4 contact-avatar">
                       <i class="avatar iconfont icon-erweima"></i>
@@ -33,10 +33,10 @@
                     <div class="contact-address grey--text text--darken-1">{{contact.address|miniaddress}}</div>
                   </v-flex>
                 </v-layout>
-                <div class="operate-box">
+                <div class="operate-box" >
                   <div class="del"     @click.stop="del(contact)"    >{{$t('Delete')}} </div>
-                  <div class="send"    @click.stop="sendto(contact)"   >{{$t('Send')}}   </div>
                   <div class="receive" @click.stop="toModifyContact(contact.id)">{{$t('Modify')}}</div>
+                  <div class="send"    @click.stop="sendto(contact)"   >{{$t('Send')}}   </div>
                 </div>
               </div>
             </div>
@@ -147,13 +147,20 @@ export default {
 .contacts
   overflow: hidden
   position: relative
+
   .search
     padding-bottom 25px
     padding 15px 15px 15px 15px
+    background-color:$secondarycolor.gray
+    border-radius:5px
+    
+   
   .contacts-row
     overflow: hidden
     position: relative
     border-bottom: 1px solid $secondarycolor.font
+    background-color:$primarycolor.gray
+    border-radius:5px
     &:last-child
       border-bottom: 0px
     .mycontacts-li
@@ -163,6 +170,7 @@ export default {
       background: $secondarycolor.gray
       width: 100%
       min-height 45px
+      border-radius:5px
       .mycontacts-wrapper
         font-size: 16px
         display flex
@@ -210,19 +218,23 @@ export default {
     display: flex
     justify-content: center
     align-items: center
-    background-color: $secondarycolor.green
-    color: $primarycolor.font
+    background-color: $primarycolor.gray
+    // background-color: $secondarycolor.green
+    color: $primarycolor.green
     padding: 0 12px
   .receive
-    border-left: 1px solid $secondarycolor.gray
+    // border-left: 1px solid $secondarycolor.gray
+    color:$primarycolor.green
   .del
-    background-color: $secondarycolor.red
-    border-right: 1px solid $secondarycolor.gray
+    background-color: $primarycolor.gray
+    color:$primarycolor.red
+    // background-color: $secondarycolor.red
+    // border-right: 1px solid $secondarycolor.gray
 .contact-avatar
   min-width 42px
   min-height 42px
 .contracts-list
-  padding-left:15px
-  padding-right: 15px
+  border-radius:5px
+
 </style>
 

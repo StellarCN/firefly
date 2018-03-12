@@ -392,7 +392,10 @@
   "AllRight":"明白了",
 
   "BackedUp":"已备份",
-  "ReceiveAssetMsg":"扫描二维码向我发送"
+  "ReceiveAssetMsg":"扫描二维码向我发送",
+  "Change":"切换",
+  "MyAccount":"我的账户",
+  "MemoBook.MyAddress":"地址簿"
   
 
 }

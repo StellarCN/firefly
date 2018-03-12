@@ -17,11 +17,11 @@
 
     </toolbar>
     <div class="content">
-      <card padding="10px 10px" class="mycard">
+      <card class="mycard">
         <div class="card-content" slot="card-content">
           <div class="account-row"  v-for="(item,index) in accounts" :key="index" @click.stop="info(item)">
             
-            <v-layout class="account-wrapper" row wrap v-swiper=1 >
+            <v-layout class="account-wrapper" row wrap v-swiper=2.2 >
               <v-flex xs2>
                 <div class="avatar">
                   <i class="iconfont icon-erweima"></i>
@@ -40,6 +40,8 @@
 
             <div class="operate-box">
               <div class="del" @click.stop="del(item,index)">{{$t('Delete')}}</div>
+              <div class="modify" @click.stop="modify(item.address)">{{$t('Modify')}}</div>
+              <div class="change" @click.stop="del(item,index)">{{$t('Change')}}</div>
             </div>
             
           </div>
@@ -128,6 +130,9 @@ export default {
       getPayments: 'getPayments',
 
     }),
+    modify(){
+      this.$router.push({name:'ModifyAccount'})
+    },
     back(){
       this.$router.back()
     },
@@ -170,7 +175,7 @@ export default {
                 for(var i=0,n=doms.length;i<n;i++){
                   let element = doms[i]
                   element.style.transition = "0.3s"
-                  element.style.marginLeft = 0 + "px"
+                  element.style.marginLeft = 240 + "px"
                 }
               }catch(error){
                 console.error(error)
@@ -261,11 +266,15 @@ export default {
     font-size: 36px
 .card-content
   overflow: hidden
-  background: $secondarycolor.gray
+  background: $primarycolor.gray
+  
 .account-row
   overflow: hidden
   position: relative
   border-bottom: 1px solid $secondarycolor.font
+  border-radius:5px
+  
+  
 .account-row:last-child
   border-bottom: 0px
 .account-wrapper
@@ -276,6 +285,7 @@ export default {
   padding-top: 5px
   padding-bottom: 5px
   background: $secondarycolor.gray
+  padding-left:5px
   .avatar
     width: 40px
     height: 40px
@@ -314,14 +324,30 @@ export default {
   right: 0
   top: 0
   display: flex
+  .change
+  .modify
   .del
     display: flex
     justify-content: center
     align-items: center
-    color: $primarycolor.font
+    background-color: $primarycolor.gray
+    // background-color: $secondarycolor.green
+    color: $primarycolor.green
     padding: 0 12px
-    background-color: $secondarycolor.red
-    border-right: 1px solid $secondarycolor.gray
+  .modify
+    // border-left: 1px solid $secondarycolor.gray
+    color:$primarycolor.green
+  .del
+    background-color: $primarycolor.gray
+    color:$primarycolor.red
+  // .del
+  //   display: flex
+  //   justify-content: center
+  //   align-items: center
+  //   color: $primarycolor.font
+  //   padding: 0 12px
+  //   background-color: $secondarycolor.red
+  //   border-right: 1px solid $secondarycolor.gray
 .pwdSheetWrapper
   background: $secondarycolor.gray
   height: 140px
@@ -340,6 +366,8 @@ export default {
   .sheet-btn
     flex: 1
     text-align: center
-  
+.mycard
+  padding:0px 0px
+ 
 </style>
 
