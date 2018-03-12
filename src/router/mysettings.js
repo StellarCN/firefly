@@ -1,15 +1,17 @@
+import SettingParent from '@/pages/settings/SettingParent.vue'
+import My from '@/pages/settings/My.vue'
 
 // 『我的』路由
 export default {
     path:'/mysettings/',
     name: 'MySettings',
-    component: resolve => require(['../pages/settings/SettingParent.vue'], resolve),
+    component: SettingParent,
     redirect: { name: 'My' },
     children: [
       {
         path: 'my',
         name: 'My',
-        component: resolve => require(['../pages/settings/My.vue'], resolve)
+        component: My
       },
       {
         path: 'settings',

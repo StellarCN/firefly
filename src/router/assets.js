@@ -1,14 +1,17 @@
+import AssetParent from '@/pages/asset/AssetParent.vue'
+import MyAssets from '@/pages/asset/MyAssets.vue'
+
 export default {
     path: '/assets/',
     name: 'Assets',
-    component: resolve => require(['../pages/asset/AssetParent.vue'], resolve),
+    component: AssetParent,
     redirect: { name: 'MyAssets' },
     children: [
       
       {
         path: 'my',
         name: 'MyAssets',
-        component: resolve => require(['../pages/asset/MyAssets.vue'], resolve)
+        component: MyAssets
       },
       {
         path: 'info',
