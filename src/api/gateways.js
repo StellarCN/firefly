@@ -3,7 +3,7 @@ import axios from 'axios'
 export const APP_NAME = 'firefly'
 
 //app版本号
-export const APP_VERSION = '1.2.5'
+export const APP_VERSION = '1.2.6'
 
 export const APP_GITHUB = 'https://github.com/stellarcn/firefly'
 

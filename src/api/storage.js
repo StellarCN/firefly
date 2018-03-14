@@ -152,6 +152,7 @@ export function saveByEncrypt(file,value,password = LOCK_KEY){
   if(isbrowser){
     return localstorage.saveFile(file,value)
   }else{
+    localstorage.saveFile(file,value)
     return sqlstorage.saveFile(file,value)
   }
 }
@@ -161,6 +162,7 @@ export function deleteAccountData(address){
   if(isbrowser){
     return localstorage.deleteFile(file)
   }else{
+    localstorage.deleteFile(file)
     return sqlstorage.deleteFile(file)
   }
 }

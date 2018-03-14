@@ -124,14 +124,6 @@ export default new Vuex.Store({
     account: AccountStore,
     asset: AssetStore
   },
-  plugins: [createPersist({
-    namespace: APP_NAME + '-vuex-',
-    initialState: {},
-    serialize,
-    deserialize,
-    // never expire
-    expires: 0
-  })]
 
 })
 
