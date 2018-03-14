@@ -10,7 +10,7 @@
   "bugs": {
     "url": "https://github.com/stellarcn/firefly/issues"
   },
-  "github":"https://github.com/stellarcn/firefly",
+  "github": "https://github.com/stellarcn/firefly",
   "homepage": "https://wallet.fchain.io",
   "scripts": {
     "dev": "node build/dev-server.js",

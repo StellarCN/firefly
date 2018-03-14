@@ -203,7 +203,6 @@ export default {
     onAppPause() {
       this.showFuzzyView = true
       this.pauseStart = new Date().getTime();
-      console.log("-------------on pause ------" + this.pauseStart);
     },
     onAppResume() {
       this.showFuzzyView = false

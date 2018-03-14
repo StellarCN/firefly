@@ -104,17 +104,12 @@
 
     <!-- 密钥输入窗口 -->
     <v-dialog class="si-dlg" v-model="seedInputDlgShow" persistent max-width="95%"  fullscreen transition="dialog-bottom-transition" :overlay=false>
-      <toolbar :title="$t(title)" :showbackicon="showbackicon">
-        <div class="si-text" slot="right-tool"  @click="showSkipDlg = true">
-          {{$t('Account.Skip')}}
-        </div>
-      </toolbar>
+      <toolbar :title="$t(title)" :showbackicon="showbackicon"></toolbar>
       
       <div class="si-bg">
 
         <div class="si-card">
           <div class="headline">{{$t('Account.InputSecretKey')}}</div>
-         
           <v-layout wrap>
             <v-flex xs12 sm6 md4>
               <secret-key-input ref="secretkeyRef"></secret-key-input>
@@ -410,6 +405,10 @@ export default {
       closeStreams()
       initStreams(this.address)
       this.$router.push({name:'MyAssets'})
+    },
+    skipValidSecretKey(){
+      this.showSkipDlg  = false
+      this.doSave()
     }
 
   },
