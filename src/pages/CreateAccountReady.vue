@@ -104,7 +104,11 @@
 
     <!-- 密钥输入窗口 -->
     <v-dialog class="si-dlg" v-model="seedInputDlgShow" persistent max-width="95%"  fullscreen transition="dialog-bottom-transition" :overlay=false>
-      <toolbar :title="$t(title)" :showbackicon="showbackicon"></toolbar>
+      <toolbar :title="$t(title)" :showbackicon="showbackicon">
+        <div class="si-text" slot="right-tool"  @click="showSkipDlg = true">
+          {{$t('Account.Skip')}}
+        </div>
+      </toolbar>
       
       <div class="si-bg">
 
@@ -128,7 +132,7 @@
     <!-- 是否跳过验证窗口 -->
     <v-dialog v-model="showSkipDlg" max-width="95%" persistent>
       <card padding="20px 10px">
-        <div class="card-content" slot="card-content">
+        <div class="card-content dlg-content" slot="card-content">
           <div class="avatar-div textcenter">
             <v-avatar>
               <img src="../assets/img/ff-red.png" />
@@ -147,7 +151,7 @@
     <!-- 验证通过窗口 -->
     <v-dialog v-model="showSeedValidDlg" max-width="95%" persistent>
       <card padding="20px 10px">
-        <div class="card-content" slot="card-content">
+        <div class="card-content dlg-content" slot="card-content">
           <div class="avatar-div textcenter">
             <v-avatar>
               <img src="../assets/img/ff-green.png" />
@@ -165,7 +169,7 @@
     <!-- 验证失败窗口 -->
     <v-dialog v-model="showSeedInValidDlg" max-width="95%" persistent>
       <card padding="20px 10px">
-        <div class="card-content" slot="card-content">
+        <div class="card-content dlg-content" slot="card-content">
           <div class="avatar-div textcenter">
             <v-avatar>
               <img src="../assets/img/ff-red.png" />
@@ -301,7 +305,9 @@ export default {
     },
     btnOKSeedInput(){
       
-      this.seedInput = this.$refs.secretkeyRef.seedInput
+      this.seedInput = this.$refs.secretkeyRef.getSeed()
+      console.log(`------${this.seedInput}---`)
+      console.log(`---${this.seed}---`)
       if(this.seed != this.seedInput){
         //this.seedInputErr = 'Error.SeedWrong'
         this.showSeedInValidDlg = true
@@ -530,5 +536,7 @@ export default {
   font-size: 16px
 .dlg-green
   color: $primarycolor.green
+.dlg-content
+  background: $secondarycolor.gray
 </style>
 

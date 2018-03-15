@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-03-05 17:30:09 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-06 18:54:09
+ * @Last Modified time: 2018-03-15 15:34:03
  * @License MIT 
  */
  <template>
@@ -27,7 +27,6 @@
    data(){
      return {
        seedInput: 'S-',
-       originInput: 'S',
        cleaveInstance: null,
        blocks: [1,5,5,5,5,5,5,5,5,5,5,5],
        delimiter: '-',
@@ -75,7 +74,12 @@
             this.blocks, this.blocks.length,
             this.delimiter, [], false
         );
-     }
+     },
+
+    getSeed(){
+      return _.replace(this.seedInput, this.delimiter,'').toUpperCase()
+    }
+
    }
  }
  </script>
