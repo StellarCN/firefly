@@ -31,8 +31,8 @@ export default {
   data(){
     return {
       title: 'Menu.Help',
-      showbackicon: false,
-      showmenuicon: true,
+      showbackicon: true,
+      showmenuicon: false,
       loading: false,
       instance: null,
       location: null,

@@ -1,12 +1,12 @@
 <template>
-<v-card class="menu-card">
-  <v-bottom-nav :value="true" :active="active" color="dark" class="tb-menu">
+<!-- <v-card class="menu-card"> -->
+  <v-bottom-nav :value="true" absolute :active.sync="active" color="dark" class="tb-menu">
       <v-btn flat v-for="(item,index) in menus" :key="index" :value="index" @click="redirect(index,item.name)"> 
         <span>{{$t(item.title)}}</span>
         <v-icon>{{item.icon}}</v-icon>
       </v-btn>
     </v-bottom-nav>
-</v-card>
+<!-- </v-card> -->
 </template>
 
 <script>

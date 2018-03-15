@@ -1,5 +1,5 @@
 <template>
-  <div class="f-card" :style="'margin:'+margin+';padding:'+padding+';'">
+  <div class="f-card full-width" :style="'margin:'+margin+';padding:'+padding+';'">
     <slot name="card-content"></slot>
   </div>  
 </template>
