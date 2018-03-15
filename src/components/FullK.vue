@@ -1,9 +1,7 @@
 /**
  * 全屏K线图相关
- * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
- * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-12 17:27:28
+ * @Last Modified time: 2018-03-14 16:44:48
  * @License: MIT 
  */
 <template>
@@ -48,7 +46,7 @@
           <div :class="'flex1 ' + (resolution_key === 'day' ? 'active' : '')" @click="chgResolution('day')">{{$t('day')}}</div>
           <div :class="'flex1 ' + (resolution_key === 'hour' ? 'active' : '')" @click="chgResolution('hour')">{{$t('hour')}}</div>
           <div :class="'flex1 ' + (resolution_key === '15min' ? 'active' : '')" @click="chgResolution('15min')">15{{$t('minute')}}</div>
-          <div :class="'flex1 ' + (resolution_key === '5min' ? 'active' : '')" @click="chgResolution('5min')">5{{$t('minute')}}</div>
+          <div :class="'flex1 ' + (resolution_key === '1min' ? 'active' : '')" @click="chgResolution('1min')">1{{$t('minute')}}</div>
       </div>
   </div>
 </card>
@@ -61,10 +59,7 @@ import { mapState, mapActions, mapGetters} from 'vue'
 import Card from '@/components/Card'
 var echarts = require('echarts')
 import NP from 'number-precision'
-import { getTradeAggregation, getTradeAggregation5min, 
-    getTradeAggregation15min, getTradeAggregation1hour, 
-    getTradeAggregation1day, getTradeAggregation1week,
-    RESOLUTION_5MIN, RESOLUTION_15MIN, RESOLUTION_1HOUR, RESOLUTION_1DAY, RESOLUTION_1WEEK } from '@/api/tradeAggregation'
+import { getTradeAggregation } from '@/api/tradeAggregation'
 import { getAsset } from '@/api/assets'
 var moment = require('moment')
 import _ from 'lodash'
@@ -86,16 +81,15 @@ export default {
     },
     computed: {
     },
-    beforeMount () {
-      screen.orientation.lock('landscape');
-        
-    },
     beforeDestroy () {
       screen.orientation.lock('portrait');        
     },
-    mounted () {
-      let clientH = document.documentElement.clientHeight
-      this.width = document.documentElement.clientWidth
+    beforeCreate () {
+      screen.orientation.lock('landscape');  
+    },
+    created () {
+      let clientH = document.documentElement.clientWidth
+      this.width = document.documentElement.clientHeight - 10
       let allkH = new Decimal(clientH).minus(this.topH).minus(this.toolH)
       let h = this.height - this.blank*3
       let allkHB = allkH.minus(this.blank*3)
@@ -103,6 +97,9 @@ export default {
       this.vH = allkHB.times(this.vH).div(h).toNumber()
       this.mH = allkHB.times(this.mH).div(h).toNumber()
       this.height = allkH.toNumber()
+      alert('----w:'+this.width +",h:"+this.height)
+    },
+    mounted () {
 
         this.$nextTick(()=>{
            //加载界面
@@ -123,8 +120,7 @@ export default {
             this.ele.setOption(this.opt)
         },
         resetViewData(){
-          console.log(`--------sssreset---` )
-          console.log(this.macd)
+          if(!this.opt)return
           this.opt.xAxis[0].data = this.dates
           this.opt.xAxis[1].data = this.dates
           this.opt.series[0].data = this.volumes
