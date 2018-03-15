@@ -135,7 +135,11 @@ const getters = {
   },
   base_reserve: state =>{
     if(state.ledger){
-      return state.ledger.records[0].base_reserve
+      let base = state.ledger.records[0].base_reserve
+      if(base === null || typeof base === 'undefined'){
+        return  (state.ledger.records[0].base_reserve_in_stroops/10000000)
+      }
+      return base
     }
     return BASE_RESERVE
   },
