@@ -108,7 +108,7 @@ export default {
   },
   watch:{
     num :function(){
-     if(this.num===""||this.num===null){
+     if(this.num===""||this.num===null  ){
       this.showassetcode=false;
     }else {
         this.showassetcode=true;
