@@ -1,15 +1,17 @@
 <template>
-<v-card class="menu-card">
-  <v-bottom-nav :value="true" :active="active" color="dark" class="tb-menu">
+<!-- <v-card class="menu-card"> -->
+  <v-bottom-nav :value="true" absolute :active.sync="active" color="dark" class="tb-menu" app fixed absolute>
       <v-btn flat v-for="(item,index) in menus" :key="index" :value="index" @click="redirect(index,item.name)"> 
         <span>{{$t(item.title)}}</span>
         <v-icon>{{item.icon}}</v-icon>
+        <div  v-if="index!==active && index===3 && unreadMessage.length !==0 "  style="width: 10px;height: 10px;border-radius: 5px;background: red;right: 20px;top:5px;position: absolute;z-index: 10"></div>
       </v-btn>
-    </v-bottom-nav>
-</v-card>
+  </v-bottom-nav>
+<!-- </v-card> -->
 </template>
 
 <script>
+  import {mapGetters} from  "vuex"
 export default {
   data() {
     return {
@@ -59,13 +61,18 @@ export default {
       console.log({ name });
       this.$router.push({ name });
     }
+  },
+  computed:{
+    ...mapGetters([
+      'unreadMessage'
+    ])
   }
 };
 </script>
 
 <style lang="stylus" scoped>
 @require('~@/stylus/color.styl')
-.menu-card.card 
+.menu-card.card
     height: 60px;
     position: fixed;
     border-radius: 0px;
@@ -76,4 +83,11 @@ export default {
   &.bottom-nav.bottom-nav--active.dark
     .btn.btn--flat.btn--active
       color: $primarycolor.green
+</style>
+<style lang="stylus" scoped>
+  .bottom-nav .btn
+    opacity inherit!important
+    color #999
+  .bottom-nav .btn:not(.btn--active)
+    filter inherit!important
 </style>

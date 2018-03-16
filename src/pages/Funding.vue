@@ -92,8 +92,12 @@
                     <i class="iconfont icon-dot" v-else></i>
                   </div>
                 </div>
-  
               </div>
+              <div v-if="withdrawData.extra_info">
+                <div class="deposit_info" >{{withdrawData.extra_info}}</div>
+                <div class="deposit_info" >{{withdrawData.extra_info_cn}}</div>
+              </div>
+
             </div>
           </div>
 
@@ -272,6 +276,7 @@ export default {
           this.standardDepositData = data;
           this.working = false;
         }).catch(err=>{
+          console.error(err)
           console.log('not standard deposit service');
           queryDeposit(home_domain,asset,this.account.address)
             .then(response=>{
@@ -316,7 +321,7 @@ export default {
     },
     choseWithdrawService(index){
       this.withdrawFields = []
-      let services = this.withdrawData.services
+      let services = this.withdrawData.services||[]
       let service = services[index]
       if(!service)return
       this.active_withdraw_fed  = service.federation_address

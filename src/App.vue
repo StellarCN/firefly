@@ -1,15 +1,19 @@
 <template>
 <div>
 
+  <v-app :class="'app ' + (showFuzzyView?'fuzzy-app':'') " dark>
+      <v-system-bar status :color="iosstatusbarcolor" v-if="isios" app>
+        <v-spacer></v-spacer>
+      </v-system-bar>
+      <v-content>
+          <router-view></router-view>
+      </v-content>
+  </v-app>
 
-        <v-app class="app" dark>
-            <v-system-bar status :color="iosstatusbarcolor" v-show="isios">
-              <v-spacer></v-spacer>
-            </v-system-bar>
-            <router-view></router-view>
+  <div class="fuzzy-view" v-if="showFuzzyView">
 
-        </v-app>
-  
+  </div>
+
 </div>
 </template>
 
@@ -28,7 +32,8 @@ export default {
       pauseStart: null, //暂时的起始时间
       pauseMaxSecond: 60, //最大
       isios: false,
-      devicelang: null
+      devicelang: null,
+      showFuzzyView: false,
       // items:Store.fetch(),
     };
   },
@@ -180,6 +185,7 @@ export default {
     // if(window.localStorage.getItem('login_flag')!=1){
     //   setInterval('toPicklanguage',10000)
     // }
+    this.loadMessageItem();
   },
   // destroyed : {
   //     clearInterval(setInterval_value)
@@ -195,13 +201,15 @@ export default {
       "getAccountInfo",
       "getAllAssetHosts",
       "onPause",
-      "onResume"
+      "onResume",
+      "loadMessageItem"
     ]),
     onAppPause() {
+      this.showFuzzyView = true
       this.pauseStart = new Date().getTime();
-      console.log("-------------on pause ------" + this.pauseStart);
     },
     onAppResume() {
+      this.showFuzzyView = false
       //暂停恢复,判断是否要输入pin码
       if (this.alldata.app.enablePin) {
         let pauseEnd = new Date().getTime();
@@ -303,7 +311,23 @@ export default {
     }
   }
 }
-
+.fuzzy-view
+  position: fixed
+  top: 0
+  bottom: 0
+  left: 0
+  right: 0
+  z-index: 9999
+.fuzzy-app
+  -webkit-filter: blur(5px)
+  filter: blur(5px)
+  -webkit-backdrop-filter: blur(5px)
+  backdrop-filter: blur(5px)
+  -webkit-filter: blur(5px)
+  margin: -2px
+  background-size: cover
+  /*平铺*/
+  background-attachment: fixed
 @css {
   html{
     background: none;

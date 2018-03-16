@@ -21,6 +21,7 @@
   "high":"High",
   "low":"Low",
   "volume":"Lol",
+  "Congratulations":"Congratulations",
 
   "TermsOfServiceTitle":"Terms Of Service",
   "TermsOfService":"This is a binding Agreement between Muyu Network Technology Co.,Ltd. (\"Muyu\" or \"We\") and the person, persons, or entity (\"You\" or \"Your\") using the service, Software, or application (\"Software\").<br/><br/>RIGHTS AND OBLIGATIONS<br/><br/>Muyu provides the Software solely on the terms and conditions set forth in this Agreement and on the condition that You accept and comply with them. By using the Software You (a) accept this Agreement and agree that You are legally bound by its terms; and (b) represent and warrant that: (i) You are of legal age to enter into a binding agreement; and (ii) if You are a corporation, governmental organization or other legal entity, You have the right, power and authority to enter into this Agreement on behalf of the corporation, governmental organization or other legal entity and bind them to these terms. <br/><br/>This Software functions as a free, open source, and multi-signature digital wallet. The Software does not constitute an account where We or other third parties serve as financial intermediaries or custodians of Your Cryptocurrencies. <br/><br/>While the Software has undergone beta testing and continues to be improved by feedback from the open-source user and developer community, We cannot guarantee there will not be bugs in the Software. You acknowledge that Your use of this Software is at Your own discretion and in compliance with all applicable laws. You are responsible for safekeeping Your passwords, private key pairs, PINs, and any other codes You use to access the Software. <br/><br/>IF YOU LOSE ACCESS TO YOUR WALLET OR YOUR ENCRYPTED PRIVATE KEYS AND YOU HAVE NOT SEPARATELY STORED A BACKUP OF YOUR WALLET AND CORRESPONDING PASSWORD, YOU ACKNOWLEDGE AND AGREE THAT ANY CRYPTOCURRENCY YOU HAVE ASSOCIATED WITH THAT WALLET WILL BECOME INACCESSIBLE. All transaction requests are irreversible. The authors of the Software, employees and affiliates of Muyu, copyright holders, and Muyu, Ltd. cannot retrieve Your private keys or passwords if You lose or forget them and cannot guarantee transaction confirmation as they do not have control over the Cryptocurrency network system. <br/><br/>DISCLAIMER<br/><br/>THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE, EMPLOYEES AND AFFILIATES OF MUYU, COPYRIGHT HOLDERS, OR MUYU, LTD. BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. <br/><br/>IN NO EVENT WILL MUYU OR ITS AFFILIATES, OR ANY OF ITS OR THEIR RESPECTIVE SERVICE PROVIDERS, BE LIABLE TO YOU OR ANY THIRD PARTY FOR ANY USE, INTERRUPTION, DELAY OR INABILITY TO USE THE SOFTWARE, LOST REVENUES OR PROFITS, DELAYS, INTERRUPTION OR LOSS OF SERVICES, BUSINESS OR GOODWILL, LOSS OR CORRUPTION OF DATA, LOSS RESULTING FROM SYSTEM OR SYSTEM SERVICE FAILURE, MALFUNCTION OR SHUTDOWN, FAILURE TO ACCURATELY TRANSFER, READ OR TRANSMIT INFORMATION, FAILURE TO UPDATE OR PROVIDE CORRECT INFORMATION, SYSTEM INCOMPATIBILITY OR PROVISION OF INCORRECT COMPATIBILITY INFORMATION OR BREACHES IN SYSTEM SECURITY, OR FOR ANY CONSEQUENTIAL, INCIDENTAL, INDIRECT, EXEMPLARY, SPECIAL OR PUNITIVE DAMAGES, WHETHER ARISING OUT OF OR IN CONNECTION WITH THIS AGREEMENT, BREACH OF CONTRACT, TORT (INCLUDING NEGLIGENCE) OR OTHERWISE, REGARDLESS OF WHETHER SUCH DAMAGES WERE FORESEEABLE AND WHETHER OR NOT WE WERE ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. <br/><br/> INTELLECTUAL PROPERTY<br/><br/>  We retain all right, title, and interest in and to the Content and all of Muyu’s brands, logos, and trademarks, including, but not limited to, Muyu, Ltd., Muyu, Firefly Wallet – One Wallet For All Coins, Firefly Wallet, Firefly App, Firefly Wallet App, and variations of the wording of the aforementioned brands, logos, and trademarks. <br/><br/>  CHOICE OF LAW<br/><br/>  This Agreement, and its application and interpretation, shall be governed exclusively by the laws of The People's Republic of China, without regard to its conflict of law rules. You consent to the exclusive jurisdiction of the courts located in or near Shanghai, China for any dispute arising under this Agreement. <br/><br/>  SEVERABILITY<br/><br/>  In the event any court shall declare any section or sections of this Agreement invalid or void, such declaration shall not invalidate the entire Agreement and all other paragraphs of the Agreement shall remain in full force and effect. <br/><br/>  BINDING AGREEMENT<br/><br/>  The terms and provisions of this Agreement are binding upon Your heirs, successors, assigns, and other representatives. This Agreement may be executed in counterparts, each of which shall be considered to be an original, but both of which constitute the same Agreement. <br/><br/>  You assume any and all risks associated with the use of the Software. We reserve the right to modify this Agreement from time to time. <br/><br/>",
@@ -59,6 +60,13 @@
   "Account.CreateAccountSuccess":"account creation successful",
   "Account.CreateAccountError":"error occured while creating account",
   "Account.InputSecretKey":"please input your secret key start with 'S'",
+  "Account.ConfirmSkip":"skip validate secret key ?",
+  "Account.SkipValidHint":"The loss due to the loss of secret key will be at your own risk. Are you sure to skip this step ?",
+  "Account.Later":"Later",
+  "Account.SecretKeyValidHint":"secret key is valid.Please keep your secret key safe and start.",
+  "Account.Start":"Start",
+  "Account.SecretKeyInValidHint":"secret key is wrong, please re-varify or back to last page to backup",
+  "Account.ReVerify":"Re-Verify",
   "Error.SeedWrong":"wrong secret key",
   "Account.AccountAddress":"address",
 
@@ -115,8 +123,10 @@
   "Menu.Help":"Trade help",
   "Menu.My":"my",
   "Menu.History": "History",
+  "Menu.MessageCenter":"Message Center",
 
   "ManageAccount":"manage account",
+  "MessageCenter": "message center",
   "PinCode":"pin code",
   "Language":"language",
   "ModifyAccount":"modify account",
@@ -387,21 +397,21 @@
   "TransactionPassword_MsgOne":"Important",
   "TransactionPassword_MsgTwo":"Transaction password, if forgotten, can not be recovered;",
   "TransactionPassword_MsgThree":"You can retrieve your account only with the key",
-  
-  
+
+
   "Account_secretkey_MsgOne":"Very important!",
   "Account_secretkey_MsgTwo":"Lose the key, lose everything!",
   "Account_secretkey_MsgThree":"Copy or print the key and store it in a secure place. Do not save the screenshot or store it directly in your cell phone, disk, or mailbox.",
- 
+
   "TDO":"To da moon!",
   "TDO_MsgOne":"Congratulations!",
   "TDO_MsgTwo":"After keeping the information,",
   "TDO_MsgThree":"You can start using a firefly wallet.",
-  
+
   "LastStep":"LastStep.",
   "AllRight":"AllRight",
 
-  
+
   "BackedUp":"BackedUp",
   "ReceiveAssetMsg":"Scan the QR code to send me",
   "Change":"Change",

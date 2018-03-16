@@ -1,29 +1,34 @@
+import TradeParent from '@/pages/trade/TradeParent.vue'
+import TradeCenter from '@/pages/trade/TradeCenter.vue'
+import Trade from '@/pages/trade/Trade.vue'
+import TradeK from '@/pages/trade/TradeK.vue'
+import TradeBuySell from '@/pages/trade/TradeBuySell.vue'
 
 export default {
     path:'/trade/',
     name: 'TradeParent',
-    component: resolve => require(['../pages/trade/TradeParent.vue'], resolve),
+    component: TradeParent,
     redirect: { name: 'TradeCenter' },
     children: [
         {
             path: 'center',
             name: 'TradeCenter',
-            component: resolve => require(['../pages/trade/TradeCenter.vue'], resolve)
+            component: TradeCenter
           },
           {
             path: 'view',
             name: 'Trade',
-            component: resolve => require(['../pages/trade/Trade.vue'], resolve)
+            component: Trade
           },
           {
             path: 'buysell',
             name: 'TradeBuySell',
-            component: resolve => require(['../pages/trade/TradeBuySell.vue'], resolve)
+            component: TradeBuySell
           },
           {
             path: 'full',
             name: 'TradeK',
-            component: resolve => require(['../pages/trade/TradeK.vue'], resolve)
+            component: TradeK
           }
     ]
 }

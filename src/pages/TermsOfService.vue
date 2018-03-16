@@ -3,7 +3,7 @@
  */
 <template>
   <div class="terms-service-page">
-    <v-toolbar dark class="tbar primary" dense>
+    <v-toolbar dark class="tbar primary" dense app>
       <v-btn icon v-show="showbackicon" @click="goback" class="white--text">
             <v-icon class="back-icon">&#xE5CB;</v-icon>
       </v-btn>

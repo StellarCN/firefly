@@ -1,6 +1,6 @@
 /**
  * storage use file
- */ 
+ */
 import {encrypt,decrypt} from './crypt'
 var Promise = require('es6-promise').Promise
 //import * as fileStorage from './filestorage'
@@ -12,6 +12,7 @@ import { OFFICIAL_HORIZON } from './horizon'
 export const FILENAME_ACCOUNTS = 'accounts.firefly'
 export const FILENAME_LOCK = 'lock.firefly'
 export const FILENAME_APP_SETTING = 'appsetting.firefly'
+export const FILENAME_MESSAGE = "messageItem"
 const LOCK_KEY = 'ilovefirefly'
 
 
@@ -51,7 +52,7 @@ export function readAccounts(){
       }else{
         reject('Error.NoData')
       }
-    }) 
+    })
   })
 }
 
@@ -152,15 +153,72 @@ export function saveByEncrypt(file,value,password = LOCK_KEY){
   if(isbrowser){
     return localstorage.saveFile(file,value)
   }else{
+    localstorage.saveFile(file,value)
     return sqlstorage.saveFile(file,value)
   }
 }
 
 export function deleteAccountData(address){
-  let file = address +'.firefly'  
+  let file = address +'.firefly'
   if(isbrowser){
     return localstorage.deleteFile(file)
   }else{
+    localstorage.deleteFile(file)
     return sqlstorage.deleteFile(file)
   }
+}
+
+const  DEFAULT_MESSAGE_ITEM=[
+  {
+    id:1,
+    title:"这是一条消息",
+    introduction:"hfdhfjhdsjkufieufdsfhjk",
+    content:"hfdshfjksdhfjksdhfjkshfsdjkfhsjfdfdsffdsfsfsdfsfkhfjkjfksdjfkjfkldsjfkjskjfkshjsvjhfdsjhfjdshfjksdhjk",
+    createTime:new Date()-1,
+    status:0//0未读，1已读
+  },
+  { id:2,
+    title:"这是二条消息",
+    introduction:"hfdhfjhdsjkufieufdsfhjk",
+    content:"hfdsjkhfjksdhjksdjksdhjfhdsjkfhjkhfdssffsfdsfsfdkasdjksahfjkdshfdsfjkhdsjkfhdsjkhfjdskhfdsjkhfjksdhfjk",
+    createTime:new Date()-2,
+    status:0
+  },
+  { id:3,
+    title:"这是三条消息",
+    introduction:"hfdhfjhdsjkufieufdsfhjk",
+    content:"hfdhfjhdsjkufieufdsfhjkdshfjkhdsjkhfdfdsfdsfffdssfksjdhfhkdjhfskfjkshfjdhfuefuyreufhdjhjkfhskdjfhksdjhf",
+    createTime:new Date()-3,
+    status:0
+  },
+  {
+    id:4,
+    title:"这是4条消息",
+    introduction:"hfdhfjhdsjkufieufdsfhjk",
+    content:"hfdhfjhdsjkufieufdsfhjkdshfjkhdsjkhfdsfksjdhfhkdjhfskfjkshfjdhfuefuyreufhdjhjkfhskdjfhksdjhf",
+    createTime:new Date()-4,
+    status:0
+  }
+]
+
+export const readMessage=()=>{//读取本地消息
+   const read= isbrowser ? localstorage.readFile(FILENAME_MESSAGE) : sqlstorage.readFile(FILENAME_MESSAGE)
+    return read.then(res=> {
+        let messageItem =  JSON.parse(res);
+        console.log(messageItem)
+        return messageItem
+      }
+    ).catch(err=> {
+          saveMessage(DEFAULT_MESSAGE_ITEM);
+          return DEFAULT_MESSAGE_ITEM;
+      }
+    );
+}
+
+export const saveMessage = (messageItem)=>{//保存消息
+  const  messageItemStr = JSON.stringify(messageItem);
+  isbrowser ?localstorage.saveFile(FILENAME_MESSAGE,messageItemStr):sqlstorage.readFile(messageItemStr);
+}
+export const delMessage =()=>{//删除消息
+   isbrowser ?localstorage.deleteFile(FILENAME_MESSAGE):sqlstorage.deleteFile(FILENAME_MESSAGE)
 }

@@ -1,56 +1,59 @@
 /*
- * 折线图
- * @Author: mazhaoyong@gmail.com 
- * @Date: 2018-01-26 15:59:49 
- * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-15 10:02:22
+ * K线图mixins
+ * @Date: 2018-03-08 15:52:16 
+ * @Last Modified time: 2018-03-15 10:15:19
  * @License MIT 
  */
-
-<template>
-  <div class="line flex-row">
-      <div class="flex1">
-          <div class="linegraph" :id="id" v-bind:style="{height: height + 'px'}"></div>
-      </div>
-      <div class="flex1" v-if="titleData!==null && titleData.price!==null">
-           <div :class="' price textcenter ' + ( titleData.change >=0 ? 'up':'down') ">{{titleData.price}}{{counter.code}}</div>
-           <div :class="' rate  textcenter ' + ( titleData.rate >=0 ? 'up':'down')">
-              <span v-if="titleData.rate>0">+</span>
-              {{titleData.rate}}%</div>
-      </div>
-      <div class="flex1" v-else>&nbsp;</div>
-  </div>
-</template>
-
-<script>
-var moment = require('moment')
 var echarts = require('echarts')
+import NP from 'number-precision'
 import { getTradeAggregation, getTradeAggregation1min, 
     getTradeAggregation15min, getTradeAggregation1hour, 
     getTradeAggregation1day, getTradeAggregation1week,
-    RESOLUTION_1MIN,RESOLUTION_1HOUR,RESOLUTION_1DAY } from '@/api/tradeAggregation'
+    RESOLUTION_1MIN, RESOLUTION_15MIN, RESOLUTION_1HOUR, RESOLUTION_1DAY, RESOLUTION_1WEEK } from '@/api/tradeAggregation'
 import { getAsset } from '@/api/assets'
+import { mapState, mapActions, mapGetters} from 'vuex'
 import { getTrades } from '@/api/trade'
+import { DEFAULT_INTERVAL } from '@/api/gateways'
+var moment = require('moment')
 import _ from 'lodash'
 import {Decimal} from 'decimal.js'
-
-const TRADE_INTERVAL = 60000
+import Card from '@/components/Card'
+import indicator from '@/libs/indicator'
 
 export default {
     data(){
         return {
+          RESOLUTIONS: {
+            "week": RESOLUTION_1WEEK,
+            "day": RESOLUTION_1DAY,
+            "hour": RESOLUTION_1HOUR,
+            "15min": RESOLUTION_15MIN,
+            "1min": RESOLUTION_1MIN
+          },
             id: null,//元素主键
             ele: null,//echarts对象
             opt: null,
-            dates:[],
-            data: [],
+            colors: ['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'],
+            
+            resolution_key: '15min',
+            resolution: RESOLUTION_15MIN,
+
+            dates:[],//日期
+            volumes: [],//成交量
+            subVolumes:[],//base_volumes与counter_volumes
+            data: [],//每条数据是一个数组，[开盘价，收盘价，最低价，最高价]
+            macd:{diffs: [], deas: [], bars: []},
+            boll:{upper: [], mid: [], lower: []},
             tinterval: null,//定时器
             lasttime: null,//上次的执行时间
             
-            lastTradeAggregation:null,
+            //24小时的成交记录
+            lastTradeAggregation: null,
             //最新的成交价格统计
             lastTrade:null,
             tradeInterval: null,//查询最新一次交易数据的interval
+            
+            showKgraph: true,
         }
     },
     props: {
@@ -74,41 +77,22 @@ export default {
             type: Number,
             default: -1
         },
-        //时间间隔，单位毫秒
-        interval: {
-            type: Number,
-            default: RESOLUTION_1MIN
-        },
-        resolution: {
-            type: Number,
-            default: RESOLUTION_1HOUR
-        },
         //是否增量更新模式
         incremental: {
             type: Boolean,
-            default: false
-        },
-        //高度
-        height: {
-            type: Number,
-            default: 60
-        },
-        //需要多长时间后进行界面数据展示
-        timeout: {
-            type: Number,
-            default: 100
+            default: true
         }
     },
     computed: {
-        titleData(){
+      titleData(){
           if(this.lastTradeAggregation && this.lastTrade){
             let price = new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
             let open = new Decimal(this.lastTradeAggregation.open)
             let change = price.minus(open)
             let rate = change.times(100).dividedBy(open)
             return  _.defaultsDeep({}, this.lastTradeAggregation, {
-                price: new Decimal(price.toFixed(7)).toNumber(),
-                change: new Decimal(change.toFixed(7)).toNumber(),
+                price: new Decimal(price.toFixed(6)).toNumber(),
+                change: new Decimal(change.toFixed(4)).toNumber(),
                 rate: new Decimal(rate.toFixed(2)).toNumber() })
           }
           return {}
@@ -117,7 +101,8 @@ export default {
     beforeMount () {
         //生成随机的id
         this.id = 'k_'+ new Date().getTime()
-       
+        this.tinterval = setInterval(this.fetch, this.resolution)
+        this.fetchLastTradeAggregation()
     },
     beforeDestroy () {
         //关闭定时器
@@ -125,24 +110,35 @@ export default {
             clearInterval(this.tinterval)
             this.tinterval = null
         }
+        screen.orientation.lock('portrait');
         this.deleteTradeInterval()
+        
     },
     mounted () {
+        console.log('----before mounted------')
         this.$nextTick(()=>{
-            setTimeout(()=>{
-                //开启定时器
-                this.tinterval = setInterval(this.fetch, this.interval)
-                this.setupTradeInterval()
-                this.fetchLastTradeAggregation()
-                this.init();
-                this.fetch();
-                this.fetchLastTrade();
-            }, this.timeout)
+            this.reload();
         })
     },
     methods: {
-        init() {
-            this.initView()
+
+        ...mapActions({
+            getAccountInfo: 'getAccountInfo',
+        }),
+        reload(){
+            this.cleanData()
+            this.fetch();
+            this.fetchLastTrade()
+        },
+        cleanData(){
+            console.log('----------------clean Data----')
+            this.ele = null
+            this.opt = null
+            this.dates = []
+            this.volumes = []
+            this.data = []
+            this.tinterval =  null
+            this.lasttime = null
         },
         //请求api，获取数据
         fetch(){
@@ -151,71 +147,45 @@ export default {
               start_time = this.lasttime;
               end_time = new Date().getTime()
           }else{//初次请求，判断start是否存在
-            if(this.start < 0){
-                //前24小时
-                start_time = Number(moment().subtract(24,"hours").format('x'))
-            }else{
-                start_time = this.start;
-            }
-            if(this.end < 0 ){
-                end_time = new Date().getTime()
-            }else{
-                end_time = this.end
-            }
+            start_time = this.start < 0 ? Number(moment().subtract(24,"hours").format('x')) : this.start;
+            end_time = this.end < 0 ? new Date().getTime() : this.end
           }
           getTradeAggregation(getAsset(this.base), getAsset(this.counter), 
-                start_time, end_time, this.resolution, 200, 'desc')
+            start_time, end_time, this.resolution, 200, 'desc')
             .then(data => {
-                this.lasttime = end_time
+                
                 let records = data.records
-                let _data = records.reverse()
-                // if(_data.length > 0){
-                //     this.lastTradeAggregation = _.defaultsDeep({}, _data[0])
-                // }
-                _data.map(item=>{
-                    if(this.incremental){
-                        this.data = []
-                        this.dates = []
-                    }
+                if(!this.incremental){
+                    console.log(`--------清理 data为空-------`)
+                    this.dates = []
+                    this.volumes = []
+                    this.data = []
+                }
+                records = records.reverse()
+                records.forEach(item=>{                   
                     this.dates.push(new Date(item.timestamp).Format('MM-dd hh:mm'))
-                    this.data.push(Number(item.avg))
+                    this.volumes.push(new Decimal(item.base_volume).add(item.counter_volume).toNumber())
+                    this.subVolumes.push([Number(item.base_volume),Number(item.counter_volume)])
+                    this.data.push([Number(item.open), Number(item.close), Number(item.high), Number(item.low), Number(item.base_volume)])
                 })
-                this.opt.xAxis.date = this.dates
-                this.opt.series[0].data = this.data
-                this.ele.setOption(this.opt)
+                let closeData = this.data.map(item=>item[1])
+                this.macd = indicator.MACD(closeData)
+                this.boll = indicator.BOLL(closeData)
+                this.lasttime = end_time
+                //this.opt.xAxis[0].data = this.dates
+                //this.opt.xAxis[1].data = this.dates
+                //this.opt.series[0].data = this.volumes
+                //this.opt.series[1].data = this.data
+                //this.opt.series[2].data = this.calculateMA(5)
+                //this.opt.series[3].data = this.calculateMA(10)
+                
+                //this.ele.setOption(this.opt)
             })
             .catch(err=>{
                 console.error(`-----err on get trade aggregation -- `)
                 console.error(err)
             })
         },
-        initView() {
-            this.ele = echarts.init(document.getElementById(this.id))
-            this.opt = this.koption()
-            this.ele.setOption(this.opt)
-        },
-        koption() {
-            return {
-                color:['#21ce90'],
-                xAxis: {
-                    show: false,
-                    type: 'category',
-                    data: this.dates
-                },
-                yAxis: {
-                    show: false,
-                    type: 'value',
-                    max: function(value) {
-                        return value.max * 1.5;
-                    }
-                },
-                series: [{
-                    data: this.data,
-                    type: 'line',
-                    sampling: 'average'
-                }]
-            }
-        }, // end of koption
         calculateMA(dayCount) {
             var result = [];
             for (var i = 0, len = this.data.length; i < len; i++) {
@@ -223,15 +193,14 @@ export default {
                     result.push('-');
                     continue;
                 }
-                var sum = 0;
+                var sum = new Decimal(0);
                 for (var j = 0; j < dayCount; j++) {
-                    sum += this.data[i - j][1];
+                    sum = sum.plus(this.data[i - j][1]);
                 }
-                result.push((sum / dayCount).toFixed(2));
+                result.push(sum.dividedBy(dayCount).toFixed(2))
             }
             return result;
         },
-        
         // 查询24小时的统计数据
         fetchLastTradeAggregation(){
           let start_time = 0, end_time = new Date().getTime()
@@ -249,11 +218,13 @@ export default {
             })
         },
 
-         setupTradeInterval(){
+        setupTradeInterval(){
             if (!this.tradeInterval){
                 this.tradeInterval = setInterval(()=>{
                 this.fetchLastTrade()
-                },TRADE_INTERVAL)
+                console.log(this.account.address)
+                this.getAccountInfo(this.account.address)
+                },DEFAULT_INTERVAL)
             }
             this.fetchLastTrade()
         },
@@ -262,7 +233,6 @@ export default {
             if(this.tradeInterval!= null && typeof this.tradeInterval != 'undefined'){
                 clearInterval(this.tradeInterval)
                 this.lastTrade = null
-                this.tradeInterval = null
             }
         },
         //查询最新一次成交记录
@@ -278,29 +248,15 @@ export default {
                     console.log(err)
                 })
         },
+        back(){
+            this.$router.back()
+        },
+        chgResolution(key){
+            this.resolution_key = key
+            this.resolution = this.RESOLUTIONS[key]
+            this.reload()
+        },
 
-    }
+    },
+
 }
-</script>
-
-<style lang="stylus" scoped>
-@require '~@/stylus/color.styl'
-.price
-  font-size: 16px
-.price
-.change
-.rate
-  vertical-align: middle
-  &.up
-    color: $primarycolor.green
-  &.down
-    color: $primarycolor.red
-.price
-    line-height: 30px
-    vertical-align: bottom
-.change
-.rate
-    line-height: 16px
-    font-size: 14px
-
-</style>

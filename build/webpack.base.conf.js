@@ -72,7 +72,7 @@ module.exports = {
     loaders: [
       {
         test: /\.styl$/,
-        loaders: ['style-loader','css-loader', 'stylus-loader']
+        loaders: ['style-loader', 'stylus-loader', { loader: 'css-loader', options: { minimize: true } }]
       }
     ]
   }

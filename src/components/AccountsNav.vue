@@ -1,10 +1,10 @@
 /**
  * 账户信息展示切换
- * @Author: mazhaoyong@gmail.com 
- * @Date: 2018-01-30 16:58:05 
+ * @Author: mazhaoyong@gmail.com
+ * @Date: 2018-01-30 16:58:05
  * @Last Modified by: mazhaoyong@gmail.com
  * @Last Modified time: 2018-01-30 19:18:04
- * @License: MIT 
+ * @License: MIT
  */
 <template>
   <div class="account-nav">
@@ -54,8 +54,8 @@
         </div>
       </div>
     </v-navigation-drawer>
-      <!-- end 切换账户 -->  
-    
+      <!-- end 切换账户 -->
+
     <v-bottom-sheet  v-model="showPwdSheet" v-if="showPwdSheet" dark>
       <div class="sheet-content">
         <div class="sheet-title">
@@ -359,6 +359,5 @@ export default {
       text-align: center
       font-size: 16px
       color: $primarycolor.green
-
 </style>
 

@@ -63,7 +63,7 @@
                   </div>
                 </v-flex>
                 <v-flex xs6>
-                  <k-line :base="pair.from" :counter="pair.to" :height="56"></k-line>
+                  <k-line :base="pair.from" :counter="pair.to" :height="56" :timeout="100*index"></k-line>
                 </v-flex>
 
               </v-layout>

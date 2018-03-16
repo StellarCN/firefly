@@ -21,6 +21,7 @@
   "high":"高",
   "low":"低",
   "volume":"量",
+  "Congratulations":"恭喜您",
 
 
   "TermsOfServiceTitle":"服务条款",
@@ -57,6 +58,14 @@
   "Account.CreateAccountSuccess":"账户创建成功!",
   "Account.CreateAccountError":"账户创建失败！",
   "Account.InputSecretKey":"请输入您以S开头的账户密钥",
+  "Account.ConfirmSkip":"您确认跳过密钥验证？",
+  "Account.SkipValidHint":"因密钥遗失造成的资产损失，将由您个人承担，您确定跳过该步骤？",
+  "Account.Later":"再想想",
+  "Account.SecretKeyValidHint":"密钥验证已经通过。请妥善保管您的备份密钥，然后开始体验。",
+  "Account.Start":"开始体验",
+  "Account.SecretKeyUnValidHint":"密钥输入有误！请重新验证，或返回上一步重新备份。",
+  "Account.ReVerify":"重新验证",
+
   "Error.SeedWrong":"密钥错误",
 
   "Account.AccountAddress":"账户地址",
@@ -110,11 +119,13 @@
   "Menu.Help":"交易使用教程",
   "Menu.My":"我的",
   "Menu.History": "历史记录",
+  "Menu.MessageCenter":"消息中心",
 
   "ManageAccount":"账户管理",
   "PinCode":"Pin码",
   "Language":"语言",
   "ModifyAccount":"修改账户",
+  "MessageCenter" :"消息中心",
   "FederationAddress":"联邦地址",
   "FederationAddressDesc":"联邦地址，即短名服务",
   "InflationAddress": "通胀地址",
@@ -226,7 +237,7 @@
   "Error.LackOfBalance":"余额不足,无法继续",
   "Error.LackOfTrustline":"尚未增加此类型资产,请添加该资产或查看帮助",
   "Error.CounterLackOfTrustline":"尚未增加对手方资产,请添加该资产或查看帮助",
-  
+
 
   "Error.PleaseCompleteForm":"请完善表单",
 
@@ -359,7 +370,7 @@
 	"op_immutable_set": "账号不可更改",
 	"op_has_sub_entries": "存在数据条目",
   "op_not_time": "未指定时间",
-  
+
   "ShowZeroAsset":"显示0资产",
   "HideZeroAsset":"隐藏0资产",
   "DefaultSort":"默认排序",
@@ -377,17 +388,17 @@
   "TransactionPassword_MsgOne":"重要！",
   "TransactionPassword_MsgTwo":"交易密码，如果遗忘则不能找回;",
   "TransactionPassword_MsgThree":"仅能通过密钥重新找回账户",
-  
-  
+
+
   "Account_secretkey_MsgOne":"非常重要！",
   "Account_secretkey_MsgTwo":"丢失密钥，即丢失一切！",
   "Account_secretkey_MsgThree":"将密钥抄写或打印出来，并存放于安全的地方。切勿截图保存或直接存放于手机、网盘、邮箱中。",
- 
+
   "TDO":"To da moon!",
   "TDO_MsgOne":"祝贺您！",
   "TDO_MsgTwo":"保存好信息后，",
   "TDO_MsgThree":"您就可以开始使用萤火钱包了",
-  
+
   "LastStep":"上一步",
   "AllRight":"明白了",
 

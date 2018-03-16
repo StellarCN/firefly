@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-05 16:17:56
+ * @Last Modified time: 2018-03-15 12:28:21
  * @License: MIT 
  */
 <template>
@@ -55,7 +55,7 @@
           <div :class="'flex1 ' + (resolution_key === 'day' ? 'active' : '')" @click="chgResolution('day')">{{$t('day')}}</div>
           <div :class="'flex1 ' + (resolution_key === 'hour' ? 'active' : '')" @click="chgResolution('hour')">{{$t('hour')}}</div>
           <div :class="'flex1 ' + (resolution_key === '15min' ? 'active' : '')" @click="chgResolution('15min')">15{{$t('minute')}}</div>
-          <div :class="'flex1 ' + (resolution_key === '5min' ? 'active' : '')" @click="chgResolution('5min')">5{{$t('minute')}}</div>
+          <div :class="'flex1 ' + (resolution_key === '1min' ? 'active' : '')" @click="chgResolution('1min')">1{{$t('minute')}}</div>
       </div>
   </div>
 </card>
@@ -64,10 +64,10 @@
 <script>
 var echarts = require('echarts')
 import NP from 'number-precision'
-import { getTradeAggregation, getTradeAggregation5min, 
+import { getTradeAggregation, getTradeAggregation1min, 
     getTradeAggregation15min, getTradeAggregation1hour, 
     getTradeAggregation1day, getTradeAggregation1week,
-    RESOLUTION_5MIN, RESOLUTION_15MIN, RESOLUTION_1HOUR, RESOLUTION_1DAY, RESOLUTION_1WEEK } from '@/api/tradeAggregation'
+    RESOLUTION_1MIN, RESOLUTION_15MIN, RESOLUTION_1HOUR, RESOLUTION_1DAY, RESOLUTION_1WEEK } from '@/api/tradeAggregation'
 import { getAsset } from '@/api/assets'
 import { mapState, mapActions, mapGetters} from 'vuex'
 import { getTrades } from '@/api/trade'
@@ -81,7 +81,7 @@ const RESOLUTIONS = {
     "day": RESOLUTION_1DAY,
     "hour": RESOLUTION_1HOUR,
     "15min": RESOLUTION_15MIN,
-    "5min": RESOLUTION_5MIN
+    "1min": RESOLUTION_1MIN
 }
 
 export default {
@@ -92,11 +92,12 @@ export default {
             opt: null,
             colors: ['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'],
             
-            resolution_key: '5min',
-            resolution: RESOLUTION_5MIN,
+            resolution_key: '15min',
+            resolution: RESOLUTION_15MIN,
 
             dates:[],//日期
             volumes: [],//成交量
+            subVolumes:[],//base_volumes与counter_volumes
             data: [],//每条数据是一个数组，[开盘价，收盘价，最低价，最高价]
             tinterval: null,//定时器
             lasttime: null,//上次的执行时间
@@ -147,7 +148,11 @@ export default {
         //高度
         height: {
             type: String,
-            default: '220px'
+            default: '260px'
+        },
+        timeout: {
+            type: Number,
+            default: 100
         }
     },
     computed: {
@@ -168,13 +173,10 @@ export default {
     beforeMount () {
         //生成随机的id
         this.id = 'k_'+ new Date().getTime()
-        //开启定时器
-        this.tinterval = setInterval(this.fetch, this.resolution)
-        //如果是全屏模式，则切换为横屏
+         //如果是全屏模式，则切换为横屏
         if(this.fullscreen){
             screen.orientation.lock('landscape');
         }
-        this.fetchLastTradeAggregation()
         
     },
     beforeDestroy () {
@@ -193,7 +195,14 @@ export default {
     mounted () {
         console.log('----before mounted------')
         this.$nextTick(()=>{
-           this.reload();
+
+            setTimeout(()=>{
+                 //开启定时器
+                this.tinterval = setInterval(this.fetch, this.resolution)
+                this.fetchLastTradeAggregation()
+                this.reload();
+            }, this.timeout)
+           
         })
     },
     methods: {
@@ -253,7 +262,8 @@ export default {
                 records = records.reverse()
                 records.forEach(item=>{                   
                     this.dates.push(new Date(item.timestamp).Format('MM-dd hh:mm'))
-                    this.volumes.push(Number(item.base_volume))
+                    this.volumes.push(new Decimal(item.base_volume).add(item.counter_volume).toNumber())
+                    this.subVolumes.push([Number(item.base_volume),Number(item.counter_volume)])
                     this.data.push([Number(item.open), Number(item.close), Number(item.high), Number(item.low), Number(item.base_volume)])
                 })
                 this.opt.xAxis[0].data = this.dates
@@ -408,10 +418,13 @@ export default {
                     yAxisIndex: 1,
                     itemStyle: {
                         normal: {
-                            color: '#7fbe9e'
-                        },
-                        emphasis: {
-                            color: '#140'
+                            color: (params)=>{
+                                let obj = this.subVolumes[params.dataIndex]
+                                if(obj && obj[0] > obj[1]){
+                                    return "#733520"
+                                }
+                                return '#216549'
+                            }
                         }
                     },
                     data: this.volumes
@@ -546,46 +559,5 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-@require '~@/stylus/color.styl'
-.k
-  width: 100%
-.atitle
-  padding-bottom: 8px
-.price
-  font-size: 24px
-.code
-  font-size: 16px
-.up
-  color: $primarycolor.green
-.down
-  color: $primarycolor.red
-.change
-.rate
-    line-height: 30px
-    vertical-align: bottom
-.label
-  color: $secondarycolor.font
-  padding-left: 2px
-  padding-right: 2px
-.values
-  font-size: 14px
-
-.btn-fullscreen
-    position: absolute
-    right: 12px
-    z-index: 9
-    .material-icons
-        color: $primarycolor.green
-.chgresolution
-    padding-top: 8px
-    padding-bottom: 5px
-    color: $secondarycolor.font
-    .active
-        color: $primarycolor.green
-.material-icons.k-icon
-    color: $primarycolor.green
-.title-btn-div
-  line-height: 60px
-.divinline
-  display: inherit
+@require './K.styl'
 </style>

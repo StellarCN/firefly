@@ -48,8 +48,8 @@ export default {
       this.$router.push({name: 'TermsOfService'})
     },
     back(){
-      // this.$router.back()
-      this.$router.push({name: 'Guidepage'})
+      this.$router.back()
+      //this.$router.push({name: 'Guidepage'})
     }
   }
 }

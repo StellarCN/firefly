@@ -7,6 +7,7 @@ import AssetStore from './modules/AssetStore'
 import createPersist from './plugins/persistence'
 import TradesStore from './modules/tradesStore'
 import { APP_NAME, APP_VERSION } from '@/api/gateways'
+import   MessageStore from "./modules/MessageStore"
 var Base64 = require('js-base64').Base64
 
 Vue.use(Vuex)
@@ -23,11 +24,11 @@ const state = {
   memo: null,
   iosstatusbarcolor: 'primary',
   onpause: false,//is app on pause
-  
+
 }
 
 const getters = {
-  
+
 }
 
 const actions = {
@@ -61,7 +62,7 @@ const actions = {
   onResume({commit}){
     commit(ON_RESUME)
   }
-  
+
 
 }
 
@@ -152,6 +153,7 @@ const store = new Vuex.Store({
     account: AccountStore,
     asset: AssetStore,
     trades: TradesStore,
+    message:MessageStore
   },
   plugins
 
