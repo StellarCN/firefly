@@ -6,7 +6,7 @@
         <v-icon>{{item.icon}}</v-icon>
         <div  v-if="index!==active && index===3 && unreadMessage.length !==0 "  style="width: 10px;height: 10px;border-radius: 5px;background: red;right: 20px;top:5px;position: absolute;z-index: 10"></div>
       </v-btn>
-    </v-bottom-nav>
+  </v-bottom-nav>
 <!-- </v-card> -->
 </template>
 
