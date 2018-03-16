@@ -411,7 +411,10 @@
 
   
   "BackedUp":"BackedUp",
-  "ReceiveAssetMsg":"Scan the QR code to send me"
-  
+  "ReceiveAssetMsg":"Scan the QR code to send me",
+  "Change":"Change",
+  "MyAccount":"MyAccount",
+  "MemoBook.MyAddress":"MyAddress",
+  "MessageCenter":"MessageCenter"
 
 }

@@ -44,7 +44,10 @@
               dark
               :suffix="selectedasset.code"
               type="Number"
-            ></v-text-field>
+
+              
+              
+              ></v-text-field>
             <div class="receive_asset_msg_one">
                 <span>{{$t("Available")}}</span> 
                 <span>{{selectedasset.code}}:</span>               
@@ -54,7 +57,7 @@
             <div class="receive_asset_msg">
               <span>{{$t("ReceiveAssetMsg")}}</span><br/>
               <span>{{num}}&nbsp;</span>
-              <span>{{selectedasset.code}}</span>
+              <span v-if="showassetcode" >{{selectedasset.code}}</span>
               
             </div>
             <div class="qrcode">
@@ -97,9 +100,32 @@ export default {
       num:null,
       qrcodebase64:null,
       assetChoseReturnObject: true,
+      showassetcode:false,
+  
 
 
     }
+  },
+  watch:{
+    num :function(){
+     if(this.num===""||this.num===null  ){
+      this.showassetcode=false;
+    }else {
+        this.showassetcode=true;
+    } 
+  
+    },
+    amount:function(){
+    let sendnum = Number(this.amount);
+    if(sendnum<0){
+      this.num=0
+    }
+  
+    if(sendnum>this.selectedasset.balance){
+      this.num=this.selectedasset.balance
+      }
+    }
+  
   },
    computed:{
     ...mapState({
@@ -218,7 +244,8 @@ export default {
 <style lang="stylus" scoped>
 @require '~@/stylus/color.styl'
 .card-content
-  padding: 8px 8px
+  padding: 8px 8px 0px 8px
+  background-color:$secondarycolor.gray
   .label
     font-size: 14px
     color: $secondarycolor.font
@@ -255,10 +282,13 @@ export default {
 //   color:$primarycolor.green
 .qrcode
   text-align: center
+  padding-top:20px
+  padding-bottom:20px
 
 .receive_asset_msg
   text-align:center
   color:$primarycolor.green
+  padding-top:8px
 
 .receive_asset_msg_one
   color:$secondarycolor.font
