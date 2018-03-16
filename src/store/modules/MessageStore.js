@@ -1,5 +1,10 @@
 import {readMessage, saveMessage, delMessage} from "../../api/storage";
 
+export const SAVE_MESSAGE_ITEM = "SAVE_MESSAGE_ITEM";
+export const CHANGE_STATUS = "CHANGE_STATUS";
+export const DEL_ITEM = "DEL_ITEM";
+export const CHANGE_CURRENT_ITEM_ID = "CHANGE_CURRENT_ITEM_ID";
+
 const state = {
   messageItems: [],//消息列表,
   currentItemId: ""
@@ -32,7 +37,7 @@ const mutations = {
     state.messageItems.splice(index, 1);
     saveMessage(state.messageItems);
   },
-  [CHANGE_CURRENTE_ITEM_ID](state, id) {
+  [CHANGE_CURRENT_ITEM_ID](state, id) {
     state.currentItemId = id;
   }
 }
@@ -51,14 +56,11 @@ const actions = {
     commit(SAVE_MESSAGE_ITEM, await readMessage())
   },
   async changeCurrentItemId({commit}, {id}) {
-    commit(CHANGE_CURRENTE_ITEM_ID, id)
+    commit(CHANGE_CURRENT_ITEM_ID, id)
   }
 
 }
-export const SAVE_MESSAGE_ITEM = "SAVE_MESSAGE_ITEM";
-export const CHANGE_STATUS = "CHANGE_STATUS";
-export const DEL_ITEM = "DEL_ITEM";
-export const CHANGE_CURRENTE_ITEM_ID = "CHANGE_CURRENTE_ITEM_ID";
+
 export default {
   state,
   getters,
