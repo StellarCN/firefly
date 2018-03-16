@@ -2,8 +2,8 @@
 * 我的，显示界面，即：个人中心
 * @Author: mazhaoyong@gmail.com
 * @Date: 2018-01-23 11:14:24
-* @Last Modified by: mazhaoyong@gmail.com
-* @Last Modified time: 2018-03-14 12:11:29
+ * @Last Modified by: mazhaoyong@gmail.com
+ * @Last Modified time: 2018-03-16 18:06:29
 * @License: MIT
 */
 <template>
@@ -48,7 +48,7 @@
                     <li class="settings-li" @click="redirect(item.name)" v-for="item in menus" :key="item.name">
                         <i class="material-icons vcenter">{{item.icon}}</i>
                         <span>{{$t(item.title)}}</span>
-                        <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
+                        <i class="material-icons vcenter f-right mt-2">keyboard_arrow_right</i>
                         <div class="circular" v-if="item.name=='MessageCenter'&&unreadMessage.length>0"> {{unreadMessage.length}}</div>
                     </li>
                 </ul>
