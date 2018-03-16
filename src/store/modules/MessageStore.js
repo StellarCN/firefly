@@ -16,7 +16,7 @@ const getters ={
       );
     },
     unreadMessage(state){
-      return state.messageItems.filter(obj=>obj.status==0);
+      return state.messageItems.filter(obj=>obj.status==0);j
     }
 }
 const mutations={

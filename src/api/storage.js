@@ -170,21 +170,21 @@ const  DEFAULT_MESSAGE_ITEM=[
   {
     id:1,
     title:"这是一条消息",
-    introduction:"",
+    introduction:"hfdhfjhdsjkufieufdsfhjk",
     content:"hfdshfjksdhfjksdhfjkshfsdjkfhsjfdfdsffdsfsfsdfsfkhfjkjfksdjfkjfkldsjfkjskjfkshjsvjhfdsjhfjdshfjksdhjk",
     createTime:new Date()-1,
     status:0//0未读，1已读
   },
   { id:2,
     title:"这是二条消息",
-    introduction:"",
+    introduction:"hfdhfjhdsjkufieufdsfhjk",
     content:"hfdsjkhfjksdhjksdjksdhjfhdsjkfhjkhfdssffsfdsfsfdkasdjksahfjkdshfdsfjkhdsjkfhdsjkhfjdskhfdsjkhfjksdhfjk",
     createTime:new Date()-2,
     status:0
   },
   { id:3,
     title:"这是三条消息",
-    introduction:"",
+    introduction:"hfdhfjhdsjkufieufdsfhjk",
     content:"hfdhfjhdsjkufieufdsfhjkdshfjkhdsjkhfdfdsfdsfffdssfksjdhfhkdjhfskfjkshfjdhfuefuyreufhdjhjkfhskdjfhksdjhf",
     createTime:new Date()-3,
     status:0
@@ -192,7 +192,7 @@ const  DEFAULT_MESSAGE_ITEM=[
   {
     id:4,
     title:"这是4条消息",
-    introduction:"",
+    introduction:"hfdhfjhdsjkufieufdsfhjk",
     content:"hfdhfjhdsjkufieufdsfhjkdshfjkhdsjkhfdsfksjdhfhkdjhfskfjkshfjdhfuefuyreufhdjhjkfhskdjfhksdjhf",
     createTime:new Date()-4,
     status:0

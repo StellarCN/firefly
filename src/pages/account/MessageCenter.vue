@@ -4,15 +4,13 @@
               :showmenuicon="showmenuicon"
               :showbackicon="showbackicon"
               @goback="back"></tool-bar>
-    <scroll>
       <ul class="content">
         <li v-for="(item ,index) in messageItems" class="item" @click="goToDetils(item)">
-          <p class="item-title"> <span class="title">{{item.title}}</span><span class="time">{{ new Date(Number.parseInt(item.createTime)).toLocaleString().replace("下午","")}}</span> </p>
-          <p class="item-content">{{item.content}}</p>
+          <div class="item-title"> <span class="title">{{item.title}}</span><span class="time">{{ new Date(Number.parseInt(item.createTime)).toLocaleString().replace("下午","")}}</span> </div>
+          <div class="item-content">{{item.introduction}}</div>
           <span class="circular" v-if="item.status==0"></span>
         </li>
       </ul>
-    </scroll>
   </div>
 </template>
 
@@ -72,7 +70,9 @@
           flex 1
           justify-content space-between
           display flex
-          padding-top 5px
+          padding-top 10px
+          .title
+            font-size .45rem!important
           .time
             padding-right 3px
         .item-content
@@ -81,6 +81,7 @@
           text-overflow ellipsis
           overflow hidden
           white-space nowrap
+          padding-top 15px
         .circular
           position absolute
           width 8px
