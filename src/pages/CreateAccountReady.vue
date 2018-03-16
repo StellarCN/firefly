@@ -439,7 +439,9 @@ export default {
   right: 0
   bottom: 0
   padding: 20px 20px
-  background: $primarycolor.gray
+  background: $secondarycolor.gray
+  border-radius:10px
+  margin:7px 7px 50px 7px
   .label
     font-size: 14px
     color: $primarycolor.green
@@ -462,7 +464,7 @@ export default {
   left:0
   right:0
   z-index:99
-  background:$secondarycolor.gray
+  background:$primarycolor.gray
   height:42px
   line-height:42px
   font-size:16px
@@ -474,7 +476,7 @@ export default {
   color:$secondarycolor.green
 .hint
   color:$primarycolor.red
-  font-size: 12px
+  font-size: 15px
 .headline
   color: $primarycolor.green
   font-size: 16px !important 

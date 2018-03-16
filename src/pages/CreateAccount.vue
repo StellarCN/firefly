@@ -38,9 +38,7 @@
               :type="repwdvisible? 'text': 'password'"
               required
             ></v-text-field>
-      <div class="hint">
-        {{$t('Account.CreateAccountHint')}}
-      </div>
+      <div class="hint">{{$t('Account.CreateAccountHint')}}</div>
     </div>
     <div class="footer">
       <v-layout row wrap>
@@ -133,14 +131,16 @@ export default {
   right: 0
   bottom: 0
   padding: 20px 20px
-  background: $primarycolor.gray
+  background: $secondarycolor.gray
+  border-radius:5px
+  margin:5px 5px 50px 5px
 .footer
   position:fixed
   bottom:0
   left:0
   right:0
   z-index:99
-  background:$secondarycolor.gray
+  background:$primarycolor.gray
   height:42px
   line-height:42px
   font-size:16px
@@ -153,5 +153,6 @@ export default {
 .hint
   color:$primarycolor.green
   font-size: 14px
+  
 </style>
 

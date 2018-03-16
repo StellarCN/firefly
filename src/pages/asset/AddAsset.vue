@@ -1,8 +1,8 @@
 // 添加资产
 <template>
   <div class="page" >
-    <loading color="green" :show="showloading" :loading="working" :success="trustsuccess" :fail='trustfail'
-            :title="loadingTitle" :msg="loadingMsg" :closable="trustfail" @close="hiddenLoadingView" />
+    <loading color="red" :show="showloading" :loading="working" :success="trustsuccess" :fail='trustfail'
+            :title="loadingTitle" :msg="loadingMsg" :closeable="trustfail" @close="hiddenLoadingView" />
     <toolbar :title="$t(title)" 
       :showmenuicon="showmenuicon" 
       :showbackicon="showbackicon"

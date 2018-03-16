@@ -14,9 +14,10 @@
           <div class="lang" v-for="(item,index) in locales" :key="index" @click.stop="chose(item)">
             <span class="label">{{item.label}}</span>
             <span class="icons">
-              <i class="iconfont icon-dot1" v-if="isChosed(item)"></i>
-              <i class="iconfont icon-dot" v-else></i>
-              
+              <!-- <i class="iconfont icon-dot1" v-if="isChosed(item)"></i>
+              <i class="iconfont icon-dot" v-else></i> -->
+                  <i class="iconfont_style_color" v-if="isChosed(item)">✔</i>
+                            <i class="iconfont_style" v-else>✔</i>
             </span>
           </div>
         </div>
@@ -97,6 +98,7 @@ export default {
   .content
     padding: 5px 5px
     .mycard
+        background-color:$secondarycolor.gray
       .card-content
         .lang
           padding-top: 10px
@@ -109,6 +111,14 @@ export default {
               font-size: 20px
             .iconfont.icon-dot1
               color: $primarycolor.green
+
+
+.iconfont_style_color
+    color:$primarycolor.green
+    font-size:20px
+.iconfont_style
+    font-size:20px
+    color:$secondarycolor.gray
 
 </style>
 

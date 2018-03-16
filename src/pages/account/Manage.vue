@@ -17,11 +17,11 @@
 
     </toolbar>
     <div class="content">
-      <card padding="10px 10px" class="mycard">
+      <card class="mycard">
         <div class="card-content" slot="card-content">
           <div class="account-row"  v-for="(item,index) in accounts" :key="index" @click.stop="info(item)">
 
-            <v-layout class="account-wrapper" row wrap v-swiper=1 >
+            <v-layout class="account-wrapper" row wrap v-swiper=2.2 >
               <v-flex xs2>
                 <div class="avatar">
                   <i class="iconfont icon-erweima"></i>
@@ -40,6 +40,8 @@
 
             <div class="operate-box">
               <div class="del" @click.stop="del(item,index)">{{$t('Delete')}}</div>
+              <div class="modify" @click.stop="modify(item.address)">{{$t('Modify')}}</div>
+              <div class="change" @click.stop="changeaccount(index,item)">{{$t('Change')}}</div>
             </div>
 
           </div>
@@ -103,7 +105,6 @@
         showLoading: false,
         loadingTitle: null,
         loadingMsg: null,
-
 
       }
     },

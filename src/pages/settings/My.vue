@@ -69,7 +69,7 @@ export default {
     data(){
         return {
             showaccountsview: false,
-            menus: [
+            menus: [               
                 {
                     title: "ManageAccount",
                     name: "ManageAccount",
