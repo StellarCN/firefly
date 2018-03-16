@@ -44,6 +44,8 @@
               dark
               :suffix="selectedasset.code"
               type="Number"
+
+              
               
               ></v-text-field>
             <div class="receive_asset_msg_one">
@@ -99,19 +101,30 @@ export default {
       qrcodebase64:null,
       assetChoseReturnObject: true,
       showassetcode:false,
+  
 
 
     }
   },
   watch:{
     num :function(){
-        if(this.num!=null){
-        this.showassetcode=true;
-    }else if(this.num==0){
+     if(this.num===""||this.num===null){
       this.showassetcode=false;
-    }
-
+    }else {
+        this.showassetcode=true;
+    } 
+  
     },
+    amount:function(){
+    let sendnum = Number(this.amount);
+    if(sendnum<0){
+      this.num=0
+    }
+  
+    if(sendnum>this.selectedasset.balance){
+      this.num=this.selectedasset.balance
+      }
+    }
   
   },
    computed:{
