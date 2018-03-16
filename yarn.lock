@@ -1998,6 +1998,10 @@ cordova-plugin-inappbrowser@^1.7.2:
   version "1.7.2"
   resolved "http://registry.npm.taobao.org/cordova-plugin-inappbrowser/download/cordova-plugin-inappbrowser-1.7.2.tgz#64763495be87eb2e7adb1a08f0209b96ea5ceee0"
 
+cordova-plugin-logtofile@^1.1.2:
+  version "1.1.2"
+  resolved "http://registry.npm.taobao.org/cordova-plugin-logtofile/download/cordova-plugin-logtofile-1.1.2.tgz#313fb5ef0a5a13f41ac4d110a28ab63eb138232c"
+
 cordova-plugin-qrscanner@^2.5.0:
   version "2.5.0"
   resolved "http://registry.npm.taobao.org/cordova-plugin-qrscanner/download/cordova-plugin-qrscanner-2.5.0.tgz#6d6ba13d0bb49e370daa4958d77c8aa76d8ca356"

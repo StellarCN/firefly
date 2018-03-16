@@ -11,7 +11,7 @@
   <div class="fuzzy-view" v-if="showFuzzyView">
 
   </div>
-  
+
 </div>
 </template>
 
@@ -183,6 +183,7 @@ export default {
     // if(window.localStorage.getItem('login_flag')!=1){
     //   setInterval('toPicklanguage',10000)
     // }
+    this.loadMessageItem();
   },
   // destroyed : {
   //     clearInterval(setInterval_value)
@@ -198,7 +199,8 @@ export default {
       "getAccountInfo",
       "getAllAssetHosts",
       "onPause",
-      "onResume"
+      "onResume",
+      "loadMessageItem"
     ]),
     onAppPause() {
       this.showFuzzyView = true
@@ -323,7 +325,7 @@ export default {
   -webkit-filter: blur(5px)
   margin: -2px
   background-size: cover
-  /*平铺*/  
+  /*平铺*/
   background-attachment: fixed
 @css {
   html{

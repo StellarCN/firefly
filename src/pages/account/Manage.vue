@@ -3,8 +3,8 @@
  */
 <template>
   <div class="page">
-    <toolbar :title="$t(title)" 
-      :showmenuicon="showmenuicon" 
+    <toolbar :title="$t(title)"
+      :showmenuicon="showmenuicon"
       :showbackicon="showbackicon"
       @goback="back"
       >
@@ -20,8 +20,8 @@
       <card padding="10px 10px" class="mycard">
         <div class="card-content" slot="card-content">
           <div class="account-row"  v-for="(item,index) in accounts" :key="index" @click.stop="info(item)">
-            
-            <v-layout class="account-wrapper" row wrap v-swiper=1 >
+
+            <v-layout class="account-wrapper" row wrap v-swiper=1.4 >
               <v-flex xs2>
                 <div class="avatar">
                   <i class="iconfont icon-erweima"></i>
@@ -40,13 +40,14 @@
 
             <div class="operate-box">
               <div class="del" @click.stop="del(item,index)">{{$t('Delete')}}</div>
+              <div class="del" @click.stop="changeaccount(index,item)">{{$t('Delete')}}</div>
             </div>
-            
+
           </div>
         </div>
       </card>
     </div>
-    <loading :show="showLoading" :loading="working" :success="delok" :fail='delerror' 
+    <loading :show="showLoading" :loading="working" :success="delok" :fail='delerror'
       :title="loadingTitle" :msg="loadingMsg" :closeable="delerror" @close="hideLoadingView"/>
 
      <div class="pwdSheetWrapper"v-if="showPwdSheet">
@@ -111,19 +112,22 @@ export default {
     ...mapState({
       accounts: state => state.accounts.data,
       account: state => state.accounts.selectedAccount,
+      selectedAccountIndex: state => state.accounts.selected,
       accountData: state => state.accounts.accountData,
       app: state => state.app
     }),
-  
+
   },
   mounted(){
-    
+
   },
   methods: {
     ...mapActions({
       deleteAccount:'deleteAccount',
       cleanAccount: 'cleanAccount',
       changeAccountNoPassword: 'changeAccountNoPassword',
+      choseAccountNoPwd: 'changeAccountNoPassword',
+      choseAccount: 'changeAccount',
       getAccountInfo: 'getAccountInfo',
       getPayments: 'getPayments',
 
@@ -147,6 +151,22 @@ export default {
         return
       }
       if(this.working)return
+    },
+    changeaccount(index,item){
+      //console.log('------change account----')
+      //if(item.address === this.account.address){
+      //  return;
+      //}
+      // 弹出密码对话框，
+      this.showmenu = !this.showmenu
+      if(this.changeAccount){
+        this.changeAccount(index,item)
+      }
+    },
+    changeAccount(index,item){
+      this.selectedAccount = item
+      this.selectedIndex = index
+      this.showPwdSheet = true
     },
     canclePwdInput(){
       this.showPwdSheet = false
@@ -232,14 +252,14 @@ export default {
             this.delerror = true
           })
 
-      }        
+      }
     },
     hideLoadingView(){
       this.delerror = false
       this.working = false
       this.showLoading = false
     },
-      
+
   },
   components: {
     Toolbar,
@@ -307,7 +327,7 @@ export default {
     font-size: 24px
     padding-top: 5px
     padding-right: 5px
-.operate-box 
+.operate-box
   position: absolute
   z-index: 1
   height: 100%
@@ -340,6 +360,6 @@ export default {
   .sheet-btn
     flex: 1
     text-align: center
-  
+
 </style>
 

@@ -10,7 +10,7 @@
   "bugs": {
     "url": "https://github.com/stellarcn/firefly/issues"
   },
-  "github":"https://github.com/stellarcn/firefly",
+  "github": "https://github.com/stellarcn/firefly",
   "homepage": "https://wallet.fchain.io",
   "scripts": {
     "dev": "node build/dev-server.js",
@@ -41,6 +41,7 @@
     "cordova-plugin-device": "^1.1.7",
     "cordova-plugin-globalization": "^1.0.9",
     "cordova-plugin-inappbrowser": "^1.7.2",
+    "cordova-plugin-logtofile": "^1.1.2",
     "cordova-plugin-qrscanner": "^2.5.0",
     "cordova-plugin-screen-orientation": "^3.0.1",
     "cordova-plugin-splashscreen": "^4.1.0",
@@ -148,7 +149,8 @@
       "cordova-disable-http-cache": {},
       "cordova-plugin-inappbrowser": {},
       "cordova-plugin-globalization": {},
-      "cordova-plugin-screen-orientation": {}
+      "cordova-plugin-screen-orientation": {},
+      "cordova-plugin-logtofile": {}
     },
     "platforms": [
       "browser",

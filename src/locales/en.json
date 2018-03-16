@@ -123,8 +123,10 @@
   "Menu.Help":"Trade help",
   "Menu.My":"my",
   "Menu.History": "History",
+  "Menu.MessageCenter":"Message Center",
 
   "ManageAccount":"manage account",
+  "MessageCenter": "message center",
   "PinCode":"pin code",
   "Language":"language",
   "ModifyAccount":"modify account",
@@ -395,23 +397,23 @@
   "TransactionPassword_MsgOne":"Important",
   "TransactionPassword_MsgTwo":"Transaction password, if forgotten, can not be recovered;",
   "TransactionPassword_MsgThree":"You can retrieve your account only with the key",
-  
-  
+
+
   "Account_secretkey_MsgOne":"Very important!",
   "Account_secretkey_MsgTwo":"Lose the key, lose everything!",
   "Account_secretkey_MsgThree":"Copy or print the key and store it in a secure place. Do not save the screenshot or store it directly in your cell phone, disk, or mailbox.",
- 
+
   "TDO":"To da moon!",
   "TDO_MsgOne":"Congratulations!",
   "TDO_MsgTwo":"After keeping the information,",
   "TDO_MsgThree":"You can start using a firefly wallet.",
-  
+
   "LastStep":"LastStep.",
   "AllRight":"AllRight",
 
-  
+
   "BackedUp":"BackedUp",
   "ReceiveAssetMsg":"Scan the QR code to send me"
-  
+
 
 }
