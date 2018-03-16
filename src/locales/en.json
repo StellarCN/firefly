@@ -61,7 +61,7 @@
   "Account.CreateAccountError":"error occured while creating account",
   "Account.InputSecretKey":"please input your secret key start with 'S'",
   "Account.ConfirmSkip":"skip validate secret key ?",
-  "Account.SkipValideHint":"The loss due to the loss of secret key will be at your own risk. Are you sure to skip this step ?",
+  "Account.SkipValidHint":"The loss due to the loss of secret key will be at your own risk. Are you sure to skip this step ?",
   "Account.Later":"Later",
   "Account.SecretKeyValidHint":"secret key is valid.Please keep your secret key safe and start.",
   "Account.Start":"Start",

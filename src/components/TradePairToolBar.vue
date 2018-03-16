@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-08 15:40:36 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-02-08 15:57:41
+ * @Last Modified time: 2018-03-15 16:49:57
  * @License MIT 
  */
 
@@ -11,7 +11,7 @@
 <template>
   <div class="trade-tb">
     <!-- toolbar -->
-    <v-toolbar color="primary" dark app dense :clipped-left='true'>
+    <v-toolbar color="primary" dark dense :clipped-left='true'>
       <v-btn icon @click="back"><v-icon>keyboard_arrow_left</v-icon></v-btn>
       <div class="toolbar__title toolbar-title white--text textcenter tb-title flex-row" @click.stop="showChoseTradeDlg = true">
         <div class="flex1">&nbsp;</div>
@@ -44,8 +44,8 @@
         <div class="toolbar__title toolbar-title white--text textcenter tb-title">{{$t("Trade.SelfSelection")}}</div>
         <v-btn icon style="visibility:hidden;"><v-icon class="back-icon"></v-icon></v-btn>
       </v-toolbar>
-      <v-card class="dlg-content">
-        <div v-for="(item,index) in tradepairs" :key="index" :class="'flex-row row100 ' + (isChoosenTrade(item.from,item.to) ? 'active':'')" @click="choseTrade(index,item)">
+      <v-card class="dlg-content mt-5">
+        <div v-for="(item,index) in tradepairs" :key="index" :class="'flex-row row100 pt-2 pb-2 ' + (isChoosenTrade(item.from,item.to) ? 'active':'')" @click="choseTrade(index,item)">
           <div class="flex2">&nbsp;</div>
           <div class="flex3 textcenter">
             <div class="tb-code">{{item.from.code}}</div>
@@ -168,7 +168,7 @@ export default {
   .material-icons
     font-size: 24px
 .dlg-content
-  padding-top: 20px!important
+  padding-top: 70px!important
 .row100
   width: 100vw
   &.active

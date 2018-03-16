@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-26 15:59:49 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-02-26 17:45:38
+ * @Last Modified time: 2018-03-15 10:02:22
  * @License MIT 
  */
 
@@ -25,10 +25,10 @@
 <script>
 var moment = require('moment')
 var echarts = require('echarts')
-import { getTradeAggregation, getTradeAggregation5min, 
+import { getTradeAggregation, getTradeAggregation1min, 
     getTradeAggregation15min, getTradeAggregation1hour, 
     getTradeAggregation1day, getTradeAggregation1week,
-    RESOLUTION_5MIN,RESOLUTION_1HOUR,RESOLUTION_1DAY } from '@/api/tradeAggregation'
+    RESOLUTION_1MIN,RESOLUTION_1HOUR,RESOLUTION_1DAY } from '@/api/tradeAggregation'
 import { getAsset } from '@/api/assets'
 import { getTrades } from '@/api/trade'
 import _ from 'lodash'
@@ -77,7 +77,7 @@ export default {
         //时间间隔，单位毫秒
         interval: {
             type: Number,
-            default: RESOLUTION_5MIN
+            default: RESOLUTION_1MIN
         },
         resolution: {
             type: Number,
@@ -92,6 +92,11 @@ export default {
         height: {
             type: Number,
             default: 60
+        },
+        //需要多长时间后进行界面数据展示
+        timeout: {
+            type: Number,
+            default: 100
         }
     },
     computed: {
@@ -112,10 +117,6 @@ export default {
     beforeMount () {
         //生成随机的id
         this.id = 'k_'+ new Date().getTime()
-        //开启定时器
-        this.tinterval = setInterval(this.fetch, this.interval)
-        this.setupTradeInterval()
-        this.fetchLastTradeAggregation()
        
     },
     beforeDestroy () {
@@ -128,9 +129,15 @@ export default {
     },
     mounted () {
         this.$nextTick(()=>{
-            this.init();
-            this.fetch();
-            this.fetchLastTrade();
+            setTimeout(()=>{
+                //开启定时器
+                this.tinterval = setInterval(this.fetch, this.interval)
+                this.setupTradeInterval()
+                this.fetchLastTradeAggregation()
+                this.init();
+                this.fetch();
+                this.fetchLastTrade();
+            }, this.timeout)
         })
     },
     methods: {

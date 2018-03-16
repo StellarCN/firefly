@@ -1,13 +1,11 @@
 <template>
-<v-card class="menu-card">
-  <v-bottom-nav :value="true" :active="active" color="dark" class="tb-menu">
-      <v-btn  flat v-for="(item,index) in menus" :key="index" :value="index" @click="redirect(index,item.name)">
+  <v-bottom-nav :value="true" absolute :active.sync="active" color="dark" class="tb-menu">
+      <v-btn flat v-for="(item,index) in menus" :key="index" :value="index" @click="redirect(index,item.name)">
         <span>{{$t(item.title)}}</span>
         <v-icon>{{item.icon}}</v-icon>
         <div  v-if="index!==active && index===3 && unreadMessage.length !==0 "  style="width: 10px;height: 10px;border-radius: 5px;background: red;right: 20px;top:5px;position: absolute;z-index: 10"></div>
       </v-btn>
     </v-bottom-nav>
-</v-card>
 </template>
 
 <script>

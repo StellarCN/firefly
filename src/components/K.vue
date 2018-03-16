@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-09 10:46:20
+ * @Last Modified time: 2018-03-15 12:28:21
  * @License: MIT 
  */
 <template>
@@ -55,7 +55,7 @@
           <div :class="'flex1 ' + (resolution_key === 'day' ? 'active' : '')" @click="chgResolution('day')">{{$t('day')}}</div>
           <div :class="'flex1 ' + (resolution_key === 'hour' ? 'active' : '')" @click="chgResolution('hour')">{{$t('hour')}}</div>
           <div :class="'flex1 ' + (resolution_key === '15min' ? 'active' : '')" @click="chgResolution('15min')">15{{$t('minute')}}</div>
-          <div :class="'flex1 ' + (resolution_key === '5min' ? 'active' : '')" @click="chgResolution('5min')">5{{$t('minute')}}</div>
+          <div :class="'flex1 ' + (resolution_key === '1min' ? 'active' : '')" @click="chgResolution('1min')">1{{$t('minute')}}</div>
       </div>
   </div>
 </card>
@@ -64,10 +64,10 @@
 <script>
 var echarts = require('echarts')
 import NP from 'number-precision'
-import { getTradeAggregation, getTradeAggregation5min, 
+import { getTradeAggregation, getTradeAggregation1min, 
     getTradeAggregation15min, getTradeAggregation1hour, 
     getTradeAggregation1day, getTradeAggregation1week,
-    RESOLUTION_5MIN, RESOLUTION_15MIN, RESOLUTION_1HOUR, RESOLUTION_1DAY, RESOLUTION_1WEEK } from '@/api/tradeAggregation'
+    RESOLUTION_1MIN, RESOLUTION_15MIN, RESOLUTION_1HOUR, RESOLUTION_1DAY, RESOLUTION_1WEEK } from '@/api/tradeAggregation'
 import { getAsset } from '@/api/assets'
 import { mapState, mapActions, mapGetters} from 'vuex'
 import { getTrades } from '@/api/trade'
@@ -81,7 +81,7 @@ const RESOLUTIONS = {
     "day": RESOLUTION_1DAY,
     "hour": RESOLUTION_1HOUR,
     "15min": RESOLUTION_15MIN,
-    "5min": RESOLUTION_5MIN
+    "1min": RESOLUTION_1MIN
 }
 
 export default {
@@ -92,8 +92,8 @@ export default {
             opt: null,
             colors: ['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'],
             
-            resolution_key: '5min',
-            resolution: RESOLUTION_5MIN,
+            resolution_key: '15min',
+            resolution: RESOLUTION_15MIN,
 
             dates:[],//日期
             volumes: [],//成交量
@@ -149,6 +149,10 @@ export default {
         height: {
             type: String,
             default: '260px'
+        },
+        timeout: {
+            type: Number,
+            default: 100
         }
     },
     computed: {
@@ -169,13 +173,10 @@ export default {
     beforeMount () {
         //生成随机的id
         this.id = 'k_'+ new Date().getTime()
-        //开启定时器
-        this.tinterval = setInterval(this.fetch, this.resolution)
-        //如果是全屏模式，则切换为横屏
+         //如果是全屏模式，则切换为横屏
         if(this.fullscreen){
             screen.orientation.lock('landscape');
         }
-        this.fetchLastTradeAggregation()
         
     },
     beforeDestroy () {
@@ -194,7 +195,14 @@ export default {
     mounted () {
         console.log('----before mounted------')
         this.$nextTick(()=>{
-           this.reload();
+
+            setTimeout(()=>{
+                 //开启定时器
+                this.tinterval = setInterval(this.fetch, this.resolution)
+                this.fetchLastTradeAggregation()
+                this.reload();
+            }, this.timeout)
+           
         })
     },
     methods: {

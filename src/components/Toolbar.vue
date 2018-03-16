@@ -4,7 +4,7 @@
 <template>
   <div class="cp-toolbar">
 
-    <v-toolbar  dark app :class="color" :flat="!shadow" dense :clipped-left='true'>
+    <v-toolbar  dark :class="color" :flat="!shadow" dense :clipped-left='true'>
       <v-btn icon v-if="showbackicon" @click="back" class="white--text">
             <v-icon class="back-icon">&#xE5CB;</v-icon>
       </v-btn>
@@ -195,8 +195,8 @@ export default {
     },
     back(){
       //console.log('----on click -- go back')
-      //this.$router.back()
-      this.$emit('goback');
+      this.$router.back()
+      //this.$emit('goback');
     },
     changeaccount(index,item){
       //console.log('------change account----')

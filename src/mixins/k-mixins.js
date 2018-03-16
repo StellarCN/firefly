@@ -1,18 +1,15 @@
 /*
  * K线图mixins
- * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-03-08 15:52:16 
- * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-09 11:36:11
+ * @Last Modified time: 2018-03-15 10:15:19
  * @License MIT 
  */
-
 var echarts = require('echarts')
 import NP from 'number-precision'
-import { getTradeAggregation, getTradeAggregation5min, 
+import { getTradeAggregation, getTradeAggregation1min, 
     getTradeAggregation15min, getTradeAggregation1hour, 
     getTradeAggregation1day, getTradeAggregation1week,
-    RESOLUTION_5MIN, RESOLUTION_15MIN, RESOLUTION_1HOUR, RESOLUTION_1DAY, RESOLUTION_1WEEK } from '@/api/tradeAggregation'
+    RESOLUTION_1MIN, RESOLUTION_15MIN, RESOLUTION_1HOUR, RESOLUTION_1DAY, RESOLUTION_1WEEK } from '@/api/tradeAggregation'
 import { getAsset } from '@/api/assets'
 import { mapState, mapActions, mapGetters} from 'vuex'
 import { getTrades } from '@/api/trade'
@@ -31,15 +28,15 @@ export default {
             "day": RESOLUTION_1DAY,
             "hour": RESOLUTION_1HOUR,
             "15min": RESOLUTION_15MIN,
-            "5min": RESOLUTION_5MIN
+            "1min": RESOLUTION_1MIN
           },
             id: null,//元素主键
             ele: null,//echarts对象
             opt: null,
             colors: ['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'],
             
-            resolution_key: '5min',
-            resolution: RESOLUTION_5MIN,
+            resolution_key: '15min',
+            resolution: RESOLUTION_15MIN,
 
             dates:[],//日期
             volumes: [],//成交量
@@ -84,7 +81,7 @@ export default {
         incremental: {
             type: Boolean,
             default: true
-        },
+        }
     },
     computed: {
       titleData(){
@@ -104,10 +101,8 @@ export default {
     beforeMount () {
         //生成随机的id
         this.id = 'k_'+ new Date().getTime()
-        //开启定时器
         this.tinterval = setInterval(this.fetch, this.resolution)
         this.fetchLastTradeAggregation()
-        
     },
     beforeDestroy () {
         //关闭定时器
@@ -122,7 +117,7 @@ export default {
     mounted () {
         console.log('----before mounted------')
         this.$nextTick(()=>{
-           this.reload();
+            this.reload();
         })
     },
     methods: {

@@ -114,7 +114,6 @@
 
         <div class="si-card">
           <div class="headline">{{$t('Account.InputSecretKey')}}</div>
-         
           <v-layout wrap>
             <v-flex xs12 sm6 md4>
               <secret-key-input ref="secretkeyRef"></secret-key-input>
@@ -133,7 +132,7 @@
     <!-- 是否跳过验证窗口 -->
     <v-dialog v-model="showSkipDlg" max-width="95%" persistent>
       <card padding="20px 10px">
-        <div class="card-content" slot="card-content">
+        <div class="card-content dlg-content" slot="card-content">
           <div class="avatar-div textcenter">
             <v-avatar>
               <img src="../assets/img/ff-red.png" />
@@ -152,7 +151,7 @@
     <!-- 验证通过窗口 -->
     <v-dialog v-model="showSeedValidDlg" max-width="95%" persistent>
       <card padding="20px 10px">
-        <div class="card-content" slot="card-content">
+        <div class="card-content dlg-content" slot="card-content">
           <div class="avatar-div textcenter">
             <v-avatar>
               <img src="../assets/img/ff-green.png" />
@@ -170,7 +169,7 @@
     <!-- 验证失败窗口 -->
     <v-dialog v-model="showSeedInValidDlg" max-width="95%" persistent>
       <card padding="20px 10px">
-        <div class="card-content" slot="card-content">
+        <div class="card-content dlg-content" slot="card-content">
           <div class="avatar-div textcenter">
             <v-avatar>
               <img src="../assets/img/ff-red.png" />
@@ -306,7 +305,9 @@ export default {
     },
     btnOKSeedInput(){
       
-      this.seedInput = this.$refs.secretkeyRef.seedInput
+      this.seedInput = this.$refs.secretkeyRef.getSeed()
+      console.log(`------${this.seedInput}---`)
+      console.log(`---${this.seed}---`)
       if(this.seed != this.seedInput){
         //this.seedInputErr = 'Error.SeedWrong'
         this.showSeedInValidDlg = true
@@ -410,6 +411,10 @@ export default {
       closeStreams()
       initStreams(this.address)
       this.$router.push({name:'MyAssets'})
+    },
+    skipValidSecretKey(){
+      this.showSkipDlg  = false
+      this.doSave()
     }
 
   },
@@ -531,5 +536,7 @@ export default {
   font-size: 16px
 .dlg-green
   color: $primarycolor.green
+.dlg-content
+  background: $secondarycolor.gray
 </style>
 

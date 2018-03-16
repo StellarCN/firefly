@@ -3,17 +3,20 @@
  * @Author: mazhaoyong@gmail.com
  * @Date: 2018-01-23 11:14:24
  * @Last Modified by: mazhaoyong@gmail.com
+<<<<<<< HEAD
  * @Last Modified time: 2018-02-09 15:12:39
  * @License: MIT
+=======
+ * @Last Modified time: 2018-03-14 12:11:29
+ * @License: MIT 
+>>>>>>> 327c2e53d330d13358590c2943bc96ff1fe884b9
  */
 <template>
   <div class="page">
       <toolbar :title="$t('Menu.My')" :showbackicon="false"  ref="toolbar">
-          <div slot="left-tool">
-            <v-btn icon @click.native="showAccounts">
+            <v-btn icon @click.native="showAccounts" slot="left-tool">
                 <i class="material-icons">repeat</i>
             </v-btn>
-          </div>
       </toolbar>
 
       <accounts-nav :show="showaccountsview" @close="closeView"/>
