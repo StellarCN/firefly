@@ -97,7 +97,6 @@ export default {
       this.vH = allkHB.times(this.vH).div(h).toNumber()
       this.mH = allkHB.times(this.mH).div(h).toNumber()
       this.height = allkH.toNumber()
-      alert('----w:'+this.width +",h:"+this.height)
     },
     mounted () {
 
