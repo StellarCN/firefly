@@ -406,6 +406,7 @@
   "ReceiveAssetMsg":"Scan the QR code to send me",
   "Change":"Change",
   "MyAccount":"MyAccount",
-  "MemoBook.MyAddress":"MyAddress"
+  "MemoBook.MyAddress":"MyAddress",
+  "MessageCenter":"MessageCenter"
 
 }

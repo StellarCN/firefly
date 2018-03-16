@@ -44,7 +44,8 @@
               dark
               :suffix="selectedasset.code"
               type="Number"
-            ></v-text-field>
+              
+              ></v-text-field>
             <div class="receive_asset_msg_one">
                 <span>{{$t("Available")}}</span> 
                 <span>{{selectedasset.code}}:</span>               
@@ -54,7 +55,7 @@
             <div class="receive_asset_msg">
               <span>{{$t("ReceiveAssetMsg")}}</span><br/>
               <span>{{num}}&nbsp;</span>
-              <span>{{selectedasset.code}}</span>
+              <span v-if="showassetcode" >{{selectedasset.code}}</span>
               
             </div>
             <div class="qrcode">
@@ -97,9 +98,21 @@ export default {
       num:null,
       qrcodebase64:null,
       assetChoseReturnObject: true,
+      showassetcode:false,
 
 
     }
+  },
+  watch:{
+    num :function(){
+        if(this.num!=null){
+        this.showassetcode=true;
+    }else if(this.num==0){
+      this.showassetcode=false;
+    }
+
+    },
+  
   },
    computed:{
     ...mapState({
@@ -262,6 +275,7 @@ export default {
 .receive_asset_msg
   text-align:center
   color:$primarycolor.green
+  padding-top:8px
 
 .receive_asset_msg_one
   color:$secondarycolor.font

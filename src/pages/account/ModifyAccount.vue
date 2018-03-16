@@ -84,6 +84,7 @@ export default {
   beforeMount(){
       let address = this.$route.query.address || account.address
       this.seed = this.$route.query.seed
+      // console.log("--------------"+this.seed)
       for(var i=0,n=this.accounts.length;i<n;i++){
         if(this.accounts[i].address === address){
           this.workindex = i

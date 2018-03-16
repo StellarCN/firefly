@@ -299,15 +299,17 @@ export default {
 .content_menu_styleone {
   font-size: 20px;
   color: $secondarycolor.font;
-  margin-left: 0px;
+  margin-left: 5px;
   padding-left:20px
   padding-right:20px
   margin-left:5px
+  padding-bottom:3px
 }
 
 .content_menu_styletwo {
-  border-bottom: 4px solid $primarycolor.red;
+  border-bottom: 3px solid $primarycolor.red;
   color: $primarycolor.red;
+  
 }
 
 .contacts-row {
@@ -318,6 +320,7 @@ export default {
   background-color: $secondarycolor.gray;
   border-radius: 5px;
   padding: 20px 10px 20px 20px;
+  margin-top:5px
 }
 
 .contact-name {

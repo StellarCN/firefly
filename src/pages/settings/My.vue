@@ -71,7 +71,7 @@ export default {
     data(){
         return {
             showaccountsview: false,
-            menus: [
+            menus: [               
                 {
                     title: "ManageAccount",
                     name: "ManageAccount",
@@ -96,6 +96,11 @@ export default {
                     title: "Menu.Help",
                     name: "Help",
                     icon: "help"    
+                },
+                {
+                    title:"MessageCenter",
+                    name:"MessageCenter",
+                    icon:"message"
                 }
             ],
             myofferpage:{ name: 'History', params: { active: 'offer' } },

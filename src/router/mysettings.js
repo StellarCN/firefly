@@ -50,6 +50,11 @@ export default {
         path: 'about',
         name: 'About',
         component: resolve => require(['../pages/settings/About'], resolve)
+      },
+      {
+        path: 'messageCenter',
+        name: 'MessageCenter',
+        component: resolve => require(['../pages/settings/MessageCenter'], resolve)
       }
     ]
   }

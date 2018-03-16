@@ -41,7 +41,7 @@
             <div class="operate-box">
               <div class="del" @click.stop="del(item,index)">{{$t('Delete')}}</div>
               <div class="modify" @click.stop="modify(item.address)">{{$t('Modify')}}</div>
-              <div class="change" @click.stop="del(item,index)">{{$t('Change')}}</div>
+              <div class="change" @click.stop="changeaccount(index,item)">{{$t('Change')}}</div>
             </div>
             
           </div>
@@ -114,9 +114,10 @@ export default {
       accounts: state => state.accounts.data,
       account: state => state.accounts.selectedAccount,
       accountData: state => state.accounts.accountData,
-      app: state => state.app
+      app: state => state.app,
+      selectedAccountIndex: state => state.accounts.selected,
     }),
-  
+   
   },
   mounted(){
     
@@ -129,9 +130,29 @@ export default {
       getAccountInfo: 'getAccountInfo',
       getPayments: 'getPayments',
 
+      choseAccount: 'changeAccount',
+      choseAccountNoPwd: 'changeAccountNoPassword'
+
     }),
+    changeaccount(index,item){
+      //console.log('------change account----')
+      //if(item.address === this.account.address){
+      //  return;
+      //}
+      // 弹出密码对话框，
+      this.worktype = 'change'
+      this.showmenu = !this.showmenu
+      if(this.changeAccount){
+        this.changeAccount(index,item)
+      }
+    },
+     changeAccount(index,item){
+      this.selectedAccount = item
+      this.selectedIndex = index
+      this.showPwdSheet = true
+    },
     modify(){
-      this.$router.push({name:'ModifyAccount'})
+      this.$router.push({name: 'AccountInfo'});
     },
     back(){
       this.$router.back()
@@ -163,8 +184,8 @@ export default {
       this.working = true
       this.loadingTitle = null
       this.loadingMsg = null
-      let selected = this.workaccount.address === this.account.address
       if('del' === this.worktype){
+      let selected = this.workaccount.address === this.account.address
         readAccountData(this.workaccount.address,this.inpassword)
           .then(data=>{
             return this.deleteAccount({ index: this.workindex, account: this.workaccount})
@@ -175,7 +196,7 @@ export default {
                 for(var i=0,n=doms.length;i<n;i++){
                   let element = doms[i]
                   element.style.transition = "0.3s"
-                  element.style.marginLeft = 240 + "px"
+                  element.style.marginLeft = 0 + "px"
                 }
               }catch(error){
                 console.error(error)
@@ -237,7 +258,78 @@ export default {
             this.delerror = true
           })
 
-      }        
+      } 
+      // if('change' === this.worktype){
+      else{
+      // if(this.checkPwd)return
+     // 无密码则报错
+      // if(!this.inpassword){
+      //   this.$toasted.error(this.$t('Error.PasswordWrong')) //请输入密码
+      //   return
+      // }
+      //检验密码
+      this.checkPwd = true
+      let data = {
+        index: this.selectedIndex === null ? this.selectedAccountIndex : this.selectedIndex,
+        address: this.selectedAccount.address || this.account.address,
+        password: this.inpassword
+      }
+      this.choseAccount(data).then(account=>{
+        this.$toasted.show(this.$t('Info.ChangeAccountSuccess'));
+        this.showPwdSheet = false;
+        this.checkPwd = false;
+        this.inpassword = null;
+        setTimeout(()=>{
+              this.showLoading = false
+              if(this.accounts.length === 0){
+                this.$router.push({name: 'Wallet'})
+              }else{
+                //重新读取数据
+                let address = this.account.address
+                Promise.all([this.getAccountInfo(this.account.address)])//,this.getPayments(this.account.address)
+                  .then(data=>{
+                    //重新处理stream
+                    try{
+                      this.$store.commit(ACCOUNT_IS_FUNDING)
+                      closeStreams();
+                      cleanStreamData();
+                      initStreams(this.account.address);
+                    }catch(err){
+                      console.error(`stream error`)
+                      console.error(err)
+                    }
+                  }).catch(err=>{
+                    this.cleanAccount()
+                    let msg = err.message
+                    if(msg && 'Network Error' === msg){
+                      this.$toasted.error(this.$t('Account.NetworkError'))
+                      return
+                    }
+                    if (err.data && err.data.status === 404) {
+                      this.noticeText = this.$t('Error.AccountNotFund')
+                      this.$store.commit(ACCOUNT_NOT_FUNDING)
+                      this.notice = true
+                    }
+                  })
+              }
+            },1000)
+      })
+      .catch(err=>{
+        console.error('change account error')
+        console.error(err)
+        this.$toasted.error(this.$t('Error.PasswordWrong'))
+        this.checkPwd = false
+        this.showPwdSheet = false;
+        this.inpassword=null;
+        setTimeout(()=>{
+              this.showLoading = false
+              if(this.accounts.length === 0){
+                this.$router.push({name: 'Wallet'})
+              }      
+            },1000)
+        
+      })
+    }
     },
     hideLoadingView(){
       this.delerror = false
