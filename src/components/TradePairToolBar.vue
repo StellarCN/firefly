@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-08 15:40:36 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-15 16:49:57
+ * @Last Modified time: 2018-03-16 17:16:10
  * @License MIT 
  */
 
@@ -11,7 +11,7 @@
 <template>
   <div class="trade-tb">
     <!-- toolbar -->
-    <v-toolbar color="primary" dark dense :clipped-left='true'>
+    <v-toolbar color="primary" dark dense :clipped-left='true' app>
       <v-btn icon @click="back"><v-icon>keyboard_arrow_left</v-icon></v-btn>
       <div class="toolbar__title toolbar-title white--text textcenter tb-title flex-row" @click.stop="showChoseTradeDlg = true">
         <div class="flex1">&nbsp;</div>

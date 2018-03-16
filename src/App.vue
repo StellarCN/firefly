@@ -2,10 +2,12 @@
 <div>
 
   <v-app :class="'app ' + (showFuzzyView?'fuzzy-app':'') " dark>
-      <v-system-bar status :color="iosstatusbarcolor" v-show="isios">
+      <v-system-bar status :color="iosstatusbarcolor" v-if="isios" app>
         <v-spacer></v-spacer>
       </v-system-bar>
-      <router-view></router-view>
+      <v-content>
+          <router-view></router-view>
+      </v-content>
   </v-app>
 
   <div class="fuzzy-view" v-if="showFuzzyView">

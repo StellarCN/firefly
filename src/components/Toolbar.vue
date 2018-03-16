@@ -4,7 +4,7 @@
 <template>
   <div class="cp-toolbar">
 
-    <v-toolbar  dark :class="color" :flat="!shadow" dense :clipped-left='true'>
+    <v-toolbar  dark :class="color" :flat="!shadow" dense :clipped-left='true' app>
       <v-btn icon v-if="showbackicon" @click="back" class="white--text">
             <v-icon class="back-icon">&#xE5CB;</v-icon>
       </v-btn>
