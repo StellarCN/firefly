@@ -1,11 +1,11 @@
 /*
- * 我的，显示界面，即：个人中心
- * @Author: mazhaoyong@gmail.com 
- * @Date: 2018-01-23 11:14:24 
- * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-14 12:11:29
- * @License: MIT 
- */
+* 我的，显示界面，即：个人中心
+* @Author: mazhaoyong@gmail.com
+* @Date: 2018-01-23 11:14:24
+* @Last Modified by: mazhaoyong@gmail.com
+* @Last Modified time: 2018-03-14 12:11:29
+* @License: MIT
+*/
 <template>
   <div class="page">
       <toolbar :title="$t('Menu.My')" :showbackicon="false"  ref="toolbar">
@@ -49,9 +49,9 @@
                         <i class="material-icons vcenter">{{item.icon}}</i>
                         <span>{{$t(item.title)}}</span>
                         <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
+                        <div class="circular" v-if="item.name=='MessageCenter'&&unreadMessage.length>0"> {{unreadMessage.length}}</div>
                     </li>
                 </ul>
-                
             </div>
           </card>
       </div>
@@ -78,28 +78,28 @@ export default {
                 {
                     title: "Menu.Contacts",
                     name: "ContactsList",
-                    icon: "supervisor_account"    
+                    icon: "supervisor_account"
                 },
                 {
                     title: "Menu.MyAddress",
                     name: "MyAddress",
-                    icon: "bookmark"    
+                    icon: "bookmark"
                 },
                 {
                     title: "Menu.Settings",
                     name: "Settings",
-                    icon: "settings"    
+                    icon: "settings"
                 },
                 {
                     title: "Menu.Help",
                     name: "Help",
-                    icon: "help"    
+                    icon: "help"
                 },
-                {
-                    title:"MessageCenter",
-                    name:"MessageCenter",
-                    icon:"message"
-                }
+              {
+                title: "Menu.MessageCenter",
+                name: "MessageCenter",
+                icon: "message"
+              }
             ],
             myofferpage:{ name: 'History', params: { active: 'offer' } },
             historypage:{ name: 'History', params: { active: 'transaction' } }
@@ -112,6 +112,9 @@ export default {
             accountData: state => state.account.data,
             app: state => state.app
         }),
+      ...mapGetters([
+        'unreadMessage'
+      ])
     },
     beforeMount(){
         this.pinEnable = this.app.enablePin || false
@@ -125,7 +128,7 @@ export default {
         ]),
         toNameCard(){
               this.$router.push({name:'AccountNameCard'})
-        },  
+        },
         switchPinCode(val){
             //value=true，跳转到设置ping界面
             if(val){
@@ -147,13 +150,13 @@ export default {
         toOffer(){
             this.changeCurrentHistoryComponent(this.myofferpage.params.active)
             this.$router.push(this.myofferpage)
-            
+
         },
         toHistory(){
             this.changeCurrentHistoryComponent(this.historypage.params.active)
             this.$router.push(this.historypage)
         },
-        
+
     },
 
     components: {

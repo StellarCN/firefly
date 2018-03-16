@@ -24,6 +24,15 @@ export default {
         path: 'modify',
         name: 'ModifyAccount',
         component: resolve => require(['../pages/account/ModifyAccount.vue'], resolve)
+      },{
+        path:"message",
+        name :"MessageCenter",
+        component:resolve => require(['../pages/account/MessageCenter.vue'],resolve),
+      },
+      {
+        path: "message-detils/:id",
+        name: "MessageDetils",
+        component: resolve => require(['../pages/account/message-detils.vue'], resolve),
       }
     ]
 }
