@@ -3,7 +3,7 @@
 * @Author: mazhaoyong@gmail.com
 * @Date: 2018-01-23 11:14:24
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-16 18:06:29
+ * @Last Modified time: 2018-03-17 16:40:38
 * @License: MIT
 */
 <template>
@@ -55,7 +55,7 @@
             </div>
           </card>
       </div>
-      <tab-bar />
+      <!-- <tab-bar /> -->
   </div>
 </template>
 

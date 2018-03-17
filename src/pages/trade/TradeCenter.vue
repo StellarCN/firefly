@@ -92,7 +92,7 @@
       {{ snackbarText }}
         <v-btn outline dark small @click.native="snackbar = false">{{$t('Close')}}</v-btn>
       </v-snackbar>
-      <tab-bar/>
+      <!-- <tab-bar/> -->
   </div>
 </template>
 

@@ -8,6 +8,7 @@
       <v-content>
           <router-view></router-view>
       </v-content>
+      <tab-bar v-if="tabBarShow"/>
   </v-app>
 
   <div class="fuzzy-view" v-if="showFuzzyView">
@@ -25,6 +26,7 @@ import { defaultTradePairsAPI } from "@/api/gateways";
 import { closeStreams, initStreams } from "@/streams";
 import { initStorage, checkPlatform } from "@/api/storage";
 import { getDeviceLanguage } from "@/locales";
+import  TabBar from '@/components/TabBar'
 
 export default {
   data() {
@@ -34,18 +36,24 @@ export default {
       isios: false,
       devicelang: null,
       showFuzzyView: false,
+      tabBarShow: false,
+      tabBarItems: ['MyAssets', 'TradeCenter', 'Funding', 'My'],
       // items:Store.fetch(),
     };
   },
-  // watch : {
-  //     items : {
-  //       handler:function(items){
-  //         // console.log(val,oldVal)
-  //         Store.save(items)
-  //       },
-  //       deep:true
-  //     }
-  // },
+  watch: {
+    '$route'(to,from){
+      console.log('----watch----$route')
+      console.log(to)
+      console.log(from)
+      console.log(this.tabBarItems.indexOf(to.name))
+      if(this.tabBarItems.indexOf(to.name) >= 0){
+        this.tabBarShow = true
+      }else{
+        this.tabBarShow = false
+      }
+    }    
+  },
   computed: {
     ...mapState({
       showloading: state => state.showloading,
@@ -229,7 +237,8 @@ export default {
   //   }
   // },
   components: {
-    PinCode
+    PinCode,
+    TabBar,
   }
 };
 </script>

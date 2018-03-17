@@ -126,8 +126,8 @@
       </card>
 
     </div>
-  
-    <tab-bar />
+<!--   
+    <tab-bar /> -->
 
    <bottom-notice :show.sync="notice" :text="noticeText">    </bottom-notice>
   </div>

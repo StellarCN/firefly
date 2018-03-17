@@ -111,9 +111,9 @@
   
     </scroll>
 
-  
+<!--   
   <tab-bar />
-  
+   -->
   
    <bottom-notice :show.sync="notice" :text="noticeText">    </bottom-notice>
    <loading :show="working" :loading="working" :success="delok" :fail='delerror' />
