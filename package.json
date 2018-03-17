@@ -57,7 +57,9 @@
     "vue-router": "^2.7.0",
     "vue-toasted": "^1.1.21",
     "vuetify": "^0.17.2",
-    "vuex": "^2.4.0"
+    "vuex": "^2.4.0",
+    "cordova-plugin-screen-orientation": ">=3.0.1",
+    "cordova-plugin-dbcopy": ">=2.0.0"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
@@ -132,7 +134,9 @@
       "cordova-sqlite-storage": {},
       "cordova-disable-http-cache": {},
       "cordova-plugin-inappbrowser": {},
-      "cordova-plugin-globalization": {}
+      "cordova-plugin-globalization": {},
+      "cordova-plugin-screen-orientation": {},
+      "cordova-plugin-dbcopy": {}
     },
     "platforms": [
       "browser",
