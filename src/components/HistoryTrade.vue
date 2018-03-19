@@ -4,6 +4,7 @@
 */
 <template>
   <div class="content">
+    <date-range-picker :start="start" :end="end" @doSearch="doSearch" />
   <scroll :refresh="queryAllOffers">
     <div v-for="(item, index) in records" :key="index">
       <card class="offer-card" padding="10px 10px">
@@ -66,6 +67,7 @@ import Card from './Card'
 import {mapState, mapActions, mapGetters} from 'vuex'
 import {DEFAULT_INTERVAL} from '@/api/gateways'
 import Scroll from '@/components/Scroll'
+import DateRangePicker from '@/components/DateRangePicker'
 import Loading from './Loading'
 import { Decimal } from 'decimal.js'
 import { getXdrResultCode } from '@/api/xdr'
@@ -78,6 +80,8 @@ import _ from 'lodash'
       return {
         records: [],
         working: false,
+        start: null,
+        end: null,
       
       
       }
@@ -92,13 +96,20 @@ import _ from 'lodash'
       
     },
     beforeMount () {
+      this.start = Number(moment().subtract(7,"days").format('x'))
+      this.end = Number(moment().format('x'))
       this.queryAllOffers()
     },
     methods: {
       queryAllOffers(){
         //暂时只查询一周的委单数据
-        let start_time = Number(moment().subtract(7,"days").format('x'))
-        let end_time = Number(moment().format('x'))
+        //let start_time = Number(moment().subtract(7,"days").format('x'))
+        //let end_time = Number(moment().format('x'))
+        let start_time = moment(this.start)
+        let end_time = moment(this.end)
+        start_time = new Date(start_time.year(), start_time.month()+1, start_time.date()).getTime()
+        end_time = new Date(end_time.year(), end_time.month()+1, end_time.date()).getTime()
+        
         getAllEffectOffers(this.account.address, start_time, end_time)
           .then(response=>{
             this.records = response.data.map(item=>{
@@ -111,11 +122,18 @@ import _ from 'lodash'
               this.$toasted.error(err.message)
             }
           })
+      },
+      doSearch({start,end}){
+        console.log(`---dosearch -- ${start} - ${end}`)
+        this.start =Number(moment(start + ' 00:00:00').format('x'))
+        this.end = Number(moment(end + ' 23:59:59').format('x'))
+        this.queryAllOffers()
       }
     },
     components: {
       Card,
       Scroll,
+      DateRangePicker,
     }
   }
 </script>

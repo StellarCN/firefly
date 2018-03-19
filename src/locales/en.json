@@ -417,6 +417,10 @@
   "Change":"Change",
   "MyAccount":"MyAccount",
   "MemoBook.MyAddress":"MyAddress",
-  "MessageCenter":"MessageCenter"
+  "MessageCenter":"MessageCenter",
+  "StartDate":"start date",
+  "EndDate":"end date",
+  "StartDateIsAfterEndDate":"start date should before end date"
+
 
 }
