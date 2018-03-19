@@ -33,7 +33,10 @@ const router = new Router({
     {
       path: '/main',
       name: 'Main',
-      component: Main
+      component: Main,
+      meta: {
+        keepAlive: false
+      }
     },
 
     {
@@ -74,15 +77,20 @@ const router = new Router({
     {
       path: '/funding',
       name: 'Funding',
-      component: Funding
+      component: Funding,
+      meta: {
+        keepAlive: false
+      }
     },
     {
       path: '/history',
       name: 'History',
-      component: resolve => require(['../pages/History.vue'], resolve)
+      component: resolve => require(['../pages/History.vue'], resolve),
+      meta: {
+        keepAlive: false
+      }
     },
-    
-    
+        
     {
       path: '/transaction',
       name: 'Transaction',
@@ -91,7 +99,10 @@ const router = new Router({
     {
       path: '/pinlock',
       name: 'PinLock',
-      component: PinLock
+      component: PinLock,
+      meta: {
+        keepAlive: false
+      }
     },
 
     mysettings,

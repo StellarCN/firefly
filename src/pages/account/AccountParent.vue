@@ -1,6 +1,4 @@
 <template>
-    <v-content class="app-content">
-        <router-view></router-view>
-    </v-content>
+    <router-view></router-view>
 </template>
   

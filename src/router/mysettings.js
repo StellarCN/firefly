@@ -11,7 +11,10 @@ export default {
       {
         path: 'my',
         name: 'My',
-        component: My
+        component: My,
+        meta: {
+          keepAlive: false
+        }
       },
       {
         path: 'settings',

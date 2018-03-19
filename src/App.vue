@@ -5,8 +5,13 @@
       <v-system-bar status :color="iosstatusbarcolor" v-if="isios" app>
         <v-spacer></v-spacer>
       </v-system-bar>
-      <v-content>
-          <router-view></router-view>
+      <v-content class="contentx">
+          <keep-alive>
+            <router-view v-if="$route.meta.keepAlive"/>
+        </keep-alive>
+
+        <router-view v-if="!$route.meta.keepAlive"/>
+
       </v-content>
       <tab-bar v-if="tabBarShow"/>
   </v-app>
@@ -43,10 +48,6 @@ export default {
   },
   watch: {
     '$route'(to,from){
-      console.log('----watch----$route')
-      console.log(to)
-      console.log(from)
-      console.log(this.tabBarItems.indexOf(to.name))
       if(this.tabBarItems.indexOf(to.name) >= 0){
         this.tabBarShow = true
       }else{
@@ -65,8 +66,9 @@ export default {
     })
   },
   beforeMount() {
-    // if(window.localStorage.getItem('login_flag')==1){
-    //   console.log(window.localStorage.getItem('login_flag'))
+    if(this.tabBarItems.indexOf(this.$route.name) >=0 ){
+      this.tabBarShow = true
+    }
     Vue.cordova.on("deviceready", () => {
       checkPlatform();
       try {

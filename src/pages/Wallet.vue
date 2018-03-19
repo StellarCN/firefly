@@ -2,7 +2,7 @@
  * 创建钱包账户界面
  */
 <template>
-  <div class="create-account-page">
+  <div class="create-account-page page">
     <v-btn icon v-show="showbackicon" @click="back" class="white--text">
         <i class="material-icons back-icon">&#xE5CB;</i>
       </v-btn>
@@ -59,17 +59,11 @@ export default {
 .back-icon
   font-size: 32px
 .create-account-page
-  //position: absolute
-  //top: 0
-  //right: 0
-  //left: 0
-  //bottom: 0
-  display: block
-  height: 100%
   background: $primarycolor.green
   color: $primarycolor.font
+  padding-top: 40%
+  height: 100vh
   .logo
-    margin-top: 40%
     display: block
     text-align: center
     vertical-align: center

@@ -8,12 +8,18 @@ export default {
       {
         path: 'manage',
         name: 'ManageAccount',
-        component: resolve => require(['../pages/account/Manage.vue'], resolve)
+        component: resolve => require(['../pages/account/Manage.vue'], resolve),
+        meta: {
+          keepAlive: false
+        }
       },
       {
         path: 'info',
         name: 'AccountInfo',
-        component: resolve => require(['../pages/account/Info.vue'], resolve)
+        component: resolve => require(['../pages/account/Info.vue'], resolve),
+        meta: {
+          keepAlive: false
+        }
       },
       {
         path: 'namecard',

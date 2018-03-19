@@ -13,22 +13,34 @@ export default {
         {
             path: 'center',
             name: 'TradeCenter',
-            component: TradeCenter
+            component: TradeCenter,
+            meta: {
+              keepAlive: false
+            }
           },
           {
             path: 'view',
             name: 'Trade',
-            component: Trade
+            component: Trade,
+            meta: {
+              keepAlive: false
+            }
           },
           {
             path: 'buysell',
             name: 'TradeBuySell',
-            component: TradeBuySell
+            component: TradeBuySell,
+            meta: {
+              keepAlive: false
+            }
           },
           {
             path: 'full',
             name: 'TradeK',
-            component: TradeK
+            component: TradeK,
+            meta: {
+              keepAlive: false
+            }
           }
     ]
 }
