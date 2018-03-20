@@ -23,7 +23,7 @@
       :validator="qrvalidator"
       v-if="showScanner"></q-r-scan>
 
-    <div class="content" v-if="!showScanner">
+    <div class="content" v-if="!showScanner && !showmemobook && !showContacts">
       <card>
        <div class="card-content" slot="card-content" v-if="!showContacts">
           <v-select
@@ -131,7 +131,7 @@
 
       </card>
       
-      <div style="flex: 1;"></div>
+    <div style="flex: 1;"></div>
      <div class="btn-group" v-if="!showContacts">
         <v-btn class="error btn-send" @click.stop="send">{{$t('Send')}}</v-btn>
      </div>

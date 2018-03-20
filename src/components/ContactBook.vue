@@ -14,7 +14,11 @@
         <i class="material-icons">&#xE5CD;</i>
       </div>
     </div> -->
-     <toolbar :title="$t(ContactBookTitle)" :showbackicon="true"  @goback="back" color="error"></toolbar>
+    <toolbar :title="$t(ContactBookTitle)" :showbackicon="false" color="error">
+      <v-btn icon @click.stop="close" class="white--text" slot="left-tool">
+            <v-icon class="back-icon">&#xE5CB;</v-icon>
+      </v-btn>
+    </toolbar>
     <div class="book-content">
       
       <!--账户-->
@@ -71,15 +75,15 @@
         </card>
       </div> -->
 
-        <div>
+        <div class="mt-2">
             <span @click="content_contact" v-bind:class="['content_menu_styleone', { content_menu_styletwo: isA }]">{{$t("Menu.Contacts")}}</span>
             <span @click="content_myaccount" v-bind:class="['content_menu_styleone', { content_menu_styletwo: isB }]">{{$t("MyAccount")}}</span>
             <span @click="content_myaddress" v-bind:class="['content_menu_styleone', { content_menu_styletwo: isC }]">{{$t("MemoBook.MyAddress")}}</span>
         </div>
         
-        <div v-if="isA && contacts.length>0" class="contracts-list">
+        <div v-if="isA && contacts.length>0" class="contracts-list mt-2">
                <div class="contacts-row" v-for="contact in contacts" :key="contact.id">
-                <v-layout class="mycontacts-li" row wrap v-swiper=3 >
+                <v-layout class="mycontacts-li" row wrap  @click="chose('contact',contact)" >
                   <v-flex xs6 class="mycontacts-wrapper">
                     <div class="contact-name grey--text text--lighten-1">{{contact.name}}</div>
                   </v-flex>
@@ -89,9 +93,9 @@
                 </v-layout>
                </div>
         </div>
-        <div v-else-if="isB && accounts.length>0" class="contracts-list">
+        <div v-else-if="isB && accounts.length>0" class="contracts-list mt-2">
                <div class="contacts-row" v-for="contact in accounts" :key="contact.id">
-                <v-layout class="mycontacts-li" row wrap v-swiper=3 >
+                <v-layout class="mycontacts-li" row wrap @click="chose('account',contact)">
                   <v-flex xs6 class="mycontacts-wrapper">
                     <div class="contact-name grey--text text--lighten-1">{{contact.name}}</div>
                   </v-flex>
@@ -101,9 +105,9 @@
                 </v-layout>
                </div>
         </div>
-        <div v-else-if="isC && myaddresses.length>0" class="contracts-list">
+        <div v-else-if="isC && myaddresses.length>0" class="contracts-list mt-2">
                <div class="contacts-row" v-for="contact in myaddresses" :key="contact.id">
-                <v-layout class="mycontacts-li" row wrap v-swiper=3>
+                <v-layout class="mycontacts-li" row wrap @click="chose('myaddress',contact)">
                   <v-flex xs6 class="mycontacts-wrapper">
                     <div class="contact-name grey--text text--lighten-1">{{contact.name}}</div>
                   </v-flex>
@@ -113,7 +117,7 @@
                 </v-layout>
                </div>
         </div>
-        <div v-else>
+        <div v-else class=" mt-2">
               <div class="contacts-row">
                 <v-layout class="mycontacts-li" row wrap v-swiper=3>
                   <v-flex xs6 class="mycontacts-wrapper">
@@ -187,7 +191,7 @@ export default {
       this.ok(type, item);
     },
     back() {
-      this.$router.back();
+      this.$emit('back')
     },
     content_contact() {
       if (this.isA == false) {
@@ -228,15 +232,16 @@ export default {
 @require '~@/stylus/color.styl';
 
 .contact-book {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  color: $primarycolor.font;
-  background: $primarycolor.gray;
-  font-size: 16px;
-  z-index: 99;
+  color: $primarycolor.font
+  background: $primarycolor.gray
+  font-size: 16px
+  z-index: 99
+  position: fixed
+  top: 0
+  left: 0
+  bottom: 0
+  right: 0
+  overflow-y: auto
 
   .bookbar {
     background: $primarycolor.red;
@@ -261,8 +266,7 @@ export default {
   }
 
   .book-content {
-    overflow-y: auto;
-    height: 100%;
+    margin-top: 48px
     padding: 10px 10px 70px 10px;
   }
 }
@@ -297,7 +301,7 @@ export default {
 }
 
 .content_menu_styleone {
-  font-size: 20px;
+  font-size: 16px;
   color: $secondarycolor.font;
   margin-left: 5px;
   padding-left:20px
@@ -319,12 +323,12 @@ export default {
 .mycontacts-li {
   background-color: $secondarycolor.gray;
   border-radius: 5px;
-  padding: 20px 10px 20px 20px;
-  margin-top:5px
+  padding: 15px 15px;
+  margin-top:1px
 }
 
 .contact-name {
-  font-size: 20px;
+  font-size: 16px;
   color: $primarycolor.font;
 }
 </style>
