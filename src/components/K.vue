@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-15 12:28:21
+ * @Last Modified time: 2018-03-20 15:22:51
  * @License: MIT 
  */
 <template>
@@ -217,7 +217,6 @@ export default {
             this.fetchLastTrade()
         },
         cleanData(){
-            console.log('----------------clean Data----')
             this.ele = null
             this.opt = null
             this.dates = []
@@ -237,8 +236,8 @@ export default {
               end_time = new Date().getTime()
           }else{//初次请求，判断start是否存在
             if(this.start < 0){
-                //前24小时
-                start_time = Number(moment().subtract(24,"hours").format('x'))
+                //前48小时
+                start_time = Number(moment().subtract(48,"hours").format('x'))
             }else{
                 start_time = this.start;
             }
@@ -254,7 +253,6 @@ export default {
                 this.lasttime = end_time
                 let records = data.records
                 if(!this.incremental){
-                    console.log(`--------清理 data为空-------`)
                     this.dates = []
                     this.volumes = []
                     this.data = []
@@ -264,16 +262,16 @@ export default {
                     this.dates.push(new Date(item.timestamp).Format('MM-dd hh:mm'))
                     this.volumes.push(new Decimal(item.base_volume).add(item.counter_volume).toNumber())
                     this.subVolumes.push([Number(item.base_volume),Number(item.counter_volume)])
-                    this.data.push([Number(item.open), Number(item.close), Number(item.high), Number(item.low), Number(item.base_volume)])
+                    this.data.push([Number(item.open), Number(item.close), Number(item.high), Number(item.low), Number(item.counter_volume)])
                 })
                 this.opt.xAxis[0].data = this.dates
                 this.opt.xAxis[1].data = this.dates
-                this.opt.series[0].data = this.volumes
-                this.opt.series[1].data = this.data
+                this.opt.series[0].data = this.data
+                this.opt.series[1].data = this.volumes
                 this.opt.series[2].data = this.calculateMA(5)
                 this.opt.series[3].data = this.calculateMA(10)
                 
-                this.ele.setOption(this.opt)
+                this.ele.setOption(this.opt, true)
             })
             .catch(err=>{
                 console.error(`-----err on get trade aggregation -- `)
@@ -292,23 +290,34 @@ export default {
                 color: this.colors,
                 backgroundColor: "#212122",
               //  title: {left: 'center', text: this.base.code + '/' + this.counter.code },
-                legend: { show: false, top: 30,data: ['分时', 'MA5', 'MA10']},
+                legend: { show: false, top: 30,data: [this.$t('minute'), 'MA5', 'MA10']},
                 tooltip: {
-                    triggerOn: 'none',
-                    transitionDuration: 0,
-                    confine: true,
-                    bordeRadius: 4,
-                    borderWidth: 1,
-                    borderColor: '#333',
-                    backgroundColor: 'rgba(255,255,255,0.9)',
-                    textStyle: {fontSize: 12,color: '#333' },
-                    position: function (pos, params, el, elRect, size) {
-                        var obj = { top: 60 };
-                        obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5;
-                        return obj;
+                    trigger: 'axis',
+                    axisPointer: { type: 'cross' },
+                    formatter: (params, tick)=>{
+                        let series = params.sort((a,b)=>a.seriesIndex>b.seriesIndex)
+                        let result = `${series[0].name}<br/>`;
+                        let openlabel = this.$t('open_price')
+                        let closelabel = this.$t('close_price')
+                        let highlabel = this.$t('high_price')
+                        let lowlabel = this.$t('low_price')
+                        let volumelabel = this.$t('volumes')
+                        if(series[0].data){
+                            result += `${openlabel}: ${series[0].data[0]}<br/>`
+                            + `${closelabel}: ${series[0].data[1]}<br/>`
+                            + `${highlabel}: ${series[0].data[2]}<br/>`
+                            + `${lowlabel}: ${series[0].data[3]}<br/>`
+                            
+                        }
+                        result += 
+                             `MA5: ${series[2].data}<br/>`
+                            + `MA10: ${series[3].data}<br/>`
+                            + `${volumelabel}: ${series[1].data}<br/>`
+                        return result
                     }
                 },
-                axisPointer: { link: [{xAxisIndex: [0, 1]}]
+                axisPointer: { 
+                    link: [{xAxisIndex: 'all'}]
                 },
                 dataZoom: [{
                 //     type: 'slider',
@@ -331,8 +340,9 @@ export default {
                 xAxis: [{
                     type: 'category',
                     data: this.dates,
+                    scale: true,
                     boundaryGap : false,
-                    axisLine: { lineStyle: { color: '#777' } },
+                    axisLine: { onZero: false, lineStyle: { color: '#777' } },
                     axisLabel: {
                         formatter: function (value) {
                             return value
@@ -350,7 +360,7 @@ export default {
                     splitLine: {show: false},
                     axisLabel: {show: false},
                     axisTick: {show: false},
-                    axisLine: { lineStyle: { color: '#777' } },
+                    axisLine: { onZero: false, lineStyle: { color: '#777' } },
                     splitNumber: 20,
                     min: 'dataMin',
                     max: 'dataMax',
@@ -393,44 +403,27 @@ export default {
                     top: 180,//260
                     bottom: 0
                 }],
-                graphic: [{
-                    type: 'group',
-                    left: 'center',
-                    top: 70,
-                    width: 300,
-                    bounding: 'raw',
-                    children: [{
-                        id: 'MA5',
-                        type: 'text',
-                        style: {fill: this.colors[1]},
-                        left: 0
-                    }, {
-                        id: 'MA10',
-                        type: 'text',
-                        style: {fill: this.colors[2]},
-                        left: 'center'
-                    }]
-                }],
-                series: [{
-                    name: 'Volume',
-                    type: 'bar',
-                    xAxisIndex: 1,
-                    yAxisIndex: 1,
-                    itemStyle: {
-                        normal: {
-                            color: (params)=>{
-                                let obj = this.subVolumes[params.dataIndex]
-                                if(obj && obj[0] > obj[1]){
-                                    return "#733520"
-                                }
-                                return '#216549'
-                            }
-                        }
-                    },
-                    data: this.volumes
-                }, {
+                // graphic: [{
+                //     type: 'group',
+                //     left: 'center',
+                //     top: 70,
+                //     width: 300,
+                //     bounding: 'raw',
+                //     children: [{
+                //         id: 'MA5',
+                //         type: 'text',
+                //         style: {fill: this.colors[1]},
+                //         left: 0
+                //     }, {
+                //         id: 'MA10',
+                //         type: 'text',
+                //         style: {fill: this.colors[2]},
+                //         left: 'center'
+                //     }]
+                // }],
+                series: [ {
                     type: 'candlestick',
-                    name: '分时',
+                    name: this.$t('minute'),
                     data: this.data,
                     itemStyle: {
                         normal: {
@@ -447,6 +440,23 @@ export default {
                         }
                     }
                 }, {
+                    name: 'Volume',
+                    type: 'bar',
+                    xAxisIndex: 1,
+                    yAxisIndex: 1,
+                    itemStyle: {
+                        normal: {
+                            color: (params)=>{
+                                let obj = this.subVolumes[params.dataIndex]
+                                if(obj && obj[0] > obj[1]){
+                                    return "#733520"
+                                }
+                                return '#216549'
+                            }
+                        }
+                    },
+                    data: this.volumes
+                },{
                     name: 'MA5',
                     type: 'line',
                     data: this.calculateMA(5),

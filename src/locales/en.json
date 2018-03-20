@@ -21,6 +21,11 @@
   "high":"High",
   "low":"Low",
   "volume":"Lol",
+  "open_price":"open",
+  "close_price":"close",
+  "high_price":"high",
+  "low_price":"low",
+  "volumes":"volume",
   "Congratulations":"Congratulations",
 
   "TermsOfServiceTitle":"Terms Of Service",

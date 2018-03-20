@@ -3,13 +3,15 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-01 17:03:07 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-08 18:00:50
+ * @Last Modified time: 2018-03-20 15:07:31
  * @License MIT 
  */
 <template>
   <div class="page">
     <k :base="BaseAsset" :counter="CounterAsset" :incremental="true" 
       :showTitle="true" ref="kgraph"/>
+    <div class="clear"></div>
+    <order-book />
     <div class="clear"></div>
     <!-- 买卖按钮 -->
     <div class="flex-row full-width footer-btns">
@@ -116,6 +118,7 @@ export default {
   },
   components: {
     'k': FullK,
+    OrderBook,
   }
 }
 </script>

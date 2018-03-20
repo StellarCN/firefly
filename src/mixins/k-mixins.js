@@ -131,7 +131,6 @@ export default {
             this.fetchLastTrade()
         },
         cleanData(){
-            console.log('----------------clean Data----')
             this.ele = null
             this.opt = null
             this.dates = []
@@ -147,7 +146,7 @@ export default {
               start_time = this.lasttime;
               end_time = new Date().getTime()
           }else{//初次请求，判断start是否存在
-            start_time = this.start < 0 ? Number(moment().subtract(24,"hours").format('x')) : this.start;
+            start_time = this.start < 0 ? Number(moment().subtract(48,"hours").format('x')) : this.start;
             end_time = this.end < 0 ? new Date().getTime() : this.end
           }
           getTradeAggregation(getAsset(this.base), getAsset(this.counter), 

@@ -39,9 +39,9 @@
       
           <ul class="tradepairs-ul">
             <transition-group>
-            <li class="tradepair-li" v-for="(pair,index) in pairs" :key="pair.from.issuer+'-'+pair.to.issuer">
+            <li class="tradepair-li" v-for="(pair,index) in pairs" :key="index">
               <v-layout class="pair-wrapper" row wrap v-swiper=2  @click="trade(index,pair)">
-                <v-flex xs6>
+                <v-flex xs4>
                   <div class="flex-row">
                     <div class="flex3 from-wrapper">
                       <div class="code">{{pair.from.code}}</div>
@@ -62,7 +62,7 @@
                     </div>
                   </div>
                 </v-flex>
-                <v-flex xs6>
+                <v-flex xs8>
                   <k-line :base="pair.from" :counter="pair.to" :height="56" :timeout="100*index"></k-line>
                 </v-flex>
 

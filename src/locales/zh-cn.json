@@ -21,6 +21,11 @@
   "high":"高",
   "low":"低",
   "volume":"量",
+  "open_price":"开盘价",
+  "close_price":"收盘价",
+  "high_price":"最高价",
+  "low_price":"最低价",
+  "volumes":"成交量",
   "Congratulations":"恭喜您",
 
 

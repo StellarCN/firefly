@@ -122,13 +122,13 @@ export default {
           if(!this.opt)return
           this.opt.xAxis[0].data = this.dates
           this.opt.xAxis[1].data = this.dates
-          this.opt.series[0].data = this.volumes
-          this.opt.series[1].data = this.data
-          this.opt.series[2].data = this.calculateMA(5)
-          this.opt.series[3].data = this.calculateMA(10)
-          this.opt.series[4].data = this.boll.upper
-          this.opt.series[5].data = this.boll.lower
-          this.opt.series[6].data = this.boll.mid
+          this.opt.series[0].data = this.data
+          this.opt.series[1].data = this.calculateMA(5)
+          this.opt.series[2].data = this.calculateMA(10)
+          this.opt.series[3].data = this.boll.upper
+          this.opt.series[4].data = this.boll.lower
+          this.opt.series[5].data = this.boll.mid
+          this.opt.series[6].data = this.volumes
           this.opt.series[7].data = this.macd.bars
           this.opt.series[8].data = this.macd.diffs
           this.opt.series[9].data = this.macd.deas
@@ -143,25 +143,48 @@ export default {
                 color: this.colors,
                 backgroundColor: "#212122",
               //  title: {left: 'center', text: this.base.code + '/' + this.counter.code },
-                legend: { show: true, top: 2,data: ['MA5', 'MA10','BollUpper','BollMid','BollLower'], textStyle: {
+                legend: { show: true, top: 2,data: ['MA5', 'MA10','UB','MB','LB'], textStyle: {
                   color: "#777"
                 }, inactiveColor: '#555'},
                 tooltip: {
-                    triggerOn: 'none',
-                    transitionDuration: 0,
+                    trigger: 'axis',
+                    axisPointer: { type: 'cross' },
+                    position:  (pos, params, dom, rect, size)=>{
+                        return pos[0] < size.viewSize[0] / 2 ? {top: 10, right: 10}:{top: 10, left: 10}
+                    },
                     confine: true,
-                    bordeRadius: 4,
-                    borderWidth: 1,
-                    borderColor: '#333',
-                    backgroundColor: 'rgba(255,255,255,0.9)',
-                    textStyle: {fontSize: 12,color: '#333' },
-                    position: function (pos, params, el, elRect, size) {
-                        var obj = { top: 60 };
-                        obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5;
-                        return obj;
+                    formatter: (params, tick)=>{
+                        let series = params.sort((a,b)=>a.seriesIndex>b.seriesIndex);
+                        let result = `${series[0].name}<br/>`;
+                        let openlabel = this.$t('open_price')
+                        let closelabel = this.$t('close_price')
+                        let highlabel = this.$t('high_price')
+                        let lowlabel = this.$t('low_price')
+                        let volumelabel = this.$t('volumes')
+                        if(series[0].data){
+                            result += `${openlabel}: ${series[0].data[0]}<br/>`
+                            + `${closelabel}: ${series[0].data[1]}<br/>`
+                            + `${highlabel}: ${series[0].data[2]}<br/>`
+                            + `${lowlabel}: ${series[0].data[3]}<br/>`
+                            
+                        }
+                        try{
+                        result += 
+                             `MA5: ${series[1].data}<br/>`
+                            + `MA10: ${series[2].data}<br/>`
+                            + `UB: ${series[3].data.toFixed(7)}<br/>`
+                            + `MB: ${series[5].data.toFixed(7)}<br/>`
+                            + `LB: ${series[4].data.toFixed(7)}<br/>`
+                            + `${volumelabel}: ${series[6].data.toFixed(7)}<br/>`
+                        }catch(err){
+                            console.error(err)
+                        }
+
+                        return result
                     }
+
                 },
-                axisPointer: { link: [{xAxisIndex: [0, 1]}]
+                axisPointer: { link: [{xAxisIndex: [0, 1, 2]}]
                 },
                 dataZoom: [{
                     type: 'inside',
@@ -270,23 +293,6 @@ export default {
                     bottom: 0
                 }],
                 series: [{
-                    name: 'Volume',
-                    type: 'bar',
-                    xAxisIndex: 1,
-                    yAxisIndex: 1,
-                    itemStyle: {
-                        normal: {
-                          color: (params)=>{
-                            let obj = this.subVolumes[params.dataIndex]
-                            if(obj && obj[0] > obj[1]){
-                                return "#733520"
-                            }
-                            return '#216549'
-                          }
-                        }
-                    },
-                    data: this.volumes
-                }, {
                     type: 'candlestick',
                     name: '分时',
                     data: this.data,
@@ -329,7 +335,7 @@ export default {
                 },
                 // boll start
                 {
-                    name: 'BollUpper',
+                    name: 'UB',
                     type: 'line',
                     data: this.boll.upper,
                     smooth: true,
@@ -342,7 +348,7 @@ export default {
                     }
                 },
                {
-                    name: 'BollLower',
+                    name: 'LB',
                     type: 'line',
                     data: this.boll.lower,
                     smooth: true,
@@ -354,7 +360,7 @@ export default {
                         }
                     }
                 }, {
-                    name: 'BollMid',
+                    name: 'MB',
                     type: 'line',
                     data: this.boll.mid,
                     smooth: true,
@@ -366,6 +372,25 @@ export default {
                         }
                     }
                 },
+
+                {
+                    name: 'Volume',
+                    type: 'bar',
+                    xAxisIndex: 1,
+                    yAxisIndex: 1,
+                    itemStyle: {
+                        normal: {
+                          color: (params)=>{
+                            let obj = this.subVolumes[params.dataIndex]
+                            if(obj && obj[0] > obj[1]){
+                                return "#733520"
+                            }
+                            return '#216549'
+                          }
+                        }
+                    },
+                    data: this.volumes
+                }, 
 
                 // boll end --
                 // macd --start 
