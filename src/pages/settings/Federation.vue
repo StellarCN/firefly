@@ -11,6 +11,10 @@
     <div class="content">
       <card padding="10px 10px" class="mycard">
         <div class="card-content" slot="card-content">
+          <v-alert type="error" :value="msg">
+            {{msg}}
+          </v-alert>
+
           <v-text-field
               v-if="currentState=='received' && !existFederation"
               name="federation"
@@ -29,7 +33,7 @@
         </div>
       </card>
       <div class="btn-group">
-        <v-btn class="btn-save" primary @click="setName" v-if="currentState=='received' && !existFederation">{{$t('Save')}}</v-btn>
+        <v-btn class="btn-save" color="primary" primary @click="setName" v-if="currentState=='received' && !existFederation">{{$t('Save')}}</v-btn>
       </div>
     </div>
   </div>
@@ -50,6 +54,7 @@ export default {
       federation: null,
       existFederation: null,
       currentState: 'connecting',
+      msg: null,
       working: false
     }
   },
@@ -70,7 +75,8 @@ export default {
       )
       .catch(error => {
         console.log(error);
-        if (error.data && error.data.detail === "Not registed any id") {
+        if (error.data) {
+          this.msg = error.data.detail
           this.existFederation = null
           this.currentState = 'received'
         } else {
