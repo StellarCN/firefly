@@ -83,11 +83,10 @@ export default {
   &.bottom-nav.bottom-nav--active.dark
     .btn.btn--flat.btn--active
       color: $primarycolor.green
-</style>
-<style lang="stylus" scoped>
-  .bottom-nav .btn
-    opacity inherit!important
-    color #999
-  .bottom-nav .btn:not(.btn--active)
-    filter inherit!important
+
+.bottom-nav .btn
+  opacity inherit!important
+  color #999
+.bottom-nav .btn:not(.btn--active)
+  filter inherit!important
 </style>
