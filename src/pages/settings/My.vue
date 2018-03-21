@@ -171,5 +171,6 @@ export default {
 
 <style lang="stylus" scoped>
 @require '~@/stylus/settings.styl'
-
+.content
+    padding-bottom:0px
 </style>
