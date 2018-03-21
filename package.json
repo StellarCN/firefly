@@ -46,6 +46,7 @@
     "cordova-plugin-statusbar": ">=2.3.0",
     "cordova-plugin-swift-support": ">=3.1.1",
     "cordova-plugin-whitelist": ">=1",
+    "cordova-plugin-wkwebview-engine": "git+https://github.com/apache/cordova-plugin-wkwebview-engine.git",
     "cordova-sqlite-storage": ">=2.1.2",
     "decimal.js": ">=9.0.1",
     "echarts": ">=4.0.1",
@@ -149,7 +150,8 @@
       "cordova-disable-http-cache": {},
       "cordova-plugin-inappbrowser": {},
       "cordova-plugin-globalization": {},
-      "cordova-plugin-screen-orientation": {}
+      "cordova-plugin-screen-orientation": {},
+      "cordova-plugin-wkwebview-engine": {}
     },
     "platforms": [
       "browser",

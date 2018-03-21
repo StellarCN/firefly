@@ -37,6 +37,10 @@
     </platform>
     <platform name="browser">
     </platform>
+    <feature name="CDVWKWebViewEngine">
+        <param name="ios-package" value="CDVWKWebViewEngine" />
+    </feature>
+    <preference name="CordovaWebViewEngine" value="CDVWKWebViewEngine" />
     <preference name="BackgroundColor" value="#212122" />
     <preference name="DisallowOverscroll" value="true" />
     <preference name="EnableViewportScale" value="true" />
@@ -63,6 +67,7 @@
     <plugin name="cordova-plugin-inappbrowser" spec="&gt;=1.7.2" />
     <plugin name="cordova-plugin-globalization" spec="&gt;=1.0.9" />
     <plugin name="cordova-plugin-screen-orientation" spec="&gt;=3.0.1" />
+    <plugin name="cordova-plugin-wkwebview-engine" spec="https://github.com/apache/cordova-plugin-wkwebview-engine.git" />
     <engine name="browser" spec="&gt;=5.0.1" />
     <engine name="android" spec="&gt;=6.2.3" />
     <engine name="ios" spec="&gt;=4.5.4" />

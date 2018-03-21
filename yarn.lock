@@ -2122,6 +2122,10 @@ cordova-plugin-whitelist@>=1:
   version "1.3.3"
   resolved "http://registry.npm.taobao.org/cordova-plugin-whitelist/download/cordova-plugin-whitelist-1.3.3.tgz#b5e85ecdbbfe5aeded40a1bf4ee2372e67d96fb4"
 
+"cordova-plugin-wkwebview-engine@git+https://github.com/apache/cordova-plugin-wkwebview-engine.git":
+  version "1.1.5-dev"
+  resolved "git+https://github.com/apache/cordova-plugin-wkwebview-engine.git#b4e2ec003896d110b426e80e46dfddcc274ab758"
+
 cordova-registry-mapper@^1.1.8:
   version "1.1.15"
   resolved "http://registry.npm.taobao.org/cordova-registry-mapper/download/cordova-registry-mapper-1.1.15.tgz#e244b9185b8175473bff6079324905115f83dc7c"
@@ -8435,6 +8439,10 @@ ws@^4.0.0:
   dependencies:
     async-limiter "~1.0.0"
     safe-buffer "~5.1.0"
+
+"x5webview-cordova-plugin@git+https://github.com/runner525/x5webview-cordova-plugin.git":
+  version "1.1.1"
+  resolved "git+https://github.com/runner525/x5webview-cordova-plugin.git#4a31a09c5fd0461f5c8af65f9493372a8d417cd9"
 
 xcode@^0.9.0, xcode@^0.9.1:
   version "0.9.3"
