@@ -95,7 +95,7 @@ export default {
                     name: "Help",
                     icon: "help"
                 },
-              {
+                {
                 title: "Menu.MessageCenter",
                 name: "MessageCenter",
                 icon: "message"

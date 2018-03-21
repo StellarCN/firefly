@@ -68,13 +68,18 @@
 </template>
 
 <script>
-import Toolbar from '@/components/Toolbar'
-import Card from '@/components/Card'
-import { APP_VERSION, APP_GITHUB, OFFICIAL_SITE, getPackageJson } from '@/api/gateways'
-const semver = require('semver')
+import Toolbar from "@/components/Toolbar";
+import Card from "@/components/Card";
+import {
+  APP_VERSION,
+  APP_GITHUB,
+  OFFICIAL_SITE,
+  getPackageJson
+} from "@/api/gateways";
+const semver = require("semver");
 
 export default {
-  data(){
+  data() {
     return {
       showmenuicon: false,
       showbackicon: true,
@@ -83,86 +88,104 @@ export default {
       officialSite: OFFICIAL_SITE,
       latestVersion: null,
       updateURL: null
-    }
+    };
   },
   mounted() {
-    this.checkNewVersion()
+    this.checkNewVersion();
   },
   methods: {
-    back(){
-      this.$router.back()
+    back() {
+      this.$router.back();
     },
 
     checkNewVersion() {
-      getPackageJson().then(response => {
-        let data = response.data
-        this.latestVersion = data.version
-        this.updateURL = data.homepage
-      }).catch(err => console.log(err))
+      getPackageJson()
+        .then(response => {
+          let data = response.data;
+          this.latestVersion = data.version;
+          this.updateURL = data.homepage;
+        })
+        .catch(err => console.log(err));
     },
 
     openDownloadURL() {
-      window.open(this.updateURL, '_system')
+      window.open(this.updateURL, "_system");
     },
-    openURL(url){
-      window.open(url, '_system')
-      
+    openURL(url) {
+      window.open(url, "_system");
     },
-    toTermOfServices(){
+    toTermOfServices() {
       this.$router.push({
-        name: 'TermsOfService',
+        name: "TermsOfService",
         query: {
-          active: 'back'
+          active: "back"
         }
-      })
-    },
+      });
+    }
   },
   components: {
     Toolbar,
-    Card,
-
+    Card
   }
-
-
-}
+};
 </script>
 
 <style lang="stylus" scoped>
-@require '~@/stylus/color.styl'
-.logo-wrapper
-  height: 120px
-  width: 100%
-  display: block
-  text-align: center
-  vertical-align: middle
-  .logo-img
-    width: 120px
-    height:120px
-.appname
-  font-size: 24px
-  color: $primarycolor.green
-.appversion
-  color: $secondarycolor.font
-.row
-  display: flex
-  padding-top: 5px
-  padding-bottom: 5px
-  height: 46px
-  line-height: 46px
-  vertical-align: middle
-  &:last-child
-    border-bottom: 0px
-  .label
-    flex: 1
-  .value
-    flex: 3
-    color: $secondarycolor.font
-    font-size: 14px
-    height: 46px
-    line-height: 46px
-    vertical-align: middle
-.link
-    color: $secondarycolor.font
-.material-icons
-  margin-top: 12px
+@require '~@/stylus/color.styl';
+
+.logo-wrapper {
+  height: 120px;
+  width: 100%;
+  display: block;
+  text-align: center;
+  vertical-align: middle;
+
+  .logo-img {
+    width: 120px;
+    height: 120px;
+  }
+}
+
+.appname {
+  font-size: 24px;
+  color: $primarycolor.green;
+}
+
+.appversion {
+  color: $secondarycolor.font;
+}
+
+.row {
+  display: flex;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  height: 46px;
+  line-height: 46px;
+  vertical-align: middle;
+
+  &:last-child {
+    border-bottom: 0px;
+  }
+
+  .label {
+    flex: 1;
+  }
+
+  .value {
+    flex: 3;
+    color: $secondarycolor.font;
+    font-size: 14px;
+    height: 46px;
+    line-height: 46px;
+    vertical-align: middle;
+  }
+}
+
+.link {
+  color: $secondarycolor.font;
+}
+
+.material-icons {
+  margin-top: 12px;
+}
 </style>

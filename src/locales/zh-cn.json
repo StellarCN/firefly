@@ -406,8 +406,8 @@
   "ReceiveAssetMsg":"扫描二维码向我发送",
   "Change":"切换",
   "MyAccount":"我的账户",
-  "MemoBook.MyAddress":"地址簿",
-  "MessageCenter":"消息中心"
+  "MemoBook.MyAddress":"地址簿"
+
   
 
 }

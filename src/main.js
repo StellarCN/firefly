@@ -14,7 +14,7 @@ require('./api/index')
 import { setVuexStore } from './streams'
 import { AXIOS_DEFAULT_TIMEOUT } from './api/gateways'
 import axios from 'axios'
-require('./api/utils')
+require('./api/utils') 
 
 // animate.css
 import 'animate.css'
@@ -41,9 +41,9 @@ Vue.use(VueCordova);
 
 
 import Toasted from 'vue-toasted';
-Vue.use(Toasted,{
-  theme: "primary",
-  position: "bottom-center",
+Vue.use(Toasted,{ 
+  theme: "primary", 
+  position: "bottom-center", 
   duration : 3000
 })
 
