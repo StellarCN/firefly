@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-01 17:03:07 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-20 15:07:31
+ * @Last Modified time: 2018-03-21 15:56:28
  * @License MIT 
  */
 <template>
@@ -44,7 +44,7 @@ import { cancel as cancelOffer, myofferConvert, offer as doOffer }  from '@/api/
 import { getAsset, isNativeAsset } from '@/api/assets'
 import { DEFAULT_INTERVAL } from '@/api/gateways'
 import { getXdrResultCode } from '@/api/xdr'
-import _ from 'lodash'
+import  defaultsDeep  from 'lodash/defaultsDeep'
 
 export default {
   data(){
@@ -98,14 +98,14 @@ export default {
   },
   methods: {
     nativeBalance(){
-      let d = _.defaultsDeep({}, this.balances.filter(item=>isNativeAsset(item))[0])
+      let d = defaultsDeep({}, this.balances.filter(item=>isNativeAsset(item))[0])
       let t = this.native.balance - this.reserve - this.base_reserve - 0.0001
       if(t < 0 ) t = 0 
       d.balance = Number(t.toFixed(7))
       return d;
     },
     assetBalance(asset){
-      return _.defaultsDeep({}, this.balances.filter(item=> item.code === asset.code && item.issuer === asset.issuer)[0])
+      return defaultsDeep({}, this.balances.filter(item=> item.code === asset.code && item.issuer === asset.issuer)[0])
     },
 
     toBuy(){

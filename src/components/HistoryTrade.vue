@@ -73,7 +73,7 @@ import { Decimal } from 'decimal.js'
 import { getXdrResultCode } from '@/api/xdr'
 import { getAllEffectOffers } from '@/api/fchain'
 var moment = require('moment')
-import _ from 'lodash'
+import  defaultsDeep  from 'lodash/defaultsDeep'
 
   export default {
     data() {
@@ -113,7 +113,7 @@ import _ from 'lodash'
         getAllEffectOffers(this.account.address, start_time, end_time)
           .then(response=>{
             this.records = response.data.map(item=>{
-              return _.defaultsDeep({}, item, { total: new Decimal(item.amount).times(item.price).toFixed(7)})
+              return defaultsDeep({}, item, { total: new Decimal(item.amount).times(item.price).toFixed(7)})
             })
           })
           .catch(err=>{

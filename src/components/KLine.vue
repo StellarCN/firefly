@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-26 15:59:49 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-20 14:53:39
+ * @Last Modified time: 2018-03-21 15:54:29
  * @License MIT 
  */
 
@@ -27,14 +27,15 @@
 
 <script>
 var moment = require('moment')
-var echarts = require('echarts')
+//var echarts = require('echarts')
+import echarts from '@/libs/pkgs/initEcharts'
 import { getTradeAggregation, getTradeAggregation1min, 
     getTradeAggregation15min, getTradeAggregation1hour, 
     getTradeAggregation1day, getTradeAggregation1week,
     RESOLUTION_1MIN,RESOLUTION_1HOUR,RESOLUTION_1DAY } from '@/api/tradeAggregation'
 import { getAsset } from '@/api/assets'
 import { getTrades } from '@/api/trade'
-import _ from 'lodash'
+import  defaultsDeep  from 'lodash/defaultsDeep'
 import {Decimal} from 'decimal.js'
 
 const TRADE_INTERVAL = 60000
@@ -110,7 +111,7 @@ export default {
             let open = new Decimal(this.lastTradeAggregation.open)
             let change = price.minus(open)
             let rate = change.times(100).dividedBy(open)
-            return  _.defaultsDeep({}, this.lastTradeAggregation, {
+            return  defaultsDeep({}, this.lastTradeAggregation, {
                 price: new Decimal(price.toFixed(7)).toNumber(),
                 change: new Decimal(change.toFixed(7)).toNumber(),
                 rate: new Decimal(rate.toFixed(4)).toNumber() })

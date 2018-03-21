@@ -111,7 +111,6 @@ import { myofferConvert } from '@/api/offer'
 import {Decimal} from 'decimal.js'
 import { getAllEffectOffers } from '@/api/fchain'
 var moment = require('moment')
-import _ from 'lodash'
 
 export default {
   data(){

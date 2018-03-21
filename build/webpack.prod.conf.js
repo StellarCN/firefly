@@ -29,11 +29,18 @@ var webpackConfig = merge(baseWebpackConfig, {
     new webpack.DefinePlugin({
       'process.env': env
     }),
+    //new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    //new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /zh-cn|en/),
+    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /zh-cn/),
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      debug: false
+    }),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false
       },
-      sourceMap: true
+      sourceMap: false
     }),
     // extract css into its own file
     new ExtractTextPlugin({

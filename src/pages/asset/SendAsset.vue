@@ -152,7 +152,7 @@ import Card from '@/components/Card'
 import Loading from '@/components/Loading'
 import { mapState, mapActions, mapGetters} from 'vuex'
 import * as accountapi from '@/api/account'
-import _ from 'lodash'
+import  debounce  from 'lodash/debounce'
 import { resolveByFedAddress } from '@/api/federation'
 import ContactBook from '@/components/ContactBook'
 import { xdrMsg,getXdrResultCode } from '@/api/xdr'
@@ -457,7 +457,7 @@ export default {
       }
     },
 
-    destinationInput: _.debounce(function(val) {//必须是普通function，不能是箭头函数
+    destinationInput: debounce(function(val) {//必须是普通function，不能是箭头函数
       if(this.iscontact){
         this.iscontact = false
       }

@@ -57,12 +57,14 @@ import kmixins from '@/mixins/k-mixins'
 import orderbookMixins from '@/mixins/orderbook-mixins'
 import { mapState, mapActions, mapGetters} from 'vue'
 import Card from '@/components/Card'
-var echarts = require('echarts')
+//var echarts = require('echarts')
+import echarts from '@/libs/pkgs/initEcharts'
+
+
 import NP from 'number-precision'
 import { getTradeAggregation } from '@/api/tradeAggregation'
 import { getAsset } from '@/api/assets'
 var moment = require('moment')
-import _ from 'lodash'
 import {Decimal} from 'decimal.js'
 
 export default {

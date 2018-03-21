@@ -55,7 +55,7 @@ import { mapState, mapActions} from 'vuex'
 import Card from '@/components/Card'
 import { INFLATION_POOL } from '@/api/gateways'
 import { setOptions } from '@/api/operations'
-import _ from 'lodash'
+import  defaultsDeep  from 'lodash/defaultsDeep'
 export default {
   data(){
     return {
@@ -88,7 +88,7 @@ export default {
       for(var i=0,n=this.accounts.length;i<n;i++){
         if(this.accounts[i].address === address){
           this.workindex = i
-          let showaccount = _.defaultsDeep({},this.accounts[i])
+          let showaccount = defaultsDeep({},this.accounts[i])
           this.workaccount = showaccount
           this.name  = showaccount.name
           this.address = showaccount.address
@@ -114,7 +114,7 @@ export default {
     },
     save(){
       //if(!this.password)return
-      let data = _.defaultsDeep({}, this.workaccount, {name: this.name,
+      let data = defaultsDeep({}, this.workaccount, {name: this.name,
       address: this.address,
       federationAddress: this.federation,
       inflationAddress: this.inflation})

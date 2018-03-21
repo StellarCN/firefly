@@ -109,7 +109,7 @@ import Loading from './Loading'
 import { Decimal } from 'decimal.js'
 import { getXdrResultCode } from '@/api/xdr'
 import { getDepositAndWithdrawRecords } from '@/api/fchain'
-import _ from 'lodash'
+import  defaultsDeep  from 'lodash/defaultsDeep'
 var moment = require('moment')
 
 const TYPE_DEPOSIT = 'deposit'
@@ -142,7 +142,7 @@ const TYPE_WITHDRAW = 'withdraw'
         let data = []
         this.balances.forEach((element) => {
           if( !isNativeAsset(element)){
-            data.push(_.defaultsDeep({}, element))
+            data.push(defaultsDeep({}, element))
           }
         })
         return data
@@ -150,14 +150,14 @@ const TYPE_WITHDRAW = 'withdraw'
       deposits(){
         if(!this.records.deposit)return []
         return this.records.deposit.map(item=>{ 
-          return _.defaultsDeep({}, item, {datetime: moment(item.time*1000).format('L')})
+          return defaultsDeep({}, item, {datetime: moment(item.time*1000).format('L')})
           //return _.defaultsDeep({}, item, {datetime: new Date(item.time*1000).toLocaleString()})
         })
       },
       withdraws(){
         if(!this.records.withdraw)return []
         return this.records.withdraw.map(item=>{
-          return _.defaultsDeep({}, item, {datetime: moment(item.time*1000).format('L')})
+          return defaultsDeep({}, item, {datetime: moment(item.time*1000).format('L')})
           //return _.defaultsDeep({}, item, {datetime: new Date(item.time*1000).toLocaleString()})
         })
       },
@@ -165,26 +165,23 @@ const TYPE_WITHDRAW = 'withdraw'
     },
     methods: {
       queryDW(){
-        console.log('------query dw---')
         console.log(this.selectedasset.code)
         console.log(!this.selectedasset.code)
         console.log(this.working)
         if(!this.selectedasset.code)return;
         if(this.working)return
         this.working = true
-        console.log(`---------------`)
+        this.error = null
         //GBIZJJMFITQLABS4OUBD6CCN6SXIOYX6456K6EXWZYFT3523AZPJWAPU
         //this.account.address
         getDepositAndWithdrawRecords('GBIZJJMFITQLABS4OUBD6CCN6SXIOYX6456K6EXWZYFT3523AZPJWAPU', this.selectedasset.code, this.selectedasset.issuer)
           .then(response=>{
             this.records = response.data
             this.working = false
-            console.log(`----------response`)
           }).catch(err=>{
             this.working = false
             this.records = {}
             this.error = err.message
-            console.log(`-------------ssss`)
           })
       },
       switchMenu(type){

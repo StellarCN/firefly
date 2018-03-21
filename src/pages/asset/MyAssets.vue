@@ -134,7 +134,7 @@ import backbutton from '@/mixins/backbutton'
 import loadaccount from '@/mixins/loadaccount'
 import Scroll from '@/components/Scroll'
 import TabBar from '@/components/TabBar'
-import _ from 'lodash'
+import  defaultsDeep  from 'lodash/defaultsDeep'
 import { getAssetPrice } from '@/api/fchain'
 //import { Decimal } from 'decimal.js'
 
@@ -216,7 +216,7 @@ export default {
       if (!this.balances) return [];
       let data = this.balances
         .map(item => {
-          return _.defaultsDeep({}, item, { price: 0 }); // new Decimal(item.balance).times(1).toFixed(7) })
+          return defaultsDeep({}, item, { price: 0 }); // new Decimal(item.balance).times(1).toFixed(7) })
         })
         .filter(item => {
           if (this.is_Flag === FLAG_FILTER_ZERO) {

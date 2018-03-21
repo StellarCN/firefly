@@ -4,7 +4,6 @@
  * @Last Modified time: 2018-03-15 10:15:19
  * @License MIT 
  */
-var echarts = require('echarts')
 import NP from 'number-precision'
 import { getTradeAggregation, getTradeAggregation1min, 
     getTradeAggregation15min, getTradeAggregation1hour, 
@@ -15,7 +14,7 @@ import { mapState, mapActions, mapGetters} from 'vuex'
 import { getTrades } from '@/api/trade'
 import { DEFAULT_INTERVAL } from '@/api/gateways'
 var moment = require('moment')
-import _ from 'lodash'
+import  defaultsDeep  from 'lodash/defaultsDeep'
 import {Decimal} from 'decimal.js'
 import Card from '@/components/Card'
 import indicator from '@/libs/indicator'
@@ -90,7 +89,7 @@ export default {
             let open = new Decimal(this.lastTradeAggregation.open)
             let change = price.minus(open)
             let rate = change.times(100).dividedBy(open)
-            return  _.defaultsDeep({}, this.lastTradeAggregation, {
+            return  defaultsDeep({}, this.lastTradeAggregation, {
                 price: new Decimal(price.toFixed(6)).toNumber(),
                 change: new Decimal(change.toFixed(4)).toNumber(),
                 rate: new Decimal(rate.toFixed(2)).toNumber() })

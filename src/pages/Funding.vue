@@ -145,7 +145,7 @@ import { send } from '@/api/account'
 import { isNativeAsset } from '@/api/assets'
 import WithdrawInput from '@/components/WithdrawInput'
 import TabBar from '@/components/TabBar'
-import _ from 'lodash'
+import  defaultsDeep  from 'lodash/defaultsDeep'
 
 export default {
   data(){
@@ -187,7 +187,7 @@ export default {
        let data = []
        this.balances.forEach((element) => {
         if( !isNativeAsset(element)){
-          data.push(_.defaultsDeep({}, element))
+          data.push(defaultsDeep({}, element))
         }
       })
       return data

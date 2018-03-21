@@ -14,9 +14,11 @@
     "add-filehash",
     ["transform-imports", {
         "vuetify": {
-            "transform": "vuetify/src/components/${member}"
+            "transform": "vuetify/src/components/${member}",
+            "preventFullImport": true
         }
-    }]
+    }],
+    "equire"
   ],
   "env": {
     "test": {

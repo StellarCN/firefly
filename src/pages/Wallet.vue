@@ -3,7 +3,7 @@
  */
 <template>
   <div class="create-account-page page">
-    <v-btn icon v-show="showbackicon" @click="back" class="white--text">
+    <v-btn icon v-show="showbackicon" @click="back" class="white--text back-btn">
         <i class="material-icons back-icon">&#xE5CB;</i>
       </v-btn>
 
@@ -58,6 +58,7 @@ export default {
 @require '../stylus/color.styl'
 .back-icon
   font-size: 32px
+
 .create-account-page
   background: $primarycolor.green
   color: $primarycolor.font
@@ -76,6 +77,10 @@ export default {
     line-height: 60px
     font-size: 42px
     color: $primarycolor.font
+  .back-btn
+    position: absolute
+    top: 10px
+    left: 10px
   .footer
     position: fixed
     bottom: 0

@@ -131,8 +131,8 @@
 
     <!-- 是否跳过验证窗口 -->
     <v-dialog v-model="showSkipDlg" max-width="95%" persistent>
-      <card padding="20px 10px">
-        <div class="card-content dlg-content" slot="card-content">
+      <div class="pa-2">
+        <div class="card-content dlg-content">
           <div class="avatar-div textcenter">
             <v-avatar>
               <img src="../assets/img/ff-red.png" />
@@ -145,13 +145,13 @@
             <div class="flex1 skip-red textcenter" @click="showSkipDlg = false">{{$t('Account.Later')}}</div>
           </div>
         </div>
-      </card>
+      </div>
     </v-dialog>
 
     <!-- 验证通过窗口 -->
     <v-dialog v-model="showSeedValidDlg" max-width="95%" persistent>
-      <card padding="20px 10px">
-        <div class="card-content dlg-content" slot="card-content">
+      <div class="pa-2">
+        <div class="card-content dlg-content">
           <div class="avatar-div textcenter">
             <v-avatar>
               <img src="../assets/img/ff-green.png" />
@@ -163,13 +163,13 @@
             {{$t('Account.Start')}}
           </div>
         </div>
-      </card>
+      </div>
     </v-dialog>
 
     <!-- 验证失败窗口 -->
     <v-dialog v-model="showSeedInValidDlg" max-width="95%" persistent>
-      <card padding="20px 10px">
-        <div class="card-content dlg-content" slot="card-content">
+      <div class="pa-2">
+        <div class="card-content dlg-content">
           <div class="avatar-div textcenter">
             <v-avatar>
               <img src="../assets/img/ff-red.png" />
@@ -181,7 +181,7 @@
             {{$t('Account.ReVerify')}}
           </div>
         </div>
-      </card>
+      </div>
     </v-dialog>
 
   <loading :show="showLoading" :loading="working" :success="dealok" :fail='dealfail' 
@@ -195,12 +195,13 @@ import Toolbar from '@/components/Toolbar'
 import { mapState, mapActions} from 'vuex'
 import {address as genAddress} from '@/api/account'
 import QRCode from '@/components/QRCode'
+import Card from '@/components/Card'
 import { exportAccount } from '@/api/qr'
 import Loading from '@/components/Loading'
 import SecretKeyInput from '@/components/SecretKeyInput'
 //import StellarHDWallet from 'stellar-hd-wallet'
 import { closeStreams, initStreams,cleanStreamData } from '@/streams'
-import _ from 'lodash'
+import  defaultsDeep  from 'lodash/defaultsDeep'
 export default {
   data(){
     return {
@@ -253,7 +254,7 @@ export default {
       if(!this.seed)return ''
       //类似于stargaza的格式
       var data = {stellar:{name:this.name,key:this.seed}}
-      let account = _.defaultsDeep({
+      let account = defaultsDeep({
         name: this.name,
         address: genAddress(this.seed)
       },this.extdata || {})
@@ -424,6 +425,7 @@ export default {
     qrcode: QRCode,
     Loading,
     SecretKeyInput,
+    Card,
   }
 }
 </script>
