@@ -135,7 +135,7 @@
         <div class="card-content dlg-content">
           <div class="avatar-div textcenter">
             <v-avatar>
-              <img src="../assets/img/ff-red.png" />
+              <img src="../assets/img/logo-red.png" />
             </v-avatar>
           </div>
           <div class="t1 skip-red textcenter">{{$t('Account.ConfirmSkip')}}</div>
@@ -154,7 +154,7 @@
         <div class="card-content dlg-content">
           <div class="avatar-div textcenter">
             <v-avatar>
-              <img src="../assets/img/ff-green.png" />
+              <img src="../assets/img/logo-green.png" />
             </v-avatar>
           </div>
           <div class="t1 dlg-green textcenter">{{$t('Congratulations')}}!</div>
@@ -172,7 +172,7 @@
         <div class="card-content dlg-content">
           <div class="avatar-div textcenter">
             <v-avatar>
-              <img src="../assets/img/ff-red.png" />
+              <img src="../assets/img/logo-red.png" />
             </v-avatar>
           </div>
           <div class="t1 skip-red textcenter">{{$t('Error.SeedWrong')}}!</div>
