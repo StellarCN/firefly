@@ -22,7 +22,8 @@
     "android": "cordova prepare android",
     "lint": "eslint --ext .js,.vue src",
     "postinstall": "npm run build && cordova prepare",
-    "cordova": "cordova prepare -d"
+    "cordova": "cordova prepare -d",
+    "analyz": "NODE_ENV=production npm_config_report=true npm run build"
   },
   "dependencies": {
     "animate.css": ">3.5.2",
@@ -33,7 +34,6 @@
     "cordova-android": ">=6.2.3",
     "cordova-browser": ">=5.0.1",
     "cordova-clipboard": ">=1.1.1",
-    "cordova-disable-http-cache": ">=1.0.0",
     "cordova-ios": ">=4.5.4",
     "cordova-plugin-add-swift-support": ">=1.7.0",
     "cordova-plugin-camera": ">=2.4.1",
@@ -70,7 +70,8 @@
     "vue-toasted": ">=1.1.21",
     "vuedraggable": ">=2.16.0",
     "vuetify": ">0.17.2",
-    "vuex": ">=2.4.0"
+    "vuex": ">=2.4.0",
+    "x5webview-cordova-plugin": "git+https://github.com/imloama/x5webview-cordova-plugin.git"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
@@ -123,7 +124,7 @@
     "vue-template-compiler": ">=2.5.4",
     "vue-touch": ">=2.0.0-beta.4",
     "webpack": "^2.6.1",
-    "webpack-bundle-analyzer": "^2.2.1",
+    "webpack-bundle-analyzer": "^2.11.1",
     "webpack-dev-middleware": "^1.10.0",
     "webpack-hot-middleware": "^2.18.0",
     "webpack-merge": "^4.1.0"
@@ -147,11 +148,11 @@
       "cordova-clipboard": {},
       "cordova-plugin-camera": {},
       "cordova-sqlite-storage": {},
-      "cordova-disable-http-cache": {},
       "cordova-plugin-inappbrowser": {},
       "cordova-plugin-globalization": {},
       "cordova-plugin-screen-orientation": {},
-      "cordova-plugin-wkwebview-engine": {}
+      "cordova-plugin-wkwebview-engine": {},
+      "x5webview-cordova-plugin": {}
     },
     "platforms": [
       "browser",
