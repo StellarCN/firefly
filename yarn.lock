@@ -2009,10 +2009,6 @@ cordova-create@^1.1.0:
     shelljs "0.3.0"
     valid-identifier "0.0.1"
 
-cordova-disable-http-cache@>=1.0.0:
-  version "1.0.0"
-  resolved "http://registry.npm.taobao.org/cordova-disable-http-cache/download/cordova-disable-http-cache-1.0.0.tgz#04e06f0373ac654ca436be5b0a19173950daeeb9"
-
 cordova-fetch@^1.3.0:
   version "1.3.0"
   resolved "http://registry.npm.taobao.org/cordova-fetch/download/cordova-fetch-1.3.0.tgz#4986d0779b36eb239822c2ab413a47ff9f097fea"
@@ -2768,7 +2764,7 @@ enhanced-resolve@^3.3.0:
     object-assign "^4.0.1"
     tapable "^0.2.7"
 
-entities@~1.1.1:
+entities@^1.1.1, entities@~1.1.1:
   version "1.1.1"
   resolved "http://registry.npm.taobao.org/entities/download/entities-1.1.1.tgz#6e5c2d0a5621b5dadaecef80b90edfb5cd7772f0"
 
@@ -6961,6 +6957,13 @@ rollup-pluginutils@^2.0.1:
     estree-walker "^0.3.0"
     micromatch "^2.3.11"
 
+rss-parser@^3.1.2:
+  version "3.1.2"
+  resolved "http://registry.npm.taobao.org/rss-parser/download/rss-parser-3.1.2.tgz#f029873e667f7007788e3cf27ad11967c848c121"
+  dependencies:
+    entities "^1.1.1"
+    xml2js "^0.4.17"
+
 run-async@^0.1.0:
   version "0.1.0"
   resolved "http://registry.npm.taobao.org/run-async/download/run-async-0.1.0.tgz#c8ad4a5e110661e402a7d21b530e009f25f8e389"
@@ -7023,7 +7026,7 @@ sax@0.5.x:
   version "0.5.8"
   resolved "http://registry.npm.taobao.org/sax/download/sax-0.5.8.tgz#d472db228eb331c2506b0e8c15524adb939d12c1"
 
-sax@~1.2.1:
+sax@>=0.6.0, sax@~1.2.1:
   version "1.2.4"
   resolved "http://registry.npm.taobao.org/sax/download/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
 
@@ -8256,7 +8259,7 @@ wcwidth@^1.0.0, wcwidth@^1.0.1:
   dependencies:
     defaults "^1.0.3"
 
-webpack-bundle-analyzer@^2.2.1:
+webpack-bundle-analyzer@^2.11.1:
   version "2.11.1"
   resolved "http://registry.npm.taobao.org/webpack-bundle-analyzer/download/webpack-bundle-analyzer-2.11.1.tgz#b9fbfb6a32c0a8c1c3237223e90890796b950ab9"
   dependencies:
@@ -8440,9 +8443,9 @@ ws@^4.0.0:
     async-limiter "~1.0.0"
     safe-buffer "~5.1.0"
 
-"x5webview-cordova-plugin@git+https://github.com/runner525/x5webview-cordova-plugin.git":
+"x5webview-cordova-plugin@git+https://github.com/imloama/x5webview-cordova-plugin.git":
   version "1.1.1"
-  resolved "git+https://github.com/runner525/x5webview-cordova-plugin.git#4a31a09c5fd0461f5c8af65f9493372a8d417cd9"
+  resolved "git+https://github.com/imloama/x5webview-cordova-plugin.git#a2ffdc8ded82fed1fcfa21b9772c70d24b1a2203"
 
 xcode@^0.9.0, xcode@^0.9.1:
   version "0.9.3"
@@ -8478,6 +8481,13 @@ xml-escape@^1.1.0:
   version "1.1.0"
   resolved "http://registry.npm.taobao.org/xml-escape/download/xml-escape-1.1.0.tgz#3904c143fa8eb3a0030ec646d2902a2f1b706c44"
 
+xml2js@^0.4.17:
+  version "0.4.19"
+  resolved "http://registry.npm.taobao.org/xml2js/download/xml2js-0.4.19.tgz#686c20f213209e94abf0d1bcf1efaa291c7827a7"
+  dependencies:
+    sax ">=0.6.0"
+    xmlbuilder "~9.0.1"
+
 xmlbuilder@4.0.0:
   version "4.0.0"
   resolved "http://registry.npm.taobao.org/xmlbuilder/download/xmlbuilder-4.0.0.tgz#98b8f651ca30aa624036f127d11cc66dc7b907a3"
@@ -8487,6 +8497,10 @@ xmlbuilder@4.0.0:
 xmlbuilder@8.2.2:
   version "8.2.2"
   resolved "http://registry.npm.taobao.org/xmlbuilder/download/xmlbuilder-8.2.2.tgz#69248673410b4ba42e1a6136551d2922335aa773"
+
+xmlbuilder@~9.0.1:
+  version "9.0.7"
+  resolved "http://registry.npm.taobao.org/xmlbuilder/download/xmlbuilder-9.0.7.tgz#132ee63d2ec5565c557e20f4c22df9aca686b10d"
 
 xmldom@0.1.x:
   version "0.1.27"

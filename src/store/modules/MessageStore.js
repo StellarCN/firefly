@@ -1,64 +1,56 @@
-import {readMessage, saveMessage, delMessage} from "../../api/storage";
+import { getMsgLinks, setMsgLinks, readMsg, setReadMsgs, getReadMsgs} from "@/api/storage";
+import { getFchainRss } from '@/api/fchain'
 
-export const SAVE_MESSAGE_ITEM = "SAVE_MESSAGE_ITEM";
-export const CHANGE_STATUS = "CHANGE_STATUS";
-export const DEL_ITEM = "DEL_ITEM";
-export const CHANGE_CURRENT_ITEM_ID = "CHANGE_CURRENT_ITEM_ID";
+export const GET_MESSAGES = "GET_MESSAGES"//获取到新的message
+export const READ_MESSAGE = "READ_MESSAGE"//读取某个消息
+export const SET_CURRENT_MESSAGE = 'SET_CURRENT_MESSAGE'
 
 const state = {
-  messageItems: [],//消息列表,
-  currentItemId: ""
+  items: [],//消息列表,
+  reads: [],
+  currItem: {}//当前选中要展示的消息
 }
 
 const getters = {
-  getCurrentItem(state) {
-    return state.messageItems.find(obj => obj.id == state.currentItemId);
-  },
-  messageItems(state) {
-    return state.messageItems.sort((item1, item2) => {
-        return item1.status - item2.status == 0 ? item1.createTime - item2.createTime : item1.status - item2.status;
-      }
-    );
-  },
-  unreadMessage(state) {
-    return state.messageItems.filter(obj => obj.status == 0);
-    j
+  //未读的消息数量
+  unReadCount: state => {
+    return state.items.length - state.reads.length
   }
 }
-const mutations = {
-  [SAVE_MESSAGE_ITEM](state, messageItems) {
-    state.messageItems = messageItems;
-  },
-  [CHANGE_STATUS](state, item) {
-    state.messageItems[state.messageItems.findIndex(obj => obj.id === item.id)].status = 1;
-    saveMessage(state.messageItems);
-  },
-  [DEL_ITEM](state, index) {
-    state.messageItems.splice(index, 1);
-    saveMessage(state.messageItems);
-  },
-  [CHANGE_CURRENT_ITEM_ID](state, id) {
-    state.currentItemId = id;
-  }
-}
-const actions = {
-  async save({commit}, messageItems) {
-    await saveMessage(messageItems);
-    commit(SAVE_MESSAGE_ITEM, messageItems);
-  },
-  async changeStatus({commit}, {item}) {
-    commit(CHANGE_STATUS, item)
-  },
-  async delItem({commit}, {index}) {
-    commit(DEL_ITEM, index)
-  },
-  async loadMessageItem({commit}) {
-    commit(SAVE_MESSAGE_ITEM, await readMessage())
-  },
-  async changeCurrentItemId({commit}, {id}) {
-    commit(CHANGE_CURRENT_ITEM_ID, id)
-  }
 
+const actions = {
+  async getMessages({commit}) {
+    let items = await getFchainRss()
+    setMsgLinks(items.map(item=>item.link))
+    let readlinks = getReadMsgs()
+    commit(GET_MESSAGES, {messages: items, reads: readlinks});
+  },
+  
+  selectMsg({commit,state}, msg){
+    commit(SET_CURRENT_MESSAGE, msg)
+    if(state.reads.indexOf(msg.link) > -1 ){
+      return
+    }
+    readMsg(msg.link)
+    commit(READ_MESSAGE,msg)
+  },
+  
+
+}
+
+
+const mutations = {
+  [GET_MESSAGES](state, {messages, reads}) {
+    state.items = messages
+    state.reads = reads
+    state.currItem = {}
+  },
+  [READ_MESSAGE](state, item) {
+    state.reads.push(item.link)
+  },
+  [SET_CURRENT_MESSAGE](state,item){
+    state.currItem = item
+  }
 }
 
 export default {

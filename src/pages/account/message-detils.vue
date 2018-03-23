@@ -1,14 +1,11 @@
 <template>
   <div>
-    <tool-bar :title="getCurrentItem.title"
-              :showmenuicon="showmenuicon"
-              :showbackicon="showbackicon"
+    <tool-bar :title="item.title"
+              :showmenuicon="false"
+              :showbackicon="true"
               @goback="back"></tool-bar>
     <div class="message-detils">
-      <h1 class=" message-title" >{{getCurrentItem.title}}</h1>
-      <div class="message-content">
-        {{getCurrentItem.content}}
-      </div>
+      <div class="message-content" v-html="item.content"> </div>
     </div>
   </div>
 </template>
@@ -20,8 +17,6 @@
         name: "message-detils",
       data(){
           return{
-            showbackicon: true,
-            showmenuicon: false,
           }
       },
       methods:{
@@ -33,9 +28,9 @@
           ToolBar
       },
       computed:{
-        ...mapGetters([
-          'getCurrentItem'
-        ])
+        ...mapState({
+          item: state => state.message.currItem
+        })
       }
     }
 </script>
@@ -44,5 +39,6 @@
   .message-detils
     padding 10px
     .message-content
-      word-wrap: break-word
+      width: 100%
+      height: 100%
 </style>

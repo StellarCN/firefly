@@ -55,9 +55,6 @@
     <preference name="SplashScreenBackgroundColor" value="#21ce90" />
     <preference name="SplashMaintainAspectRatio" value="true" />
     <preference name="ShowSplashScreen" value="true" />
-    <engine name="browser" spec="&gt;=5.0.1" />
-    <engine name="android" spec="&gt;=6.2.3" />
-    <engine name="ios" spec="&gt;=4.5.4" />
     <plugin name="cordova-plugin-device" spec="&gt;=1.1.7" />
     <plugin name="cordova-plugin-whitelist" spec="&gt;=1" />
     <plugin name="cordova-plugin-qrscanner" spec="&gt;=2.5.0" />
@@ -71,4 +68,8 @@
     <plugin name="cordova-plugin-screen-orientation" spec="&gt;=3.0.1" />
     <plugin name="cordova-plugin-wkwebview-engine" spec="git+https://github.com/apache/cordova-plugin-wkwebview-engine.git" />
     <plugin name="x5webview-cordova-plugin" spec="git+https://github.com/imloama/x5webview-cordova-plugin.git" />
+    <plugin name="cordova-plugin-advanced-http" spec="^1.11.1" />
+    <engine name="browser" spec="&gt;=5.0.1" />
+    <engine name="android" spec="&gt;=6.2.3" />
+    <engine name="ios" spec="&gt;=4.5.4" />
 </widget>

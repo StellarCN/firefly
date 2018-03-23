@@ -36,8 +36,10 @@
     "cordova-clipboard": ">=1.1.1",
     "cordova-ios": ">=4.5.4",
     "cordova-plugin-add-swift-support": ">=1.7.0",
+    "cordova-plugin-advanced-http": "^1.11.1",
     "cordova-plugin-camera": ">=2.4.1",
     "cordova-plugin-device": ">=1.1.7",
+    "cordova-plugin-file": "^6.0.1",
     "cordova-plugin-globalization": ">=1.0.9",
     "cordova-plugin-inappbrowser": ">=1.7.2",
     "cordova-plugin-qrscanner": ">=2.5.0",
@@ -71,7 +73,8 @@
     "vuedraggable": ">=2.16.0",
     "vuetify": ">0.17.2",
     "vuex": ">=2.4.0",
-    "x5webview-cordova-plugin": "git+https://github.com/imloama/x5webview-cordova-plugin.git"
+    "x5webview-cordova-plugin": "git+https://github.com/imloama/x5webview-cordova-plugin.git",
+    "xml2js": "^0.4.19"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
@@ -152,7 +155,8 @@
       "cordova-plugin-globalization": {},
       "cordova-plugin-screen-orientation": {},
       "cordova-plugin-wkwebview-engine": {},
-      "x5webview-cordova-plugin": {}
+      "x5webview-cordova-plugin": {},
+      "cordova-plugin-advanced-http": {}
     },
     "platforms": [
       "browser",

@@ -36,7 +36,7 @@ export default {
         component:resolve => require(['../pages/account/MessageCenter.vue'],resolve),
       },
       {
-        path: "message-detils/:id",
+        path: "message-detils",
         name: "MessageDetils",
         component: resolve => require(['../pages/account/message-detils.vue'], resolve),
       }
