@@ -196,9 +196,10 @@ export default {
     })
   },
   mounted(){
-    this.swiperTop.params.control = this.swiperContent
-    this.swiperContent.params.control = this.swiperTop
-    this.swiperTop.on('SlideChangeEnd', this.swipeAsset)
+    console.log('----222')
+    this.swiperTop.controller.control = this.swiperContent
+    this.swiperContent.controller.control = this.swiperTop
+    this.swiperTop.on('slideChange', this.swipeAsset)
     this.swiperTop.slideTo(this.swiperIndex,0,true)
     //如果历史记录为空,则查询历史记录
     
@@ -211,6 +212,8 @@ export default {
       getPayments: 'getPayments',
     }),
     swipeAsset () {
+      console.log('-------------')
+      console.log(this.swiperTop)
       this.selectAsset(this.balances[this.swiperTop.activeIndex])
     },
     back(){
