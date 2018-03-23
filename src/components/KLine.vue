@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-26 15:59:49 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-15 10:02:22
+ * @Last Modified time: 2018-03-21 15:54:29
  * @License MIT 
  */
 
@@ -12,26 +12,30 @@
       <div class="flex1">
           <div class="linegraph" :id="id" v-bind:style="{height: height + 'px'}"></div>
       </div>
-      <div class="flex1" v-if="titleData!==null && titleData.price!==null">
-           <div :class="' price textcenter ' + ( titleData.change >=0 ? 'up':'down') ">{{titleData.price}}{{counter.code}}</div>
-           <div :class="' rate  textcenter ' + ( titleData.rate >=0 ? 'up':'down')">
+      <div class="flex1" v-if="titleData!=null && titleData.price!=null && typeof titleData.price!='undefined'">
+           <div :class="' price textright ' + ( titleData.change >=0 ? 'up':'down') ">{{titleData.price}}</div>
+           <div :class="' rate  textright ' + ( titleData.change >=0 ? 'up':'down')">
               <span v-if="titleData.rate>0">+</span>
               {{titleData.rate}}%</div>
       </div>
-      <div class="flex1" v-else>&nbsp;</div>
+      <div class="flex1 working" v-else>
+          <v-progress-circular indeterminate color="primary" v-if="working"></v-progress-circular>
+          <span v-else></span>
+      </div>
   </div>
 </template>
 
 <script>
 var moment = require('moment')
-var echarts = require('echarts')
+//var echarts = require('echarts')
+import echarts from '@/libs/pkgs/initEcharts'
 import { getTradeAggregation, getTradeAggregation1min, 
     getTradeAggregation15min, getTradeAggregation1hour, 
     getTradeAggregation1day, getTradeAggregation1week,
     RESOLUTION_1MIN,RESOLUTION_1HOUR,RESOLUTION_1DAY } from '@/api/tradeAggregation'
 import { getAsset } from '@/api/assets'
 import { getTrades } from '@/api/trade'
-import _ from 'lodash'
+import  defaultsDeep  from 'lodash/defaultsDeep'
 import {Decimal} from 'decimal.js'
 
 const TRADE_INTERVAL = 60000
@@ -51,6 +55,7 @@ export default {
             //最新的成交价格统计
             lastTrade:null,
             tradeInterval: null,//查询最新一次交易数据的interval
+            working: true,
         }
     },
     props: {
@@ -77,11 +82,11 @@ export default {
         //时间间隔，单位毫秒
         interval: {
             type: Number,
-            default: RESOLUTION_1MIN
+            default: RESOLUTION_1DAY
         },
         resolution: {
             type: Number,
-            default: RESOLUTION_1HOUR
+            default: RESOLUTION_1DAY
         },
         //是否增量更新模式
         incremental: {
@@ -106,10 +111,10 @@ export default {
             let open = new Decimal(this.lastTradeAggregation.open)
             let change = price.minus(open)
             let rate = change.times(100).dividedBy(open)
-            return  _.defaultsDeep({}, this.lastTradeAggregation, {
+            return  defaultsDeep({}, this.lastTradeAggregation, {
                 price: new Decimal(price.toFixed(7)).toNumber(),
                 change: new Decimal(change.toFixed(7)).toNumber(),
-                rate: new Decimal(rate.toFixed(2)).toNumber() })
+                rate: new Decimal(rate.toFixed(4)).toNumber() })
           }
           return {}
       }  
@@ -152,8 +157,8 @@ export default {
               end_time = new Date().getTime()
           }else{//初次请求，判断start是否存在
             if(this.start < 0){
-                //前24小时
-                start_time = Number(moment().subtract(24,"hours").format('x'))
+                //前7天
+                start_time = Number(moment().subtract(7,"days").format('x'))
             }else{
                 start_time = this.start;
             }
@@ -163,6 +168,7 @@ export default {
                 end_time = this.end
             }
           }
+          this.working = true
           getTradeAggregation(getAsset(this.base), getAsset(this.counter), 
                 start_time, end_time, this.resolution, 200, 'desc')
             .then(data => {
@@ -183,10 +189,12 @@ export default {
                 this.opt.xAxis.date = this.dates
                 this.opt.series[0].data = this.data
                 this.ele.setOption(this.opt)
+                this.working = false
             })
             .catch(err=>{
                 console.error(`-----err on get trade aggregation -- `)
                 console.error(err)
+                this.working = false
             })
         },
         initView() {
@@ -302,5 +310,8 @@ export default {
 .rate
     line-height: 16px
     font-size: 14px
+.working
+    padding-top: 8px
+    text-align: center
 
 </style>

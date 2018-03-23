@@ -21,6 +21,11 @@
   "high":"高",
   "low":"低",
   "volume":"量",
+  "open_price":"开盘价",
+  "close_price":"收盘价",
+  "high_price":"最高价",
+  "low_price":"最低价",
+  "volumes":"成交量",
   "Congratulations":"恭喜您",
 
 
@@ -406,8 +411,10 @@
   "ReceiveAssetMsg":"扫描二维码向我发送",
   "Change":"切换",
   "MyAccount":"我的账户",
-  "MemoBook.MyAddress":"地址簿"
-
+  "MemoBook.MyAddress":"地址簿",
+  "StartDate":"起始日期",
+  "EndDate":"结束日期",
+  "StartDateIsAfterEndDate":"开始日期不能大于结束日期"
   
 
 }

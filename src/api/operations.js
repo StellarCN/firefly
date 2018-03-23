@@ -2,9 +2,13 @@ import StellarSdk from 'stellar-sdk'
 import { getServer } from './server'
 import { address as getAddress } from './account'
 
+export const ASSET_TRUST_LIMIT = "707382697076.89"
+
 // change trust
 // @param limit 0 means delete trust
-export function changeTrust(seed,code, issuer, limit="100000000000") {
+// 707382697076.89   FIREFLY的charcode
+// 100000000000
+export function changeTrust(seed,code, issuer, limit=ASSET_TRUST_LIMIT) {
   var address = getAddress(seed)
   var asset = new StellarSdk.Asset(code, issuer);
   console.debug('Turst asset', asset, limit);

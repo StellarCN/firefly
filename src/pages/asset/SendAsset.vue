@@ -23,7 +23,7 @@
       :validator="qrvalidator"
       v-if="showScanner"></q-r-scan>
 
-    <div class="content" v-if="!showScanner">
+    <div class="content" v-if="!showScanner && !showmemobook && !showContacts">
       <card>
        <div class="card-content" slot="card-content" v-if="!showContacts">
           <v-select
@@ -131,7 +131,7 @@
 
       </card>
       
-      <div style="flex: 1;"></div>
+    <div style="flex: 1;"></div>
      <div class="btn-group" v-if="!showContacts">
         <v-btn class="error btn-send" @click.stop="send">{{$t('Send')}}</v-btn>
      </div>
@@ -152,7 +152,7 @@ import Card from '@/components/Card'
 import Loading from '@/components/Loading'
 import { mapState, mapActions, mapGetters} from 'vuex'
 import * as accountapi from '@/api/account'
-import _ from 'lodash'
+import  debounce  from 'lodash/debounce'
 import { resolveByFedAddress } from '@/api/federation'
 import ContactBook from '@/components/ContactBook'
 import { xdrMsg,getXdrResultCode } from '@/api/xdr'
@@ -457,7 +457,7 @@ export default {
       }
     },
 
-    destinationInput: _.debounce(function(val) {//必须是普通function，不能是箭头函数
+    destinationInput: debounce(function(val) {//必须是普通function，不能是箭头函数
       if(this.iscontact){
         this.iscontact = false
       }

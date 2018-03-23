@@ -16,22 +16,34 @@ export default {
       {
         path: 'info',
         name: 'Asset',
-        component: resolve => require(['../pages/asset/Asset.vue'], resolve)
+        component: resolve => require(['../pages/asset/Asset.vue'], resolve),
+        meta: {
+          keepAlive: false
+        }
       },
       {
         path: 'add',
         name: 'AddAsset',
-        component: resolve => require(['../pages/asset/AddAsset.vue'], resolve)
+        component: resolve => require(['../pages/asset/AddAsset.vue'], resolve),
+        meta: {
+          keepAlive: false
+        }
       },
       {
         path: 'receive',
         name: 'ReceiveAsset',
-        component: resolve => require(['../pages/asset/ReceiveAsset.vue'], resolve)
+        component: resolve => require(['../pages/asset/ReceiveAsset.vue'], resolve),
+        meta: {
+          keepAlive: false
+        }
       },
       {
         path: 'send',
         name: 'SendAsset',
-        component: resolve => require(['../pages/asset/SendAsset.vue'], resolve)
+        component: resolve => require(['../pages/asset/SendAsset.vue'], resolve),
+        meta: {
+          keepAlive: false
+        }
       },
     ]
   }

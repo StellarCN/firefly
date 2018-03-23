@@ -106,7 +106,7 @@ import { getAssetWithdrawUrl,submitQuote } from '../api/withdraw'
 import Loading from './Loading'
 import ContactBook from '@/components/ContactBook'
 import { xdrMsg,getXdrResultCode } from '@/api/xdr'
-import _ from 'lodash'
+import  defaultsDeep  from 'lodash/defaultsDeep'
 export default {
   data(){
     return {
@@ -232,7 +232,7 @@ export default {
           return
         }
       }
-      let data = _.defaultsDeep({}, this.values, {
+      let data = defaultsDeep({}, this.values, {
           address: this.account.address,
           account_id: this.accountId,
           asset_code: this.asset.code,

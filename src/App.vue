@@ -5,9 +5,15 @@
       <v-system-bar status :color="iosstatusbarcolor" v-if="isios" app>
         <v-spacer></v-spacer>
       </v-system-bar>
-      <v-content>
-          <router-view></router-view>
+      <v-content class="contentx">
+          <keep-alive>
+            <router-view v-if="$route.meta.keepAlive"/>
+        </keep-alive>
+
+        <router-view v-if="!$route.meta.keepAlive"/>
+
       </v-content>
+      <tab-bar v-if="tabBarShow"/>
   </v-app>
 
   <div class="fuzzy-view" v-if="showFuzzyView">
@@ -25,6 +31,7 @@ import { defaultTradePairsAPI } from "@/api/gateways";
 import { closeStreams, initStreams } from "@/streams";
 import { initStorage, checkPlatform } from "@/api/storage";
 import { getDeviceLanguage } from "@/locales";
+import  TabBar from '@/components/TabBar'
 
 export default {
   data() {
@@ -34,18 +41,20 @@ export default {
       isios: false,
       devicelang: null,
       showFuzzyView: false,
+      tabBarShow: false,
+      tabBarItems: ['MyAssets', 'TradeCenter', 'Funding', 'My'],
       // items:Store.fetch(),
     };
   },
-  // watch : {
-  //     items : {
-  //       handler:function(items){
-  //         // console.log(val,oldVal)
-  //         Store.save(items)
-  //       },
-  //       deep:true
-  //     }
-  // },
+  watch: {
+    '$route'(to,from){
+      if(this.tabBarItems.indexOf(to.name) >= 0){
+        this.tabBarShow = true
+      }else{
+        this.tabBarShow = false
+      }
+    }    
+  },
   computed: {
     ...mapState({
       showloading: state => state.showloading,
@@ -57,8 +66,9 @@ export default {
     })
   },
   beforeMount() {
-    // if(window.localStorage.getItem('login_flag')==1){
-    //   console.log(window.localStorage.getItem('login_flag'))
+    if(this.tabBarItems.indexOf(this.$route.name) >=0 ){
+      this.tabBarShow = true
+    }
     Vue.cordova.on("deviceready", () => {
       checkPlatform();
       try {
@@ -230,7 +240,8 @@ export default {
   //   }
   // },
   components: {
-    PinCode
+    PinCode,
+    TabBar,
   }
 };
 </script>

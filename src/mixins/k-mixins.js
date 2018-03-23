@@ -4,7 +4,6 @@
  * @Last Modified time: 2018-03-15 10:15:19
  * @License MIT 
  */
-var echarts = require('echarts')
 import NP from 'number-precision'
 import { getTradeAggregation, getTradeAggregation1min, 
     getTradeAggregation15min, getTradeAggregation1hour, 
@@ -15,7 +14,7 @@ import { mapState, mapActions, mapGetters} from 'vuex'
 import { getTrades } from '@/api/trade'
 import { DEFAULT_INTERVAL } from '@/api/gateways'
 var moment = require('moment')
-import _ from 'lodash'
+import  defaultsDeep  from 'lodash/defaultsDeep'
 import {Decimal} from 'decimal.js'
 import Card from '@/components/Card'
 import indicator from '@/libs/indicator'
@@ -90,7 +89,7 @@ export default {
             let open = new Decimal(this.lastTradeAggregation.open)
             let change = price.minus(open)
             let rate = change.times(100).dividedBy(open)
-            return  _.defaultsDeep({}, this.lastTradeAggregation, {
+            return  defaultsDeep({}, this.lastTradeAggregation, {
                 price: new Decimal(price.toFixed(6)).toNumber(),
                 change: new Decimal(change.toFixed(4)).toNumber(),
                 rate: new Decimal(rate.toFixed(2)).toNumber() })
@@ -131,7 +130,6 @@ export default {
             this.fetchLastTrade()
         },
         cleanData(){
-            console.log('----------------clean Data----')
             this.ele = null
             this.opt = null
             this.dates = []
@@ -147,7 +145,7 @@ export default {
               start_time = this.lasttime;
               end_time = new Date().getTime()
           }else{//初次请求，判断start是否存在
-            start_time = this.start < 0 ? Number(moment().subtract(24,"hours").format('x')) : this.start;
+            start_time = this.start < 0 ? Number(moment().subtract(48,"hours").format('x')) : this.start;
             end_time = this.end < 0 ? new Date().getTime() : this.end
           }
           getTradeAggregation(getAsset(this.base), getAsset(this.counter), 

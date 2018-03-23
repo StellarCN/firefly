@@ -56,7 +56,7 @@
   </scroll>
 
    <loading :show="working" :loading="sending" :success="dealok" :fail='dealfail' 
-      color="red" :title="loadingTitle" :msg="loadingError" :closeable="dealfail" @close="hiddenLoadingView"/>
+      color="red" :title="loadingTitle" :msg="loadingMsg" :closeable="dealfail" @close="hiddenLoadingView"/>
 
 
   </div>

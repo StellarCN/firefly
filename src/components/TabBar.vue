@@ -1,6 +1,6 @@
 <template>
 <!-- <v-card class="menu-card"> -->
-  <v-bottom-nav :value="true" absolute :active.sync="active" color="dark" class="tb-menu" app fixed absolute>
+  <v-bottom-nav :value="true" :active.sync="active" color="dark" class="tb-menu" app fixed>
       <v-btn flat v-for="(item,index) in menus" :key="index" :value="index" @click="redirect(index,item.name)"> 
         <span>{{$t(item.title)}}</span>
         <v-icon>{{item.icon}}</v-icon>
@@ -83,11 +83,10 @@ export default {
   &.bottom-nav.bottom-nav--active.dark
     .btn.btn--flat.btn--active
       color: $primarycolor.green
-</style>
-<style lang="stylus" scoped>
-  .bottom-nav .btn
-    opacity inherit!important
-    color #999
-  .bottom-nav .btn:not(.btn--active)
-    filter inherit!important
+
+.bottom-nav .btn
+  opacity inherit!important
+  color #999
+.bottom-nav .btn:not(.btn--active)
+  filter inherit!important
 </style>

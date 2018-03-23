@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-03-05 17:30:09 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-15 15:34:03
+ * @Last Modified time: 2018-03-21 15:57:39
  * @License MIT 
  */
  <template>
@@ -21,7 +21,8 @@
  </template>
  
  <script>
- import _ from 'lodash'
+ import  endsWith  from 'lodash/endsWith'
+ import  replace  from 'lodash/replace'
  import util from './SecretKeyInputUtil'
  export default {
    data(){
@@ -38,7 +39,7 @@
    },
    methods:{
      inputText(value){
-       if(value && _.endsWith(value, this.delimiter)){
+       if(value && endsWith(value, this.delimiter)){
          this.seedInput = this.seedInput.substr(0, this.seedInput.length -1)
          return;
        }
@@ -77,7 +78,7 @@
      },
 
     getSeed(){
-      return _.replace(this.seedInput, this.delimiter,'').toUpperCase()
+      return replace(this.seedInput, this.delimiter,'').toUpperCase()
     }
 
    }

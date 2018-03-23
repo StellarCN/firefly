@@ -20,6 +20,11 @@ export const LANGUAGES = [
   ZH_CN
 ]
 
+export const MOMENT_LANGUAGES = {
+  'zh_cn': 'zh-cn',
+  'en': 'en'
+}
+
 export function getDeviceLanguage(){
   return new Promise((resolve,reject) => {
     console.log(navigator.globalization)

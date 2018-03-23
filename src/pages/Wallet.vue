@@ -2,8 +2,8 @@
  * 创建钱包账户界面
  */
 <template>
-  <div class="create-account-page">
-    <v-btn icon v-show="showbackicon" @click="back" class="white--text">
+  <div class="create-account-page page">
+    <v-btn icon v-show="showbackicon" @click="back" class="white--text back-btn">
         <i class="material-icons back-icon">&#xE5CB;</i>
       </v-btn>
 
@@ -58,18 +58,13 @@ export default {
 @require '../stylus/color.styl'
 .back-icon
   font-size: 32px
+
 .create-account-page
-  //position: absolute
-  //top: 0
-  //right: 0
-  //left: 0
-  //bottom: 0
-  display: block
-  height: 100%
   background: $primarycolor.green
   color: $primarycolor.font
+  padding-top: 40%
+  height: 100vh
   .logo
-    margin-top: 40%
     display: block
     text-align: center
     vertical-align: center
@@ -82,6 +77,10 @@ export default {
     line-height: 60px
     font-size: 42px
     color: $primarycolor.font
+  .back-btn
+    position: absolute
+    top: 10px
+    left: 10px
   .footer
     position: fixed
     bottom: 0

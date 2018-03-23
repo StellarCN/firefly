@@ -5,7 +5,7 @@
  * @Date: 2018-01-16 09:59:52
  */
 import shvl from 'shvl'
-import _ from 'lodash'
+import  defaultsDeep  from 'lodash/defaultsDeep'
 let index = Date.now()
 
 /**
@@ -140,13 +140,13 @@ export default function createPersist ({
     )
 
     store.subscribe((mutation, state) => {
-      storage.set(reducer(_.defaultsDeep({},state), paths, blocks))
+      storage.set(reducer(defaultsDeep({},state), paths, blocks))
     })
   }
 }
 
 function defaultMerge (...args) {
-  return _.defaultsDeep({}, ...args)
+  return defaultsDeep({}, ...args)
 }
 
 function defaultReducer (state, paths = [], blocks = []) {
@@ -154,11 +154,11 @@ function defaultReducer (state, paths = [], blocks = []) {
   ? state
   : paths.reduce((substate, path) => {
     if (state.hasOwnProperty(path)) {
-      return _.defaultsDeep(substate, { [path]: state[path] })
+      return defaultsDeep(substate, { [path]: state[path] })
     }
     return substate
   }, {})
-  let prostate = _.defaultsDeep({} , newstate, {})
+  let prostate = defaultsDeep({} , newstate, {})
   blocks.forEach(path=>{
     deleteAttribute(prostate,path)
   })

@@ -1,6 +1,6 @@
 // main
 import Vue from 'vue'
-import Vuetify from 'vuetify'
+//import Vuetify from 'vuetify'
 import 'babel-polyfill'
 import FastClick from 'fastclick'
 import './stylus/main.styl'
@@ -17,24 +17,10 @@ import axios from 'axios'
 require('./api/utils') 
 
 // animate.css
-import 'animate.css'
+// import 'animate.css'
 
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 Vue.use(VueAwesomeSwiper)
-
-import vueMethodsPromise from 'vue-methods-promise'
-
-Vue.use(vueMethodsPromise, {
-  hookName: '$promise', // Component default hook name
-  promise: (mp) => { // Promise callback
-    mp.then(function (res) {
-        //console.log(res)
-      })
-      .catch(function (err) {
-       // console.log(err.msg) // Test error
-      })
-  }
-})
 
 var VueCordova = require('./libs/vue-cordova');
 Vue.use(VueCordova);
@@ -56,13 +42,16 @@ if (window.location.protocol === 'file:' || window.location.port === '3000') {
 }
 
 // Vue.use(Vuetify)
-Vue.use(Vuetify, {
-  theme: {
-    primary: '#21ce90',
-    error: "#f35833",
-    notice: "#303034",
-  }
-})
+// Vue.use(Vuetify, {
+//   theme: {
+//     primary: '#21ce90',
+//     error: "#f35833",
+//     notice: "#303034",
+//   }
+// })
+
+import '@/libs/pkgs/initVuetify'
+
 FastClick.attach(document.body)
 Vue.config.productionTip = false
 

@@ -34,14 +34,13 @@
         </div>
       </card>
 
-      <card class="trade-card" padding="10px 10px">
-        <div class="card-content" slot="card-content">
-      
+      <card class="trade-card" padding="0px 0px">
+        <div class="card-content trade-card-content" slot="card-content">
           <ul class="tradepairs-ul">
             <transition-group>
-            <li class="tradepair-li" v-for="(pair,index) in pairs" :key="pair.from.issuer+'-'+pair.to.issuer">
+            <li class="tradepair-li" v-for="(pair,index) in pairs" :key="index">
               <v-layout class="pair-wrapper" row wrap v-swiper=2  @click="trade(index,pair)">
-                <v-flex xs6>
+                <v-flex xs4>
                   <div class="flex-row">
                     <div class="flex3 from-wrapper">
                       <div class="code">{{pair.from.code}}</div>
@@ -62,7 +61,7 @@
                     </div>
                   </div>
                 </v-flex>
-                <v-flex xs6>
+                <v-flex xs8>
                   <k-line :base="pair.from" :counter="pair.to" :height="56" :timeout="100*index"></k-line>
                 </v-flex>
 
@@ -92,12 +91,12 @@
       {{ snackbarText }}
         <v-btn outline dark small @click.native="snackbar = false">{{$t('Close')}}</v-btn>
       </v-snackbar>
-      <tab-bar/>
+      <!-- <tab-bar/> -->
   </div>
 </template>
 
 <script>
-import draggable from 'vuedraggable'
+//import draggable from 'vuedraggable'
 import Toolbar from '@/components/Toolbar'
 import Card from '@/components/Card'
 import Picker from "@/components/picker"
@@ -112,7 +111,6 @@ import { getTradeAggregation,getTradeAggregation1day,RESOLUTION_1HOUR } from '@/
 import { getAsset } from '@/api/assets'
 import { getTrades } from '@/api/trade'
 var moment = require('moment')
-import _ from 'lodash'
 import {Decimal} from 'decimal.js'
 
 const TAG_ALL = 'All', TAG_XCN = 'XCN', TAG_XLM = 'XLM', TAG_BTC = 'BTC', TAG_ETH = 'ETH'
@@ -352,7 +350,7 @@ export default {
     TradePairPicker,
     KLine,
     TabBar,
-    draggable,
+    //draggable,
     AccountsNav
   }
 }
@@ -361,6 +359,10 @@ export default {
 
 <style lang="stylus" scoped>
 @require '~@/stylus/color.styl'
+.trade-card-content
+  padding: 5px 5px
+  background: $secondarycolor.gray
+  border-radius: 5px
 .tradepairs-ul
   padding: 0px 0px
 .tradepair-li

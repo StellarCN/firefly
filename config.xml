@@ -1,70 +1,74 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.github.stellarcn.firefly" version="1.2.6" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-  <name>firefly</name>
-  <description>
-    stellar wallet
-  </description>
-  <content src="index.html" />
-  <allow-navigation href="*" />
-  <access origin="*" />
-  <allow-intent href="*" />
-  <allow-intent href="http://*/*" />
-  <allow-intent href="https://*/*" />
-  <allow-intent href="tel:*" />
-  <allow-intent href="sms:*" />
-  <allow-intent href="mailto:*" />
-  <allow-intent href="geo:*" />
-  <splash src="res/screen/firefly/splash.png" />
-  <platform name="android">
-    <allow-intent href="market:*" />
-    <icon density="ldpi" src="res/icon/firefly/logo.png" />
-    <icon density="mdpi" src="res/icon/firefly/logo.png" />
-    <icon density="hdpi" src="res/icon/firefly/logo.png" />
-    <icon density="xhdpi" src="res/icon/firefly/logo.png" />
-    <icon density="xxhdpi" src="res/icon/firefly/logo.png" />
+    <name>firefly</name>
+    <description>
+        stellar wallet
+    </description>
+    <content src="index.html" />
+    <allow-navigation href="*" />
+    <access origin="*" />
+    <allow-intent href="*" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-intent href="tel:*" />
+    <allow-intent href="sms:*" />
+    <allow-intent href="mailto:*" />
+    <allow-intent href="geo:*" />
     <splash src="res/screen/firefly/splash.png" />
-  </platform>
-  <platform name="ios">
-    <allow-intent href="itms:*" />
-    <allow-intent href="itms-apps:*" />
-    <icon height="180" src="res/icon/firefly/icon-60@3x.png" width="180" />
-    <icon height="60" src="res/icon/firefly/icon-20@3x.png" width="60" />
-    <icon height="40" src="res/icon/firefly/icon-40.png" width="40" />
-    <icon height="80" src="res/icon/firefly/icon40x40@2x.png" width="80" />
-    <icon height="57" src="res/icon/firefly/icon.png" width="57" />
-    <icon height="20" src="res/icon/firefly/icon-20.png" width="20" />
-    <splash src="res/screen/firefly/splash.png" />
-  </platform>
-  <platform name="browser">
-  </platform>
-  <preference name="BackgroundColor" value="#212122" />
-  <preference name="DisallowOverscroll" value="true" />
-  <preference name="EnableViewportScale" value="true" />
-  <preference name="SuppressesLongPressGesture" value="false" />
-  <preference name="orientation" value="portrait" />
-  <preference name="StatusBarOverlaysWebView" value="true" />
-  <preference name="StatusBarBackgroundColor" value="#21ce90" />
-  <preference name="StatusBarStyle" value="lightcontent" />
-  <preference name="Fullscreen" value="false" />
-  <preference name="SplashScreen" value="splash" />
-  <preference name="SplashScreenDelay" value="10000" />
-  <preference name="SplashScreenBackgroundColor" value="#21ce90" />
-  <preference name="SplashMaintainAspectRatio" value="true" />
-  <preference name="ShowSplashScreen" value="true" />
-  <engine name="browser" spec="&gt;=5.0.1" />
-  <engine name="android" spec="&gt;=6.2.3" />
-  <engine name="ios" spec="&gt;=4.5.4" />
-  <plugin name="cordova-plugin-device" spec="&gt;=1.1.7" />
-  <plugin name="cordova-plugin-whitelist" spec="&gt;=1" />
-  <plugin name="cordova-plugin-qrscanner" spec="&gt;=2.5.0" />
-  <plugin name="cordova-plugin-splashscreen" spec="&gt;=4.1.0" />
-  <plugin name="cordova-plugin-statusbar" spec="&gt;=2.3.0" />
-  <plugin name="cordova-clipboard" spec="&gt;=1.1.1" />
-  <plugin name="cordova-plugin-camera" spec="&gt;=2.4.1" />
-  <plugin name="cordova-sqlite-storage" spec="&gt;=2.1.2" />
-  <plugin name="cordova-disable-http-cache" spec="&gt;=1.0.0" />
-  <plugin name="cordova-plugin-inappbrowser" spec="&gt;=1.7.2" />
-  <plugin name="cordova-plugin-globalization" spec="&gt;=1.0.9" />
-  <plugin name="cordova-plugin-screen-orientation" spec="&gt;=3.0.1" />
-  <plugin name="cordova-plugin-dbcopy" spec="&gt;=2.0.0" />
+    <platform name="android">
+        <allow-intent href="market:*" />
+        <icon density="ldpi" src="res/icon/firefly/logo.png" />
+        <icon density="mdpi" src="res/icon/firefly/logo.png" />
+        <icon density="hdpi" src="res/icon/firefly/logo.png" />
+        <icon density="xhdpi" src="res/icon/firefly/logo.png" />
+        <icon density="xxhdpi" src="res/icon/firefly/logo.png" />
+        <splash src="res/screen/firefly/splash.png" />
+    </platform>
+    <platform name="ios">
+        <allow-intent href="itms:*" />
+        <allow-intent href="itms-apps:*" />
+        <icon height="180" src="res/icon/firefly/icon-60@3x.png" width="180" />
+        <icon height="60" src="res/icon/firefly/icon-20@3x.png" width="60" />
+        <icon height="40" src="res/icon/firefly/icon-40.png" width="40" />
+        <icon height="80" src="res/icon/firefly/icon40x40@2x.png" width="80" />
+        <icon height="57" src="res/icon/firefly/icon.png" width="57" />
+        <icon height="20" src="res/icon/firefly/icon-20.png" width="20" />
+        <splash src="res/screen/firefly/splash.png" />
+    </platform>
+    <platform name="browser">
+    </platform>
+    <feature name="CDVWKWebViewEngine">
+        <param name="ios-package" value="CDVWKWebViewEngine" />
+    </feature>
+    <preference name="CordovaWebViewEngine" value="CDVWKWebViewEngine" />
+    <preference name="BackgroundColor" value="#212122" />
+    <preference name="DisallowOverscroll" value="true" />
+    <preference name="EnableViewportScale" value="true" />
+    <preference name="SuppressesLongPressGesture" value="false" />
+    <preference name="orientation" value="portrait" />
+    <preference name="StatusBarOverlaysWebView" value="true" />
+    <preference name="StatusBarBackgroundColor" value="#21ce90" />
+    <preference name="StatusBarStyle" value="lightcontent" />
+    <preference name="Fullscreen" value="false" />
+    <preference name="SplashScreen" value="splash" />
+    <preference name="SplashScreenDelay" value="10000" />
+    <preference name="SplashScreenBackgroundColor" value="#21ce90" />
+    <preference name="SplashMaintainAspectRatio" value="true" />
+    <preference name="ShowSplashScreen" value="true" />
+    <engine name="browser" spec="&gt;=5.0.1" />
+    <engine name="android" spec="&gt;=6.2.3" />
+    <engine name="ios" spec="&gt;=4.5.4" />
+    <plugin name="cordova-plugin-device" spec="&gt;=1.1.7" />
+    <plugin name="cordova-plugin-whitelist" spec="&gt;=1" />
+    <plugin name="cordova-plugin-qrscanner" spec="&gt;=2.5.0" />
+    <plugin name="cordova-plugin-splashscreen" spec="&gt;=4.1.0" />
+    <plugin name="cordova-plugin-statusbar" spec="&gt;=2.3.0" />
+    <plugin name="cordova-clipboard" spec="&gt;=1.1.1" />
+    <plugin name="cordova-plugin-camera" spec="&gt;=2.4.1" />
+    <plugin name="cordova-sqlite-storage" spec="&gt;=2.1.2" />
+    <plugin name="cordova-plugin-inappbrowser" spec="&gt;=1.7.2" />
+    <plugin name="cordova-plugin-globalization" spec="&gt;=1.0.9" />
+    <plugin name="cordova-plugin-screen-orientation" spec="&gt;=3.0.1" />
+    <plugin name="cordova-plugin-wkwebview-engine" spec="git+https://github.com/apache/cordova-plugin-wkwebview-engine.git" />
+    <plugin name="x5webview-cordova-plugin" spec="git+https://github.com/imloama/x5webview-cordova-plugin.git" />
 </widget>

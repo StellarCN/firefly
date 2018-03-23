@@ -458,8 +458,8 @@ export default {
         this.$toasted.error(this.$t('Error.NoPassword'))
         return
       }
-
       if(this.working)return
+      this.showConfirmSheet = false
       this.loadingTitle = null
       this.loadingError = null
       this.sendsuccess = false
