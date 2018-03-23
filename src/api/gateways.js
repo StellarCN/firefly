@@ -1,5 +1,6 @@
 import axios from 'axios'
 import pkg from '../../package'
+import { isNativeAsset } from './assets'
 
 export const APP_NAME = 'firefly'
 
@@ -12,6 +13,9 @@ export const OFFICIAL_SITE = 'https://fchain.io'
 
 // APP 最新版本信息
 export const CHECK_UPDATE = 'https://raw.githubusercontent.com/StellarCN/firefly/master/package.json'
+//资产说明
+export const ASSET_INFO_BASE_URL = 'https://github.com/StellarCN/firefly/raw/docs/assets/'
+
 //default interval : 1分钟
 export const DEFAULT_INTERVAL = 60000
 
@@ -122,4 +126,75 @@ export function getDefaultTradePairs(){
 
 export function getPackageJson(){
   return axios.get(CHECK_UPDATE)
+}
+
+//获取资产的说明信息
+export function getAssetInfo(asset_code,asset_issuer){
+  if(isNativeAsset(asset_code, asset_issuer)){
+    return axios.get(`${ASSET_INFO_BASE_URL}${asset_code}.json`)
+  }else{
+    return axios.get(`${ASSET_INFO_BASE_URL}${asset_code}-${asset_issuer}.json`)
+  }
+}
+
+export const COINS_ICON = {
+  ARAD:   'icon-ARDR',
+  ARK:    'icon-ARK',
+  ZRX:    'icon-ZRX',
+  BTM:    'icon-BTM',
+  KMD:    'icon-KMD',
+  REP:    'icon-REP',
+  AE:     'icon-AE',
+  DOGE:   'icon-DOGE',
+  BTS:    'icon-BTS',
+  SC:     'icon-SC',
+  MKR:    'icon-MKR',
+  XVG:    'icon-XVG',
+  STRAT:    'icon-STRAT',
+  BCN: 'icon-BCN',
+  WAVES: 'icon-WAVES',
+  PPT: 'icon-PPT',
+  WTC: 'icon-WTC',
+  STEEN: 'icon-STEEN',
+  ICX: 'icon-ICX',
+  ZEC: 'icon-ZEC',
+  XRB: 'icon-XRB',
+  OMG: 'icon-OMG',
+  QUMT: 'icon-QUMT',
+  LSK: 'icon-LSK',
+  BTG: 'icon-BTG',
+  MOBI: 'icon-MOBI',
+  TAU: 'icon-TAU',
+  VEN: 'icon-VEN',
+  USDT: 'icon-USDT',
+  XEM: 'icon-XEM',
+  MIOTA: 'icon-MIOTA',
+  DASH: 'icon-DASH',
+  EOS: 'icon-EOS',
+  XMR: 'icon-XMR',
+  ADA: 'icon-ADA',
+  NEO: 'icon-NEO',
+  BCH: 'icon-BCH',
+  ETC: 'icon-ETC',
+  LTC: 'icon-LTC',
+  XRP: 'icon-XRP',
+  XLM: 'icon-XLM',
+  ETH: 'icon-ETH',
+  BTC: 'icon-btc'
+  
+}
+
+export const FF_ICON = 'icon-zhanwei'
+
+export const DEFAULT_ICON = 'icon-XLM'
+
+export const WORD_ICON = {
+  'W':'icon-shouzimuzhanweiW',
+  'A':'icon-shouzimuzhanwei'
+}
+
+
+//资产的CSS样式
+export function assetIconClass(asset_code, asset_issuer){
+
 }

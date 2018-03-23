@@ -49,31 +49,6 @@
         
     </div>
     <scroll :refresh="refresh">
-      <!--
-    <card padding="0px 0px" class="" v-for="item in prices" >
-        <div class="assets" slot="card-content" v-if="balances && balances.length>0">
-          <v-layout class="myassets-li" row wrap v-swiper=2 @click.stop="toAsset(native)">
-            <v-flex xs4 class="myassets-wrapper">
-              <div class="myassets">
-                <div class="myassets-name">{{item.code}}</div>
-                <div class="myassets-issuer">{{item.issuer}}</div>
-              </div>
-            </v-flex>
-            <v-flex xs8 class="myassets-wrapper">
-              <div class="myassets-balance">
-                 <span class="balance" v-show="is_Flag">{{item.price}}</span>
-                 <span class="label">{{$t('Total')}}</span>
-              </div>
-              <div class="myassets-reserve">
-                <span class="balance">{{reserve}}</span>
-                <span class="label">{{$t('Reserve')}}</span>
-              </div>
-            </v-flex>
-          </v-layout>
-        </div>
-      </card>
-      -->
-        <!--=======================================================-->
    
    <div class="content"> 
    
@@ -83,6 +58,11 @@
         <div class="assets full-width" slot="card-content">
           <div class="assets-row" v-for="item in assets" :key="item.issuer+item.code">
             <v-layout class="myassets-li third-li " row wrap v-swiper=2.2 @click.stop="toAsset(item)">
+              <v-flex xs2 class="myassets-wrapper">
+                <div class="icon-wrapper">
+                  <i :class="'iconfont ' + assetIcon(item.code,item.issuer)"></i>
+                </div>
+              </v-flex>
             <v-flex xs4 class="myassets-wrapper">
               <div class="myassets">
                 <div class="myassets-name">{{item.code}}</div>
@@ -90,7 +70,7 @@
                  <div class="myassets-issuer" v-else>{{item.issuer | miniaddress}}</div>
               </div>
             </v-flex>
-            <v-flex xs8 class="myassets-wrapper">
+            <v-flex xs6 class="myassets-wrapper">
               <div class="myassets-balance third">
                  <span class="balance">{{item.balance > 0 ? item.balance.toFixed(7) : 0}}</span>
                  <span class="label">{{$t('Total')}}</span> 
@@ -129,6 +109,7 @@ import Card from '@/components/Card'
 import BottomNotice from '@/components/BottomNotice'
 import  { miniAddress } from '@/api/account'
 import { isNativeAsset } from '@/api/assets'
+import { COINS_ICON, FF_ICON, DEFAULT_ICON, WORD_ICON} from '@/api/gateways'
 import Loading from '@/components/Loading'
 import backbutton from '@/mixins/backbutton'
 import loadaccount from '@/mixins/loadaccount'
@@ -182,10 +163,6 @@ export default {
             this.price[j].code === this.balances[i].code &&
             this.price[j].issuer === this.balances[i].issuer
           ) {
-            console.log(this.price[j].price)
-            console.log(this.balances[i].balance)
-            console.log(this.balances)
-            console.log(this.price)
             data =
               Number(this.price[j].price)*this.balances[i].balance + data;
           }
@@ -193,14 +170,8 @@ export default {
       }
       return data;
     },
-
-    /********************** */
-    //对象展开运算符
     ...mapState({
       account: state => state.accounts.selectedAccount,
-      // account: function(state){
-      //   return state.accounts.selectedAccount;
-      // },箭头函数是不是就这个原型
       account: state => state.accounts.selectedAccount,
       accountData: state => state.accounts.accountData,
       islogin: state => (state.accounts.accountData.seed ? true : false),
@@ -209,10 +180,6 @@ export default {
     }),
     ...mapGetters(["balances", "paymentsRecords", "reserve", "native"]),
     assets() {
-      //js中的map方法会返回一个新数组，数组中的元素为原始数组元素调用函数处理后的值
-      //map()方法按照原始数组元素顺序依次处理元素。
-      //_.defaultsDeep({ 'a': { 'b': 2 } }, { 'a': { 'b': 1, 'c': 3 } });
-      // => { 'a': { 'b': 2, 'c': 3 } }
       if (!this.balances) return [];
       let data = this.balances
         .map(item => {
@@ -225,37 +192,6 @@ export default {
             return true;
           }
         });
-              //  let data = []
-      //  for(var i=0,n=this.balances.length; i<n;i++){
-      //    var obj = _.defaultsDeep({}, this.balances[i])
-      //    if(this.is_Flag === FLAG_FILTER_ZERO){
-      //     if(obj.balance === 0)continue;
-      //    }
-      //   data.push(obj);
-      //  }
-      // console.log(data)
-      //  return data;
-
-      /**
-       var users = [
-         { 'user': 'fred',   'age': 48 },
-        { 'user': 'barney', 'age': 36 },
-        { 'user': 'fred',   'age': 40 },
-        { 'user': 'barney', 'age': 34 }
-      ]; 
-      _.sortBy(users, [function(o) { return o.user; }]);
-      // => objects for [['barney', 36], ['barney', 34], ['fred', 48], ['fred', 40]]
- 
-      _.sortBy(users, ['user', 'age']);
-      // => objects for [['barney', 34], ['barney', 36], ['fred', 40], ['fred', 48]]
- */
-//  if(this.sort_flag === SORT_NAME){
-  //    _.sortBy(data, ['code'])
-      //  }else if(this.sort_flag === SORT_BANLANCE){
-        //    _.sortBy(data, ['balance'])
-      //  }
-      //  console.log(data)
-      //  return data
       //按照名称排序或者是按照资产排序,默认直接返回。
         if (this.sort_flag === SORT_DEFAULT) {
           return data;
@@ -307,7 +243,9 @@ export default {
         }
       }
     },
-    toNameCard() {},
+    toNameCard() {
+      this.$router.push({name: 'AccountNameCard'})
+    },
     //隐藏资产---------------------------------------------------------------
     hiddenMyAssets() {
       this.is_Flag =
@@ -384,6 +322,9 @@ export default {
     },
     refresh(){
       this.load()
+    },
+    assetIcon(code,issuer){
+      return COINS_ICON[code] || WORD_ICON[code.substring(0,1)] || DEFAULT_ICON
     }
    
   },
@@ -401,8 +342,7 @@ export default {
 
 
 <style lang="stylus" scoped>
-
 @require '~@/stylus/asset.styl'
-  @require '~@/stylus/settings.styl'
+@require '~@/stylus/settings.styl'
 </style>
 
