@@ -20,8 +20,8 @@ export function getTradeAggregation(base,counter,start_time,end_time,resolution,
  * @param {*} start_time 
  * @param {*} end_time 
  */
-export function getTradeAggregation1min(base,counter,start_time,end_time,limit){
-    return getTradeAggregation(base, counter, start_time, end_time, RESOLUTION_1MIN,limit)
+ export function getTradeAggregation1min(base,counter,start_time,end_time,limit){
+     return getTradeAggregation(base, counter, start_time, end_time, RESOLUTION_1MIN,limit)
 }
 
 export function getTradeAggregation15min(base,counter,start_time,end_time,limit){
@@ -39,8 +39,6 @@ export function getTradeAggregation1day(base,counter,start_time,end_time,limit){
 export function getTradeAggregation1week(base,counter,start_time,end_time,limit){
     return getTradeAggregation(base, counter, start_time, end_time, RESOLUTION_1WEEK,limit)
 }
-
-
 
 //1 minutes (60000), 15 minutes (900000), 1 hour (3600000), 1 day (86400000) and 1 week (604800000)
 export const RESOLUTION_1MIN  =     60000

@@ -95,7 +95,7 @@ export default {
                     name: "Help",
                     icon: "help"
                 },
-              {
+                {
                 title: "Menu.MessageCenter",
                 name: "MessageCenter",
                 icon: "message"
@@ -171,5 +171,6 @@ export default {
 
 <style lang="stylus" scoped>
 @require '~@/stylus/settings.styl'
-
+.content
+    padding-bottom:0px
 </style>
