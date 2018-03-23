@@ -193,8 +193,3 @@ export const WORD_ICON = {
   'A':'icon-shouzimuzhanwei'
 }
 
-
-//资产的CSS样式
-export function assetIconClass(asset_code, asset_issuer){
-
-}
