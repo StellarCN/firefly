@@ -89,7 +89,7 @@
       :color = 'snackbarColor'
       >
       {{ snackbarText }}
-        <v-btn outline dark small @click.native="snackbar = false">{{$t('Close')}}</v-btn>
+        <v-btn flat  dark small @click.native="snackbar = false">{{$t('Close')}}</v-btn>
       </v-snackbar>
       <!-- <tab-bar/> -->
   </div>
