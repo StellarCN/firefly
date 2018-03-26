@@ -61,5 +61,7 @@ Vue.directive('swiper',{
             }
         }
     }, false);
+
+
   }
 })

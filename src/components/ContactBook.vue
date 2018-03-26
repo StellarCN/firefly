@@ -119,7 +119,7 @@
         </div>
         <div v-else class=" mt-2">
               <div class="contacts-row">
-                <v-layout class="mycontacts-li" row wrap v-swiper=3>
+                <v-layout class="mycontacts-li" row wrap>
                   <v-flex xs6 class="mycontacts-wrapper">
                     <div class="contact-name grey--text text--lighten-1">{{$t("Error.NoData")}}</div>
                   </v-flex>

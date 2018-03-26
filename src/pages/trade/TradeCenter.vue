@@ -38,8 +38,13 @@
         <div class="card-content trade-card-content" slot="card-content">
           <ul class="tradepairs-ul">
             <transition-group>
-            <li class="tradepair-li" v-for="(pair,index) in pairs" :key="index">
-              <v-layout class="pair-wrapper" row wrap v-swiper=2  @click="trade(index,pair)">
+            <li class="tradepair-li" v-for="(pair,index) in pairs" :key="index"
+              v-touch="{
+                    left: () => selectedItem = index,
+                    right: () => selectedItem = null
+                  }"
+              >
+              <v-layout :class="'pair-wrapper ' + (selectedItem === index ? 'selected':'')" row wrap @click="trade(index,pair)">
                 <v-flex xs4>
                   <div class="flex-row">
                     <div class="flex3 from-wrapper">
@@ -132,6 +137,8 @@ export default {
       filterTag: TAG_ALL,
 
       showaccountsview: false,
+
+      selectedItem: null,
 
     }
   },
@@ -293,6 +300,7 @@ export default {
             this.$toasted.show(this.$t('Trade.DeleteTradePairSuccess'))
             this.working = false
             this.delworking = false
+            this.selectedItem = null
             try{
               let doms = window.document.querySelectorAll('.myassets-li')
               for(var i=0,n=doms.length;i<n;i++){
@@ -469,6 +477,11 @@ export default {
     line-height: 48px
     font-size: 16px
     color: $primarycolor.green
+.selected
+  -webkit-transform: translate(-50%, 0)
+  -webkit-transition: 0.3s
+  transform: translate(-50%, 0)
+  transition: 0.3s
 
 </style>
 

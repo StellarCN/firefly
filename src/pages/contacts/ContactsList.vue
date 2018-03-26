@@ -19,8 +19,12 @@
                           class="search"  hide-details single-line >
             </v-text-field>
             <div class="contracts-list">
-               <div class="contacts-row" v-for="contact in filteredContacts" :key="contact.id">
-                <v-layout class="mycontacts-li third-li" row wrap v-swiper=2.2 @click.stop="toContactDetail(contact.id)">
+               <div class="contacts-row" v-for="(contact,index) in filteredContacts" :key="contact.id"
+                  v-touch="{
+                    left: () => selectedItem = index,
+                    right: () => selectedItem = null
+                  }">
+                <v-layout :class="'mycontacts-li third-li ' + ( selectedItem === index ? 'selected':'')" row wrap @click.stop="toContactDetail(contact.id)">
                   <v-flex xs2 class="mycontacts-wrapper">
                     <v-avatar :tile=false class="grey darken-4 contact-avatar">
                       <i class="avatar iconfont icon-erweima"></i>
@@ -63,6 +67,8 @@ export default {
       working: false,
       delok: false,
       delerror: false,
+
+      selectedItem: null
     }
   },
   computed: {
@@ -102,6 +108,7 @@ export default {
         .then(data=>{
           this.delok = true
           this.delerror  = false
+          this.selectedItem = null
           setTimeout(()=>{
             this.working = false
           },1000)
@@ -235,6 +242,11 @@ export default {
   min-height 42px
 .contracts-list
   border-radius:5px
+.selected
+  -webkit-transform: translate(-50%, 0)
+  -webkit-transition: 0.3s
+  transform: translate(-50%, 0)
+  transition: 0.3s
 
 </style>
 

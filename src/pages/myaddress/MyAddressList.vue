@@ -21,8 +21,13 @@
             <v-text-field append-icon="search" v-model="search" dark 
                           class="search"  hide-details single-line >
             </v-text-field>
-            <div class="myaddress-row" v-for="(data,index) in filtered" :key="index">
-              <v-layout class="myaddress-li third-li" row wrap v-swiper=1.5 @click.stop="toView(data)">
+            <div class="myaddress-row" v-for="(data,index) in filtered" :key="index"
+               v-touch="{
+                    left: () => selectedItem = index,
+                    right: () => selectedItem = null
+                  }"
+              >
+              <v-layout :class="'myaddress-li third-li ' + (selectedItem === index ? 'selected':'')" row wrap  @click.stop="toView(data)">
                 <v-flex xs4 class="myaddress-wrapper">
                   <div class="myaddress-name grey--text text--lighten-1">{{data.name}}</div>
                 </v-flex>
@@ -56,6 +61,7 @@ export default {
       working: false,
       delok: false,
       delerror: false,
+      selectedItem: null,
     }
   },
   computed: {
@@ -97,6 +103,7 @@ export default {
         .then(result=>{
           this.delok = true
           this.delerror  = false
+          this.selectedItem = null
           setTimeout(()=>{
             this.working = false
           },1000)
@@ -218,5 +225,11 @@ export default {
 .contact-avatar
   min-width 64px
   min-height 64px
+.selected
+  -webkit-transform: translate(-40%, 0)
+  -webkit-transition: 0.3s
+  transform: translate(-40%, 0)
+  transition: 0.3s
+
 </style>
 
