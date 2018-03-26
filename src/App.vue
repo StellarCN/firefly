@@ -115,12 +115,10 @@ export default {
       getDeviceLanguage()
         .then(locale => {
           this.devicelang = locale;
+          this.$i18n.locale = this.devicelang.key
           return this.loadAppSetting();
         })
         .then(data => {
-          //if(this.alldata.app.enablePin){
-          //  this.showConfirmPin = true
-          //}
           //如果data不为空，则跳转到主界面，否则跳转到创建账户界面
           if (this.locale) {
             this.$i18n.locale = this.locale.key;
@@ -129,8 +127,6 @@ export default {
           return this.loadAccounts();
         })
         .then(data => {
-          console.log("read accounts"); /**执行了。 */
-          console.log(data);
           navigator.splashscreen.hide();
 
           //尝试加载当前账户信息
@@ -212,9 +208,10 @@ export default {
     onAppPause() {
       this.showFuzzyView = true
       this.pauseStart = new Date().getTime();
-      console.log("-------------on pause ------" + this.pauseStart);
+      navigator.splashscreen.show();
     },
     onAppResume() {
+      navigator.splashscreen.hide();
       this.showFuzzyView = false
       //暂停恢复,判断是否要输入pin码
       if (this.alldata.app.enablePin) {

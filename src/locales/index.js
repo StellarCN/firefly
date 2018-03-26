@@ -2,6 +2,8 @@ import Vue from 'vue'
 import VueI18n from 'vue-i18n'
 let endata = require('./en.json')
 let zhcndata = require('./zh-cn.json')
+let hkdata = require('./zh-hk')
+let twdata = require('./zh-tw')
 
 Vue.use(VueI18n)
 
@@ -15,25 +17,41 @@ export const EN = {
   label: 'English'
 }
 
+export const ZH_HK = {
+  key: 'zh_hk',
+  label: '港澳繁體'
+}
+
+export const ZH_TW = {
+  key: 'zh_tw',
+  label: '台灣正體'
+}
+
 export const LANGUAGES = [
   EN,
-  ZH_CN
+  ZH_CN,
+  ZH_HK,
+  ZH_TW
 ]
 
 export const MOMENT_LANGUAGES = {
   'zh_cn': 'zh-cn',
-  'en': 'en'
+  'en': 'en',
+  'zh_hk': 'zh-hk',
+  'zh_tw': 'zh-tw'
+  
 }
 
 export function getDeviceLanguage(){
   return new Promise((resolve,reject) => {
-    console.log(navigator.globalization)
     navigator.globalization.getLocaleName(locale=>{
-        console.log('-----locale---')
-        console.log(locale)
         let val = locale.value
-        if (['zh','zh-CN', 'zh-TW', 'zh-HK'].includes(navigator.language)) {
-          resolve(ZH_CN) 
+        if (['zh','zh-CN'].includes(val)) {
+          resolve(ZH_CN)
+        }else if('zh-HK' === val){
+          resolve(ZH_HK)
+        }else if('zh-TW' === val){
+          resolve(ZH_TW)
         } else {
           resolve(EN)
         }
@@ -46,20 +64,13 @@ export function getDeviceLanguage(){
 }
 
 
-export const DEVICE_LANGUAGE = function getDeviceLanguage() {
-
-  if (['zh','zh-CN', 'zh-TW', 'zh-HK'].includes(navigator.language)) {
-    return ZH_CN
-  } else {
-    return EN
-  }
-}()
-
 export const i18n = new VueI18n({
-  locale: DEVICE_LANGUAGE.key,
+  locale: EN.key,
   messages: {
     [EN.key]: endata,
-    [ZH_CN.key]: zhcndata
+    [ZH_CN.key]: zhcndata,
+    [ZH_HK.key]: hkdata,
+    [ZH_TW.key]: twdata
   }
 })
 

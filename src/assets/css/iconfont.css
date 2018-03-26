@@ -1,8 +1,7 @@
 
 @font-face {font-family: "iconfont";
-  src: url('../fonts/iconfont.eot?t=1521771216831'); /* IE9*/
-  src: url('../fonts/iconfont.ttf?t=1521771216831') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
-  url('../fonts/iconfont.svg?t=1521771216831#iconfont') format('svg'); /* iOS 4.1- */
+  src: url('../fonts/iconfont.ttf?t=1522033125133') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+  url('../fonts/iconfont.svg?t=1522033125133#iconfont') format('svg'); /* iOS 4.1- */
 }
 
 .iconfont {
@@ -20,6 +19,8 @@
 .icon-erweima:before { content: "\e6c1"; }
 
 .icon-erweima1:before { content: "\e61d"; }
+
+.icon-duigou:before { content: "\e640"; }
 
 .icon-btc:before { content: "\e609"; }
 

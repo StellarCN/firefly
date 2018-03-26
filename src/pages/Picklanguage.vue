@@ -24,8 +24,8 @@
                         <span class="icons">                       
                             <!-- <i class="iconfont icon-dot1" v-if="isChosed(item)">✔</i>
                             <i class="iconfont icon-dot" v-else>✔</i> -->
-                            <i class="iconfont_style_color" v-if="isChosed(item)">✔</i>
-                            <i class="iconfont_style" v-else>✔</i>
+                            <i class="iconfont_style_color  iconfont icon-duigou" v-if="isChosed(item)"></i>
+                            <i class="iconfont_style  iconfont icon-duigou" v-else></i>
                         </span>
                     </div>
             
