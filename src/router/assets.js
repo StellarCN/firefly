@@ -45,5 +45,13 @@ export default {
           keepAlive: false
         }
       },
+      {
+        path: 'assetknowledge',
+        name: 'AssetKnowledge',
+        component: resolve => require(['../pages/asset/AssetKnowledge.vue'], resolve),
+        meta: {
+          keepAlive: false
+        }
+      },
     ]
   }

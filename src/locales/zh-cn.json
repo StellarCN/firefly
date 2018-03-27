@@ -414,7 +414,11 @@
   "MemoBook.MyAddress":"地址簿",
   "StartDate":"起始日期",
   "EndDate":"结束日期",
-  "StartDateIsAfterEndDate":"开始日期不能大于结束日期"
+  "StartDateIsAfterEndDate":"开始日期不能大于结束日期",
+  "AssetImage":"资产图片",
+  "AssetDomain":"发行方网站",
+  "AssetSummary":"资产简介"
+  
   
 
 }

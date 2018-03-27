@@ -14,7 +14,7 @@ export const OFFICIAL_SITE = 'https://fchain.io'
 // APP 最新版本信息
 export const CHECK_UPDATE = 'https://raw.githubusercontent.com/StellarCN/firefly/master/package.json'
 //资产说明
-export const ASSET_INFO_BASE_URL = 'https://github.com/StellarCN/firefly/raw/docs/assets/'
+export const ASSET_INFO_BASE_URL = 'https://raw.githubusercontent.com/StellarCN/firefly/docs/assets/'
 
 //default interval : 1分钟
 export const DEFAULT_INTERVAL = 60000
