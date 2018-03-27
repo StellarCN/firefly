@@ -21,7 +21,7 @@
               v-model="selectedasset"
               :label="$t('Asset')"
               class="selectasset"
-              item-value="issuer"
+              item-value="id"
               item-text="code"
               dark
               :return-object="assetChoseReturnObject"
@@ -187,7 +187,7 @@ export default {
        let data = []
        this.balances.forEach((element) => {
         if( !isNativeAsset(element)){
-          data.push(defaultsDeep({}, element))
+          data.push(defaultsDeep({id: element.code+"-"+element.issuer}, element))
         }
       })
       return data
