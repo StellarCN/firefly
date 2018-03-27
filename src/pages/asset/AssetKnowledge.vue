@@ -10,29 +10,27 @@
       >
     </toolbar>   
     <div class="content_all">
-          <!-- <div>{{datainfo.image}}</div> -->
-          <div class="content_asset_image">
-            <span>{{$t("AssetImage")}}</span><br/>
+          <div class="content_asset_image" v-if="this.asset_info.image!=undefined&this.asset_info.image!=null&this.asset_info.image!=''">
             <span><img :src="this.asset_info.image"/></span>
             </div>
-          <div class="content_asset_code_info">
-            <span>{{$t("AssetCode")}}</span><br/>
+          <div class="content_asset_code_info" v-if="this.asset_info.code!=undefined&this.asset_info.code!=null&this.asset_info.code!=''">
+            <span >{{$t("AssetCode")}}</span><br/>
             <span class="content_contentcolor">{{this.asset_info.code}}</span>
             </div>
-          <div class="content_asset_issuer_info">
+          <div class="content_asset_issuer_info" v-if="this.asset_info.issuer!=undefined&this.asset_info.issuer!=null&this.asset_info.issuer!=''">
             <span>{{$t("AssetIssuer")}}</span><br/>
             <span class="content_contentcolor">{{this.asset_info.issuer}}</span>
             </div>
-          <div class="content_asset_domain">
+          <div class="content_asset_domain" v-if="this.asset_info.domain!=undefined&this.asset_info.domain!=null&this.asset_info.domain!=''">
             <span>{{$t("AssetDomain")}}</span><br/>
-            <span class="content_contentcolor">{{this.asset_info.domain}}</span>
+            <span class="content_contentcolor" @click="openURL(asset_info.domain)">{{this.asset_info.domain}}</span>
             </div>
           
-          <div class="content_asset_info_info" v-if="this.$i18n.locale==='zh_cn'">
+          <div class="content_asset_info_info" v-if="this.$i18n.locale==='zh_cn'&this.asset_info.info_zh_cn!=''&this.asset_info.info_zh_cn!=undefined&this.asset_info.info_zh_cn!=null">
             <span>{{$t("AssetSummary")}}</span><br/>
             <span class="content_contentcolor">{{this.asset_info.info_zh_cn}}</span>
             </div>
-          <div class="content_asset_info_info" v-else>
+          <div class="content_asset_info_info" v-else-if="this.$i18n.locale==='en'&this.asset_info.info_en!=''&this.asset_info.info_en!=undefined&this.asset_info.info_en!=null">
             <span>{{$t("AssetSummary")}}</span><br/>
             <span class="content_contentcolor">{{this.asset_info.info_en}}</span>
             </div>
@@ -87,17 +85,9 @@ export default {
           this.asset_issuer = this.$route.params.asset_issuer
           var test = getAssetInfo( this.asset_code,this.asset_issuer)
           .then(response=>{
-            console.log("1111111111111111")
-            console.log(response)
-            console.log("2222222222222222")
-            console.log(response.data)
-            console.log("333333333333333333")
-            console.log(response.data.code)
-            console.log("1---------------------------------")
+
             this.asset_info = response.data
-            
-            console.log(this.asset_info.image)
-            console.log(this.$i18n.locale)
+       
           }).catch(err=>{
             console.log(err)
           })
@@ -120,7 +110,10 @@ export default {
         let routerParams = this.$route.params.AssetData
         // 将数据放在当前组件的数据内
         this.msg = routerParams
-    } 
+    },
+    openURL(url) {
+      window.open(url, "_system");
+    }, 
   },
     watch: {
     // 监测路由变化,只要变化了就调用获取路由参数方法将数据存储本组件即可
@@ -153,7 +146,7 @@ export default {
 .content_asset_image
   margin-top:5px
   margin-bottom:5px
-  
+  text-align:center
 .content_asset_code_info
   margin-top:5px
   margin-bottom:5px
