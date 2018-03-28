@@ -47,7 +47,7 @@
                 <v-flex xs1 class="reserve asset_reserve">{{reserve}}</v-flex>
             </v-flex>
             <!-- <v-flex xs12 class="knowledge_of_assets" ><a href="https://fchain.io" target="_blank">了解{{item.code}}&nbsp;></a> -->
-            <v-flex xs12 class="knowledge_of_assets" ><a @click="toAssetKnowledge(item)" target="_blank">了解{{item.code}}&nbsp;></a>
+            <v-flex xs12 class="knowledge_of_assets" ><a @click="toAssetKnowledge(item)" target="_blank">{{$t("Understand")}}{{item.code}}&nbsp;></a>
 
             </v-flex>
           </v-layout>
