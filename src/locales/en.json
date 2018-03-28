@@ -424,7 +424,10 @@
   "MemoBook.MyAddress":"MyAddress",
   "StartDate":"start date",
   "EndDate":"end date",
-  "StartDateIsAfterEndDate":"start date should before end date"
-
+  "StartDateIsAfterEndDate":"start date should before end date",
+  "AssetImage":"AssetImage",
+  "AssetDomain":"AssetDomain",
+  "AssetSummary":"AssetSummary"
+ 
 
 }
