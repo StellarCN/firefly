@@ -250,8 +250,6 @@ export default {
           name:'AssetKnowledge',
           params:{
             // 参数名:参数值,
-              AssetData:1,
-              assetdata:2,
               asset_code:item.code,
               asset_issuer:item.issuer,
             }
