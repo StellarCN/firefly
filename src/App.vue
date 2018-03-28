@@ -32,6 +32,7 @@ import { closeStreams, initStreams } from "@/streams";
 import { initStorage, checkPlatform } from "@/api/storage";
 import { getDeviceLanguage } from "@/locales";
 import  TabBar from '@/components/TabBar'
+import { getFchainRss } from '@/api/fchain'
 
 export default {
   data() {
@@ -43,6 +44,8 @@ export default {
       showFuzzyView: false,
       tabBarShow: false,
       tabBarItems: ['MyAssets', 'TradeCenter', 'Funding', 'My'],
+
+      messagesInterval: null,
       // items:Store.fetch(),
     };
   },
@@ -66,10 +69,12 @@ export default {
     })
   },
   beforeMount() {
+    
     if(this.tabBarItems.indexOf(this.$route.name) >=0 ){
       this.tabBarShow = true
     }
     Vue.cordova.on("deviceready", () => {
+      this.getMessages()
       checkPlatform();
       try {
         //获取默认交易对
@@ -97,8 +102,6 @@ export default {
         false
       );
 
-      console.log("Cordova : device is ready !"); /**执行了。 */
-      console.log(cordova);
       if ("ios" === cordova.platformId) {
         this.isios = true;
       }
@@ -112,12 +115,10 @@ export default {
       getDeviceLanguage()
         .then(locale => {
           this.devicelang = locale;
+          this.$i18n.locale = this.devicelang.key
           return this.loadAppSetting();
         })
         .then(data => {
-          //if(this.alldata.app.enablePin){
-          //  this.showConfirmPin = true
-          //}
           //如果data不为空，则跳转到主界面，否则跳转到创建账户界面
           if (this.locale) {
             this.$i18n.locale = this.locale.key;
@@ -126,8 +127,6 @@ export default {
           return this.loadAccounts();
         })
         .then(data => {
-          console.log("read accounts"); /**执行了。 */
-          console.log(data);
           navigator.splashscreen.hide();
 
           //尝试加载当前账户信息
@@ -182,24 +181,16 @@ export default {
           }
         });
     });
-    // }else{
-
-    //     this.$router.push({name: 'Picklanguage'})
-
-    //     // var t=setInterval("console.log(\"------\")",3000)
-    //     // clearInterval(t)
-
-    // }
   },
   mounted() {
-    // if(window.localStorage.getItem('login_flag')!=1){
-    //   setInterval('toPicklanguage',10000)
-    // }
-    this.loadMessageItem();
+    //每小时执行一次
+    this.messagesInterval = setInterval(()=>{
+      this.getMessages()
+    }, 3600000)    
   },
-  // destroyed : {
-  //     clearInterval(setInterval_value)
-  // },
+  destroyed() {
+      clearInterval(this.messagesInterval)
+  },
   methods: {
     ...mapActions([
       "deviceLang",
@@ -212,14 +203,15 @@ export default {
       "getAllAssetHosts",
       "onPause",
       "onResume",
-      "loadMessageItem"
+      "getMessages"
     ]),
     onAppPause() {
       this.showFuzzyView = true
       this.pauseStart = new Date().getTime();
-      console.log("-------------on pause ------" + this.pauseStart);
+      navigator.splashscreen.show();
     },
     onAppResume() {
+      navigator.splashscreen.hide();
       this.showFuzzyView = false
       //暂停恢复,判断是否要输入pin码
       if (this.alldata.app.enablePin) {

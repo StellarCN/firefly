@@ -4,7 +4,7 @@
       <v-btn flat v-for="(item,index) in menus" :key="index" :value="index" @click="redirect(index,item.name)"> 
         <span>{{$t(item.title)}}</span>
         <v-icon>{{item.icon}}</v-icon>
-        <div  v-if="index!==active && index===3 && unreadMessage.length !==0 "  style="width: 10px;height: 10px;border-radius: 5px;background: red;right: 20px;top:5px;position: absolute;z-index: 10"></div>
+        <div  v-if="index!==active && index===3 && unReadCount !==0 "  class="unread-wrapper"></div>
       </v-btn>
   </v-bottom-nav>
 <!-- </v-card> -->
@@ -64,7 +64,7 @@ export default {
   },
   computed:{
     ...mapGetters([
-      'unreadMessage'
+      'unReadCount'
     ])
   }
 };
@@ -89,4 +89,13 @@ export default {
   color #999
 .bottom-nav .btn:not(.btn--active)
   filter inherit!important
+.unread-wrapper
+  width: 10px
+  height: 10px
+  border-radius: 5px
+  background: $primarycolor.red 
+  right: 20px
+  top:5px
+  position: absolute
+  z-index: 10
 </style>

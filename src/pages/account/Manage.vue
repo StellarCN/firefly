@@ -19,24 +19,30 @@
     <div class="content">
       <card class="mycard">
         <div class="card-content" slot="card-content">
-          <div class="account-row"  v-for="(item,index) in accounts" :key="index" @click.stop="info(item)">
+          <div class="account-row"  v-for="(item,index) in accounts" :key="index" 
+            @click.stop="info(item)" 
+                v-touch="{
+                  left: () => selectedItem = index,
+                  right: () => selectedItem = null
+                }"
+            >
             
-            <v-layout class="account-wrapper" row wrap v-swiper=2.2 >
-              <v-flex xs2>
+            <div :class="'flex-row account-wrapper ' + (selectedItem === index ? 'selected':'')" >
+              <div class="flex1">
                 <div class="avatar">
                   <i class="iconfont icon-erweima"></i>
                 </div>
-              </v-flex>
-              <v-flex xs4 class="name">
+              </div>
+              <div class="name flex2">
                 {{item.name}}
-              </v-flex>
-              <v-flex xs4 class="address">
+              </div>
+              <div class="address flex2">
                 <span class="label">{{item.address | miniaddress}}</span>
-              </v-flex>
-              <v-flex xs2 class="icons">
+              </div>
+              <div class="icons flex1">
                 <i class="material-icons"  v-if="item.address === account.address">&#xE876;</i>
-              </v-flex>
-            </v-layout>
+              </div>
+            </div>
 
             <div class="operate-box">
               <div class="del" @click.stop="del(item,index)">{{$t('Delete')}}</div>
@@ -48,7 +54,7 @@
         </div>
       </card>
     </div>
-    <loading :show="showLoading" :loading="working" :success="delok" :fail='delerror' 
+    <loading :show="showLoading"  :loading="working" :success="delok" :fail='delerror' 
       :title="loadingTitle" :msg="loadingMsg" :closeable="delerror" @close="hideLoadingView"/>
 
      <div class="pwdSheetWrapper"v-if="showPwdSheet">
@@ -105,6 +111,8 @@ export default {
       showLoading: false,
       loadingTitle: null,
       loadingMsg: null,
+
+      selectedItem: null,
 
 
     }
@@ -191,16 +199,7 @@ export default {
             return this.deleteAccount({ index: this.workindex, account: this.workaccount})
           })
           .then(()=>{
-            try{
-              let doms = window.document.querySelectorAll('.account-wrapper')
-                for(var i=0,n=doms.length;i<n;i++){
-                  let element = doms[i]
-                  element.style.transition = "0.3s"
-                  element.style.marginLeft = 0 + "px"
-                }
-              }catch(error){
-                console.error(error)
-              }
+            this.selectedItem = null
             if(selected){
               this.cleanAccount()
             }
@@ -460,6 +459,11 @@ export default {
     text-align: center
 .mycard
   padding:0px 0px
- 
+.selected
+  -webkit-transform: translate(-50%, 0)
+  -webkit-transition: 0.3s
+  transform: translate(-50%, 0)
+  transition: 0.3s
+
 </style>
 

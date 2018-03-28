@@ -6,7 +6,6 @@ let db = undefined
 
 export const DB_NAME = 'firefly.db'
 export const CREATE_TABLE = `CREATE TABLE IF NOT EXISTS firefly (K TEXT PRIMARY KEY NOT NULL,V TEXT)`
-export const CREATE_TABLE_MESSAGE = 'create table if not exists message (id text primary key not null , title text ,content text,status int ,createTime date)'
 /**
  * 初始化数据库
  * @param {string} dbname 数据库名称

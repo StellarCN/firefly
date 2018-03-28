@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com
  * @Date: 2018-01-30 16:58:05
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-01-30 19:18:04
+ * @Last Modified time: 2018-03-24 09:20:19
  * @License: MIT
  */
 <template>
@@ -98,6 +98,8 @@ export default {
     return {
       showview: false,
       showPwdSheet: false,
+      pwdvisible: false,
+      password: null,
     }
   },
   computed:{

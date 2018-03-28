@@ -24,8 +24,8 @@
                         <span class="icons">                       
                             <!-- <i class="iconfont icon-dot1" v-if="isChosed(item)">✔</i>
                             <i class="iconfont icon-dot" v-else>✔</i> -->
-                            <i class="iconfont_style_color" v-if="isChosed(item)">✔</i>
-                            <i class="iconfont_style" v-else>✔</i>
+                            <i class="iconfont_style_color  iconfont icon-duigou" v-if="isChosed(item)"></i>
+                            <i class="iconfont_style  iconfont icon-duigou" v-else></i>
                         </span>
                     </div>
             
@@ -115,7 +115,7 @@ export default {
 .content
     padding : 7px 7px
     background: $primarycolor.gray
-    height:88%
+    height:82vh
     .mycard
         background:$secondarycolor.gray
         height:100% 
@@ -134,11 +134,15 @@ export default {
 
 .bottom_start
     position:absolute
-    height:10%
-    margin-bottom:0px
+    bottom: 0px
+    left: 0
+    right: 0
+    height: 1rem
+    line-height: 1rem
     text-align:center
-    // background:$primarycolor.green
-    width:100%
+    background: $primarycolor.gray
+    z-index: 9
+    color: $primarycolor.green
 
 .iconfont_style_color
     color:$primarycolor.green

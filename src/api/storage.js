@@ -12,7 +12,9 @@ import { OFFICIAL_HORIZON } from './horizon'
 export const FILENAME_ACCOUNTS = 'accounts.firefly'
 export const FILENAME_LOCK = 'lock.firefly'
 export const FILENAME_APP_SETTING = 'appsetting.firefly'
-export const FILENAME_MESSAGE = "messageItem"
+export const FILENAME_MESSAGE = 'msg.firefly'
+export const FILENAME_MESSAGE_READ = 'read_msg.firefly'
+
 const LOCK_KEY = 'ilovefirefly'
 
 
@@ -168,57 +170,41 @@ export function deleteAccountData(address){
   }
 }
 
-const  DEFAULT_MESSAGE_ITEM=[
-  {
-    id:1,
-    title:"这是一条消息",
-    introduction:"hfdhfjhdsjkufieufdsfhjk",
-    content:"hfdshfjksdhfjksdhfjkshfsdjkfhsjfdfdsffdsfsfsdfsfkhfjkjfksdjfkjfkldsjfkjskjfkshjsvjhfdsjhfjdshfjksdhjk",
-    createTime:new Date()-1,
-    status:0//0未读，1已读
-  },
-  { id:2,
-    title:"这是二条消息",
-    introduction:"hfdhfjhdsjkufieufdsfhjk",
-    content:"hfdsjkhfjksdhjksdjksdhjfhdsjkfhjkhfdssffsfdsfsfdkasdjksahfjkdshfdsfjkhdsjkfhdsjkhfjdskhfdsjkhfjksdhfjk",
-    createTime:new Date()-2,
-    status:0
-  },
-  { id:3,
-    title:"这是三条消息",
-    introduction:"hfdhfjhdsjkufieufdsfhjk",
-    content:"hfdhfjhdsjkufieufdsfhjkdshfjkhdsjkhfdfdsfdsfffdssfksjdhfhkdjhfskfjkshfjdhfuefuyreufhdjhjkfhskdjfhksdjhf",
-    createTime:new Date()-3,
-    status:0
-  },
-  {
-    id:4,
-    title:"这是4条消息",
-    introduction:"hfdhfjhdsjkufieufdsfhjk",
-    content:"hfdhfjhdsjkufieufdsfhjkdshfjkhdsjkhfdsfksjdhfhkdjhfskfjkshfjdhfuefuyreufhdjhjkfhskdjfhksdjhf",
-    createTime:new Date()-4,
-    status:0
+//获取现有消息link地址数组
+export function getMsgLinks(){
+  //直接从localStorage，不是localstorage.js中的
+  let data = localStorage.getItem(FILENAME_MESSAGE)
+  if(data){
+    return JSON.parse(data)//结果为link的数组
   }
-]
-
-export const readMessage=()=>{//读取本地消息
-   const read= isbrowser ? localstorage.readFile(FILENAME_MESSAGE) : sqlstorage.readFile(FILENAME_MESSAGE)
-    return read.then(res=> {
-        let messageItem =  JSON.parse(res);
-        console.log(messageItem)
-        return messageItem
-      }
-    ).catch(err=> {
-          saveMessage(DEFAULT_MESSAGE_ITEM);
-          return DEFAULT_MESSAGE_ITEM;
-      }
-    );
+  return []//没有数据，返回空值
 }
 
-export const saveMessage = (messageItem)=>{//保存消息
-  const  messageItemStr = JSON.stringify(messageItem);
-  isbrowser ?localstorage.saveFile(FILENAME_MESSAGE,messageItemStr):sqlstorage.readFile(messageItemStr);
+//保存link地址数组
+export function setMsgLinks(links = []){
+  localStorage.setItem(FILENAME_MESSAGE, JSON.stringify(links))
+  //清理掉已经不存在的读取过的id
+  let data = getReadMsgs()
+  data = data.filter(id=> links.indexOf(id)>-1)
+  setReadMsgs(data)
 }
-export const delMessage =()=>{//删除消息
-   isbrowser ?localstorage.deleteFile(FILENAME_MESSAGE):sqlstorage.deleteFile(FILENAME_MESSAGE)
+//读了某个消息
+export function readMsg(link){
+  let data = getReadMsgs()
+  data = data.filter(id=>id!==link)
+  data.push(link)
+  setReadMsgs(data)
+}
+
+export function setReadMsgs(data=[]){
+  localStorage.setItem(FILENAME_MESSAGE_READ,JSON.stringify(data))
+}
+
+export function getReadMsgs(){
+  let data = localStorage.getItem(FILENAME_MESSAGE_READ)
+  if(data){
+    return JSON.parse(data)
+  }else{
+    return []
+  }
 }

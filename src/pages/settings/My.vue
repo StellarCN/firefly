@@ -49,7 +49,7 @@
                         <i class="material-icons vcenter">{{item.icon}}</i>
                         <span>{{$t(item.title)}}</span>
                         <i class="material-icons vcenter f-right mt-2">keyboard_arrow_right</i>
-                        <div class="circular" v-if="item.name=='MessageCenter'&&unreadMessage.length>0"> {{unreadMessage.length}}</div>
+                        <div class="circular" v-if="item.name=='MessageCenter'&&unReadCount>0"> {{unReadCount}}</div>
                     </li>
                 </ul>
             </div>
@@ -113,7 +113,7 @@ export default {
             app: state => state.app
         }),
       ...mapGetters([
-        'unreadMessage'
+        'unReadCount'
       ])
     },
     beforeMount(){

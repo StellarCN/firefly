@@ -1,14 +1,18 @@
 <template>
   <div>
     <tool-bar :title="$t(title)"
-              :showmenuicon="showmenuicon"
-              :showbackicon="showbackicon"
+              :showmenuicon="false"
+              :showbackicon="true"
               @goback="back"></tool-bar>
       <ul class="content">
-        <li v-for="(item ,index) in messageItems" class="item" @click="goToDetils(item)">
-          <div class="item-title"> <span class="title">{{item.title}}</span><span class="time">{{ new Date(Number.parseInt(item.createTime)).toLocaleString().replace("下午","")}}</span> </div>
-          <div class="item-content">{{item.introduction}}</div>
-          <span class="circular" v-if="item.status==0"></span>
+        <li v-for="(item ,index) in messages" class="item" @click="goToDetils(item)" :key="index">
+          <div class="item-title"> 
+            {{item.title }}
+          </div>
+          <div class="item-time">
+             {{ item.date }}
+          </div>
+          <span class="circular" v-if="reads.indexOf(item.link) > -1 "></span>
         </li>
       </ul>
   </div>
@@ -23,35 +27,36 @@
       data(){
           return{
             title: 'MessageCenter',
-            showbackicon: true,
-            showmenuicon: false,
           }
-      },created(){
       },
       components:{
         ToolBar,
         Scroll
-      },methods:{
+      },
+      methods:{
+        ...mapActions([
+          "getMessages",
+          "selectMsg"
+        ]),
         back(){
           this.$router.back();
         },
         goToDetils(item){
-          this.$router.replace({path:`/account/message-detils/${item.id}`});
-          this.changeCurrentItemId({id:item.id});
-          this.changeStatus({item})
+          this.selectMsg(item)
+          this.$router.push({name: 'MessageDetils'})
         },
-        ...mapActions([
-          "loadMessageItem",
-          "changeCurrentItemId",
-          "changeStatus"
-        ])
-      },computed:{
-          ...mapGetters(
-              [
-                "messageItems"
-              ]
-          )
-        }
+        
+        
+      },
+      computed:{
+        ...mapGetters([
+              "unReadCount"
+            ]),
+        ...mapState({
+          messages: state => state.message.items,
+          reads: state => state.message.reads
+        }),
+      }
     }
 </script>
 
@@ -59,22 +64,19 @@
   @require '~@/stylus/color.styl'
    .content
       .item
-        display flex
+        padding: .2rem .2rem
         background #303034
-        height 2rem
-        margin-bottom 10px
-        flex-direction column
-        padding-left 5px
-        position relative
+        margin: .1rem auto
         .item-title
-          flex 1
-          justify-content space-between
-          display flex
-          padding-top 10px
-          .title
-            font-size .45rem!important
-          .time
-            padding-right 3px
+          line-height: 24px
+          height: 24px
+          font-size .45rem!important
+          white-space: nowrap
+          overflow hidden
+
+        .item-time
+          font-size: .35rem
+          color: $secondarycolor.font
         .item-content
           flex 2
           height initial

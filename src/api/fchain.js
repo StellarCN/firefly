@@ -4,6 +4,7 @@
 import axios from 'axios'
 var moment = require('moment')
 import { Decimal } from 'decimal.js'
+var parseString = require('xml2js').parseString
 
 
 const host = 'http://40.125.213.185:8081'
@@ -65,4 +66,44 @@ export function getAllEffectOffers(account,start_time,end_time){
   if(account === null)throw new Error('params invalid')
   let uri = `${host}/api/effectrecords/?account=${account}&start_time=${start_time}&end_time=${end_time}`
   return axios.get(uri)
+}
+
+const FCHAIN_FEED_URL = 'https://fchain.io/feed/'
+const CORS_PROXY = "https://cors-anywhere.herokuapp.com/"
+
+export function getFchainRss(){
+  return new Promise((resolve,reject) => {
+    if(!cordova.plugin.http){
+      reject('error')
+      return
+    }
+    let url = FCHAIN_FEED_URL
+    if(cordova.platformId === 'browser'){
+      url = CORS_PROXY+FCHAIN_FEED_URL
+    }
+    cordova.plugin.http.get(url, {},  {}, (response) => {
+      let data = response.data
+      parseString(data, (err,result)=>{
+        let channel = result.rss.channel
+        if(channel && channel.length > 0){
+          //主要字段： title（数组）,pubDate数组，link（数组）,content:encoded(数组)
+          resolve(channel[0].item.map(d=>{
+            return {
+              'title': d.title[0], 
+              'date': moment(d.pubDate[0]).format('YYYY-MM-DD HH:mm:ss'), 
+              'link': d.link[0],
+              'content': d['content:encoded'][0] 
+            }
+          }))
+        }else{
+          resolve([])
+        }
+
+      })
+
+    }, (response) => {
+        reject(response.error)
+    });
+
+  })
 }

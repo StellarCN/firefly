@@ -1,25 +1,25 @@
 <template>
   <div class="page">
- 
-      <div  class="guidepage_swiper">
-       
-        <swiper :options="swiperOption" ref="mySwiper">
+    
+    <div class="content">
+
+        <swiper :options="swiperOption" ref="mySwiper" class="">
             
-            <swiper-slide class="guidepage_swiper_slide">
-                <div class="guidepage_swiper_title">{{$t("TransactionPassword")}}</div>
-                <div class="guidepage_swiper_content">{{$t("TransactionPassword_MsgOne")}}</div>
-                <div class="guidepage_swiper_content">{{$t("TransactionPassword_MsgTwo")}}</div>
-                <div class="guidepage_swiper_content">{{$t("TransactionPassword_MsgThree")}}</div>
-                <img :src='require("../assets/img/step1.svg")' class="guidepage_swiper_img">
+            <swiper-slide class="guidepage_swiper_slide infocard">
+                        <div class="guidepage_swiper_title">{{$t("TransactionPassword")}}</div>
+                        <div class="guidepage_swiper_content">{{$t("TransactionPassword_MsgOne")}}</div>
+                        <div class="guidepage_swiper_content">{{$t("TransactionPassword_MsgTwo")}}</div>
+                        <div class="guidepage_swiper_content">{{$t("TransactionPassword_MsgThree")}}</div>
+                        <img :src='require("../assets/img/step1.svg")' class="guidepage_swiper_img">
             </swiper-slide>
-            <swiper-slide class="guidepage_swiper_slide">
+            <swiper-slide class="guidepage_swiper_slide infocard">
                 <div class="guidepage_swiper_title">{{$t("Account_secretkey")}}</div>
                 <div class="guidepage_swiper_content">{{$t("Account_secretkey_MsgOne")}}</div>
                 <div class="guidepage_swiper_content">{{$t("Account_secretkey_MsgTwo")}}</div>
                 <div class="guidepage_swiper_content">{{$t("Account_secretkey_MsgThree")}}</div>
                 <img :src='require("../assets/img/step2.svg")' class="guidepage_swiper_img">
             </swiper-slide>
-            <swiper-slide class="guidepage_swiper_slide">
+            <swiper-slide class="guidepage_swiper_slide infocard">
                 <div class="guidepage_swiper_title">{{$t("TDO")}}</div>
                 <div class="guidepage_swiper_content">{{$t("TDO_MsgOne")}}</div>
                 <div class="guidepage_swiper_content">{{$t("TDO_MsgTwo")}}</div>
@@ -30,27 +30,17 @@
             <!-- <div class="swiper-button-prev" slot="button-prev"></div> -->
             <!-- <div class="swiper-button-next" slot="button-next"></div> -->
            </swiper>
-       </div> 
-        <!-- <div class="swiper-container" >
-            <div class="swiper-wrapper">
-                <div class="swiper-slide">slider1</div>
-                <div class="swiper-slide">slider2</div>
-                <div class="swiper-slide">slider3</div>
-            </div>
-        </div> -->
-       <div>
-           <v-layout>
-           <v-flex xs6 class="guidepage_bottombutton" @click="slideprv">{{$t("LastStep")}}</v-flex>
+    
+        <div class="bottom-nav flex-row">
+           <div class="flex1" @click="slideprv">{{$t("LastStep")}}</div>
            <!-- <v-flex xs6 class="guidepage_bottombutton" v-if="get_progresscount!=1" @click="slidenext" >{{$t("NextStep")}}</v-flex>
            <v-flex xs6 class="guidepage_bottombutton"  v-if="get_progresscount==1" @click="toWallet" >{{$t("AllRight")}}</v-flex> -->
-           <v-flex xs6 class="guidepage_bottombutton"  v-if="progress_count < 1" @click="slidenext" >{{$t("NextStep")}}</v-flex>
-           <v-flex xs6 class="guidepage_bottombutton"  v-else @click="toWallet" >{{$t("AllRight")}}</v-flex>
-           </v-layout>
+           <div class="flex1" v-if="progress_count < 1" @click="slidenext" >{{$t("NextStep")}}</div>
+           <div class="flex1"  v-else @click="toWallet" >{{$t("AllRight")}}</div>
        </div>
-        <!-- <div class="test">
-            
-            <input class="test_input" v-model="progress_count">&nbsp;&nbsp;&nbsp;<span>{{progress_count}}</span>
-        </div> -->
+    
+    </div>
+       
   </div>
 </template>
 
@@ -87,7 +77,9 @@ export default {
                 setWrapperSize :true,
                 // autoHeight: true,
                 // paginationType:"bullets",
-                pagination : '.swiper-pagination',
+                pagination : {
+                    el: '.swiper-pagination',
+                },
                 paginationClickable :true,
                 prevButton:'.swiper-button-prev',
                 nextButton:'.swiper-button-next',
@@ -121,9 +113,12 @@ export default {
                 this.$router.push({name:'Wallet'})
         },
         slideprv(){
-          
-             this.swiper.slidePrev();
-             this.progress_count=this.swiper.progress
+            if(this.progress_count === 0){
+                this.back()
+                return
+            }
+            this.swiper.slidePrev();
+            this.progress_count=this.swiper.progress
             //  console.log(this.swiper.progress)
         },
         slidenext(){
@@ -201,27 +196,27 @@ export default {
 .page
   background: $primarycolor.gray
   color: $primarycolor.font
-  font-size: 16px 
-  height:100%  
-
+  font-size: 16px
+  height: 100vh
+.content
+    height: 100%
 .guidepage_swiper
     border-radius:5px
-    height:90%
     margin:10px 10px
     padding:5px 5px
+    padding-top: 1rem
     background:$secondarycolor.gray
+    height: 80%
 
 .guidepage_swiper_slide
-    height:530px
     background:$secondarycolor.gray
 
 .guidepage_swiper_img
-    padding-top:100px 
+    padding-top:20% 
     padding-left:20px
     padding-right:20px    
     width:300px
-
-.swiper-pagination
+    height: 220px
     
 
 .guidepage_swiper_title
@@ -234,18 +229,26 @@ export default {
     font-family:"Helvetica Neue"
     padding-left:20px
     padding-top:10px
-.guidepage_bottombutton
-    color:$primarycolor.green
-    padding-left:20px
-    padding-top:5px
+.bottom-nav
     text-align:center
-
-
-.test
     color:$primarycolor.green
-    background-color:white
-    text-align:center
+    position: fixed
+    bottom: 0px
+    left: 0px
+    right: 0px
+    top: calc(100vh - 100px)
+    height: 1rem
+    line-height: 1rem
+    background: $primarycolor.gray
+    z-index: 9
 
-.test_input
-    border:2px solid red
+.infocard
+   min-height 10rem
+   max-width: 100%
+   background-color: $secondarycolor.gray
+   height: 80vh
+   padding-top: 1rem
+   border-radius: 5px
+.swiper-bullet
+    color: $primarycolor.green
 </style>

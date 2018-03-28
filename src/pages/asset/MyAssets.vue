@@ -56,8 +56,13 @@
 
       <card padding="0px 0px" margin="0px 0px" class="myassets_infocard_thirdassets full-width">
         <div class="assets full-width" slot="card-content">
-          <div class="assets-row" v-for="item in assets" :key="item.issuer+item.code">
-            <v-layout class="myassets-li third-li " row wrap v-swiper=2.2 @click.stop="toAsset(item)">
+          <div class="assets-row" v-for="(item,index) in assets" :key="item.issuer+item.code" 
+              v-touch="{
+                left: () => selectedItem = index,
+                right: () => selectedItem = null
+              }"
+            >
+            <v-layout :class="'myassets-li third-li ' + ( selectedItem === index ? 'selected':'' )" row wrap @click.stop="toAsset(item)">
               <v-flex xs2 class="myassets-wrapper">
                 <div class="icon-wrapper">
                   <i :class="'iconfont ' + assetIcon(item.code,item.issuer)"></i>
@@ -144,8 +149,10 @@ export default {
       needpwd: false,
       is_Flag: FLAG_DEFAULT,
       sort_flag: SORT_DEFAULT,
-      price:[]
-      }
+      price:[],
+
+      selectedItem: null,
+    }
   },
   mixins: [backbutton, loadaccount],
   computed:{
@@ -207,6 +214,11 @@ export default {
 
     }
   },
+  watch: {
+    sort_flag(){
+      this.selectedItem = null
+    }
+  },
   mounted() {
     // axios promise
     getAssetPrice(this.balances)
@@ -250,6 +262,7 @@ export default {
     hiddenMyAssets() {
       this.is_Flag =
         this.is_Flag === FLAG_FILTER_ZERO ? FLAG_DEFAULT : FLAG_FILTER_ZERO;
+      this.selectedItem = null
     },
     ...mapActions({
       selectAsset:'selectAsset',
@@ -297,6 +310,7 @@ export default {
           this.$toasted.show(this.$t('DeleteTrustSuccess'))
           this.delok = true
           this.delerror = false
+          this.selectedItem = null
           setTimeout(()=>{
             this.working = false
           },1000)
