@@ -304,7 +304,7 @@ export default {
         address: this.account.address,
         target: this.step2data.account_id,
         asset: this.asset,
-        amount: this.amount.toFixed(7),
+        amount: this.amount,
         memo_type: this.step2data.memo_type,
         memo_value: this.step2data.memo
       }
@@ -331,6 +331,7 @@ export default {
           this.sendfail = true
           this.loadingTitle = this.$t('Error.SendAssetFail')
           this.confirmSheetView = false
+          this.step = 2
           let msg = getXdrResultCode(err)
           setTimeout(()=>{
             if(msg){
@@ -360,6 +361,7 @@ export default {
       this.sendsuccess = false
       this.loadingTitle = null
       this.loadingMsg = null
+      this.working = false
     },
     //修改数量时
     chgAmount(val){
