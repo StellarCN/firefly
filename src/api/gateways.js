@@ -193,3 +193,4 @@ export const WORD_ICON = {
   'A':'icon-shouzimuzhanwei'
 }
 
+export const CORS_PROXY = "https://cors-anywhere.herokuapp.com/"

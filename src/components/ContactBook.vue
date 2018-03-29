@@ -7,74 +7,15 @@
 <template>
   <div class="contact-book">
     <!--标题栏-->
-    <!-- <div class="bookbar" >
+    <div class="bookbar" >
       <div class="bar-blank">&nbsp;</div>
       <div class="bar-title">{{$t(title)}}</div>
       <div class="bar-close"  @click.stop="close">
         <i class="material-icons">&#xE5CD;</i>
       </div>
-    </div> -->
-    <toolbar :title="$t(ContactBookTitle)" :showbackicon="false" color="error">
-      <v-btn icon @click.stop="close" class="white--text" slot="left-tool">
-            <v-icon class="back-icon">&#xE5CB;</v-icon>
-      </v-btn>
-    </toolbar>
+    </div>
     <div class="book-content">
       
-      <!--账户-->
-      <!-- <div class="account-content" v-if="showaccount && accounts.length >0">
-        <card class="account-card" padding="5px 5px" margin="10px 0px">
-          <div class="card-content" slot="card-content">
-            <div class="book-title">{{$t('Title.Account')}}</div>
-            <ul class="book-list">
-              <li class="book-row" v-for="(item,index) in accounts" :key="index" @click="chose('account',item)">
-                <div class="book-name">{{ item.name }}</div>
-                <div class="book-address">{{ item.address | shortaddress}}</div>
-              </li> 
-            </ul>
-          </div>
-        </card>
-      </div> -->
-
-      <!--联系人-->
-       <!-- <div class="data-content" v-if="showcontact && contacts.length > 0">
-         <card class="account-card" padding="5px 5px" margin="15px 0px">
-          <div class="card-content" slot="card-content">
-            <div class="book-title">{{$t('Menu.Contacts')}}</div>
-            <ul class="book-list">
-              <li class="book-row" v-for="(item,index) in contacts" :key="index" @click="chose('contact',item)">
-                <div class="book-name">{{ item.name }}</div>
-                <div class="book-address">{{ item.address | shortaddress}}</div>
-              </li> 
-            </ul>
-          </div>
-        </card>
-      </div> -->
-
-      <!--我的地址-->
-       <!-- <div class="data-content" v-if="showmyaddress && myaddresses.length > 0">
-          <card class="account-card" padding="5px 5px" margin="15px 0px">
-          <div class="card-content" slot="card-content">
-            <div class="book-title">{{$t('MyAddress.Title')}}</div>
-            <ul class="book-list">
-              <li class="book-row" v-for="(item,index) in myaddresses" :key="index" @click="chose('myaddress',item)">
-                <div class="book-name">{{ item.name }}</div>
-                <div class="book-address">{{ item.address | shortaddress}}</div>
-              </li> 
-            </ul>
-          </div>
-        </card>
-      </div> -->
-
-      <!--没有数据-->
-      <!-- <div class="data-content" v-if="!(showaccount && accounts.length > 0) && !(showcontact && contacts.length > 0) && !(showmyaddress && myaddresses.length > 0)">
-        <card class="account-card" padding="5px 5px" margin="15px 0px">
-          <div class="card-content" slot="card-content">
-             {{$t('Error.NoData')}}
-          </div>
-        </card>
-      </div> -->
-
         <div class="mt-2">
             <span @click="content_contact" v-bind:class="['content_menu_styleone', { content_menu_styletwo: isA }]">{{$t("Menu.Contacts")}}</span>
             <span @click="content_myaccount" v-bind:class="['content_menu_styleone', { content_menu_styletwo: isB }]">{{$t("MyAccount")}}</span>
@@ -198,8 +139,6 @@ export default {
         this.isB = false;
         this.isC = false;
         this.isA = true;
-      } else {
-        this.isA = false;
       }
     },
     content_myaccount() {
@@ -207,8 +146,6 @@ export default {
         this.isC = false;
         this.isA = false;
         this.isB = true;
-      } else {
-        this.isB = false;
       }
     },
     content_myaddress() {
@@ -216,8 +153,6 @@ export default {
         this.isA = false;
         this.isB = false;
         this.isC = true;
-      } else {
-        this.isC = false;
       }
     }
   },
@@ -236,7 +171,7 @@ export default {
   background: $primarycolor.gray
   font-size: 16px
   z-index: 99
-  position: fixed
+  position: absolute
   top: 0
   left: 0
   bottom: 0
@@ -266,7 +201,6 @@ export default {
   }
 
   .book-content {
-    margin-top: 48px
     padding: 10px 10px 70px 10px;
   }
 }

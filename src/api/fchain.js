@@ -5,6 +5,7 @@ import axios from 'axios'
 var moment = require('moment')
 import { Decimal } from 'decimal.js'
 var parseString = require('xml2js').parseString
+import { CORS_PROXY } from './gateways'
 
 
 const host = 'http://40.125.213.185:8081'
@@ -69,7 +70,6 @@ export function getAllEffectOffers(account,start_time,end_time){
 }
 
 const FCHAIN_FEED_URL = 'https://fchain.io/feed/'
-const CORS_PROXY = "https://cors-anywhere.herokuapp.com/"
 
 export function getFchainRss(){
   return new Promise((resolve,reject) => {
