@@ -52,13 +52,21 @@
                      <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
                 </div>
             </div>
-            <div class="row"  @click="openDownloadURL" v-if="latestVersion">
+            <div class="row" v-if="latestVersion">
+              <div class="label">
+                {{$t('LatestVersion')}}
+              </div>
+              <div class="value">
+                {{latestVersion}}
+                <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
+              </div>
+            </div>
+            <div class="row"  @click="checkForUpdates" v-if="needUpdate">
                 <div class="label">
-                    {{$t('LatestVersion')}}
+                  {{$t('CheckForUpdates')}}
                 </div>
                 <div class="value">
-                    {{latestVersion}}
-                     <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
+                  <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
                 </div>
             </div>
         </div>
@@ -74,7 +82,8 @@ import {
   APP_VERSION,
   APP_GITHUB,
   OFFICIAL_SITE,
-  getPackageJson
+  getPackageJson,
+  getVersionInfo
 } from "@/api/gateways";
 const semver = require("semver");
 
@@ -87,25 +96,61 @@ export default {
       fireflyGithub: APP_GITHUB,
       officialSite: OFFICIAL_SITE,
       latestVersion: null,
-      updateURL: null
+      updateURL: null,
+      needUpdate: false
     };
   },
   mounted() {
-    this.checkNewVersion();
+   this.getReleaseVersion()
+   this.listenerForUpdate()
+   document.addEventListener('chcp_nothingToUpdate',()=>{
+     this.$toasted.show(this.$t('NothingToInstall'))
+   }, false)
+   document.addEventListener('chcp_nothingToInstall',()=>{
+     this.$toasted.show(this.$t('NothingToInstall'))
+   }, false)
   },
   methods: {
     back() {
       this.$router.back();
     },
-
-    checkNewVersion() {
+    getReleaseVersion(){
       getPackageJson()
-        .then(response => {
-          let data = response.data;
-          this.latestVersion = data.version;
-          this.updateURL = data.homepage;
+        .then(response=>{
+          let data = response.data
+          this.latestVersion = data.version
+          this.needUpdate = semver.gt(data.version, APP_VERSION)
         })
-        .catch(err => console.log(err));
+        .catch(err=>{
+          console.error(err)
+        })
+    },
+    checkForUpdates(){
+      if(!chcp)return
+      chcp.isUpdateAvailableForInstallation((err,data)=>{
+        if(err){
+          //this.$toasted.show(this.$t('NothingToInstall'))
+          chcp.fetchUpdate((err,data)=>{
+            if(err){
+              console.error(err.description)
+              this.$toasted.error(this.$t('FetchUpdateError'))
+              return
+            }
+          })
+          return
+        }
+        this.$toasted.show(this.$t('UpdateHint'))
+        chcp.installUpdate(error=>{
+          if(error){
+            console.error(error)
+            this.$toasted.error(error.message)
+            return
+          }
+          this.$toasted.show(this.$t('AfterUpdate'))
+        })//end of installUpdate
+
+      })
+      
     },
 
     openDownloadURL() {
