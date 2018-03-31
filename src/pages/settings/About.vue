@@ -61,13 +61,8 @@
                 <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
               </div>
             </div>
-            <div class="row"  @click="checkForUpdates" v-if="needUpdate">
-                <div class="label">
-                  {{$t('CheckForUpdates')}}
-                </div>
-                <div class="value">
-                  <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
-                </div>
+            <div class="field_btn" v-if="needUpdate">
+              <v-btn :loading="working" class="error btn_ok" @click.stop="checkForUpdates">{{$t('CheckForUpdates')}}</v-btn>
             </div>
         </div>
       </card>
@@ -97,12 +92,12 @@ export default {
       officialSite: OFFICIAL_SITE,
       latestVersion: null,
       updateURL: null,
-      needUpdate: false
+      needUpdate: false,
+      working: false,
     };
   },
   mounted() {
    this.getReleaseVersion()
-   this.listenerForUpdate()
    document.addEventListener('chcp_nothingToUpdate',()=>{
      this.$toasted.show(this.$t('NothingToInstall'))
    }, false)
@@ -127,6 +122,8 @@ export default {
     },
     checkForUpdates(){
       if(!chcp)return
+      if(this.working)return
+      this.working = true
       chcp.isUpdateAvailableForInstallation((err,data)=>{
         if(err){
           //this.$toasted.show(this.$t('NothingToInstall'))
@@ -137,18 +134,19 @@ export default {
               return
             }
           })
+          this.working = false
           return
         }
         this.$toasted.show(this.$t('UpdateHint'))
         chcp.installUpdate(error=>{
           if(error){
             console.error(error)
-            this.$toasted.error(error.message)
+            this.$toasted.error(this.$t('FetchUpdateError'))
             return
           }
           this.$toasted.show(this.$t('AfterUpdate'))
         })//end of installUpdate
-
+        this.working = false
       })
       
     },
@@ -177,7 +175,12 @@ export default {
 
 <style lang="stylus" scoped>
 @require '~@/stylus/color.styl';
-
+.field_btn
+  margin-top: 1rem
+  .btn_ok
+    padding: 0px 0px
+    margin: 0px 0px
+    width: 100%
 .logo-wrapper {
   height: 120px;
   width: 100%;
