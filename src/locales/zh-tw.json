@@ -276,6 +276,8 @@
 
   "Error.DeleteTrustError":"刪除信任線失敗",
   "DeleteTrustSuccess":"刪除信任線成功",
+  "AssetNotZero":"不能刪除信任線，因為資產不為零！",
+
 
   "ContactAdd.Sussess": "新增聯繫人成功",
   "ContactAdd.name": "名稱",

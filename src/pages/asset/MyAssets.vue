@@ -80,7 +80,8 @@
                  <span class="balance">{{item.balance > 0 ? item.balance.toFixed(7) : 0}}</span>
                  <span class="label">{{$t('Total')}}</span> 
                  <br/>
-                  <span>≈{{myassetstoxcn(item.balance)> 0 ? myassetstoxcn(item.balance).toFixed(7) : 0}}&nbsp;&nbsp;XCN</span>
+                  <span v-if="item.total >=0">≈{{item.total}}
+                    &nbsp;&nbsp;XCN</span>
               </div>
             </v-flex>
           </v-layout>
@@ -122,7 +123,7 @@ import Scroll from '@/components/Scroll'
 import TabBar from '@/components/TabBar'
 import  defaultsDeep  from 'lodash/defaultsDeep'
 import { getAssetPrice } from '@/api/fchain'
-//import { Decimal } from 'decimal.js'
+import { Decimal } from 'decimal.js'
 
 //过滤0资产
 const FLAG_FILTER_ZERO = "filter_zero";
@@ -186,6 +187,17 @@ export default {
       notfunding: state => state.account.account_not_funding
     }),
     ...mapGetters(["balances", "paymentsRecords", "reserve", "native"]),
+    prices(){
+      let obj = {}
+      this.price.forEach(item=>{
+        if(isNativeAsset(item)){
+          obj[item.code] = Object.assign({}, item)
+        }else{
+          obj[item.code+'-'+item.issuer] = Object.assign({}, item)
+        }
+      })
+      return obj;
+    },
     assets() {
       if (!this.balances) return [];
       let data = this.balances
@@ -200,18 +212,39 @@ export default {
           }
         });
       //按照名称排序或者是按照资产排序,默认直接返回。
-        if (this.sort_flag === SORT_DEFAULT) {
-          return data;
+        if (this.sort_flag != SORT_DEFAULT) {        
+          data = data.sort((item1, item2) => {
+            if (this.sort_flag === SORT_NAME) {
+              return item1.code > item2.code ? 1 : -1;
+            } else if (this.sort_flag === SORT_BANLANCE) {
+              return item2.balance - item1.balance;
+            }
+          });
         }
-      return data.sort((item1, item2) => {
-        if (this.sort_flag === SORT_NAME) {
-          return item1.code > item2.code ? 1 : -1;
-        } else if (this.sort_flag === SORT_BANLANCE) {
-          return item2.balance - item1.balance;
+      //添加价格
+      console.log(`--add item price---`)
+      data.forEach(item=>{
+        console.log(`----item.balance---${item.balance}`)
+        if(item.balance > 0){
+          let key = item.code
+          if(!isNativeAsset(item)) {
+            key += '-' + item.issuer    
+          }
+          let p = this.prices[key]
+          console.log(`-----key=${key}----p:${JSON.stringify(p)}`)
+          if(p){
+            item.price = p.price
+            item.total = new Decimal(p.price).times(item.balance).toNumber();
+            if(item.total >0){
+              item.total = item.total.toFixed(7)
+            }
+          }
+
+        }else{
+          item.total = 0
         }
-      });
-
-
+      }) 
+      return data
     }
   },
   watch: {
@@ -221,7 +254,9 @@ export default {
   },
   mounted() {
     // axios promise
-    getAssetPrice(this.balances)
+    getAssetPrice(this.balances.filter(item=> Number(item.balance)>0).map(item=> {
+        return {code: item.code, issuer:item.issuer }
+      }))
       .then(response => {
         this.price = response.data;
       })
@@ -299,7 +334,10 @@ export default {
         return
       }
       if(this.working)return
-      //TODO，发送授权金额为0
+      if(Number(item.balance) > 0){
+        this.$toasted.error(this.$t('Error.AssetNotZero'))
+        return
+      }
       this.working = true
       this.delTrust({
             seed: this.accountData.seed,
