@@ -61,6 +61,7 @@
                 <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
               </div>
             </div>
+
             <div class="field_btn" v-if="needUpdate">
               <v-btn :loading="working" class="error btn_ok" @click.stop="checkForUpdates">{{$t('CheckForUpdates')}}</v-btn>
             </div>
@@ -124,17 +125,11 @@ export default {
       if(!chcp)return
       if(this.working)return
       this.working = true
-      chcp.isUpdateAvailableForInstallation((err,data)=>{
+      chcp.fetchUpdate((err,data)=>{
         if(err){
-          //this.$toasted.show(this.$t('NothingToInstall'))
-          chcp.fetchUpdate((err,data)=>{
-            if(err){
-              console.error(err.description)
-              this.$toasted.error(this.$t('FetchUpdateError'))
-              return
-            }
-          })
           this.working = false
+          console.error(err.description)
+          this.$toasted.error(this.$t('FetchUpdateError'))
           return
         }
         this.$toasted.show(this.$t('UpdateHint'))
@@ -148,7 +143,8 @@ export default {
         })//end of installUpdate
         this.working = false
       })
-      
+
+
     },
 
     openDownloadURL() {
