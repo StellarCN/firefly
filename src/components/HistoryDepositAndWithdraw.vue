@@ -172,9 +172,7 @@ const TYPE_WITHDRAW = 'withdraw'
         if(this.working)return
         this.working = true
         this.error = null
-        //GBIZJJMFITQLABS4OUBD6CCN6SXIOYX6456K6EXWZYFT3523AZPJWAPU
-        //this.account.address
-        getDepositAndWithdrawRecords('GBIZJJMFITQLABS4OUBD6CCN6SXIOYX6456K6EXWZYFT3523AZPJWAPU', this.selectedasset.code, this.selectedasset.issuer)
+        getDepositAndWithdrawRecords(this.account.address, this.selectedasset.code, this.selectedasset.issuer)
           .then(response=>{
             this.records = response.data
             this.working = false
