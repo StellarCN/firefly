@@ -213,6 +213,7 @@ export default {
 
   .label {
     flex: 1;
+    white-space: nowrap!important;
   }
 
   .value {
@@ -222,6 +223,8 @@ export default {
     height: 46px;
     line-height: 46px;
     vertical-align: middle;
+    padding-left: .5rem;
+    overflow: hidden;
   }
 }
 
