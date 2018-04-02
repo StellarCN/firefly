@@ -67,7 +67,7 @@
                   </div>
                 </v-flex>
                 <v-flex xs8>
-                  <k-line :base="pair.from" :counter="pair.to" :height="56" :timeout="100*index"></k-line>
+                  <k-line :key="index" :base="pair.from" :counter="pair.to" :height="56" :timeout="100*index"></k-line>
                 </v-flex>
 
               </v-layout>
@@ -101,7 +101,7 @@
 </template>
 
 <script>
-//import draggable from 'vuedraggable'
+import draggable from 'vuedraggable'
 import Toolbar from '@/components/Toolbar'
 import Card from '@/components/Card'
 import Picker from "@/components/picker"
@@ -301,16 +301,6 @@ export default {
             this.working = false
             this.delworking = false
             this.selectedItem = null
-            try{
-              let doms = window.document.querySelectorAll('.myassets-li')
-              for(var i=0,n=doms.length;i<n;i++){
-                let element = doms[i]
-                element.style.transition = "0.3s"
-                element.style.marginLeft = 0 + "px"
-              }
-            }catch(error){
-              console.error(error)
-            }
           })
           .catch(err=>{
             this.working = false

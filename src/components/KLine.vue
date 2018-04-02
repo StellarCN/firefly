@@ -117,6 +117,20 @@ export default {
                 rate: new Decimal(rate.toFixed(4)).toNumber() })
           }
           return {}
+      },  
+      cid(){
+          return `${this.base.code}-${this.base.issuer}-${this.counter.code}-${this.counter.issuer}`
+      }
+    },
+    watch: {
+      cid(val){
+        //关闭定时器
+        if(this.tinterval){
+            clearInterval(this.tinterval)
+            this.tinterval = null
+        }
+        this.deleteTradeInterval()
+        this.init()
       }  
     },
     beforeMount () {
@@ -133,21 +147,21 @@ export default {
         this.deleteTradeInterval()
     },
     mounted () {
-        this.$nextTick(()=>{
-            setTimeout(()=>{
-                //开启定时器
-                this.tinterval = setInterval(this.fetch, this.interval)
-                this.setupTradeInterval()
-                this.fetchLastTradeAggregation()
-                this.init();
-                this.fetch();
-                this.fetchLastTrade();
-            }, this.timeout)
-        })
+        this.init()
     },
     methods: {
         init() {
-            this.initView()
+            this.$nextTick(()=>{
+                setTimeout(()=>{
+                    //开启定时器
+                    this.tinterval = setInterval(this.fetch, this.interval)
+                    this.setupTradeInterval()
+                    this.fetchLastTradeAggregation()
+                    this.initView()
+                    this.fetch();
+                    this.fetchLastTrade();
+                }, this.timeout)
+            })    
         },
         //请求api，获取数据
         fetch(){
@@ -215,6 +229,9 @@ export default {
                     type: 'value',
                     max: function(value) {
                         return value.max * 1.5;
+                    },
+                    min: function(value){
+                        return value.min / 2
                     }
                 },
                 series: [{
