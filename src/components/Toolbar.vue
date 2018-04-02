@@ -22,10 +22,10 @@
     </v-toolbar>
 
 
-    <v-bottom-sheet  v-model="showPwdSheet" v-if="showPwdSheet" dark>
+    <v-bottom-sheet persistent v-model="showPwdSheet" v-if="showPwdSheet" dark>
       <div class="sheet-content">
         <div class="sheet-title">
-          <h4 class="title">
+          <h4 class="title" v-if="!lockpass">
             <slot name='switch_password'> 
           <!--if call for passowrd -->
               <span>{{$t('ChangeAccount')}}</span>
@@ -48,7 +48,8 @@
               ></v-text-field>
         </div>
         <div  class="sheet-btns">
-          <div class="sheet-btn" @click="canclePwdInput">{{$t('Button.Cancel')}}</div>
+          <div class="sheet-btn" v-if="!lockpass" @click="canclePwdInput">{{$t('Button.Cancel')}}</div>
+          <div class="sheet-btn" v-else @click="resetPwdInput">{{$t('Reset')}}</div>
           <div class="sheet-btn" @click="okPwdInput">{{$t('Button.OK')}}</div>
         </div>
       </div>
@@ -116,6 +117,11 @@ export default {
     shadow: {
       type: Boolean,
       default: false
+    },
+    //是否锁定密码输入窗口，要求必须输入密码
+    lockpass:{
+      type: Boolean,
+      default: false
     }
   },
   mounted(){
@@ -140,6 +146,9 @@ export default {
       this.selectedAccount = item
       this.selectedIndex = index
       this.showPwdSheet = true
+    },
+    resetPwdInput(){
+      this.password = null
     },
     //取消输入密码，则直接无密码跳转账户
     canclePwdInput(){
