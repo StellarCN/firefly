@@ -38,16 +38,30 @@
      
     </div>
     </div>
-    <div class="myassets_sort">
-        <!-- <input  type="button" value="隐藏资产" class="myassets_sort_hidden" v-on:click="hiddenMyAssets(item)"/>  -->
-        <input  type="button" :value="is_Flag === 'filter_zero'? $t('ShowZeroAsset'): $t('HideZeroAsset')" class="myassets_sort_hidden" @click="hiddenMyAssets"/> 
-        <select  v-model="sort_flag" class="myassets_sort_select" >
-          <option class="myassets_sort_byValue" value="none" >{{$t('DefaultSort')}}</option>
-          <option class="myassets_sort_byValue" value="name">{{$t('SortByName')}}</option>
-          <option class="myassets_sort_byValue" value="balance">{{$t('SortByAsset')}}</option>
-        </select>
+
+    <div class="flex-row">
+      <div class="flex2">&nbsp;</div>
+      <div class="flex1">
+        <v-btn depressed small flat color="primary" @click="hiddenMyAssets">
+          <span class="no-upper">{{is_Flag === 'filter_zero'? $t('ShowZeroAsset'): $t('HideZeroAsset')}}</span>
+        </v-btn>
+      </div>
+      <div class="flex1">
         
+         <v-menu offset-y>
+          <v-btn depressed small flat color="primary" slot="activator">
+            <span class="no-upper">{{$t(selectedSortItem.label)}}</span>
+          </v-btn>
+          <v-list>
+            <v-list-tile v-for="item in sortItems" :key="item.key">
+              <v-list-tile-title @click="chgSortItem(item)">{{ $t(item.label) }}</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
+        
+      </div>
     </div>
+
     <scroll :refresh="refresh">
    
    <div class="content"> 
@@ -80,8 +94,7 @@
                  <span class="balance">{{item.balance > 0 ? item.balance.toFixed(7) : 0}}</span>
                  <span class="label">{{$t('Total')}}</span> 
                  <br/>
-                  <span v-if="item.total >=0">≈{{item.total}}
-                    &nbsp;&nbsp;XCN</span>
+                  <span v-if="item.total >=0">≈{{item.total}}&nbsp;&nbsp;XCN</span>
               </div>
             </v-flex>
           </v-layout>
@@ -153,6 +166,19 @@ export default {
       price:[],
 
       selectedItem: null,
+
+      sortItems: [{
+          key: SORT_DEFAULT,
+          label: 'DefaultSort'
+        },{
+          key: SORT_NAME,
+          label: 'SortByName'
+        },{
+          key: SORT_BANLANCE,
+          label: 'SortByAsset'
+        }],
+      selectedSortItem:{key: SORT_DEFAULT,
+          label: 'DefaultSort'}
     }
   },
   mixins: [backbutton, loadaccount],
@@ -377,6 +403,10 @@ export default {
     },
     assetIcon(code,issuer){
       return COINS_ICON[code] || WORD_ICON[code.substring(0,1)] || DEFAULT_ICON
+    },
+    chgSortItem(item){
+      this.selectedSortItem = item;
+      this.sort_flag = item.key; 
     }
    
   },
