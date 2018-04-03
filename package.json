@@ -52,7 +52,7 @@
     "cordova-sqlite-storage": ">=2.1.2",
     "decimal.js": ">=9.0.1",
     "echarts": ">=4.0.1",
-    "ed25519": ">=0.0.4",
+    "ed25519": "^0.0.4",
     "lodash": ">=4.17.4",
     "moment": ">=2.20.1",
     "nprogress": ">=0.2.0",

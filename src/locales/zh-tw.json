@@ -414,7 +414,14 @@
   "MemoBook.MyAddress":"地址簿",
   "StartDate":"起始日期",
   "EndDate":"結束日期",
-  "StartDateIsAfterEndDate":"開始日期不能大於結束日期"
-  
+  "StartDateIsAfterEndDate":"開始日期不能大於結束日期",
+  "AssetImage":"資產圖片",
+  "AssetDomain":"網站",
+  "AssetSummary":"資產簡介",
+  "Understand":"了解",
+  "AssetNotExistMessage":"暫時無法獲取更多資產信息，請聯繫發行方。",
+  "NetWorkErrorMessage":"網路環境異常，請稍後再試。",
+  "DeterministicTransmission":"確定發送",
+  "AddAll":"添加全部"  
 
 }
