@@ -162,7 +162,7 @@
             <span class="sendconfim_memoMsg">{{$t('Memo')}}</span>
             <span class="sendconfim_memotype">({{memotype}})</span>
             <span v-if="this.memo!=null" class="sendconfim_memocontent">{{memo}}</span>
-            <span class="sendconfim_memocontent">{{$t("Error.MemoIsRequired")}}</span>
+            <span v-else class="sendconfim_memocontent">{{$t("Error.MemoIsRequired")}}</span>
           </div>
           <div class="sendconfim_btns">
             <span  class="sendconfim_btnok" @click.stop="send">{{$t('Button.OK')}}</span>
