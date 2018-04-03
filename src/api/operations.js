@@ -26,6 +26,33 @@ export function changeTrust(seed,code, issuer, limit=ASSET_TRUST_LIMIT) {
   });
 };
 
+
+export function  trustAll(seed, assets = [], limit=ASSET_TRUST_LIMIT){
+  var address = getAddress(seed)
+
+  return getServer().loadAccount(address).then((account)=>{
+    
+    var tx = new StellarSdk.TransactionBuilder(account)
+    for(var i =0,n=assets.length; i<n ; i++ ){
+      let op = trustOption(assets[i].code, assets[i].issuer)
+      tx = tx.addOperation(op)
+    }
+    tx = tx.build();
+    tx.sign(StellarSdk.Keypair.fromSecret(seed));
+    return getServer().submitTransaction(tx);
+  });
+}
+
+export function trustOption(code,issuer, limit = ASSET_TRUST_LIMIT){
+  var asset = new StellarSdk.Asset(code, issuer);
+  StellarSdk.Network.usePublicNetwork();
+  var op = StellarSdk.Operation.changeTrust({
+    asset: asset,
+    limit: limit.toString()
+  });
+  return op;
+}
+
 export function setData(seed,name,value){
   var opt = { name: name, value: value ? value : null}
   console.debug('manageData:', name, '-', value);

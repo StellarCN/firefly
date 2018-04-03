@@ -133,7 +133,9 @@
       
     <div style="flex: 1;"></div>
      <div class="btn-group" v-if="!showContacts">
-        <v-btn class="error btn-send" @click.stop="send">{{$t('Send')}}</v-btn>
+        <!-- <v-btn class="error btn-send" @click.stop="send">{{$t('Send')}}</v-btn> -->
+        <!-- wdp改动的地方 -->
+        <v-btn class="error btn-send" @click.stop="change_is_sendconfim()">{{$t('Send')}}</v-btn>
      </div>
 
     </div>
@@ -142,6 +144,32 @@
 
     <contact-book v-show="showmemobook" :data="memobookdata" :close="()=>{showmemobook=false}" :ok="selectmemo"/>
 
+      <div v-if="is_sendconfim" class="sendconfim">
+        <v-bottom-sheet  v-model="is_sendconfim" dark>
+          <div class="sendconfim_topMsg">{{$t("DeterministicTransmission")}}</div>
+          <div class="sendconfim_assetLine">
+            <span class="sendconfim_assetLine_asset">{{$t('Asset')}}</span>&nbsp;
+            <span class="sendconfim_assetLine_amount">{{amount}}</span>&nbsp;
+            <span class="sendconfim_assetLine_code">{{selectedasset.code}}</span>
+            <span class="sendconfim_assetLine_issuer">({{selectedasset.issuer}})</span>
+          </div>
+          <div class="sendconfim_destination">
+            <span class="sendconfim_destinationMsg">{{$t("To")}}</span>
+            <span class="sendconfim_destinationAddress">{{destination}}</span>
+            <span class="sendconfim_destinationName">({{contactname}})</span>
+          </div>
+          <div v-if="this.memoswitch&&this.memotype!=null" class="sendconfim_memo">
+            <span class="sendconfim_memoMsg">{{$t('Memo')}}</span>
+            <span class="sendconfim_memotype">({{memotype}})</span>
+            <span v-if="this.memo!=null" class="sendconfim_memocontent">{{memo}}</span>
+            <span v-else class="sendconfim_memocontent">{{$t("Error.MemoIsRequired")}}</span>
+          </div>
+          <div class="sendconfim_btns">
+            <span  class="sendconfim_btnok" @click.stop="send">{{$t('Button.OK')}}</span>
+            <span  class="sendconfim_btncancel" @click.stop="is_sendconfim=false">{{$t('Button.Cancel')}}</span>
+          </div>
+        </v-bottom-sheet>
+      </div>
   </div>
 </template>
 
@@ -203,6 +231,8 @@ export default {
       loadingTitle: null,
       loadingMsg: null,
 
+      //wdp改动的地方3
+      is_sendconfim:false,//是否显示发送确认的bottom-list
 
     }
   },
@@ -445,6 +475,16 @@ export default {
     //     },3000)
     // },
 
+
+    //wdp改动的地方2
+    change_is_sendconfim(){
+      console.log("clicked")
+      this.is_sendconfim=true
+      console.log(this.selectedasset)
+      console.log(this.memoswitch)
+      console.log(this.memotype)
+      console.log(this.memo)
+    },
     setDataByFed(data){
       this.fedSearching = false
       this.federationUrlResult = data
@@ -506,6 +546,120 @@ export default {
 
 <style lang="stylus" scoped>
 @require '~@/stylus/color.styl'
+.sendconfim
+  background: $secondarycolor.gray
+  height: 300px
+  position: fixed
+  bottom: 0
+  right: 0
+  left: 0
+  opacity: 1
+  // border:1px solid blue
+.sendconfim_topMsg
+      color:$primarycolor.red
+      font-size:20px
+      text-align:center
+      // border:1px solid red
+      position:relative
+      margin-bottom:40px
+
+.sendconfim_assetLine 
+.sendconfim_assetLine_asset
+    color:$secondarycolor.font
+    font-size:18px
+    margin-left:5px
+    // border:1px solid red
+.sendconfim_assetLine_amount
+    color:$primarycolor.red
+    margin-right:10px
+    font-size:18px
+    position:absolute
+    left:140px
+    width:40px
+    text-overflow:ellipsis
+    overflow:hidden
+.sendconfim_assetLine_code
+    color:$secondarycolor.font
+    font-size:18px
+    position:absolute
+    left:200px
+    width:60px
+    text-overflow:ellipsis
+    overflow:hidden
+.sendconfim_assetLine_issuer
+    color:$secondarycolor.font
+    position:absolute
+    left:250px
+    width:120px
+    text-overflow:ellipsis
+    overflow:hidden
+    // border:1px solid red
+.sendconfim_destination
+    // border:1px solid red
+    padding-top:10px
+    padding-bottom:10px
+.sendconfim_destinationMsg
+    margin-left:11px
+    font-size:18px
+    color:$secondarycolor.font 
+.sendconfim_destinationAddress
+    color:$primarycolor.font
+    font-size:18px
+    position:absolute
+    left:140px
+    width:40px
+    text-overflow:ellipsis
+    overflow:hidden
+    // border:1px solid yellow
+.sendconfim_destinationName
+    color:$primarycolor.font
+    font-size:18px  
+    position:relative
+    left:150px  
+
+.sendconfim_memo
+.sendconfim_memoMsg
+  color:$secondarycolor.font
+  font-size:18px
+  margin-left:5px
+.sendconfim_memotype
+  color:$secondarycolor.font
+  font-size:18px
+.sendconfim_memocontent
+  color:$primarycolor.font
+  font-size:18px
+  position:absolute
+  left:140px
+  width:200px
+  height:30px
+  text-overflow:ellipsis
+  overflow:hidden
+  // border:1px solid red
+
+.sendconfim_btns
+  // border:1px solid white
+  margin-bottom:100px
+  margin-top:50px
+.sendconfim_btnok
+  // background:$primarycolor.red
+  // border:1px solid blue
+  color:$primarycolor.red
+  font-size:20px
+  margin-left:50px
+  // margin-right:20px
+  padding-left:20px
+  padding-right:20px
+  float:left
+.sendconfim_btncancel
+  // background:$primarycolor.red
+  // border:1px solid red
+  color:$primarycolor.red
+  font-size:20px
+  // margin-left:20px
+  margin-right:50px
+  padding-left:20px
+  padding-right:20px
+  float:right
 .content
   //top: 48px
   //bottom: 0
@@ -603,4 +757,7 @@ export default {
   color  #f35833
 .hidebackground
   background none
+
+
+
 </style>
