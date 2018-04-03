@@ -8,7 +8,7 @@
 */
 <template>
   <div class="page">
-      <toolbar :title="$t('Menu.My')" :showbackicon="false"  ref="toolbar">
+      <toolbar :title="$t('Menu.My')" :showbackicon="false" lockpass  ref="toolbar">
             <v-btn icon @click.native="showAccounts" slot="left-tool">
                 <i class="material-icons">repeat</i>
             </v-btn>
@@ -110,17 +110,18 @@ export default {
         ...mapState({
             account: state => state.accounts.selectedAccount,
             accountData: state => state.account.data,
-            app: state => state.app
+            app: state => state.app,
+            islogin: state => (state.accounts.accountData.seed ? true : false),
         }),
       ...mapGetters([
         'unReadCount'
       ])
     },
-    beforeMount(){
-        this.pinEnable = this.app.enablePin || false
-    },
-    beforeUpdate(){
-        this.pinEnable = this.app.enablePin || false
+    mounted(){
+        if(!this.islogin){
+            this.$refs.toolbar.showPasswordLogin()
+            return
+        }
     },
     methods: {
         ...mapActions([
@@ -128,15 +129,6 @@ export default {
         ]),
         toNameCard(){
               this.$router.push({name:'AccountNameCard'})
-        },
-        switchPinCode(val){
-            //value=true，跳转到设置ping界面
-            if(val){
-                this.$router.push({name:'SetPinCode'})
-                return
-            }
-            // value=false，则要求输入ping码，正确后才可以取消
-            this.$router.push({name: 'DelPinCode'})
         },
         redirect(name){
             this.$router.push({name})

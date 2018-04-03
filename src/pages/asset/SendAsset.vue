@@ -27,11 +27,11 @@
       <card>
        <div class="card-content" slot="card-content" v-if="!showContacts">
           <v-select
-              v-bind:items="balances"
+              v-bind:items="assets"
               v-model="selectedasset"
               :label="$t('Asset')"
               class="selectasset"
-              item-value="issuer"
+              item-value="id"
               item-text="code"
               required
               :color="'error'"
@@ -250,6 +250,12 @@ export default {
       'paymentsRecords',
       'reserve',
     ]),
+    assets(){
+      if(!this.balances)return []
+      return this.balances.map(item=>{
+        return Object.assign({id: item.code+"-"+item.issuer},item)
+      })
+    }
 
   },
   mounted(){

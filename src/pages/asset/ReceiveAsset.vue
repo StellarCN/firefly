@@ -16,7 +16,7 @@
               v-model="selectedasset"
               :label="$t('Asset')"
               class="selectasset"
-              item-value="issuer"
+              item-value="id"
               item-text="code"
               :return-object="assetChoseReturnObject"
               dark
@@ -139,6 +139,12 @@ export default {
       'paymentsRecords',
       'reserve',
     ]),
+    assets(){
+      if(!this.balances)return []
+      return this.balances.map(item=>{
+        return Object.assgin({id: item.code+"-"+item.issuer}, item)
+      })
+    },
     amount:{
       get(){
         return this.num

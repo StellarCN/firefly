@@ -35,62 +35,6 @@
        </v-layout>  
     </div>
 
-    <!--
-    <v-dialog v-model="dialog" max-width="95%" >
-        <v-stepper v-model="guide" dark >
-          <v-stepper-header class="guide-header">
-            <v-stepper-step step="1" :complete="guide >1"></v-stepper-step>
-            <hr class='divider' :class="guide>1 ? primary : null"></hr>
-            <v-stepper-step step="2" :complete="guide >2"></v-stepper-step>
-            <hr class='divider' :class="guide>2 ? primary : null"></hr>
-            <v-stepper-step step="3"></v-stepper-step>
-          </v-stepper-header>
-          <v-stepper-items>
-            <v-stepper-content step="1">
-              <v-flex  class="stepper-content" v-touch="{left: () => swipe('Left'),right: () => swipe('Right')}">
-                <v-flex xs12 d-flex justify-center class="guide-img-wrapper"> 
-                  <img :src='require("../assets/img/step1.svg")' class="guide-img"/>
-                </v-flex>
-                <v-flex xs12 ><h4 class="headline">{{$t("Attention")}}</h4></v-flex>
-                <v-flex xs12 class="notice">{{$t("PasswordNotice")}}</v-flex>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="primary" flat @click.stop="guide=2">{{$t('Next')}}</v-btn>
-                </v-card-actions>
-              </v-flex>
-            </v-stepper-content>
-            <v-stepper-content step="2">
-              <v-flex v-touch="{left: () => swipe('Left'),right: () => swipe('Right')}">
-                <v-flex xs12 d-flex justify-center class="guide-img-wrapper"> 
-                  <img :src='require("../assets/img/step2.svg")' class="guide-img"/>
-                </v-flex>
-                <v-flex xs12 ><h4 class="headline">{{$t("Attention")}}</h4></v-flex>                
-                <v-flex xs12  class="notice" >{{$t("SeedNotice")}}</v-flex>
-                <v-card-actions>
-                  <v-btn color="primary" flat @click.stop="guide=1">{{$t("Back")}}</v-btn>
-                  <v-spacer></v-spacer>
-                  <v-btn color="primary" flat @click.stop="guide=3">{{$t('Next')}}</v-btn>
-                </v-card-actions>
-              </v-flex>
-            </v-stepper-content>
-            <v-stepper-content step="3" > 
-              <v-flex v-touch="{left: () => swipe('Left'),right: () => swipe('Right')}">
-                 <v-flex xs12 d-flex justify-center class="guide-img-wrapper"> 
-                  <img :src='require("../assets/img/step3.svg")' class='guide-img'>
-                </v-flex>
-                <v-flex xs12 ><h4 class="headline">{{$t("Congrats")}}</h4></v-flex>
-                <v-flex xs12 class="notice" >{{$t("CongratsMessage")}}</v-flex>
-                <v-card-actions>
-                  <v-btn color="primary" flat @click.stop="guide=2">{{$t("Back")}}</v-btn>
-                  <v-spacer></v-spacer>
-                  <v-btn color="primary" flat @click.stop="dialog=false">{{$t('Finish')}}</v-btn>
-                </v-card-actions>
-            </v-flex>
-            </v-stepper-content>
-          </v-stepper-items>
-        </v-stepper>
-    </v-dialog>
-    -->
     <v-dialog v-model="coveringDlg" persistent max-width="95%">
       <v-card>
         <v-card-title class="headline">{{$t('Account.WhetherCoverAccount')}}</v-card-title>
@@ -131,7 +75,7 @@
 
     <!-- 是否跳过验证窗口 -->
     <v-dialog v-model="showSkipDlg" max-width="95%" persistent>
-      <div class="pa-2">
+      <div>
         <div class="card-content dlg-content">
           <div class="avatar-div textcenter">
             <v-avatar>
@@ -150,7 +94,7 @@
 
     <!-- 验证通过窗口 -->
     <v-dialog v-model="showSeedValidDlg" max-width="95%" persistent>
-      <div class="pa-2">
+      <div>
         <div class="card-content dlg-content">
           <div class="avatar-div textcenter">
             <v-avatar>
@@ -168,7 +112,7 @@
 
     <!-- 验证失败窗口 -->
     <v-dialog v-model="showSeedInValidDlg" max-width="95%" persistent>
-      <div class="pa-2">
+      <div>
         <div class="card-content dlg-content">
           <div class="avatar-div textcenter">
             <v-avatar>

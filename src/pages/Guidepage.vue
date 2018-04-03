@@ -32,11 +32,11 @@
            </swiper>
     
         <div class="bottom-nav flex-row">
-           <div class="flex1" @click="slideprv">{{$t("LastStep")}}</div>
+           <div class="flex1 bg-p" @click="slideprv">{{$t("LastStep")}}</div>
            <!-- <v-flex xs6 class="guidepage_bottombutton" v-if="get_progresscount!=1" @click="slidenext" >{{$t("NextStep")}}</v-flex>
            <v-flex xs6 class="guidepage_bottombutton"  v-if="get_progresscount==1" @click="toWallet" >{{$t("AllRight")}}</v-flex> -->
-           <div class="flex1" v-if="progress_count < 1" @click="slidenext" >{{$t("NextStep")}}</div>
-           <div class="flex1"  v-else @click="toWallet" >{{$t("AllRight")}}</div>
+           <div class="flex1  bg-p" v-if="progress_count < 1" @click="slidenext" >{{$t("NextStep")}}</div>
+           <div class="flex1 bg-p"  v-else @click="toWallet" >{{$t("AllRight")}}</div>
        </div>
     
     </div>
@@ -239,8 +239,10 @@ export default {
     top: calc(100vh - 100px)
     height: 1rem
     line-height: 1rem
-    background: $primarycolor.gray
+    background: $primarycolor.gray!important
     z-index: 9
+.bg-p
+    background: $primarycolor.gray!important
 
 .infocard
    min-height 10rem

@@ -69,6 +69,12 @@
     <plugin name="cordova-plugin-wkwebview-engine" spec="git+https://github.com/apache/cordova-plugin-wkwebview-engine.git" />
     <plugin name="x5webview-cordova-plugin" spec="git+https://github.com/imloama/x5webview-cordova-plugin.git" />
     <plugin name="cordova-plugin-advanced-http" spec="^1.11.1" />
+    <plugin name="cordova-hot-code-push-plugin" spec="^1.5.3" />
+    <chcp>
+        <auto-download enabled="false" />
+        <auto-install enabled="false" />
+        <config-file url="http://v2.fchain.io/update/chcp.json" />
+    </chcp>
     <engine name="browser" spec="&gt;=5.0.1" />
     <engine name="android" spec="&gt;=6.2.3" />
     <engine name="ios" spec="&gt;=4.5.4" />

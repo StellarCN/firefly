@@ -193,3 +193,19 @@ export const WORD_ICON = {
   'A':'icon-shouzimuzhanwei'
 }
 
+export const CORS_PROXY = "https://cors-anywhere.herokuapp.com/"
+
+export function getVersionInfo(){
+  if(!chcp){
+    return new Promise((resolve,reject)=> reject('Error'))
+  }
+  return new Promise((resolve,reject)=>{
+    chcp.getVersionInfo((err,data)=>{
+      if(err){
+        reject(err)
+      }else{
+        resolve(data)
+      }
+    })
+  })
+}

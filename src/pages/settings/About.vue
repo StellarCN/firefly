@@ -52,14 +52,18 @@
                      <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
                 </div>
             </div>
-            <div class="row"  @click="openDownloadURL" v-if="latestVersion">
-                <div class="label">
-                    {{$t('LatestVersion')}}
-                </div>
-                <div class="value">
-                    {{latestVersion}}
-                     <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
-                </div>
+            <div class="row" v-if="latestVersion">
+              <div class="label">
+                {{$t('LatestVersion')}}
+              </div>
+              <div class="value">
+                {{latestVersion}}
+                <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
+              </div>
+            </div>
+
+            <div class="field_btn" v-if="needUpdate">
+              <v-btn :loading="working" class="error btn_ok" @click.stop="checkForUpdates">{{$t('CheckForUpdates')}}</v-btn>
             </div>
         </div>
       </card>
@@ -74,7 +78,8 @@ import {
   APP_VERSION,
   APP_GITHUB,
   OFFICIAL_SITE,
-  getPackageJson
+  getPackageJson,
+  getVersionInfo
 } from "@/api/gateways";
 const semver = require("semver");
 
@@ -87,25 +92,59 @@ export default {
       fireflyGithub: APP_GITHUB,
       officialSite: OFFICIAL_SITE,
       latestVersion: null,
-      updateURL: null
+      updateURL: null,
+      needUpdate: false,
+      working: false,
     };
   },
   mounted() {
-    this.checkNewVersion();
+   this.getReleaseVersion()
+   document.addEventListener('chcp_nothingToUpdate',()=>{
+     this.$toasted.show(this.$t('NothingToInstall'))
+   }, false)
+   document.addEventListener('chcp_nothingToInstall',()=>{
+     this.$toasted.show(this.$t('NothingToInstall'))
+   }, false)
   },
   methods: {
     back() {
       this.$router.back();
     },
-
-    checkNewVersion() {
+    getReleaseVersion(){
       getPackageJson()
-        .then(response => {
-          let data = response.data;
-          this.latestVersion = data.version;
-          this.updateURL = data.homepage;
+        .then(response=>{
+          let data = response.data
+          this.latestVersion = data.version
+          this.needUpdate = semver.gt(data.version, APP_VERSION)
         })
-        .catch(err => console.log(err));
+        .catch(err=>{
+          console.error(err)
+        })
+    },
+    checkForUpdates(){
+      if(!chcp)return
+      if(this.working)return
+      this.working = true
+      chcp.fetchUpdate((err,data)=>{
+        if(err){
+          this.working = false
+          console.error(err.description)
+          this.$toasted.error(this.$t('FetchUpdateError'))
+          return
+        }
+        this.$toasted.show(this.$t('UpdateHint'))
+        chcp.installUpdate(error=>{
+          if(error){
+            console.error(error)
+            this.$toasted.error(this.$t('FetchUpdateError'))
+            return
+          }
+          this.$toasted.show(this.$t('AfterUpdate'))
+        })//end of installUpdate
+        this.working = false
+      })
+
+
     },
 
     openDownloadURL() {
@@ -132,7 +171,12 @@ export default {
 
 <style lang="stylus" scoped>
 @require '~@/stylus/color.styl';
-
+.field_btn
+  margin-top: 1rem
+  .btn_ok
+    padding: 0px 0px
+    margin: 0px 0px
+    width: 100%
 .logo-wrapper {
   height: 120px;
   width: 100%;
@@ -169,6 +213,7 @@ export default {
 
   .label {
     flex: 1;
+    white-space: nowrap!important;
   }
 
   .value {
@@ -178,6 +223,8 @@ export default {
     height: 46px;
     line-height: 46px;
     vertical-align: middle;
+    padding-left: .5rem;
+    overflow: hidden;
   }
 }
 
