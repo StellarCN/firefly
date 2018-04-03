@@ -381,20 +381,20 @@ export default {
         return 
       }
       if(this.working) return
+      this.showloading = true
       let assets = currencies.filter(item=>!this.isTrusted(item))
       this.trustAll({seed: this.accountData.seed, address: this.account.address,assets}).then(data=>{
         console.log('trust all success')
-          this.showloading = true
           this.trustsuccess = true
           this.trustfail = false
           this.working = false
           this.loadingTitle = this.$t('AddAssetSuccess')
           this.asset_code = null
           this.asset_issuer = null
-
           setTimeout(()=>{
             this.showloading = false
-          },3000)
+          },5000)
+
       }).catch(err=>{
         console.error(err)
         console.error('trust all error')
