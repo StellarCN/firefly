@@ -447,7 +447,9 @@
   "AssetSummary":"summary",
   "Understand":"learn more ",
   "AssetNotExistMessage":"For more information , please contact the publisher",
-  "NetWorkErrorMessage":"Network environment exception, please try again late"
+  "NetWorkErrorMessage":"Network environment exception, please try again late",
+  "DeterministicTransmission":"Deterministic transmission",
+  "AddAll":"Add all" 
  
 
 }

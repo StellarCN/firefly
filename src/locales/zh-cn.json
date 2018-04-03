@@ -440,7 +440,10 @@
   "AssetSummary":"资产简介",
   "Understand":"了解",
   "AssetNotExistMessage":"暂时无法获取更多资产信息，请联系发行方。",
-  "NetWorkErrorMessage":"网络环境异常，请稍后再试。"
+  "NetWorkErrorMessage":"网络环境异常，请稍后再试。",
+  "DeterministicTransmission":"确定发送",
+  "AddAll":"添加全部"  
+
   
   
 
