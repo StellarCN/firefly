@@ -259,7 +259,7 @@ export default {
 
   },
   mounted(){
-    this.selectedasset = this.asset
+    this.selectedasset = Object.assign({id: this.asset.code+'-'+ this.asset.issuer}, this.asset)
     if (this.$route.params.destination) {
       console.log('set destination')
       this.destination = this.$route.params.destination
