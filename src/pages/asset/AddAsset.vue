@@ -31,6 +31,7 @@
               placeholder='fchain.io or stellar.org'
               primary
             ></v-text-field>
+        <div @click="addallasset(currencies)" class="addallasset">{{$t("AddAll")}}</div>
         <ul class="currency-ul">
           <li class="currency-li" v-for="currency in currencies" :key="currency.code">
             <div class="currency">
@@ -116,6 +117,7 @@ export default {
 
       url:null,
       currencies:[],
+      // notTrustedcurrencies:[],
 
       addtype:ADD_TRUST_FED,
       asset_code: null,
@@ -141,7 +143,27 @@ export default {
     },
     addTypeManully(){
       return this.addtype === ADD_TRUST_MANUALLY
-    },
+    },/*
+    notTrustedcurrencies: function (currencies) {
+      var notTrustedcurrenciesarray = null
+      for(var i=0 ;i< currencies.length;i++){
+        // console.log("iamhere")
+        let is_flag= this.isTrusted(currencies[i]);
+        // console.log("here i am")
+        // console.log("is_flag"+is_flag)
+        if(is_flag){
+            // console.log("had trusted ,do nothing===============")
+        }else{
+          // this.addTrustAll(currencies[i])
+          // console.log("this is  no trusted currencies preams------------------")
+          // console.log("this is "+currencies[i]+"-------------------------")
+        //新数组，所有没有授信过的资产数组
+          notTrustedcurrenciesarray.push(currencies[i])
+        }
+      }
+      return notTrustedcurrenciesarray
+    
+    }*/
   
   },
   mounted(){
@@ -152,6 +174,7 @@ export default {
   methods: {
     ...mapActions({
       trust: 'trust',
+      trustAll: 'trustAll',
       // delTrust: 'delTrust',
     }),
     isTrusted(item){
@@ -266,7 +289,52 @@ export default {
           //this.working = false
         )
     },
+    //wdp 添加的代码
+    /*
+     addAllTrust(currency){
+      this.trustsuccess = false
+      this.trustfail = false
+      // this.showloading = true
+      this.working = true 
+      this.loadingTitle = null
+      this.loadingMsg = null
+      let params = {
+          seed: this.accountData.seed,
+          address: this.account.address,
+          code: currency.code,
+          issuer: currency.issuer}
+      this.trust(params)
+        .then(response=>{
+          console.log(response)
+          this.trustsuccess = true
+          this.trustfail = false
+          this.working = false
+          // this.loadingTitle = this.$t('AddAssetSuccess')
+          this.asset_code = null
+          this.asset_issuer = null
 
+          // setTimeout(()=>{
+          //   this.showloading = false
+          // },3000)
+        })
+        .catch(err=>{
+          console.error(err)
+          this.trustsuccess = false
+          this.trustfail = true
+          this.working = false
+          //有可能返回超时，这时候也需要处理一下
+          let msg = getXdrResultCode(err)
+          this.loadingTitle = this.$t('AddAsset')+this.$t('SaveFailed')
+          if(msg){
+           this.loadingMsg = this.$t(msg)
+          }     
+        })
+        .finally(
+          //this.working = false
+        )
+    },
+*/
+    
     activeFedAddType(){
       this.addtype = ADD_TRUST_FED
     },
@@ -291,8 +359,81 @@ export default {
       this.trustfail = false
       this.loadingTitle = null
       this.loadingMsg = null
-    }
+    },
+    //wdp添加的代码
+    addallasset(currencies){
+      // console.log("hello")
+      // console.log(currencies)
+      //弹出密码确认
+      // console.log("------------------")
+      // this.$toasted.error(this.$t('Error.NoPassword'))
+      // this.$refs.toolbar.showPasswordLogin()
 
+       if(!this.accountData.seed){
+        this.$toasted.error(this.$t('Error.NoPassword'))
+        this.$refs.toolbar.showPasswordLogin()
+        return
+      }
+      if(this.native.balance - this.reserve > this.base_reserve){
+        console.log('enough native asset to continue')
+      }else{
+        this.$toasted.error('no enough lumens to continue')
+        return 
+      }
+      if(this.working) return
+      this.showloading = true
+      let assets = currencies.filter(item=>!this.isTrusted(item))
+      this.trustAll({seed: this.accountData.seed, address: this.account.address,assets}).then(data=>{
+        console.log('trust all success')
+          this.trustsuccess = true
+          this.trustfail = false
+          this.working = false
+          this.loadingTitle = this.$t('AddAssetSuccess')
+          this.asset_code = null
+          this.asset_issuer = null
+          setTimeout(()=>{
+            this.showloading = false
+          },5000)
+
+      }).catch(err=>{
+        console.error(err)
+        console.error('trust all error')
+          this.trustsuccess = false
+          this.trustfail = true
+          this.working = false
+          //有可能返回超时，这时候也需要处理一下
+          let msg = getXdrResultCode(err)
+          this.loadingTitle = this.$t('AddAsset')+this.$t('SaveFailed')
+          if(msg){
+           this.loadingMsg = this.$t(msg)
+          }  
+      })
+
+/*
+// console.log(currencies.length)
+      for(var i=0 ;i< currencies.length;i++){
+        // console.log("iamhere")
+        let is_flag= this.isTrusted(currencies[i]);
+        // console.log("here i am")
+        // console.log("is_flag"+is_flag)
+        if(is_flag){
+            // console.log("had trusted ,do nothing===============")
+        }else{
+          // this.addTrustAll(currencies[i])
+          // console.log("this is  no trusted currencies preams------------------")
+          // console.log("this is "+currencies[i]+"-------------------------")
+          console.log("Times==========="+currencies[i])
+          // Promise.all(this.addTrust(currencies[i]))
+          // var a = new Promise(function  (resolve,reject) {
+          //    this.addTrust(currencies[i])
+          // }); 
+          this.addAllTrust(currencies[i])
+          console.log("code work-----------------")
+        
+      }
+      }
+    */
+    }
    
   },
   components: {
@@ -361,5 +502,10 @@ export default {
     border-bottom: 2px solid $primarycolor.green
 .btn_trust
   background-color: $primarycolor.green  !important
+
+.addallasset
+  color:$primarycolor.green
+  float:right
+  padding-right:5px
 </style>
 

@@ -1,6 +1,6 @@
 import { send,getAccountInfo } from '../../api/account'
 import { getAsset,allHosts } from '../../api/assets'
-import { changeTrust } from '../../api/operations'
+import { changeTrust,trustAll as trustAllAsset } from '../../api/operations'
 //import { ASSETS_ISSUER_HOST } from '@/api/gateways'
 //资产相关
 const state = {
@@ -29,6 +29,14 @@ const actions = {
     //刷新accountinfo
     await dispatch('getAccountInfo',address)
     await dispatch('getPayments', address)
+  },
+  async trustAll({ dispatch, commit } , { seed, address, assets }){
+    console.log(`----------trust all --- `)
+    console.log(assets)
+    let data = await trustAllAsset(seed, assets)
+    console.log(data)
+    //刷新accountinfo
+    await dispatch('getAccountInfo',address)
   },
   async trust({dispatch,commit},{seed,address,code,issuer}){
     console.log('-------trust--------------')
