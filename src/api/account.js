@@ -148,12 +148,14 @@ export function send(seed,address,target,assetdata,amount,memo_type,memo_value,b
 
 // account stream
 var _stream = undefined;
-
-export function listenAccountStream(address,handler){
+export function listenAccountStream(address,handler,errfn){
   closeAccountStream();
   _stream = getServer().accounts().accountId(address).stream({
     onmessage: res => {
       handler(res);
+    },
+    onerror: err => {
+      errfn(err)
     }
   });
 

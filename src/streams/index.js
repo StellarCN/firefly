@@ -1,6 +1,7 @@
 // 相关stream的内容都保存在这边，定时的更新store中的数据
 import { listenPaymentStream, closePaymentStream, getPaymentStream, convertRecords } from '@/api/payments'
-
+import { listenAccountStream, closeAccountStream, getStream } from '@/api/account'
+import { CLEAN_ACCOUNT_BYSTREAM,ACCOUNTINFO_BYSTREAM } from '@/store/modules/AccountStore'
 
 let _data = {
     // 当前监听的账号地址
@@ -36,6 +37,11 @@ export function initPaymentStream(){
     if(paymentsdata && paymentsdata.length > 0 ){
         token = paymentsdata[0].paging_token
     }
+    listenAccountStream(_data.address, data => {
+        _data.store.commit(ACCOUNTINFO_BYSTREAM, data)
+    }, err => {
+        console.error(err)
+    })
     listenPaymentStream(_data.address, (data)=>{
         _data.store.dispatch('paymentSteamData',[data])
     },err => {
@@ -47,6 +53,7 @@ export function initPaymentStream(){
 export function closeStreams(){
     _data.address = undefined
     closePaymentStream()
+    closeAccountStream()
 }
 
 /**
@@ -54,5 +61,6 @@ export function closeStreams(){
  */
 export function cleanStreamData(){
     _data.store.commit('CLEAN_PAYMENTS')
+    _data.store.commit('CLEAN_ACCOUNT_BYSTREAM')
 }
 
