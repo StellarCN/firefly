@@ -9,7 +9,7 @@
       <card class="offer-card" padding="10px 10px">
         <div class="myoffer-table offer-table" slot="card-content">
           <div class="flex-row">
-            <div class="flex4">
+            <div class="flex3">
               <div class="pair-show">
                 <div class="pair-from">
                   <div class="code">{{offer.from.code}}</div>
@@ -33,20 +33,20 @@
             </div>
             <div class="flex4 pl-1 textright">
               <div>
-                <span class="value">{{offer.price}}{{offer.to.code}}</span>
-                <span class="label">{{$t('Trade.UnitPrice')}}</span>
+                <span class="value">{{Number(offer.price)}}{{offer.to.code}}</span>
+                <span class="label">{{$t('UnitPriceAbbreviation')}}</span>
               </div>
               <div>
-                <span class="value up">+{{offer.amount}}{{offer.from.code}}</span>
-                <span class="label">{{$t('Amount')}}</span>
+                <span class="value up">+{{Number(offer.amount)}}{{offer.from.code}}</span>
+                <span class="label">{{$t('AmountAbbreviation')}}</span>
               </div>
               <div>
-                <span class="value down">-{{offer.total}}{{offer.to.code}}</span>
-                <span class="label">{{$t('Trade.Total')}}</span>
+                <span class="value down">-{{Number(offer.total)}}{{offer.to.code}}</span>
+                <span class="label">{{$t('TotalAbbreviation')}}</span>
               </div>
             </div>
             <div class="flex1 textcenter pt-4">
-              <a href="javascript:void(0)" @click.stop="cancelMyOffer(offer)">{{$t('Trade.Cancel')}}</a>
+              <a href="javascript:void(0)" @click.stop="cancelMyOffer(offer,index)">{{$t('Trade.Cancel')}}</a>
             </div>
           </div>
           
@@ -115,7 +115,7 @@ import { getXdrResultCode } from '@/api/xdr'
     },
     watch:{
       my(){
-        this.offers = this.my.map(item=>this.convertOffer(item))
+        this.offers = this.my.map(item=>Object.assign({origin: item}, this.convertOffer(item)))
       }
     },
     mounted() {
@@ -137,11 +137,11 @@ import { getXdrResultCode } from '@/api/xdr'
             this.setup()
           })
       },
-      cancelMyOffer(item) {
+      cancelMyOffer(item,index) {
         if (this.working) return
         if (!this.accountData.seed) return
         this.onWorking()
-        cancelOffer(this.accountData.seed, item)
+        cancelOffer(this.accountData.seed, item.origin || this.my[i])
           .then(data => {
             this.onSuccess()
             this.setup()
@@ -277,8 +277,10 @@ import { getXdrResultCode } from '@/api/xdr'
     font-size: 14px
     padding-top: 10px
     padding-bottom: 10px
+    overflow: hidden
     .pair-from
       flex: 3
+      overflow: hidden
       .code
         font-size: 16px
       .issuer
@@ -292,6 +294,7 @@ import { getXdrResultCode } from '@/api/xdr'
         padding-top: 8px
     .pair-to
       flex: 3
+      overflow: hidden
       .code
         font-size: 16px
       .issuer
