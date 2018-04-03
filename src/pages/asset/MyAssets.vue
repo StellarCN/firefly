@@ -18,26 +18,27 @@
     </toolbar>
      <!--=======================================================-->
 <div class="accountandtotalasset">
+  <scroll :refresh="reload">
     <div class="accountnameaddress"><!-- 试着改动的地方wdp-->
-           <div class="flex-row">
-                    <div class="flex2 textcenter">
-                        <div class="avatar-wrapper">
-                            <span class="avatar-back" @click="toNameCard"><i class="iconfont icon-erweima avatar"></i></span>
-                        </div>
-                    </div>
-                    <div class="flex4">
-                        <div class="title">{{account.name}}</div>
-                        <div class="address">{{account.address | shortaddress}}</div>
-                    </div>
-                </div>
+      <div class="flex-row">
+        <div class="flex2 textcenter">
+            <div class="avatar-wrapper">
+                <span class="avatar-back" @click="toNameCard"><i class="iconfont icon-erweima avatar"></i></span>
+            </div>
+        </div>
+        <div class="flex4">
+            <div class="title">{{account.name}}</div>
+            <div class="address">{{account.address | shortaddress}}</div>
+        </div>
+      </div>
     </div>
     <div id="TotalSum" class="myassets_totalSum" >
       <span class="myassets_TotalSumWord" >{{$t('TotalAssets')}}≈</span>
       <span>{{TotalSum.toFixed(7)}}</span><!-- 要改成资产数组数据的累加的和-->
       <span>XCN</span>
-     
     </div>
-    </div>
+  </scroll>
+</div>
 
     <div class="flex-row">
       <div class="flex2">&nbsp;</div>
@@ -248,16 +249,14 @@ export default {
           });
         }
       //添加价格
-      console.log(`--add item price---`)
       data.forEach(item=>{
-        console.log(`----item.balance---${item.balance}`)
+        
         if(item.balance > 0){
           let key = item.code
           if(!isNativeAsset(item)) {
             key += '-' + item.issuer    
           }
           let p = this.prices[key]
-          console.log(`-----key=${key}----p:${JSON.stringify(p)}`)
           if(p){
             item.price = p.price
             item.total = new Decimal(p.price).times(item.balance).toNumber();
@@ -297,6 +296,35 @@ export default {
     });
   },
   methods: {
+    ...mapActions([
+      'getAccountInfo',
+      'cleanAccount',
+      'updateAccount'
+      ]),
+    reload(){
+      return this.getAccountInfo(this.account.address)
+    },
+    updateFederationAndInflationInfo() {
+      // update home_domain and inflation_destination from horizon.
+      console.log("updateFederationAndInflationInfo")
+      console.log(this.accountData)
+      if (this.account.federationAddress !== this.accountData.inflation_destination || this.account.inflationAddress !== this.accountData.home_domain) {
+        let data = Object.assign({}, this.account, {
+          federationAddress: this.accountData.home_domain,
+          inflationAddress: this.accountData.inflation_destination
+        })
+        let params = {index: this.selectedAccountIndex, account: data}
+        console.log(params)
+        this.updateAccount(params)
+          .then(data => {
+            console.log("success")
+          })
+          .catch(err => {
+            console.log("failed")
+            console.error(err)
+          })
+      }
+    },
     /*
      *
      * 尝试修改的我不同的资产转换为xcn时的值

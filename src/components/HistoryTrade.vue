@@ -4,13 +4,17 @@
 */
 <template>
   <div class="content">
+    
+  <div class="search-wrapper pl-3">
     <date-range-picker :start="start" :end="end" @doSearch="doSearch" />
+  </div>
+
   <scroll :refresh="queryAllOffers">
     <div v-for="(item, index) in records" :key="index">
       <card class="offer-card" padding="10px 10px">
         <div class="myoffer-table offer-table" slot="card-content">
           <div class="flex-row">
-            <div class="flex4">
+            <div class="flex3">
               <div class="pair-show">
                 <div class="pair-from">
                   <div class="code">{{item.base_asset}}</div>
@@ -32,22 +36,23 @@
                 </div>
               </div>
             </div>
-            <div class="flex4 pl-1 textright">
+            <div class="flex4 textright">
               <div>
-                <span class="value">{{item.price}}{{item.counter_asset}}</span>
-                <span class="label">{{$t('Trade.UnitPrice')}}</span>
+                <span class="value">{{Number(item.price)}}{{item.counter_asset}}</span>
+                <span class="label">{{$t('UnitPriceAbbreviation')}}</span>
               </div>
               <div>
-                <span class="value up">+{{item.amount}}{{item.base_asset}}</span>
-                <span class="label">{{$t('Amount')}}</span>
+                <span class="value up">+{{Number(item.amount)}}{{item.base_asset}}</span>
+                <span class="label">{{$t('AmountAbbreviation')}}</span>
               </div>
               <div>
-                <span class="value down">-{{item.total}}{{item.base_asset}}</span>
-                <span class="label">{{$t('Trade.Total')}}</span>
+                <span class="value down">-{{Number(item.total)}}{{item.counter_asset}}</span>
+                <span class="label">{{$t('TotalAbbreviation')}}</span>
               </div>
             </div>
-            <div class="flex1 textcenter pt-4">
-             {{$t(item.type)}}
+            <div class="flex1 textright pt-4">
+             <i class="material-icons trade-icon" v-if="item.type === 'canceled'">not_interested</i>
+             <i class="material-icons trade-icon" v-else>done</i>
             </div>
           </div>
           
@@ -96,7 +101,7 @@ import  defaultsDeep  from 'lodash/defaultsDeep'
       
     },
     beforeMount () {
-      this.start = Number(moment().subtract(7,"days").format('x'))
+      this.start = Number(moment().subtract(30,"days").format('x'))
       this.end = Number(moment().format('x'))
       this.queryAllOffers()
     },
@@ -105,12 +110,12 @@ import  defaultsDeep  from 'lodash/defaultsDeep'
         //暂时只查询一周的委单数据
         //let start_time = Number(moment().subtract(7,"days").format('x'))
         //let end_time = Number(moment().format('x'))
-        let start_time = moment(this.start)
-        let end_time = moment(this.end)
-        start_time = new Date(start_time.year(), start_time.month()+1, start_time.date()).getTime()
-        end_time = new Date(end_time.year(), end_time.month()+1, end_time.date()).getTime()
+        //let start_time = moment(this.start)
+        //let end_time = moment(this.end)
+        //start_time = new Date(start_time.year(), start_time.month()+1, start_time.date()).getTime()
+        //end_time = new Date(end_time.year(), end_time.month()+1, end_time.date()).getTime()
         
-        getAllEffectOffers(this.account.address, start_time, end_time)
+        getAllEffectOffers(this.account.address, this.start, this.end)
           .then(response=>{
             this.records = response.data.map(item=>{
               return defaultsDeep({}, item, { total: new Decimal(item.amount).times(item.price).toFixed(7)})
@@ -124,7 +129,6 @@ import  defaultsDeep  from 'lodash/defaultsDeep'
           })
       },
       doSearch({start,end}){
-        console.log(`---dosearch -- ${start} - ${end}`)
         this.start =Number(moment(start + ' 00:00:00').format('x'))
         this.end = Number(moment(end + ' 23:59:59').format('x'))
         this.queryAllOffers()
@@ -195,8 +199,10 @@ import  defaultsDeep  from 'lodash/defaultsDeep'
     font-size: 14px
     padding-top: 10px
     padding-bottom: 10px
+    overflow:hidden
     .pair-from
       flex: 3
+      overflow:hidden
       .code
         font-size: 16px
       .issuer
@@ -210,6 +216,7 @@ import  defaultsDeep  from 'lodash/defaultsDeep'
         padding-top: 8px
     .pair-to
       flex: 3
+      overflow:hidden
       .code
         font-size: 16px
       .issuer
@@ -219,4 +226,7 @@ import  defaultsDeep  from 'lodash/defaultsDeep'
   font-size: 14px
 .label
   color: $secondarycolor.font
+.trade-icon
+  color: $secondarycolor.font
+  font-size: .6rem
 </style>

@@ -7,6 +7,22 @@ import { BASE_RESERVE } from '@/api/gateways'
 import { getDepositeAndWithdrawRecords, getAllEffectOffers } from '@/api/fchain'
 
 
+
+export const ACCOUNT_INFO_SUCCESS = 'ACCOUNT_INFO_SUCCESS'
+export const GET_TRANSACTIONS_SUCCESS = 'GET_TRANSACTIONS_SUCCESS'
+export const GET_PAYMENTS_SUCCESS = 'GET_PAYMENTS_SUCCESS'
+export const SELECT_PAYMENT = 'SELECT_PAYMENT'
+export const CLEAN_ACCOUNT = 'CLEAN_ACCOUNT'
+export const GET_LEDGER_INFO = 'GET_LEDGER_INFO'
+export const GET_PAYMENT_STREAM = 'GET_PAYMENT_STREAM'
+export const CLEAN_PAYMENTS = 'CLEAN_PAYMENTS'
+export const ACCOUNT_IS_FUNDING = 'ACCOUNT_IS_FUNDING'
+export const ACCOUNT_NOT_FUNDING = 'ACCOUNT_NOT_FUNDING'
+export const GET_ALL_OFFERS = 'GET_ALL_OFFERS'
+export const CLEAN_ACCOUNT_BYSTREAM = 'CLEAN_ACCOUNT_BYSTREAM'
+export const ACCOUNTINFO_BYSTREAM = 'ACCOUNTINFO_BYSTREAM'
+
+
 // 某个账户的相关操作
 const state = {
   // 通过查询horizon的api  /accounts/id获得的数据
@@ -72,6 +88,12 @@ const mutations = {
     state.data = {balances:[]}
     state.transations = { records:[] }
     state.selectedPayment = null
+  },
+  [CLEAN_ACCOUNT_BYSTREAM](state){
+    state.data = {balances:[]}
+  },
+  [ACCOUNTINFO_BYSTREAM](state, data){
+    state.data = data
   },
   CLEAN_PAYMENTS(state){
     state.payments = { records: [] }
@@ -150,9 +172,6 @@ const getters = {
     if(!getters.balances)return {}
     let xlm = {}
     getters.balances.forEach((element) => {
-      console.log(`-----native --- `)
-      console.log(element)
-      console.log(isNativeAsset(element))
       if(isNativeAsset(element)){
         xlm = Object.assign({},element)
       }
@@ -189,19 +208,6 @@ const getters = {
   
   
 }
-
-export const ACCOUNT_INFO_SUCCESS = 'ACCOUNT_INFO_SUCCESS'
-export const GET_TRANSACTIONS_SUCCESS = 'GET_TRANSACTIONS_SUCCESS'
-export const GET_PAYMENTS_SUCCESS = 'GET_PAYMENTS_SUCCESS'
-export const SELECT_PAYMENT = 'SELECT_PAYMENT'
-export const CLEAN_ACCOUNT = 'CLEAN_ACCOUNT'
-export const GET_LEDGER_INFO = 'GET_LEDGER_INFO'
-export const GET_PAYMENT_STREAM = 'GET_PAYMENT_STREAM'
-export const CLEAN_PAYMENTS = 'CLEAN_PAYMENTS'
-export const ACCOUNT_IS_FUNDING = 'ACCOUNT_IS_FUNDING'
-export const ACCOUNT_NOT_FUNDING = 'ACCOUNT_NOT_FUNDING'
-export const GET_ALL_OFFERS = 'GET_ALL_OFFERS'
-
 export default {
   state,
   getters,
