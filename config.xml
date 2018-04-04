@@ -73,7 +73,7 @@
     <chcp>
         <auto-download enabled="false" />
         <auto-install enabled="false" />
-        <config-file url="http://v2.fchain.io/update/chcp.json" />
+        <config-file url="https://update.fchain.io/v2/chcp.json" />
     </chcp>
     <engine name="browser" spec="&gt;=5.0.1" />
     <engine name="android" spec="&gt;=6.2.3" />
