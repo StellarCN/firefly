@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-21 15:54:22
+ * @Last Modified time: 2018-04-04 14:52:49
  * @License: MIT 
  */
 <template>
@@ -282,7 +282,7 @@ export default {
         initView() {
             this.ele = echarts.init(document.getElementById(this.id))
             this.opt = this.koption()
-            this.ele.setOption(this.opt)
+            this.ele.setOption(this.opt, true)
         },
         koption() {
 
@@ -295,6 +295,11 @@ export default {
                 tooltip: {
                     trigger: 'axis',
                     axisPointer: { type: 'cross' },
+                    transitionDuration: 0,
+                    confine: true,
+                     position:  (pos, params, dom, rect, size)=>{
+                        return pos[0] < size.viewSize[0] / 2 ? {top: 10, right: 10}:{top: 10, left: 10}
+                    },
                     formatter: (params, tick)=>{
                         let series = params.sort((a,b)=>a.seriesIndex>b.seriesIndex)
                         let result = `${series[0].name}<br/>`;
@@ -318,24 +323,25 @@ export default {
                     }
                 },
                 axisPointer: { 
-                    link: [{xAxisIndex: 'all'}]
+                    link: [{xAxisIndex: [0,1]}]
                 },
                 dataZoom: [{
-                //     type: 'slider',
-                //     xAxisIndex: [0, 1],
-                //     realtime: false,
-                //     start: 20,
-                //     end: 70,
-                //     top: 20,//65,
-                //     height: 20,
-                //     handleIcon: 'M10.7,11.9H9.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4h1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
-                //     handleSize: '120%'
-                // }, {
+                    type: 'slider',
+                    xAxisIndex: [0, 1],
+                    filterMode: 'none',
+                    realtime: false,
+                    start: 50,
+                    end: 100,
+                    top: 180,//65,
+                    height: 20,
+                    handleIcon: 'M10.7,11.9H9.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4h1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+                    handleSize: '120%'
+                }, {
                     type: 'inside',
                     xAxisIndex: [0, 1],
-                    start: 0,
-                    end: 100,
-                    top: 10,
+                    start: 40,
+                    end: 70,
+                    top: 40,
                     height: 20
                 }],
                 xAxis: [{
@@ -396,48 +402,48 @@ export default {
                     right: 0,
                     top: 30,//110,
                     height: 120,
-                    bottom: 0
+                    //bottom: 0
                 }, {
                     left: 0,
                     right: 0,
                     height: 40,
-                    top: 180,//260
-                    bottom: 0
+                    top: 210,//260
+                    //bottom: 0
                 }],
-                // graphic: [{
-                //     type: 'group',
-                //     left: 'center',
-                //     top: 70,
-                //     width: 300,
-                //     bounding: 'raw',
-                //     children: [{
-                //         id: 'MA5',
-                //         type: 'text',
-                //         style: {fill: this.colors[1]},
-                //         left: 0
-                //     }, {
-                //         id: 'MA10',
-                //         type: 'text',
-                //         style: {fill: this.colors[2]},
-                //         left: 'center'
-                //     }]
-                // }],
+                graphic: [{
+                    type: 'group',
+                    left: 'center',
+                    top: 70,
+                    width: 300,
+                    bounding: 'raw',
+                    children: [{
+                        id: 'MA5',
+                        type: 'text',
+                       // style: {fill: this.colors[1]},
+                        left: 0
+                    }, {
+                        id: 'MA10',
+                        type: 'text',
+                       // style: {fill: this.colors[2]},
+                        left: 'center'
+                    }]
+                }],
                 series: [ {
                     type: 'candlestick',
                     name: this.$t('minute'),
                     data: this.data,
                     itemStyle: {
                         normal: {
-                            color: '#ef232a',
-                            color0: '#14b143',
-                            borderColor: '#ef232a',
-                            borderColor0: '#14b143'
+                            color: '#14b143',
+                            color0: '#ef232a',
+                            borderColor: '#14b143',
+                            borderColor0: '#ef232a'
                         },
                         emphasis: {
-                            color: 'black',
-                            color0: '#444',
-                            borderColor: 'black',
-                            borderColor0: '#444'
+                            color: '#444',
+                            color0: 'black',
+                            borderColor: '#444',
+                            borderColor0: 'black'
                         }
                     }
                 }, {
