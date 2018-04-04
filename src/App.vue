@@ -1,7 +1,7 @@
 <template>
 <div>
 
-  <v-app :class="'app ' + (showFuzzyView?'fuzzy-app':'') " dark>
+  <v-app :class="'app ' + (showFuzzyView?'fuzzy-app':'')  + (isios ? ' ios-app ':' ' )" dark>
       <v-system-bar status :color="iosstatusbarcolor" v-if="isios" app>
         <v-spacer></v-spacer>
       </v-system-bar>
@@ -332,6 +332,9 @@ export default {
   background-size: cover
   /*平铺*/
   background-attachment: fixed
+// .ios-app
+//   .page
+//     padding-top: .2rem!important
 @css {
   html{
     background: none;
