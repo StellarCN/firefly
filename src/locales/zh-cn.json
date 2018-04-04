@@ -148,7 +148,7 @@
   "Error.SaveHorizonFial": "保存恒星公网节点地址失败",
 
   "FederationName": "联邦账户名",
-  "FederationName.Description": "本服务由 fed.network 提供，你可以访问该网站以了解更多的信息。在这里你可以注册一个诸如 name*fed.network 的用户名，其他用户可以通过该用户名给你发送资产。但是需要注意的是本服务只是为了让用户便于输入地址，还请用户自行核对解析后的地址是否正确。注册一个地址需要支付 0.5 XLM。",
+  "FederationName.Description": "本服务由 fed.network 提供，你可以访问该网站以了解更多的信息。在这里你可以注册一个诸如 name*fed.network 的用户名，其他用户可以通过该用户名给你发送资产。但是需要注意的是本服务只是为了让用户便于输入地址，还请用户自行核对解析后的地址是否正确。注册一个地址需要支付 0.5 XLM。取消注册需要支付 1 XLM。",
   "FederationName.Address": "你的地址：",
   "FederationName.Connecting": "正在与服务建立连接...",
   "FederationName.ConnectionFailed": "网络连接失败，请稍后再试",
@@ -156,6 +156,7 @@
   "FederationName.Unavailable": "该用户名不可用，请更换",
   "FederationName.NetworkError": "网络错误",
   "FederationName.Error": "发生了一个预期之外的错误",
+  "unlink":"解除绑定",
 
   "SaveSuccess":"保存成功",
   "SaveFailed":"保存失败",
