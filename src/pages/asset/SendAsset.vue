@@ -135,7 +135,7 @@
      <div class="btn-group" v-if="!showContacts">
         <!-- <v-btn class="error btn-send" @click.stop="send">{{$t('Send')}}</v-btn> -->
         <!-- wdp改动的地方 -->
-        <v-btn class="error btn-send" @click.stop="change_is_sendconfim()">{{$t('Send')}}</v-btn>
+        <v-btn class="error btn-send" @click.stop="change_is_sendconfim">{{$t('Send')}}</v-btn>
      </div>
 
     </div>
@@ -143,31 +143,57 @@
     <contact-book v-show="showContacts" :data="contactsdata" :close="()=>{showContacts=false}" :ok="selectContact"/>
 
     <contact-book v-show="showmemobook" :data="memobookdata" :close="()=>{showmemobook=false}" :ok="selectmemo"/>
-
-      <div v-if="is_sendconfim" class="sendconfim">
+      <div v-if="is_sendconfim" class="sendconfim_bottom_sheet">
         <v-bottom-sheet  v-model="is_sendconfim" dark>
-          <div class="sendconfim_topMsg">{{$t("DeterministicTransmission")}}</div>
-          <div class="sendconfim_assetLine">
-            <span class="sendconfim_assetLine_asset">{{$t('Asset')}}</span>&nbsp;
-            <span class="sendconfim_assetLine_amount">{{amount}}</span>&nbsp;
-            <span class="sendconfim_assetLine_code">{{selectedasset.code}}</span>
-            <span class="sendconfim_assetLine_issuer">({{selectedasset.issuer}})</span>
-          </div>
-          <div class="sendconfim_destination">
-            <span class="sendconfim_destinationMsg">{{$t("To")}}</span>
-            <span class="sendconfim_destinationAddress">{{destination}}</span>
-            <span class="sendconfim_destinationName">({{contactname}})</span>
-          </div>
-          <div v-if="this.memoswitch&&this.memotype!=null" class="sendconfim_memo">
-            <span class="sendconfim_memoMsg">{{$t('Memo')}}</span>
-            <span class="sendconfim_memotype">({{memotype}})</span>
-            <span v-if="this.memo!=null" class="sendconfim_memocontent">{{memo}}</span>
-            <span v-else class="sendconfim_memocontent">{{$t("Error.MemoIsRequired")}}</span>
-          </div>
-          <div class="sendconfim_btns">
-            <span  class="sendconfim_btnok" @click.stop="send">{{$t('Button.OK')}}</span>
-            <span  class="sendconfim_btncancel" @click.stop="is_sendconfim=false">{{$t('Button.Cancel')}}</span>
-          </div>
+            <v-container class="v_container">
+              <v-layout>
+                  <v-flex xs12>
+                    <v-card-text class="sendconfimMsg">{{$t("DeterministicTransmission")}}</v-card-text>
+                  </v-flex>
+              </v-layout>
+              <v-layout class="sendconfimAssetStyle"><!-- 资产 10.5 ETH(fchain.io)-->
+                  <v-flex xs4>
+                    <span class="sendconfimAsset">{{$t('Asset')}}</span>
+                  </v-flex>
+                  <v-flex xs8>
+                    <span class="sendconfimAmount">{{amount}}</span>
+                    <span class="sendconfimCode">{{selectedasset.code}}</span>
+                    <span class="sendconfim_asset_domain">
+                    <span v-if="assethosts[selectedasset.issuer]">({{assethosts[selectedasset.issuer]}})</span>
+                    <span v-else-if="assethosts[selectedasset.code]">({{assethosts[selectedasset.code]}})</span>
+                    <span class="asset-select-issuer show" v-else>({{selectedasset.issuer|miniaddress}})</span>
+                    </span>
+                  </v-flex>
+              </v-layout>
+              <v-layout class="sendconfimToStyle"><!--至 Ghv..3AE（小明） -->
+                  <v-flex xs4>
+                    <span class="sendconfim_To">{{$t("To")}}</span>
+                  </v-flex>
+                  <v-flex xs8>
+                    <span v-if="destination!=null" class="sendconfim_asset_destination">{{destination|miniaddress}}</span>
+                    <span v-else class="sendconfim_asset_destination">&nbsp;</span>
+                    <span v-if="contactname!=null" class="sendconfimContactname">({{contactname|miniaddress}})</span>
+                  </v-flex>
+              </v-layout>
+              <v-layout class="sendconfim_MemoAndType" v-if="this.memoswitch&&this.memotype!=null"><!--备注(text) goodluck -->
+                  <v-flex xs4>
+                    <span class="sendconfim_MemoTitle">{{$t('Memo')}}</span>
+                    <span class="sendconfim_Memotype">({{memotype}})</span>
+                  </v-flex>
+                  <v-flex xs8>
+                    <span v-if="this.memo!=null" class="sendconfim_Memo">{{memo|miniaddress}}</span>
+                    <span v-else class="sendconfim_Memo">{{$t("Error.MemoIsRequired")}}</span>
+                  </v-flex>
+              </v-layout>
+              <v-layout class="sendconfim_Btns"><!-- 确定 取消-->
+                  <v-flex xs6>
+                    <span @click.stop="send" class="sendconfimBtnOk">{{$t('Button.OK')}}</span>
+                  </v-flex>
+                  <v-flex xs6>
+                    <span @click.stop="is_sendconfim=false" class="sendconfimBtnCancel">{{$t('Button.Cancel')}}</span>
+                  </v-flex>
+              </v-layout>
+            </v-container>
         </v-bottom-sheet>
       </div>
   </div>
@@ -486,10 +512,7 @@ export default {
     change_is_sendconfim(){
       console.log("clicked")
       this.is_sendconfim=true
-      console.log(this.selectedasset)
-      console.log(this.memoswitch)
-      console.log(this.memotype)
-      console.log(this.memo)
+      console.log(this.contactname)
     },
     setDataByFed(data){
       this.fedSearching = false
@@ -552,120 +575,93 @@ export default {
 
 <style lang="stylus" scoped>
 @require '~@/stylus/color.styl'
-.sendconfim
-  background: $secondarycolor.gray
-  height: 300px
-  position: fixed
-  bottom: 0
-  right: 0
-  left: 0
-  opacity: 1
-  // border:1px solid blue
-.sendconfim_topMsg
-      color:$primarycolor.red
-      font-size:20px
-      text-align:center
-      // border:1px solid red
-      position:relative
-      margin-bottom:40px
 
-.sendconfim_assetLine 
-.sendconfim_assetLine_asset
-    color:$secondarycolor.font
-    font-size:18px
-    margin-left:5px
-    // border:1px solid red
-.sendconfim_assetLine_amount
-    color:$primarycolor.red
-    margin-right:10px
-    font-size:18px
-    position:absolute
-    left:140px
-    width:40px
-    text-overflow:ellipsis
-    overflow:hidden
-.sendconfim_assetLine_code
-    color:$secondarycolor.font
-    font-size:18px
-    position:absolute
-    left:200px
-    width:60px
-    text-overflow:ellipsis
-    overflow:hidden
-.sendconfim_assetLine_issuer
-    color:$secondarycolor.font
-    position:absolute
-    left:250px
-    width:120px
-    text-overflow:ellipsis
-    overflow:hidden
-    // border:1px solid red
-.sendconfim_destination
-    // border:1px solid red
-    padding-top:10px
-    padding-bottom:10px
-.sendconfim_destinationMsg
-    margin-left:11px
-    font-size:18px
-    color:$secondarycolor.font 
-.sendconfim_destinationAddress
-    color:$primarycolor.font
-    font-size:18px
-    position:absolute
-    left:140px
-    width:40px
-    text-overflow:ellipsis
-    overflow:hidden
-    // border:1px solid yellow
-.sendconfim_destinationName
-    color:$primarycolor.font
-    font-size:18px  
-    position:relative
-    left:150px  
+.sendconfim_bottom_sheet
+  background:$secondarycolor.gray
+  height:400px
+  position:fixed
+  right:0
+  left:0
+  opacity:1
+.v_container
+  padding:0px 0px
+.sendconfimMsg
+  background:$secondarycolor.gray
+  font-size:20px
+  color:$primarycolor.red
+  text-align:center
 
-.sendconfim_memo
-.sendconfim_memoMsg
+.sendconfimAssetStyle
+  background:$secondarycolor.gray
+  padding-left:8px
+  padding-bottom:10px
+  border:none
+.sendconfimAsset
+  font-size:18px
   color:$secondarycolor.font
+.sendconfimAmount
   font-size:18px
-  margin-left:5px
-.sendconfim_memotype
+  color:$primarycolor.red
+  word-break:break-all
+.sendconfimCode
+  font-size:16px
   color:$secondarycolor.font
-  font-size:18px
-.sendconfim_memocontent
-  color:$primarycolor.font
-  font-size:18px
-  position:absolute
-  left:140px
-  width:200px
-  height:30px
+.sendconfim_asset_domain
   text-overflow:ellipsis
   overflow:hidden
-  // border:1px solid red
+  font-size:16px
+  color:$secondarycolor.font
 
-.sendconfim_btns
-  // border:1px solid white
-  margin-bottom:100px
-  margin-top:50px
-.sendconfim_btnok
-  // background:$primarycolor.red
-  // border:1px solid blue
+.sendconfimToStyle
+  background:$secondarycolor.gray
+  padding-left:8px
+  padding:10px 0px 10px 8px
+  border:none
+.sendconfim_To
+  font-size:18px
+  color:$secondarycolor.font
+.sendconfim_asset_destination
+  font-size:18px
+  color:$primarycolor.font
+.sendconfimContactname
+  font-size:18px
+  color:$primarycolor.font
+
+.sendconfim_MemoAndType
+  background:$secondarycolor.gray
+  padding-left:8px
+  padding-top:10px
+  padding-bottom:10px
+  border:none
+.sendconfim_MemoTitle
+  font-size:18px
+  color:$secondarycolor.font
+  padding-right:0px
+.sendconfim_Memotype
+  font-size:16px
+  color:$secondarycolor.font
+  padding-left:0px
+  padding-right:0px
+.sendconfim_Memo
+  font-size:18px
+  color:$primarycolor.font
+
+.sendconfim_Btns
+  background:$secondarycolor.gray
+  padding:10px 0px 20px 0px
+  border:none
+.sendconfimBtnOk
   color:$primarycolor.red
-  font-size:20px
-  margin-left:50px
-  // margin-right:20px
-  padding-left:20px
-  padding-right:20px
-  float:left
-.sendconfim_btncancel
-  // background:$primarycolor.red
-  // border:1px solid red
+  font-size:18px
+  text-align:center
+  padding-left:40%
+.sendconfimBtnCancel
   color:$primarycolor.red
-  font-size:20px
-  // margin-left:20px
-  margin-right:50px
-  padding-left:20px
-  padding-right:20px
-  float:right
+  font-size:18px
+  text-align:center
+  padding-left:30%
+  
+
 .content
   //top: 48px
   //bottom: 0
