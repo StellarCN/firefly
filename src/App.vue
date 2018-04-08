@@ -33,6 +33,7 @@ import { initStorage, checkPlatform } from "@/api/storage";
 import { getDeviceLanguage } from "@/locales";
 import  TabBar from '@/components/TabBar'
 import { getFchainRss } from '@/api/fchain'
+import initCordovaPlugin from '@/libs/pkgs/initCordovaPlugin'
 
 export default {
   data() {
@@ -74,6 +75,7 @@ export default {
       this.tabBarShow = true
     }
     Vue.cordova.on("deviceready", () => {
+      initCordovaPlugin()
       this.getMessages()
       checkPlatform();
       try {
