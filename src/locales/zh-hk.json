@@ -445,7 +445,12 @@
   "AssetNotExistMessage":"暫時無法獲取更多資產信息，請聯繫發行方。",
   "NetWorkErrorMessage":"網絡環境異常，請稍後再試。",
   "DeterministicTransmission":"確定發送",
-  "AddAll":"添加全部"  
+  "AddAll":"添加全部",
+  "Title.ThirdApp":"第三方應用",
+  "Error.AjaxTimeout":"連接服務器超時，請稍後再試",
+  "Third.OpenAppHint":"即將打開第三方DApp {0} ",
+  "Third.SendTo":"向 {0} 支付",
+  "ChooseAsset":"請選擇資產"
 
 
 }

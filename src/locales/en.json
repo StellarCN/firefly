@@ -453,7 +453,12 @@
   "AssetNotExistMessage":"For more information , please contact the publisher",
   "NetWorkErrorMessage":"Network environment exception, please try again late",
   "DeterministicTransmission":"Deterministic transmission",
-  "AddAll":"Add all" 
+  "AddAll":"Add all" ,
+  "Title.ThirdApp":"apps",
+  "Error.AjaxTimeout":"connection server timed out, please try again later",
+  "Third.OpenAppHint":"will open DApp {0}",
+  "Third.SendTo":"pay to {0}",
+  "ChooseAsset":"choose a asset"
  
 
 }

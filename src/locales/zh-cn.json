@@ -446,7 +446,12 @@
   "AssetNotExistMessage":"暂时无法获取更多资产信息，请联系发行方。",
   "NetWorkErrorMessage":"网络环境异常，请稍后再试。",
   "DeterministicTransmission":"确定发送",
-  "AddAll":"添加全部"  
+  "AddAll":"添加全部",
+  "Title.ThirdApp":"第三方应用",
+  "Error.AjaxTimeout":"连接服务器超时，请稍后再试",
+  "Third.OpenAppHint":"即将打开第三方DApp {0} ",
+  "Third.SendTo":"向 {0} 支付",
+  "ChooseAsset":"请选择资产"
 
   
   
