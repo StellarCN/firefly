@@ -33,7 +33,7 @@
           <div class="confirm-memo" v-if="memo">{{memo}}</div>
           <div class="confirm-title">{{$t('ChooseAsset')}}</div>
           <div class="confirm-assets">
-            <swiper :options="swiperOpt">
+            <swiper :options="swiperOpt"  ref="swiperRef">
               <swiper-slide v-for="(item,index) in assets" :key="index">
                 <div :class="'asset-card textcenter ' + (choosed.code === item.code && choosed.issuer === item.issuer ? ' active' : ' ')">
                   <div class="asset-icon">
@@ -111,11 +111,15 @@ export default {
       password: null,
       pwdvisible: false,
       choosed: {},
+      choosedIndex: 0,
       swiperOpt: {
+        //notNextTick: true,
         slidesPerView: 3,
         spaceBetween: 50,
-        freeMode: true,
-        slideToClickedSlide: true,
+        centeredSlides: true,
+        //slidesPerView: 'auto',
+        touchRatio: 0.2,
+        slideToClickedSlide: true
         
       }
       
@@ -164,7 +168,10 @@ export default {
         result = shortAddress(this.destination)
       }
       return result
-    }
+    },
+    swiperInstance() {
+      return this.$refs.swiperRef.swiper
+    },
   },
   beforeMount () {
     //根据当前的数量，计算path payment
@@ -196,6 +203,7 @@ export default {
         })
         if(this.assets.length > 0){
           this.choosed = this.assets[0]
+          this.choosedIndex = 0
         }
         // .filter(item => {
         //   let val = values[item.id]
@@ -206,7 +214,18 @@ export default {
         console.error(err)
       })
   },
+  mounted () {
+    //this.swiperInstance.controller.control = this.swiperContent
+    //this.swiperContent.controller.control = this.swiperTop
+    this.swiperInstance.on('slideChange', this.slideChange)
+    this.swiperInstance.slideTo(this.choosedIndex,0,true)
+  },
   methods: {
+    slideChange(){
+      this.choosedIndex = this.swiperInstance.activeIndex
+      this.choosed = this.assets[this.choosedIndex]
+
+    },
     assetIcon(code,issuer){
       return COINS_ICON[code] || WORD_ICON[code.substring(0,1)] || DEFAULT_ICON
     },
