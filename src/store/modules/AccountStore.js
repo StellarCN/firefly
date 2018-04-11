@@ -168,6 +168,13 @@ const getters = {
   reserve: (state, getters) => {
     return (state.data.subentry_count + 2 ) * getters.base_reserve
   },
+  base_fee: (state, getters) => {
+    let base = state.ledger.records[0].base_fee
+    if(base === null || typeof base === 'undefined'){
+      return state.ledger.records[0].base_fee_in_stroops / 10000000
+    }
+    return base
+  },
   native: (state, getters) =>{
     if(!getters.balances)return {}
     let xlm = {}

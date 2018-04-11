@@ -51,12 +51,15 @@
     </v-container>
 
     <send-asset v-if="showSendAsset" 
-      destination="GCJKSAQECBGSLPQWAU7ME4LVQVZ6IDCNUA5NVTPPCUWZWBN5UBFMXZ53"
-      appname="小游戏"
-      asset_code="XLM"
-      memo_type="TEXT"
-      memo="11111"
-      amount=1
+      :destination="sendTarget.destination"
+      :appname="choosed.title"
+      :asset_code="sendTarget.code"
+      :asset_issuer="sendTarget.issuer"
+      :memo_type="sendTarget.memo_type"
+      :memo="sendTarget.memo"
+      :amount="sendTarget.amount"
+      @exit="exitSendAsset"
+      @sendsuccess="sendAssetSuccess"
        ></send-asset>
 
   </div>
@@ -117,6 +120,8 @@ export default {
       showConfirmDlg: false,
       choosed: {}, //当前选中的app
       showSendAsset: false,
+      sendTarget:{},
+      appInstance: null,
     }
   },
    computed:{
@@ -146,16 +151,20 @@ export default {
     },
     choose(app){
       this.choosed = app
-      //this.showConfirmDlg = true
-      this.showSendAsset = true
+      let val = localStorage.getItem(app.site)
+      if(val){
+        this.openApp()
+        return
+      }
+      this.showConfirmDlg = true
     },
     openApp(){
+      localStorage.setItem(this.choosed.site, "confirm")
       this.showConfirmDlg = false
-      let appInstance = undefined
       if(cordova.platformId === 'browser'){
-        appInstance = cordova.InAppBrowser.open(this.choosed.site, '_blank', 'location=yes,toolbar=yes,toolbarcolor=#21ce90');
+        this.appInstance = cordova.InAppBrowser.open(this.choosed.site, '_blank', 'location=yes,toolbar=yes,toolbarcolor=#21ce90');
       }else{
-        appInstance = cordova.ThemeableBrowser.open(this.choosed.site, '_blank', {
+        this.appInstance = cordova.ThemeableBrowser.open(this.choosed.site, '_blank', {
               statusbar: {
                   color: '#21ce90'
               },
@@ -206,32 +215,68 @@ export default {
                   }
               ],
               backButtonCanClose: true
-          }).addEventListener('sharePressed', e => {
-              alert(e.url);
-          }).addEventListener(cordova.ThemeableBrowser.EVT_ERR, e => {
-              console.error(e.message);
-          }).addEventListener(cordova.ThemeableBrowser.EVT_WRN, e => {
-              console.log(e.message);
-          });
+          })
+          
       }
-      appInstance.addEventListener('loadstop',() => {
-        let script = `window.FFW = {};FFW.address = "${this.account.address}";FFW.send = function(destination,code,issuer,amount,memo_type,memo){ var params = { destination: destination, code: code, issuer: issuer, amount: amount, memo_type: memo_type, memo: memo };cordova_iab.postMessage(JSON.stringify(params));};`
-        let scriptEle = `if(!window.FFW){var script = document.createElement('script');script.setAttribute('type', 'text/javascript');script.text = "${script}";document.body.appendChild(script);}`
-        alert(scriptEle)
+      this.appInstance.addEventListener('reloadPressed', e => {
+        this.appInstance.reload()
+      })
+      this.appInstance.addEventListener('sharePressed', e => {
+          this.shareCB(e.url)
+      })
+      // this.appInstance.removeEventListener('closePressed')
+      this.appInstance.addEventListener('closePressed',()=>{
+        this.appInstance.close()
+        this.appInstance = undefined
+      })
+      this.appInstance.addEventListener('loadstop',() => {
+        let script = `if(!window.FFW){window.FFW = {};FFW.address = "${this.account.address}";FFW.pay = function(destination,code,issuer,amount,memo_type,memo){ var params = { type:'pay',destination: destination, code: code, issuer: issuer, amount: amount, memo_type: memo_type, memo: memo };cordova_iab.postMessage(JSON.stringify(params));};};`
+        //let scriptEle = `if(!window.FFW){var script = document.createElement('script');script.setAttribute('type', 'text/javascript');script.text = "${script}";document.body.appendChild(script);}`
+        //alert(scriptEle)
 
-        appInstance.executeScript({ code: script },params => {
+        this.appInstance.executeScript({ code: script },params => {
           //console.log(params)
           //alert('after script insert')
           //alert(params)
         })
 
       })
-      appInstance.addEventListener('message', e=> {
-        console.log('-----e-----message---')
-        console.log(e)
-        alert('message')
-        alert(JSON.stringify(e))
+    
+      this.appInstance.addEventListener('message', e => {
+        let type = e.data.type
+        if(type === 'pay'){
+          try{
+            this.showSendAsset = true
+            this.sendTarget = e.data
+            this.appInstance.hide()
+          }catch(err){
+            console.error(err)
+            //alert('error:'+err.message)
+          }
+        }
       })
+    },
+    exitSendAsset(){
+      this.showSendAsset = false
+      this.appInstance.show()
+    },
+    sendAssetSuccess(){
+      this.showSendAsset = false
+      this.appInstance.show()
+      //TODO 怎么通知应用
+    },
+    shareCB(url){
+      let options = {
+        subject: this.choosed.title,
+        url: url,
+        chooserTitle: this.$t('Share')
+      }
+      window.plugins.socialsharing.shareWithOptions(options, result=>{
+        console.log("Share completed? " + result.completed); // On Android apps mostly return false even while it's true
+        console.log("Shared to app: " + result.app); // On Android result.app is currently empty. On iOS it's empty when sharing is cancelled (result.completed=false)
+      }, msg=>{
+        console.log("Sharing failed with message: " + msg);
+      });
     }
   },
   components: {

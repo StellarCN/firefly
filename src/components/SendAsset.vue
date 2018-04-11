@@ -3,7 +3,7 @@
   <div class="send-asset-wrapper">
     
     <!-- 显示支付界面 -->
-    <div class="confirm-wrapper" v-if="step === 0">
+    <div class="confirm-wrapper" v-show="step === 0">
       <div class="confirm-blank"></div>
       <div  class="confirm-dlg">
       <v-bottom-sheet v-model="showSendDlg" persistent dark>
@@ -46,13 +46,16 @@
               </div>
               </swiper-slide>
             </swiper>
+            <div class="loading-wrapper" v-if="loading">
+              <v-progress-circular indeterminate color="primary"></v-progress-circular>
+            </div>
             
           </div>
         </div>
 
         <div class="confirm-btns flex-row textcenter">
           <div class="confirm-btn flex1" @click="exit">{{$t('Button.Cancel')}}</div>
-          <div class="confirm-btn flex1" @click="showPwdDlg">{{$t('Button.OK')}}</div>
+          <div :class="'confirm-btn flex1 ' + (choosedIndex >=0 ? '':'disable-btn')" @click="showPwdDlg">{{$t('Button.OK')}}</div>
         </div>
       </v-bottom-sheet>
       </div>
@@ -61,8 +64,8 @@
     <!--显示密码输入界面-->
     <v-bottom-sheet persistent v-model="showPwdSheet" v-if="showPwdSheet" dark>
       <div class="sheet-content">
-        <div class="sheet-title">
-          
+        <div class="sheet-title textcenter">
+          <div class="title">{{$t('payment')}} {{choosed.amount}}  {{choosed.code}}</div>
         </div>
         <div class="sheet-title">
           <div class="label">{{$t('Account.AccountName')}}</div>
@@ -80,12 +83,14 @@
               ></v-text-field>
         </div>
         <div  class="sheet-btns">
-          <div class="sheet-btn" @click="exit">{{$t('Button.Cancel')}}</div>
+          <div class="sheet-btn" @click="resetState">{{$t('Button.Cancel')}}</div>
           <div class="sheet-btn" @click="doPayment">{{$t('payment')}}</div>
         </div>
       </div>
     </v-bottom-sheet>
 
+    <loading :show="working" :loading="sending" :success="sendsuccess" :fail='sendfail' 
+      color="red" :title="loadingTitle" :msg="loadingError" :closeable="sendfail" @close="hiddenLoading"/>
 
   </div>  
 </template>
@@ -95,11 +100,13 @@ import { mapState, mapActions, mapGetters} from 'vuex'
 import Card from '@/components/Card'
 import Loading from '@/components/Loading'
 import  defaultsDeep  from 'lodash/defaultsDeep'
-import { shortAddress } from '@/api/account'
+import { shortAddress,canSend,sendByPathPayment, send } from '@/api/account'
 import { COINS_ICON, FF_ICON, DEFAULT_ICON, WORD_ICON} from '@/api/gateways'
 import { pathAssets } from '@/api/path'
 import { isNativeAsset } from '@/api/assets'
+import { readAccountData } from '@/api/storage'
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
+import { xdrMsg,getXdrResultCode } from '@/api/xdr'
 
 export default {
   data(){
@@ -110,8 +117,9 @@ export default {
       showPwdSheet: false,
       password: null,
       pwdvisible: false,
+      loading: false,//是否正在查询path
       choosed: {},
-      choosedIndex: 0,
+      choosedIndex: -1,
       swiperOpt: {
         //notNextTick: true,
         slidesPerView: 3,
@@ -121,7 +129,14 @@ export default {
         touchRatio: 0.2,
         slideToClickedSlide: true
         
-      }
+      },
+
+      working: false,
+      sending: false,
+      sendsuccess: false,
+      sendfail: false,
+      loadingTitle: null,
+      loadingError: null,
       
     }
   },
@@ -145,7 +160,8 @@ export default {
       require: true
     },
     memo_type: {
-      type: String
+      type: String,
+      default: 'NONE'
     },
     memo: {
       type: String
@@ -159,7 +175,7 @@ export default {
       assethosts: state => state.asset.assethosts,
       notfunding: state => state.account.account_not_funding
     }),
-    ...mapGetters(["balances", "reserve", "native"]),
+    ...mapGetters(["balances", "reserve", "native", "base_fee"]),
     target(){
       let result = undefined
       if(this.appname){
@@ -174,45 +190,7 @@ export default {
     },
   },
   beforeMount () {
-    //根据当前的数量，计算path payment
-    pathAssets(this.account.address, this.destination, this.asset_code, this.asset_issuer, this.amount + '')
-      .then(data => {
-        let values = {}
-        this.balances.map(item => {
-          if(isNativeAsset(item)){
-            return Object.assign({},item,{id: item.code})
-          }
-          return Object.assign({},item,{id: item.code + '-' + item.issuer })
-        }).forEach(item => {
-          values[item.id] = item
-        })
-        console.log('--values=---')
-        console.log(values)
-        console.log(data)
-        this.assets = data.filter(item=> item.path.length ===0).map(item=>{
-          if(item.source_asset_type === 'native'){
-            return {id: 'XLM',code: 'XLM', issuer: 'stellar.org', amount: Number(item.source_amount), destination_amount: item.destination_amount}
-          }else{
-            return {code: item.source_asset_code, 
-              issuer: item.source_asset_issuer, 
-              amount: Number(item.source_amount), 
-              destination_amount: item.destination_amount,
-              id: item.source_asset_code + '-' + item.source_asset_issuer
-            }
-          }
-        })
-        if(this.assets.length > 0){
-          this.choosed = this.assets[0]
-          this.choosedIndex = 0
-        }
-        // .filter(item => {
-        //   let val = values[item.id]
-        //   return val && val.balance >= item.amount
-        // })
-      })
-      .catch(err => {
-        console.error(err)
-      })
+    this.fetchPaths()
   },
   mounted () {
     //this.swiperInstance.controller.control = this.swiperContent
@@ -221,6 +199,10 @@ export default {
     this.swiperInstance.slideTo(this.choosedIndex,0,true)
   },
   methods: {
+    ...mapActions({
+      sendAsset: 'sendAsset',
+      getAccountInfo: 'getAccountInfo',
+    }),
     slideChange(){
       this.choosedIndex = this.swiperInstance.activeIndex
       this.choosed = this.assets[this.choosedIndex]
@@ -230,6 +212,7 @@ export default {
       return COINS_ICON[code] || WORD_ICON[code.substring(0,1)] || DEFAULT_ICON
     },
     showPwdDlg(){
+      if(this.choosedIndex < 0)return
       this.step = 1
       this.showSendDlg = false
       this.showPwdSheet = true
@@ -239,21 +222,149 @@ export default {
     resetState(){
       this.step = 0
       this.showSendDlg = true
-      this.showPwdDlg = false
+      this.showPwdSheet = false
       this.password = null
       this.pwdvisible = false
     },
     doPayment(){
+      if(this.password === null || this.password.length === 0)return
+      if(this.working)return
+      this.working = true
+      this.sending = true
+
       //校验密码是否正确
+      readAccountData(this.account.address, this.password)
+        .then(data=>{
+          console.log(`-----------------check password----`)
+          console.log(data)
+          let seed = data.seed
+          // 执行支付
+          this.send(seed)
 
-      //执行支付
+        })
+        .catch(err => {
+          this.sendfail = true
+          this.loadingError = this.$t('Error.PasswordWrong')
+        })
 
-      //成功后，发出事件
 
+    },
+    send(seed){
+      let params = {
+        seed: this.accountData.seed || seed,
+        address: this.account.address,
+        target: this.destination,
+        asset: {code: this.choosed.code, issuer: this.choosed.issuer},
+        amount: this.amount,
+        memo_type:  this.memo_type,
+        memo_value: this.memo
+      }
+      console.log(params)
+      this.sending = true
+      this.loadingTitle = null
+      this.loadingError = null
+      
+      this.sendAsset(params)
+        .then(response=>{
+          this.sending = false
+          this.sendsuccess = true
+          this.loadingTitle = this.$t('SendAssetSuccess')
+          this.getAccountInfo(this.account.address)
+          setTimeout(()=>{
+            this.working =false
+            this.sendsuccess = false //
+            this.$emit('sendsuccess')
+            },3000)
+        })
+        .catch(err=>{
+          console.log(err)
+          this.sending = false
+          this.sendfail = true
+          let msg = getXdrResultCode(err)
+          this.loadingTitle = this.$t('Error.SendAssetFail')
+          if(msg){
+            this.loadingError = this.$t(msg)
+          }else{
+            this.loadingError = this.$t(err.message)
+          }
+        })
     },
     exit(){
       this.resetState()
       this.$emit('exit')
+    },
+    fetchPaths(){
+      if(this.loading)return
+      this.loading = true
+      //根据当前的数量，计算path payment
+      pathAssets(this.account.address, this.destination, this.asset_code, this.asset_issuer, this.amount + '')
+        .then(data => {
+          // let values = {}
+          // this.balances.map(item => 
+          //   isNativeAsset(item) ? 
+          //     Object.assign({},item,{id: item.code}) :  
+          //     Object.assign({},item,{id: item.code + '-' + item.issuer }))
+          //   .forEach(item => { values[item.id] = item })
+          let paths = {}
+          data.filter(item => Number(record.source_amount) > 0)
+            .forEach(record => {
+              const key = (record.source_asset_type === 'native') ?
+                record.source_asset_code : record.source_asset_code + '-' + record.source_asset_issuer;
+
+              if (key in paths) {
+                if ((Number(paths[key].source_amount) - Number(record.source_amount)) > 0) {
+                  paths[key] = record;
+                }
+              } else {
+                paths[key] = record;
+              }
+            });
+          this.assets = []
+          this.balances.forEach(asset => {
+            const key = isNativeAsset(asset)? asset.code : asset.code + '-' + asset.issuer
+            if (key in paths) {
+              let origin = paths[key]
+              const amount = Number(origin.source_amount)
+              //TODO 判断数量是否够，是否够支付费用的
+              if(isNativeAsset(asset)){
+                if(canSend(this.native.balance, this.reserve, amount, this.base_fee, 1)){
+                  this.assets.push({id: 'XLM',code: 'XLM', issuer: 'stellar.org', 
+                    amount: Number(origin.source_amount), destination_amount: origin.destination_amount,
+                    origin
+                  })
+                }
+              }else{
+                if( (asset.balance - amount >= 0) && 
+                      canSend(this.native.balance, this.reserve, 0, this.base_fee, 1)){
+                  this.assets.push({code: origin.source_asset_code, 
+                    issuer: origin.source_asset_issuer, 
+                    amount: Number(origin.source_amount), 
+                    destination_amount: origin.destination_amount,
+                    id: origin.source_asset_code + '-' + origin.source_asset_issuer,
+                    origin
+                  })
+                }
+              }
+
+            }
+          });
+
+          if(this.assets.length > 0){
+            this.choosed = this.assets[0]
+            this.choosedIndex = 0
+          }
+          this.loading = false
+        })
+        .catch(err => {
+          this.loading = false
+          console.error(err)
+          this.$toasted.error(ths.$t('FederationName.ConnectionFailed'))
+        })
+    },
+    hiddenLoading(){
+      this.sending = false
+      this.sendfail = false
+      this.working = false
     }
   },
   components: {
@@ -319,6 +430,8 @@ export default {
   font-size: 16px
   height: 42px
   line-height: 42px
+  .disable-btn
+    color: $secondarycolor.font
 .menu-head
   display: block
   padding: .6rem .3rem .3rem .3rem
@@ -407,6 +520,8 @@ export default {
       word-break: normal
     &.active
       border: 1px solid $primarycolor.green
-
+.loading-wrapper
+  text-align: center
+  margin: 1.5rem auto
 </style>
 
