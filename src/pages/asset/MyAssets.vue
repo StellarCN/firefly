@@ -8,9 +8,11 @@
       :showbackicon="showbackicon"
       ref="toolbar"
       >
-      <!-- <div class="right" slot="right-tool" @click="toAddAsset">
-        <i class="material-icons">&#xE145;</i>
-      </div> -->
+      <v-btn icon slot='left-tool' @click="toThirdApps">
+        <i class="material-icons">apps</i>
+      </v-btn>
+
+
       <v-btn icon slot='right-tool' @click="toAddAsset">
         <i class="material-icons">&#xE145;</i>
       </v-btn>
@@ -435,6 +437,9 @@ export default {
     chgSortItem(item){
       this.selectedSortItem = item;
       this.sort_flag = item.key; 
+    },
+    toThirdApps(){
+      this.$router.push({name: 'Apps'})
     }
    
   },

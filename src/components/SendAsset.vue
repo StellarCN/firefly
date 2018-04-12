@@ -49,6 +49,9 @@
             <div class="loading-wrapper" v-if="loading">
               <v-progress-circular indeterminate color="primary"></v-progress-circular>
             </div>
+            <div class="loading-wrapper textcenter" v-if="nodata">
+              {{$t('Error.NoData')}}
+            </div>
             
           </div>
         </div>
@@ -114,6 +117,7 @@ export default {
       step: 0,//0是初始界面，1是输入密码界面，2是确认支付界面
       showSendDlg: true,//显示支付界面
       assets:[],//可以支付的资产，通过path payment计算出来
+      nodata: false,
       showPwdSheet: false,
       password: null,
       pwdvisible: false,
@@ -201,6 +205,7 @@ export default {
   methods: {
     ...mapActions({
       sendAsset: 'sendAsset',
+      sendPathPayment: 'sendPathPayment',
       getAccountInfo: 'getAccountInfo',
     }),
     slideChange(){
@@ -243,6 +248,8 @@ export default {
 
         })
         .catch(err => {
+          console.log('----error-0---')
+          console.error(err)
           this.sendfail = true
           this.loadingError = this.$t('Error.PasswordWrong')
         })
@@ -250,6 +257,18 @@ export default {
 
     },
     send(seed){
+      this.sending = true
+      this.loadingTitle = null
+      this.loadingError = null
+
+      if(this.choosed.id === this.choosed.destId){
+        this.sendNoPath(seed)
+      }else{
+        this.sendByPath(seed)
+      }
+
+    },
+    sendNoPath(seed){
       let params = {
         seed: this.accountData.seed || seed,
         address: this.account.address,
@@ -259,35 +278,51 @@ export default {
         memo_type:  this.memo_type,
         memo_value: this.memo
       }
-      console.log(params)
-      this.sending = true
-      this.loadingTitle = null
-      this.loadingError = null
-      
+
       this.sendAsset(params)
         .then(response=>{
-          this.sending = false
-          this.sendsuccess = true
-          this.loadingTitle = this.$t('SendAssetSuccess')
-          this.getAccountInfo(this.account.address)
-          setTimeout(()=>{
-            this.working =false
-            this.sendsuccess = false //
-            this.$emit('sendsuccess')
-            },3000)
+          this.sendsuccess()
         })
         .catch(err=>{
-          console.log(err)
-          this.sending = false
-          this.sendfail = true
-          let msg = getXdrResultCode(err)
-          this.loadingTitle = this.$t('Error.SendAssetFail')
-          if(msg){
-            this.loadingError = this.$t(msg)
-          }else{
-            this.loadingError = this.$t(err.message)
-          }
+          this.sendFail(err)
         })
+    },
+    sendByPath(may_seed){
+      let seed = this.accountData.seed || may_seed
+      let destination = this.destination
+      let record = this.choosed.origin
+      let memo_type =  this.memo_type
+      let memo = this.memo
+      this.sendPathPayment({seed,destination,record,memo_type,memo})
+          .then(response=>{
+            this.sendsuccess()
+          })
+          .catch(err=>{
+            this.sendFail(err)
+          })
+    },
+    sendSuccess(){
+      this.sending = false
+      this.sendsuccess = true
+      this.loadingTitle = this.$t('SendAssetSuccess')
+      //this.getAccountInfo(this.account.address)
+      setTimeout(()=>{
+        this.working =false
+        this.sendsuccess = false //
+        this.$emit('sendsuccess')
+      },3000)
+    },
+    sendFail(err){
+      console.log(err)
+      this.sending = false
+      this.sendfail = true
+      let msg = getXdrResultCode(err)
+      this.loadingTitle = this.$t('Error.SendAssetFail')
+      if(msg){
+        this.loadingError = this.$t(msg)
+      }else{
+        this.loadingError = this.$t(err.message)
+      }
     },
     exit(){
       this.resetState()
@@ -296,6 +331,7 @@ export default {
     fetchPaths(){
       if(this.loading)return
       this.loading = true
+      this.nodata = false
       //根据当前的数量，计算path payment
       pathAssets(this.account.address, this.destination, this.asset_code, this.asset_issuer, this.amount + '')
         .then(data => {
@@ -306,10 +342,10 @@ export default {
           //     Object.assign({},item,{id: item.code + '-' + item.issuer }))
           //   .forEach(item => { values[item.id] = item })
           let paths = {}
-          data.filter(item => Number(record.source_amount) > 0)
+          data.filter(record => Number(record.source_amount) > 0)
             .forEach(record => {
               const key = (record.source_asset_type === 'native') ?
-                record.source_asset_code : record.source_asset_code + '-' + record.source_asset_issuer;
+                  'XLM' : record.source_asset_code + '-' + record.source_asset_issuer;
 
               if (key in paths) {
                 if ((Number(paths[key].source_amount) - Number(record.source_amount)) > 0) {
@@ -328,7 +364,10 @@ export default {
               //TODO 判断数量是否够，是否够支付费用的
               if(isNativeAsset(asset)){
                 if(canSend(this.native.balance, this.reserve, amount, this.base_fee, 1)){
-                  this.assets.push({id: 'XLM',code: 'XLM', issuer: 'stellar.org', 
+                  this.assets.push({
+                    id: 'XLM',code: 'XLM', issuer: 'stellar.org', 
+                    destId: origin.destination_asset_type === 'native' ? 
+                      'XLM': origin.destination_asset_code + '-' + origin.destination_asset_issuer,
                     amount: Number(origin.source_amount), destination_amount: origin.destination_amount,
                     origin
                   })
@@ -341,6 +380,8 @@ export default {
                     amount: Number(origin.source_amount), 
                     destination_amount: origin.destination_amount,
                     id: origin.source_asset_code + '-' + origin.source_asset_issuer,
+                    destId: origin.destination_asset_type === 'native' ? 
+                      'XLM': origin.destination_asset_code + '-' + origin.destination_asset_issuer,
                     origin
                   })
                 }
@@ -352,6 +393,8 @@ export default {
           if(this.assets.length > 0){
             this.choosed = this.assets[0]
             this.choosedIndex = 0
+          }else{
+            this.nodata = true
           }
           this.loading = false
         })

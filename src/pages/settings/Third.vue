@@ -78,43 +78,7 @@ import SendAsset from '@/components/SendAsset'
 export default {
   data(){
     return {
-      apps: [{
-        title: 'test',
-        image: 'https://cn.vuejs.org/images/logo.png',
-        site: 'http://192.168.2.253:8080'
-      },{
-        title: 'test',
-        image: 'https://cn.vuejs.org/images/logo.png',
-        site: 'http://192.168.2.253:8080'
-      },{
-        title: 'test',
-        image: 'https://cn.vuejs.org/images/logo.png',
-        site: 'http://192.168.2.253:8080'
-      },{
-        title: 'test',
-        image: 'https://cn.vuejs.org/images/logo.png',
-        site: 'http://192.168.2.253:8080'
-      },{
-        title: 'test',
-        image: 'https://cn.vuejs.org/images/logo.png',
-        site: 'http://192.168.2.253:8080'
-      },{
-        title: 'test',
-        image: 'https://cn.vuejs.org/images/logo.png',
-        site: 'http://192.168.2.253:8080'
-      },{
-        title: 'test',
-        image: 'https://cn.vuejs.org/images/logo.png',
-        site: 'http://192.168.2.253:8080'
-      },{
-        title: 'test',
-        image: 'https://cn.vuejs.org/images/logo.png',
-        site: 'http://192.168.2.253:8080'
-      },{
-        title: 'xiaoyugan',
-        image: 'https://cn.vuejs.org/images/logo.png',
-        site: 'http://yugan.fun/'
-      }],
+      apps: [],
       working: false,
       err: null,
       showConfirmDlg: false,
@@ -131,19 +95,19 @@ export default {
     }),
   },
   beforeMount () {
-    // this.working = true
-    // this.err = null
-    // axios.get(thridAppConfig)
-    //   .then(response=>{
-    //     this.working = false
-    //     //console.log(response)
-    //     this.apps = response.data.apps
-    //   })
-    //   .catch(err=>{
-    //     this.working = false
-    //     console.error(err)
-    //     this.err = 'Error.AjaxTimeout'
-    //   })
+    this.working = true
+    this.err = null
+    axios.get(thridAppConfig)
+      .then(response=>{
+        this.working = false
+        //console.log(response)
+        this.apps = response.data.apps
+      })
+      .catch(err=>{
+        this.working = false
+        console.error(err)
+        this.err = 'Error.AjaxTimeout'
+      })
   },
   methods: {
     back(){
@@ -157,6 +121,14 @@ export default {
         return
       }
       this.showConfirmDlg = true
+      // this.showSendAsset = true
+      // this.sendTarget = {
+      //   destination: 'GAD2EAYW6UXQPY6FLEPKOZEABVRU42SQAQVXQ5VOOAERNSTLXK3Q5UZ6',
+      //   code: 'XCN',
+      //   issuer: 'GCNY5OXYSY4FKHOPT2SPOQZAOEIGXB5LBYW3HVU3OWSTQITS65M5RCNY',
+      //   amount: 0.001
+      // }
+
     },
     openApp(){
       localStorage.setItem(this.choosed.site, "confirm")
