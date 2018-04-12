@@ -165,10 +165,10 @@ export default {
                         let lowlabel = this.$t('low_price')
                         let volumelabel = this.$t('volumes')
                         if(series[0].data){
-                            result += `${openlabel}: ${series[0].data[0]}<br/>`
-                            + `${closelabel}: ${series[0].data[1]}<br/>`
-                            + `${highlabel}: ${series[0].data[2]}<br/>`
-                            + `${lowlabel}: ${series[0].data[3]}<br/>`
+                            result += `${openlabel}: ${series[0].data[1]}<br/>`
+                            + `${closelabel}: ${series[0].data[2]}<br/>`
+                            + `${highlabel}: ${series[0].data[3]}<br/>`
+                            + `${lowlabel}: ${series[0].data[4]}<br/>`
                             
                         }
                         try{

@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-04-04 14:52:49
+ * @Last Modified time: 2018-04-12 17:37:15
  * @License: MIT 
  */
 <template>
@@ -265,6 +265,7 @@ export default {
                     this.subVolumes.push([Number(item.base_volume),Number(item.counter_volume)])
                     this.data.push([Number(item.open), Number(item.close), Number(item.high), Number(item.low), Number(item.counter_volume)])
                 })
+                // console.log(this.data)
                 this.opt.xAxis[0].data = this.dates
                 this.opt.xAxis[1].data = this.dates
                 this.opt.series[0].data = this.data
@@ -273,6 +274,7 @@ export default {
                 this.opt.series[3].data = this.calculateMA(10)
                 
                 this.ele.setOption(this.opt, true)
+                // console.log(this.opt)
             })
             .catch(err=>{
                 console.error(`-----err on get trade aggregation -- `)
@@ -301,6 +303,7 @@ export default {
                         return pos[0] < size.viewSize[0] / 2 ? {top: 10, right: 10}:{top: 10, left: 10}
                     },
                     formatter: (params, tick)=>{
+                        console.log(params)
                         let series = params.sort((a,b)=>a.seriesIndex>b.seriesIndex)
                         let result = `${series[0].name}<br/>`;
                         let openlabel = this.$t('open_price')
@@ -309,10 +312,11 @@ export default {
                         let lowlabel = this.$t('low_price')
                         let volumelabel = this.$t('volumes')
                         if(series[0].data){
-                            result += `${openlabel}: ${series[0].data[0]}<br/>`
-                            + `${closelabel}: ${series[0].data[1]}<br/>`
-                            + `${highlabel}: ${series[0].data[2]}<br/>`
-                            + `${lowlabel}: ${series[0].data[3]}<br/>`
+                            // console.log(series[0].data)
+                            result += `${openlabel}: ${series[0].data[1]}<br/>`
+                            + `${closelabel}: ${series[0].data[2]}<br/>`
+                            + `${highlabel}: ${series[0].data[3]}<br/>`
+                            + `${lowlabel}: ${series[0].data[4]}<br/>`
                             
                         }
                         result += 

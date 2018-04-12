@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-08 15:40:36 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-16 17:16:10
+ * @Last Modified time: 2018-04-12 17:17:00
  * @License MIT 
  */
 
@@ -141,6 +141,7 @@ export default {
     },
     doSwitchTradePair(){
       this.switchSelectedTradePair()
+      this.$emit('switchTradePair')
     },
 
 

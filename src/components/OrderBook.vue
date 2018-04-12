@@ -309,6 +309,8 @@ export default {
       getAllEffectOffers(this.account.address, start_time, end_time)
         .then(response=>{
           if(!response.data)return;
+          console.log('----response--data--')
+          console.log(response.data)
           this.deals = response.data.map(item=>{
             return Object.assign({}, item, { total: new Decimal(item.amount).times(item.price).toFixed(7), 
               counter_issuer: item.counter_issuer ? item.counter_issuer : 'stellar.org',
@@ -327,6 +329,7 @@ export default {
               return true
             }else if(key01===key2 && key02 === key1){
               item.itype = 'sell'
+              item.price = Number(new Decimal(1).div(item.price).toFixed(7))
               return true
             }else{
               return false
