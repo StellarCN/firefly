@@ -69,7 +69,7 @@
           <v-flex xs4 @click="resetpwd">
             <span class="Info_menu_color">{{$t('ResetPassword')}}</span>
           </v-flex>
-           <v-flex xs4 @click="viewkey">
+           <v-flex xs4 @click="showPwdSheet=true">
             <span class="Info_menu_color">{{$t('ViewKey')}}</span>
           </v-flex>
         </v-layout>  
@@ -114,28 +114,13 @@
       </div> -->
       <div class="text-xs-center" v-if="showViewkeySheet">
           <v-bottom-sheet v-model="showViewkeySheet" dark>
-               <!-- <div class="viewkeySheetWrapper" >{{this.warning_msg}}</div> -->
-            <!-- <v-btn slot="activator" color="purple" dark>{{$t('ViewKey')}}</v-btn> -->
             <v-list >
               <v-subheader class="info_warning_msg_style">{{$t("Warning_msg")}}</v-subheader>
               <v-subheader class="info_account_miyao_style">{{$t("Account_secretkey")}}</v-subheader>
-              <v-subheader @click="copy(showaccount.address)"  class="info_showaccount_address_style">{{showaccount.address}}</v-subheader>
-              <!-- <div>{{showaccount.address}}</div> -->
+              <v-subheader @click="copy(seed)"  class="info_showaccount_address_style">{{seed}}</v-subheader>
               <v-subheader class="info_showaccount_barcode_style">{{$t("Account_secretkeycode")}}</v-subheader>
               <qrcode class="info_qrcode_style" :text="qrtext" :callback="qrcodecallback" color="red"/>
               <v-subheader class="info_account_close_style" @click="change_value0f_vk">{{$t("Close")}}</v-subheader>
-              <!-- <v-list-tile
-                v-for="tile in tiles"
-                :key="tile.title"
-                @click="sheet = false"
-              >
-                <v-list-tile-avatar>
-                  <v-avatar size="32px" tile>
-                    <img :alt="tile.title">
-                  </v-avatar>
-                </v-list-tile-avatar>
-                <v-list-tile-title>{{ tile.title }}</v-list-tile-title>
-              </v-list-tile> -->
             </v-list>
           </v-bottom-sheet>
       </div>
@@ -201,17 +186,27 @@
         </v-bottom-sheet>
       </div>
 
+      <!--密码输入界面，在查看密钥之前
+      <password-sheet 
+        :accountname=""
+        :address=""
+        @cancel="cancelCheckPWD"
+        @ok="checkPWDSuccess"
+        v-if="checkPWD"
+        />-->
+
 
     </div>
   </div>
 </template>
 
 <script>
-import Toolbar from '../../components/Toolbar'
 import { mapState, mapActions} from 'vuex'
-import QRCode from '../../components/QRCode'
-import Card from '../../components/Card'
-import { exportNameCard,exportAccount } from '../../api/qr'
+import Toolbar from '@/components/Toolbar'
+import QRCode from '@/components/QRCode'
+import Card from '@/components/Card'
+import PasswordSheet from '@/components/PasswordSheet'
+import { exportNameCard,exportAccount } from '@/api/qr'
 import {readAccountData} from '@/api/storage'
 import { INFLATION_POOL } from '@/api/gateways'
 
@@ -410,17 +405,9 @@ export default {
       this.$router.push({name: 'ModifyAccount', query: {address: this.showaccount.address, seed: this.seed}});
     },
     viewkey(){
-      if(!this.canModify){
-        // this.showPwdSheet = true;
-        // this.inpassword = null;
-        this.showViewkeySheet = true;
-        this.isB=false;
-        this.isC=true;
-        return;
-      }
-      
-      // this.showViewkeySheet =true;
-      //this.$router.push({name: 'ModifyAccount', query: {address: this.showaccount.address, seed: this.seed}});
+      this.showViewkeySheet = true;
+      this.isB=false;
+      this.isC=true;
     },
     change_value0f_vk(){
       if(this.showViewkeySheet == true)
@@ -477,6 +464,7 @@ export default {
               this.seed = data.seed
               this.showPwdSheet = false
               this.showseed = true
+              this.viewkey()
               
             }else{
               this.$toasted.error(this.$t('Error.PasswordWrong'))
@@ -534,6 +522,7 @@ export default {
     Toolbar,
     qrcode: QRCode,
     Card,
+    PasswordSheet,
   }
 }
 </script>
