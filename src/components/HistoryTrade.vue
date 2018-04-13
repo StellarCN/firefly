@@ -14,7 +14,7 @@
       <card class="offer-card" padding="10px 10px">
         <div class="myoffer-table offer-table" slot="card-content">
           <div class="flex-row">
-            <div class="flex3">
+            <div class="flex3 over-hide">
               <div class="pair-show">
                 <div class="pair-from">
                   <div class="code">{{item.base_asset}}</div>
@@ -38,15 +38,15 @@
             </div>
             <div class="flex4 textright">
               <div>
-                <span class="value">{{Number(item.price)}}{{item.counter_asset}}</span>
+                <span class="value">{{Number(item.price)}}{{item.base_asset}}</span>
                 <span class="label">{{$t('UnitPriceAbbreviation')}}</span>
               </div>
               <div>
-                <span class="value up">+{{Number(item.amount)}}{{item.base_asset}}</span>
+                <span class="value up">+{{Number(item.amount)}}{{item.counter_asset}}</span>
                 <span class="label">{{$t('AmountAbbreviation')}}</span>
               </div>
               <div>
-                <span class="value down">-{{Number(item.total)}}{{item.counter_asset}}</span>
+                <span class="value down">-{{Number(item.total)}}{{item.base_asset}}</span>
                 <span class="label">{{$t('TotalAbbreviation')}}</span>
               </div>
             </div>
@@ -114,8 +114,8 @@ import  defaultsDeep  from 'lodash/defaultsDeep'
         //let end_time = moment(this.end)
         //start_time = new Date(start_time.year(), start_time.month()+1, start_time.date()).getTime()
         //end_time = new Date(end_time.year(), end_time.month()+1, end_time.date()).getTime()
-        
-        getAllEffectOffers(this.account.address, this.start, this.end)
+        let _address = this.account.address
+        getAllEffectOffers(_address, this.start, this.end)
           .then(response=>{
             this.records = response.data.map(item=>{
               return defaultsDeep({}, item, { total: new Decimal(item.amount).times(item.price).toFixed(7)})
@@ -194,14 +194,13 @@ import  defaultsDeep  from 'lodash/defaultsDeep'
 
   .pair-show
     display: flex
-    width: 100%
     text-align: center
     font-size: 14px
     padding-top: 10px
     padding-bottom: 10px
     overflow:hidden
     .pair-from
-      flex: 3
+      flex: 4
       overflow:hidden
       .code
         font-size: 16px
@@ -215,7 +214,7 @@ import  defaultsDeep  from 'lodash/defaultsDeep'
         font-size: 20px
         padding-top: 8px
     .pair-to
-      flex: 3
+      flex: 4
       overflow:hidden
       .code
         font-size: 16px
@@ -229,4 +228,6 @@ import  defaultsDeep  from 'lodash/defaultsDeep'
 .trade-icon
   color: $secondarycolor.font
   font-size: .6rem
+.over-hide
+  overflow: hidden
 </style>
