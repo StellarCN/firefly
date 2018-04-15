@@ -13,7 +13,7 @@
     <div class="content">
       <card class="icard" padding="20px 10px">
         <div slot="card-content" class="">
-          <div class="logo-wrapper">
+          <div class="logo-wrapper" @click="checkX5WebView">
             <img src="../../assets/img/logox.png" alt="firefly" class="logo-img"/>
           </div>
           <div class="textcenter appname">
@@ -82,6 +82,7 @@ import {
   getVersionInfo
 } from "@/api/gateways";
 const semver = require("semver");
+import  debounce  from 'lodash/debounce'
 
 export default {
   data() {
@@ -95,6 +96,7 @@ export default {
       updateURL: null,
       needUpdate: false,
       working: false,
+      counter: 0,
     };
   },
   mounted() {
@@ -160,7 +162,14 @@ export default {
           active: "back"
         }
       });
-    }
+    },
+    //查看是否使用了X5引擎
+    checkX5WebView:debounce(function(){
+      if(this.counter>=5){
+        window.location.href = `http://soft.imtt.qq.com/browser/tes/feedback.html`
+      }
+      this.counter += 1
+    },500),
   },
   components: {
     Toolbar,
