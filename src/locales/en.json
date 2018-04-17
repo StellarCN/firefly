@@ -459,7 +459,8 @@
   "Third.OpenAppHint":"will open DApp {0}",
   "Third.SendTo":"pay to {0}",
   "ChooseAsset":"choose a asset",
-  "ReadAllMsg":"read all messages"
+  "ReadAllMsg":"read all messages",
+  "Recovery":"recovery"
  
 
 }

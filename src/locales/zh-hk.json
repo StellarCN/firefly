@@ -451,7 +451,8 @@
   "Third.OpenAppHint":"即將打開第三方DApp {0} ",
   "Third.SendTo":"向 {0} 支付",
   "ChooseAsset":"請選擇資產",
-  "ReadAllMsg":"消息全部設置為已閱讀"
+  "ReadAllMsg":"消息全部設置為已閱讀",
+  "Recovery":"恢複數據"
 
 
 }

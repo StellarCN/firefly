@@ -1,9 +1,9 @@
-// 发送资产界面
+// 授信添加资产
 <template>
-  <div class="send-asset-wrapper">
+  <div class="trust-line-wrapper">
     
-    <!-- 显示支付界面 -->
-    <div class="confirm-wrapper" v-show="step === 0">
+    <!-- 显示授信界面 -->
+    <div class="confirm-wrapper">
       <div class="confirm-blank"></div>
       <div  class="confirm-dlg">
       <v-bottom-sheet v-model="showSendDlg" persistent dark>
@@ -22,43 +22,18 @@
         
         <div class="confirm-content">
           <div class="confirm-title">
-            <span v-if="appname">{{$t('Third.SendTo',[appname])}}</span>
-            <span v-else>{{$t('Third.SendTo',[target])}}</span>
+            <span>{{$t('ManullayAddTrust')}}</span>
           </div>
-          <div class="confirm-amount">{{Number(Number(amount).toFixed(7))}}&nbsp;&nbsp;{{asset_code}}</div>
-          <div class="confirm-title" v-if="memo">
-            <span>{{$t('Memo')}}</span>
-            <span v-if="memo_type">({{memo_type}})</span>
-          </div>
-          <div class="confirm-memo" v-if="memo">{{memo}}</div>
-          <div class="confirm-title">{{$t('ChooseAsset')}}</div>
-          <div class="confirm-assets">
-            <swiper :options="swiperOpt"  ref="swiperRef">
-              <swiper-slide v-for="(item,index) in assets" :key="index">
-                <div :class="'asset-card textcenter ' + (choosed.code === item.code && choosed.issuer === item.issuer ? ' active' : ' ')">
-                  <div class="asset-icon">
-                    <i :class="'iconfont ' + assetIcon(item.code,item.issuer)"></i>
-                  </div>
-                  <div class="asset-code">{{item.code}}</div>
-                  <div class="asset-issuer" v-if="assethosts[item.issuer]">{{assethosts[item.issuer] }}</div>
-                  <div class="asset-issuer" v-else>{{item.issuer | miniaddress}}</div>
-                  <div class="asset-amount">{{item.amount}}</div>
-              </div>
-              </swiper-slide>
-            </swiper>
-            <div class="loading-wrapper" v-if="loading">
-              <v-progress-circular indeterminate color="primary"></v-progress-circular>
-            </div>
-            <div class="loading-wrapper textcenter" v-if="nodata">
-              {{$t('Error.NoData')}}
-            </div>
-            
-          </div>
+          <div class="confirm-title">{{$t('AssetCode')}}</div>
+          <div class="confirm-memo">{{asset_code}}</div>
+          <div class="confirm-title">{{$t('AssetIssuer')}}</div>
+          <div class="confirm-memo">{{asset_issuer | shortaddress}}</div>
+          
         </div>
 
         <div class="confirm-btns flex-row textcenter">
           <div class="confirm-btn flex1" @click="exit">{{$t('Button.Cancel')}}</div>
-          <div :class="'confirm-btn flex1 ' + (choosedIndex >=0 ? '':'disable-btn')" @click="showPwdDlg">{{$t('Button.OK')}}</div>
+          <div class="confirm-btn flex1" @click="showPwdDlg">{{$t('Button.OK')}}</div>
         </div>
       </v-bottom-sheet>
       </div>
@@ -68,7 +43,7 @@
     <v-bottom-sheet persistent v-model="showPwdSheet" v-if="showPwdSheet" dark>
       <div class="sheet-content">
         <div class="sheet-title textcenter">
-          <div class="title">{{$t('payment')}} {{choosed.amount}}  {{choosed.code}}</div>
+          <div class="title">{{$t('ManullayAddTrust')}}&nbsp;{{asset_code}}</div>
         </div>
         <div class="sheet-title">
           <div class="label">{{$t('Account.AccountName')}}</div>
@@ -87,7 +62,7 @@
         </div>
         <div  class="sheet-btns">
           <div class="sheet-btn" @click="resetState">{{$t('Button.Cancel')}}</div>
-          <div class="sheet-btn" @click="doPayment">{{$t('payment')}}</div>
+          <div class="sheet-btn" @click="doPayment">{{$t('Button.OK')}}</div>
         </div>
       </div>
     </v-bottom-sheet>
@@ -104,11 +79,8 @@ import Card from '@/components/Card'
 import Loading from '@/components/Loading'
 import  defaultsDeep  from 'lodash/defaultsDeep'
 import { shortAddress,canSend,sendByPathPayment, send } from '@/api/account'
-import { COINS_ICON, FF_ICON, DEFAULT_ICON, WORD_ICON} from '@/api/gateways'
-import { pathAssets } from '@/api/path'
 import { isNativeAsset } from '@/api/assets'
 import { readAccountData } from '@/api/storage'
-import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import { xdrMsg,getXdrResultCode } from '@/api/xdr'
 
 export default {
@@ -122,18 +94,6 @@ export default {
       password: null,
       pwdvisible: false,
       loading: false,//是否正在查询path
-      choosed: {},
-      choosedIndex: -1,
-      swiperOpt: {
-        //notNextTick: true,
-        slidesPerView: 3,
-        spaceBetween: 50,
-        centeredSlides: true,
-        //slidesPerView: 'auto',
-        touchRatio: 0.2,
-        slideToClickedSlide: true
-        
-      },
 
       working: false,
       sending: false,
@@ -157,18 +117,8 @@ export default {
       required: true
     },
     asset_issuer: {
-      type: String
-    },
-    amount: {
-      type: Number,
-      require: true
-    },
-    memo_type: {
       type: String,
-      default: 'NONE'
-    },
-    memo: {
-      type: String
+      required: true
     }
   },
    computed:{
@@ -179,59 +129,42 @@ export default {
       assethosts: state => state.asset.assethosts,
       notfunding: state => state.account.account_not_funding
     }),
-    ...mapGetters(["balances", "reserve", "native", "base_fee"]),
-    target(){
-      let result = undefined
-      if(this.appname){
-        result = this.appname + '(' + shortAddress(this.destination) + ')'
-      }else{
-        result = shortAddress(this.destination)
-      }
-      return result
-    },
-    swiperInstance() {
-      return this.$refs.swiperRef.swiper
-    },
+    ...mapGetters(["balances", "reserve", "native", "base_fee",'base_reserve']),
+    
   },
   beforeMount () {
-    this.fetchPaths()
+    
   },
   mounted () {
-    //this.swiperInstance.controller.control = this.swiperContent
-    //this.swiperContent.controller.control = this.swiperTop
-    this.swiperInstance.on('slideChange', this.slideChange)
-    this.swiperInstance.slideTo(this.choosedIndex,0,true)
+    
   },
   methods: {
     ...mapActions({
+      trust: 'trust',
       sendAsset: 'sendAsset',
       sendPathPayment: 'sendPathPayment',
       getAccountInfo: 'getAccountInfo',
     }),
-    slideChange(){
-      this.choosedIndex = this.swiperInstance.activeIndex
-      this.choosed = this.assets[this.choosedIndex]
-
-    },
-    assetIcon(code,issuer){
-      return COINS_ICON[code] || WORD_ICON[code.substring(0,1)] || DEFAULT_ICON
-    },
     showPwdDlg(){
-      if(this.choosedIndex < 0)return
-      this.step = 1
       this.showSendDlg = false
       this.showPwdSheet = true
       this.password = null
       this.pwdvisible = false
     },
     resetState(){
-      this.step = 0
       this.showSendDlg = true
       this.showPwdSheet = false
       this.password = null
       this.pwdvisible = false
     },
     doPayment(){
+      if(this.islogin){
+        if(this.working)return
+        this.working = true
+        this.sending = true
+        this.send(this.accountData.seed)
+        return
+      }
       if(this.password === null || this.password.length === 0)return
       if(this.working)return
       this.working = true
@@ -257,59 +190,40 @@ export default {
 
     },
     send(seed){
-      this.sending = true
       this.loadingTitle = null
       this.loadingError = null
-
-      if(this.choosed.id === this.choosed.destId){
-        this.sendNoPath(seed)
+      if(this.native.balance - this.reserve > this.base_reserve){
+        console.log('enough native asset to continue')
       }else{
-        this.sendByPath(seed)
+        this.$toasted.error('no enough lumens to continue')
+        return 
       }
-
-    },
-    sendNoPath(seed){
+      if(this.working) return
+      this.loadingTitle = null
+      this.loadingMsg = null
       let params = {
-        seed: this.accountData.seed || seed,
-        address: this.account.address,
-        target: this.destination,
-        asset: {code: this.choosed.code, issuer: this.choosed.issuer},
-        amount: this.amount,
-        memo_type:  this.memo_type,
-        memo_value: this.memo
-      }
-
-      this.sendAsset(params)
+          seed: this.accountData.seed,
+          address: this.account.address,
+          code: this.asset_code,
+          issuer: this.asset_issuer}
+      this.trust(params)
         .then(response=>{
-          this.sendsuccess()
+          this.sendSuccess()
         })
         .catch(err=>{
-          this.sendFail(err)
+          this.sendFail(err) 
         })
-    },
-    sendByPath(may_seed){
-      let seed = this.accountData.seed || may_seed
-      let destination = this.destination
-      let record = this.choosed.origin
-      let memo_type =  this.memo_type
-      let memo = this.memo
-      this.sendPathPayment({seed,destination,record,memo_type,memo})
-          .then(response=>{
-            this.sendsuccess()
-          })
-          .catch(err=>{
-            this.sendFail(err)
-          })
+
     },
     sendSuccess(){
       this.sending = false
       this.sendsuccess = true
-      this.loadingTitle = this.$t('SendAssetSuccess')
+      this.loadingTitle = this.$t('AddAssetSuccess')
       //this.getAccountInfo(this.account.address)
       setTimeout(()=>{
         this.working =false
         this.sendsuccess = false //
-        this.$emit('sendsuccess')
+        this.$emit('trustsuccess')
       },3000)
     },
     sendFail(err){
@@ -317,7 +231,7 @@ export default {
       this.sending = false
       this.sendfail = true
       let msg = getXdrResultCode(err)
-      this.loadingTitle = this.$t('Error.SendAssetFail')
+      this.loadingTitle = this.$t('AddAsset')+this.$t('SaveFailed')
       if(msg){
         this.loadingError = this.$t(msg)
       }else{
@@ -328,82 +242,6 @@ export default {
       this.resetState()
       this.$emit('exit')
     },
-    fetchPaths(){
-      if(this.loading)return
-      this.loading = true
-      this.nodata = false
-      //根据当前的数量，计算path payment
-      pathAssets(this.account.address, this.destination, this.asset_code, this.asset_issuer, this.amount + '')
-        .then(data => {
-          // let values = {}
-          // this.balances.map(item => 
-          //   isNativeAsset(item) ? 
-          //     Object.assign({},item,{id: item.code}) :  
-          //     Object.assign({},item,{id: item.code + '-' + item.issuer }))
-          //   .forEach(item => { values[item.id] = item })
-          let paths = {}
-          data.filter(record => Number(record.source_amount) > 0)
-            .forEach(record => {
-              const key = (record.source_asset_type === 'native') ?
-                  'XLM' : record.source_asset_code + '-' + record.source_asset_issuer;
-
-              if (key in paths) {
-                if ((Number(paths[key].source_amount) - Number(record.source_amount)) > 0) {
-                  paths[key] = record;
-                }
-              } else {
-                paths[key] = record;
-              }
-            });
-          this.assets = []
-          this.balances.forEach(asset => {
-            const key = isNativeAsset(asset)? asset.code : asset.code + '-' + asset.issuer
-            if (key in paths) {
-              let origin = paths[key]
-              const amount = Number(origin.source_amount)
-              //TODO 判断数量是否够，是否够支付费用的
-              if(isNativeAsset(asset)){
-                if(canSend(this.native.balance, this.reserve, amount, this.base_fee, 1)){
-                  this.assets.push({
-                    id: 'XLM',code: 'XLM', issuer: 'stellar.org', 
-                    destId: origin.destination_asset_type === 'native' ? 
-                      'XLM': origin.destination_asset_code + '-' + origin.destination_asset_issuer,
-                    amount: Number(origin.source_amount), destination_amount: origin.destination_amount,
-                    origin
-                  })
-                }
-              }else{
-                if( (asset.balance - amount >= 0) && 
-                      canSend(this.native.balance, this.reserve, 0, this.base_fee, 1)){
-                  this.assets.push({code: origin.source_asset_code, 
-                    issuer: origin.source_asset_issuer, 
-                    amount: Number(origin.source_amount), 
-                    destination_amount: origin.destination_amount,
-                    id: origin.source_asset_code + '-' + origin.source_asset_issuer,
-                    destId: origin.destination_asset_type === 'native' ? 
-                      'XLM': origin.destination_asset_code + '-' + origin.destination_asset_issuer,
-                    origin
-                  })
-                }
-              }
-
-            }
-          });
-
-          if(this.assets.length > 0){
-            this.choosed = this.assets[0]
-            this.choosedIndex = 0
-          }else{
-            this.nodata = true
-          }
-          this.loading = false
-        })
-        .catch(err => {
-          this.loading = false
-          console.error(err)
-          this.$toasted.error(ths.$t('FederationName.ConnectionFailed'))
-        })
-    },
     hiddenLoading(){
       this.sending = false
       this.sendfail = false
@@ -413,8 +251,6 @@ export default {
   components: {
     Card,
     Loading,
-    swiper,
-    swiperSlide,
   }
 }
 </script>
@@ -432,14 +268,14 @@ export default {
   background: $primarycolor.gray
   opacity: .8
   position: fixed
-  bottom: 13rem
+  bottom: 11rem
   right: 0
   left: 0
   top: 0
   z-index: 9
 .confirm-dlg
   background: $secondarycolor.gray
-  height: 13rem
+  height: 11rem
   position: fixed
   bottom: 0
   right: 0
@@ -563,8 +399,5 @@ export default {
       word-break: normal
     &.active
       border: 1px solid $primarycolor.green
-.loading-wrapper
-  text-align: center
-  margin: 1.5rem auto
 </style>
 

@@ -1,7 +1,7 @@
 // 第三方应用列表界面
 <template>
   <div class="page" dark>
-    <toolbar :title="$t('Title.ThirdApp')" :showbackicon="true"  @goback="back" :shadow="false"/>
+    <toolbar :title="$t('Title.ThirdApp')" :showbackicon="true"  @goback="back" :shadow="false" lockpass  ref="toolbar"/>
     <v-container fluid v-bind="{ [`grid-list-md`]: true }">
       <card padding="8px 8px" margin="8px 8px" v-if="working">
         <div class="mt-5 textcenter">
@@ -58,6 +58,7 @@
       :memo_type="sendTarget.memo_type"
       :memo="sendTarget.memo"
       :amount="sendTarget.amount"
+      :pathPayment="pathPayment"
       @exit="exitSendAsset"
       @sendsuccess="sendAssetSuccess"
        ></send-asset>
@@ -73,7 +74,10 @@ import Toolbar from '@/components/Toolbar'
 import Card from '@/components/Card'
 import Loading from '@/components/Loading'
 import  defaultsDeep  from 'lodash/defaultsDeep'
-import SendAsset from '@/components/SendAsset'
+import SendAsset from '@/components/third/SendAsset'
+import RecoveryData from '@/components/third/RecoveryData'
+import TrustLine from '@/components/third/TrustLine'
+import { FFWScript } from '@/api/ffw'
 
 export default {
   data(){
@@ -85,6 +89,7 @@ export default {
       choosed: {}, //当前选中的app
       showSendAsset: false,
       sendTarget:{},
+      pathPayment: true,//发送功能是否支持pathPayment
       appInstance: null,
     }
   },
@@ -92,6 +97,9 @@ export default {
     ...mapState({
       account: state => state.accounts.selectedAccount,
       accountData: state => state.accounts.accountData,
+      islogin: state => (state.accounts.accountData.seed ? true : false),
+      allcontacts: state => state.app.contacts||[],
+      myaddresses: state => state.app.myaddresses||[]
     }),
   },
   beforeMount () {
@@ -108,6 +116,11 @@ export default {
         console.error(err)
         this.err = 'Error.AjaxTimeout'
       })
+  },
+  mounted () {
+    if(!this.islogin){
+      this.$refs.toolbar.showPasswordLogin()
+    }
   },
   methods: {
     back(){
@@ -202,10 +215,12 @@ export default {
         this.appInstance = undefined
       })
       this.appInstance.addEventListener('loadstop',() => {
-        let script = `if(!window.FFW){window.FFW = {};FFW.address = "${this.account.address}";FFW.pay = function(destination,code,issuer,amount,memo_type,memo){ var params = { type:'pay',destination: destination, code: code, issuer: issuer, amount: amount, memo_type: memo_type, memo: memo };cordova_iab.postMessage(JSON.stringify(params));};};`
+        //let script = `if(!window.FFW){window.FFW = {};FFW.address = "${this.account.address}";FFW.pay = function(destination,code,issuer,amount,memo_type,memo){ var params = { type:'pay',destination: destination, code: code, issuer: issuer, amount: amount, memo_type: memo_type, memo: memo };cordova_iab.postMessage(JSON.stringify(params));};};`
         //let scriptEle = `if(!window.FFW){var script = document.createElement('script');script.setAttribute('type', 'text/javascript');script.text = "${script}";document.body.appendChild(script);}`
         //alert(scriptEle)
-
+        let contacts = this.allcontacts
+        let myaddresses = this.myaddresses
+        let script = FFWScript(this.account.address, {contacts,myaddresses} )
         this.appInstance.executeScript({ code: script },params => {
           //console.log(params)
           //alert('after script insert')
@@ -217,16 +232,28 @@ export default {
       this.appInstance.addEventListener('message', e => {
         let type = e.data.type
         if(type === 'pay'){
-          try{
-            this.showSendAsset = true
-            this.sendTarget = e.data
-            this.appInstance.hide()
-          }catch(err){
-            console.error(err)
-            //alert('error:'+err.message)
-          }
+          this.doPayEvent(e)
+        }else if(type === 'pathPayment'){
+
+        }else if(type === 'sign'){
+
+        }else if(type === 'backup'){
+
+        }else if(type === 'trust'){
+
         }
       })
+    },
+    doPayEvent(e){
+      try{
+        this.showSendAsset = true
+        this.sendTarget = e.data
+        this.pathPayment = false
+        this.appInstance.hide()
+      }catch(err){
+        console.error(err)
+        //alert('error:'+err.message)
+      }
     },
     exitSendAsset(){
       this.showSendAsset = false
@@ -256,6 +283,8 @@ export default {
     Loading,
     Card,
     SendAsset,
+    TrustLine,
+    RecoveryData,
   }
 }
 </script>

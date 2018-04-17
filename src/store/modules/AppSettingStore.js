@@ -85,9 +85,20 @@ const actions = {
     console.log('delete contact is ' + delcont.toString())
     await dispatch('saveAppSetting', { contacts })
   },
-
   //==========联系人业务  end===================
 
+  //恢复数据（联系人和地址）
+  async recoveryContactsAndAddresses({dispatch,commit,state}, {contacts,myaddresses}){
+    let contactids = state.contacts.map(item=> item.address)
+    let noconflicts = contacts.filter(item=> contactids.indexOf(item.address) < 0)
+    let newcontacts = [...state.contacts, noconflicts]
+    let myaddresseids = state.myaddresses.map(item=> item.address)
+    let noconflicts2 = myaddresses.filter(item=> myaddresseids.indexOf(item.address) < 0)
+    let newmyaddresses = [...state.myaddresses, noconflicts2]
+    await dispatch('saveAppSetting', { contacts: newcontacts, myaddresses: newmyaddresses })
+    //commit(CONTACT_ID_INCREMENT)
+  },
+  
   //=========常用地址=================
   // 新增
   async createMyAddress({dispatch,commit,state}, data){

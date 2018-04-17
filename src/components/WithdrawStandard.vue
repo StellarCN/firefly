@@ -234,16 +234,17 @@ export default {
     }),
     ...mapGetters(['balances']),
     balance(){
-      let data = this.balances.filter(ele => {
-        return ele.code === this.asset.code && ele.issuer === this.asset.issuer
-      })
-      return data.length>0 ? Number(data[0].balance):0;
+      // let data = this.balances.filter(ele => {
+      //   return ele.code === this.asset.code && ele.issuer === this.asset.issuer
+      // })
+      // return data.length>0 ? Number(data[0].balance):0;
+      return 100
     },
     //费用
     fee(){
       if(this.amount!= null && this.amount > 0){
         return new Decimal(this.amount).times(
-            new Decimal(1).add(this.step2data.fee_percent||0)
+            new Decimal(this.step2data.fee_percent||0)
           ).add(this.step2data.fee_fixed||0).toNumber().toFixed(7)
       }
       return null
@@ -297,6 +298,8 @@ export default {
         this.$toasted.error(this.$t('Error.GetDataError'))
         return
       }
+      if(this.receive === null)return
+      if(Number(this.receive) <=0)return
       this.working = true
 
       let params = {
