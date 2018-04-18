@@ -460,7 +460,8 @@
   "Third.SendTo":"pay to {0}",
   "ChooseAsset":"choose a asset",
   "ReadAllMsg":"read all messages",
-  "Recovery":"recovery"
+  "Recovery":"recovery",
+  "Backup":"back up"
  
 
 }

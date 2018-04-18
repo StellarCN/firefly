@@ -6,13 +6,21 @@
         <div class="sheet-title textcenter">
           <div class="title">{{$t('Recovery')}}</div>
         </div>
-        <div class="sheet-title flex-row">
-          <div class="label flex1">{{$t('Menu.Contacts')}}</div>
-          <div class="value flex2 textleft pl-1">{{contacts.length}}</div>
+        <div class="sheet-title flex-row" v-if="appname">
+          <div class="label flex1">{{$t('Title.ThirdApp')}}</div>
+          <div class="value flex2 textleft pl-1">{{appname}}</div>
         </div>
-        <div class="sheet-title flex-row">
-          <div class="label flex1">{{$t('Menu.MyAddress')}}</div>
-          <div class="value flex2 textleft pl-1">{{addresses.length}}</div>
+       
+        <div class="sheet-input">
+          <v-text-field
+              name="password"
+              :label="$t('Account.Password')"
+              v-model="password"
+              :append-icon="pwdvisible ? 'visibility' : 'visibility_off'"
+              :append-icon-cb="() => (pwdvisible = !pwdvisible)"
+              :type="pwdvisible ? 'text':'password'"
+              required dark
+            ></v-text-field>
         </div>
         <div  class="sheet-btns">
           <div class="sheet-btn" @click="exit">{{$t('Button.Cancel')}}</div>
@@ -36,6 +44,7 @@ import { shortAddress,canSend,sendByPathPayment, send } from '@/api/account'
 import { isNativeAsset } from '@/api/assets'
 import { readAccountData } from '@/api/storage'
 import { xdrMsg,getXdrResultCode } from '@/api/xdr'
+import { encrypt,decrypt,encryptToBase64,decryptByBase64 } from '@/api/crypt'
 
 export default {
   data(){
@@ -48,6 +57,10 @@ export default {
       loadingTitle: null,
       loadingError: null,
 
+      password:null,
+      pwdvisible: false,
+
+      showPwdSheet: true,
       
     }
   },
@@ -55,13 +68,9 @@ export default {
     appname: {
       type: String
     },
-    contacts: {
-      type: Array,
-      default: []
-    },
-    addresses: {
-      type: Array,
-      default: []
+    encryptData: {
+      type: String,
+      required: true
     }
   },
    computed:{
@@ -90,14 +99,26 @@ export default {
       recoveryContactsAndAddresses: 'recoveryContactsAndAddresses',
     }),
     exit(){
+      this.password = null
       this.$emit('exit')
     },
     ok(){
       if(!this.islogin)return
       if(this.working)return
+      if(!this.password)return
+      //1. 校验密码是否正确
+      //2. 保存数据
+      let value = decryptByBase64(this.password, this.encryptData)
+      if(value === null || typeof value === 'undefined' || value === ''){
+        this.$toasted.error(this.$t('Error.PasswordWrong'))
+        return
+      }
+      value = JSON.stringify(value)
+      let contacts = value.contacts || []
+      let addresses = value.myaddresses || []
       this.working = true
       this.sending = true
-      this.recoveryContactsAndAddresses({contacts:this.contacts, addresses:this.addresses})
+      this.recoveryContactsAndAddresses({contacts, addresses})
         .then(response=>{
           this.success()
         })

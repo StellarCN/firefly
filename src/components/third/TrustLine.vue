@@ -223,7 +223,7 @@ export default {
       setTimeout(()=>{
         this.working =false
         this.sendsuccess = false //
-        this.$emit('trustsuccess')
+        this.$emit('success')
       },3000)
     },
     sendFail(err){

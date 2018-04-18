@@ -15,7 +15,7 @@
       </card>
       <v-layout row wrap  v-if="!working">
         <v-flex
-          xs4
+          xs3
           v-for="(app,index) in apps"
           :key="index"
           @click="choose(app)"
@@ -25,12 +25,11 @@
                <img :src="app.image">
              </v-avatar>
              <v-card-title primary-title class="app-title">
-               {{app.title}}
+               <div class="textcenter" style="width: 100%;">{{app.title}}</div>
              </v-card-title>
           </v-card>
         </v-flex>
       </v-layout>
-
 
     <v-dialog v-model="showConfirmDlg" max-width="95%" persistent>
       <div>
@@ -62,7 +61,21 @@
       @exit="exitSendAsset"
       @sendsuccess="sendAssetSuccess"
        ></send-asset>
+    <back-up-data v-if="appEventType === 'backup' && appEventData" 
+      :appname="choosed.title" 
+      @exit="exitBackUpEvent" @success="successBackUpEvent" />
 
+    <recovery-data v-if="appEventType === 'recovery' && appEventData" 
+      :appname="choosed.title" :encryptData="appEventData.data.data"
+      @exit="exitRecoveryEvent" @success="successRecoveryEvent" />
+
+    <trust-line v-if="appEventType === 'trust' && appEventData" 
+      :appname="choosed.title" 
+      :destination="appEventData.data.destination"
+      :asset_code="appEventData.data.code"
+      :asset_issuer="appEventData.data.issuer"
+      :memo_type="sendTarget.memo_type"
+      @exit="exitTrustEvent" @success="successTrustEvent" />
   </div>
 </template>
 
@@ -77,7 +90,17 @@ import  defaultsDeep  from 'lodash/defaultsDeep'
 import SendAsset from '@/components/third/SendAsset'
 import RecoveryData from '@/components/third/RecoveryData'
 import TrustLine from '@/components/third/TrustLine'
-import { FFWScript } from '@/api/ffw'
+import BackUpData from '@/components/third/BackUpData'
+import { FFWScript, FFW_EVENT_TYPE_PAY,FFW_EVENT_TYPE_PATHPAYMENT,FFW_EVENT_TYPE_SIGN
+   ,FFW_EVENT_TYPE_BACKUP,FFW_EVENT_TYPE_RECOVERY,FFW_EVENT_TYPE_TRUST } from '@/api/ffw'
+import { signToBase64, verifyByBase64 } from '@/api/keypair'
+
+// export const FFW_EVENT_TYPE_PAY = 'pay'
+// export const FFW_EVENT_TYPE_PATHPAYMENT = 'pathPayment'
+// export const FFW_EVENT_TYPE_SIGN = 'sign'
+// export const FFW_EVENT_TYPE_BACKUP = 'backup'
+// export const FFW_EVENT_TYPE_RECOVERY = 'recovery'
+// export const FFW_EVENT_TYPE_TRUST = 'trust'
 
 export default {
   data(){
@@ -91,6 +114,9 @@ export default {
       sendTarget:{},
       pathPayment: true,//发送功能是否支持pathPayment
       appInstance: null,
+
+      appEventType: null,//接收到的appevent事件
+      appEventData: null,//接收的appevent的data
     }
   },
    computed:{
@@ -134,13 +160,6 @@ export default {
         return
       }
       this.showConfirmDlg = true
-      // this.showSendAsset = true
-      // this.sendTarget = {
-      //   destination: 'GAD2EAYW6UXQPY6FLEPKOZEABVRU42SQAQVXQ5VOOAERNSTLXK3Q5UZ6',
-      //   code: 'XCN',
-      //   issuer: 'GCNY5OXYSY4FKHOPT2SPOQZAOEIGXB5LBYW3HVU3OWSTQITS65M5RCNY',
-      //   amount: 0.001
-      // }
 
     },
     openApp(){
@@ -230,17 +249,21 @@ export default {
       })
     
       this.appInstance.addEventListener('message', e => {
+        console.log('-----------get message ---- ')
+        console.log(JSON.stringify(e))
         let type = e.data.type
-        if(type === 'pay'){
+        if(type === FFW_EVENT_TYPE_PAY){
           this.doPayEvent(e)
-        }else if(type === 'pathPayment'){
-
-        }else if(type === 'sign'){
-
-        }else if(type === 'backup'){
-
-        }else if(type === 'trust'){
-
+        }else if(type === FFW_EVENT_TYPE_PATHPAYMENT){
+          this.doPathPaymentEvent(e)
+        }else if(type === FFW_EVENT_TYPE_SIGN){
+          this.appEventType = e.data.type
+          this.appEventData = e.data
+          this.doSign(e)
+        }else{  
+          this.appEventType = e.data.type
+          this.appEventData = e.data
+          this.appInstance.hide()
         }
       })
     },
@@ -255,14 +278,58 @@ export default {
         //alert('error:'+err.message)
       }
     },
+    doSign(e){
+      //签名
+      let data = e.data.data
+      if(data){
+        let cdata = signToBase64(this.accountData.seed, data)
+        console.log('---------------encrypt data---' + cdata)
+        this.doCallbackEvent(this.callbackData('success', 'success', cdata))
+      }else{
+        this.doCallbackEvent(this.callbackData('fail','no data to sign'))
+      }
+    },
+    doPathPaymentEvent(e){
+      try{
+        this.showSendAsset = true
+        this.sendTarget = e.data
+        this.pathPayment = true
+        this.appInstance.hide()
+      }catch(err){
+        console.error(err)
+        //alert('error:'+err.message)
+      }
+    },
+    doCallbackEvent(data){
+      console.log('-----------docallback event---' + JSON.stringify(this.appEventData))
+      if(this.appEventData && this.appEventData.callback){
+        try{
+          let cb = this.appEventData.callback
+          let code = `${cb}({code: "${data.code}",message:"${data.message}",data:"${data.data}"})`
+          console.log('===============callback------event---')
+          console.log(code)
+          this.appInstance.executeScript({
+            code: code }, 
+            params=>{})
+        }catch(err){
+          console.error(err)
+        }
+      }
+    },
+    callbackData(code,message,data){
+      // return JSON.stringify({code,message,data})
+      return {code,message,data}
+    },
     exitSendAsset(){
       this.showSendAsset = false
       this.appInstance.show()
+      this.doCallbackEvent(this.callbackData('fail','cancel payment'))
     },
     sendAssetSuccess(){
       this.showSendAsset = false
       this.appInstance.show()
       //TODO 怎么通知应用
+      this.doCallbackEvent(this.callbackData('success','success'))
     },
     shareCB(url){
       let options = {
@@ -276,7 +343,43 @@ export default {
       }, msg=>{
         console.log("Sharing failed with message: " + msg);
       });
+    },
+    exitEvent(msg){
+      this.appInstance.show()
+      this.doCallbackEvent(this.callbackData('fail',msg))
+      this.$nextTick(()=>{
+        this.appEventType = null
+        this.appEventData = null
+      })
+    },
+    successEvent(msg='success',data){
+      this.appInstance.show()
+      this.doCallbackEvent(this.callbackData('success',msg, data))
+      this.$nextTick(()=>{
+        this.appEventType = null
+        this.appEventData = null
+      })
+    },
+    exitBackUpEvent(){
+      this.exitEvent('cancel back up')
+    },
+    successBackUpEvent(data){
+      this.successEvent('success',data)
+    },
+    exitRecoveryEvent(){
+      this.exitEvent('cancel recovery')
+    },
+    successRecoveryEvent(){
+      this.successEvent()
+    },
+    exitTrustEvent(){
+      this.exitEvent('cancel trust')
+    },
+    successTrustEvent(){
+      this.successEvent()
     }
+
+
   },
   components: {
     Toolbar,
@@ -285,6 +388,7 @@ export default {
     SendAsset,
     TrustLine,
     RecoveryData,
+    BackUpData,
   }
 }
 </script>
