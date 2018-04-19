@@ -3,7 +3,7 @@
 * @Author: mazhaoyong@gmail.com
 * @Date: 2018-01-23 11:14:24
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-17 16:40:38
+ * @Last Modified time: 2018-04-08 17:06:19
 * @License: MIT
 */
 <template>
@@ -89,6 +89,11 @@ export default {
                     title: "Menu.Settings",
                     name: "Settings",
                     icon: "settings"
+                },
+                {
+                    title: "Title.ThirdApp",
+                    name: "Apps",
+                    icon: "apps"
                 },
                 {
                     title: "Menu.Help",

@@ -3,7 +3,13 @@
     <tool-bar :title="$t(title)"
               :showmenuicon="false"
               :showbackicon="true"
-              @goback="back"></tool-bar>
+              @goback="back">
+      <v-btn icon slot="right-tool" @click="readAll">
+        <i class="material-icons">done_all</i>
+      </v-btn>
+      
+
+    </tool-bar>
       <ul class="content">
         <li v-for="(item ,index) in messages" class="item" @click="goToDetils(item)" :key="index">
           <div class="item-title"> 
@@ -36,7 +42,8 @@
       methods:{
         ...mapActions([
           "getMessages",
-          "selectMsg"
+          "selectMsg",
+          "readAllMsg"
         ]),
         back(){
           this.$router.back();
@@ -45,6 +52,10 @@
           this.selectMsg(item)
           this.$router.push({name: 'MessageDetils'})
         },
+        readAll(){
+          this.readAllMsg()
+          this.$toasted.show(this.$t('ReadAllMsg'))
+        }, 
         
         
       },

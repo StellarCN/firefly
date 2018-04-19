@@ -246,3 +246,52 @@ export function isValidMemo(type, memo) {
   }
   return valid;
 };
+
+export function canSend(nativeBalance, reserve, amount, baseFee, numOps){
+  return (10000000 * (nativeBalance - reserve - amount) - baseFee * numOps) >= 0;
+}
+
+export function sendByPathPayment(seed, destination, record, memo_type,memo_value){
+  
+  let _address = address(seed)
+  let server  = getServer()
+  return server.loadAccount(_address).then(account=>{
+    let path = record.path.map(item => { return getAsset(item.asset_code, item.asset_issuer)})
+    let sendAsset = record.source_asset_type === 'native' ? new StellarSdk.Asset.native():
+          new StellarSdk.Asset(record.source_asset_code, record.source_asset_issuer);
+    let destAsset = record.destination_asset_type === 'native' ? new StellarSdk.Asset.native():
+    new StellarSdk.Asset(record.destination_asset_code, record.destination_asset_issuer);
+    let opt = StellarSdk.Operation.pathPayment({
+      sendAsset	: sendAsset,
+      sendMax: record.source_amount,
+      destination: destination,
+      destAsset: destAsset,
+      destAmount: record.destination_amount,
+      path: path,
+      source: _address
+    });
+    console.log('-----path payment----')
+    console.log({
+      sendAsset	: sendAsset,
+      sendMax: record.source_amount,
+      destination: destination,
+      destAsset: destAsset,
+      destAmount: record.destination_amount,
+      path: path,
+      source: _address
+    })
+    console.log(account)
+    let builder = new StellarSdk.TransactionBuilder(account).addOperation(opt)
+
+    if(isValidMemo(memo_type,memo_value)){
+      var memo = getMemo(memo_type, memo_value);
+      builder.addMemo(memo)
+    }
+    let tx = builder.build()
+    tx.sign(StellarSdk.Keypair.fromSecret(seed));
+    return server.submitTransaction(tx);
+  })
+
+
+
+}

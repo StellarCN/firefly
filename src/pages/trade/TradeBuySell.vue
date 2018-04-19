@@ -4,7 +4,7 @@
 <template>
   <div class="page">
    <!-- toolbar -->
-    <trade-pair-tool-bar @choseTradePair="afterChoseTradePair"/>
+    <trade-pair-tool-bar @choseTradePair="afterChoseTradePair" @switchTradePair="afterChoseTradePair"/>
 
     <loading :show="working" :loading="sending" :success="sendsuccess" :fail='sendfail' 
       :color="isSell?'red':'green'" :title="loadingTitle" :msg="loadingError" :closeable="sendfail" @close="hiddenLoading"/>
@@ -19,44 +19,41 @@
       <card class="mytrade" padding="10px 10px">
         <div class="card-content" slot="card-content">
           
-          <!--单价-->
-          <v-text-field
-              name="amount"
-              :label="$t('Trade.UnitPrice')"
-              v-model="price"
-              dark
-              required
-              type="text"
-              :suffix="CounterAsset.code"
-            ></v-text-field>
+          <v-text-field  dark required  clearable hide-details v-bind:style="'width: 100% !important'"
+            :prefix="$t('Trade.UnitPrice')" 
+            v-model='price'
+            type="number"
+            :suffix="CounterAsset.code"
+            :tabindex = '0'
+            :color="isBuy ? 'primary':'error'"
+          ></v-text-field>
           <!--数量-->
-          <v-text-field
-              name="amount"
-              :label="$t('Amount')"
-              v-model="amount"
-              dark
-              :suffix="BaseAsset.code"
-              required
-              type="text"
+          <v-text-field  dark required hide-details clearable  v-bind:style="'width: 100% !important'"
+            :prefix="$t('Amount')"
+            v-model="amount"  
+            type="number" name="amount" 
+            :tabindex = '1'
+            :suffix="BaseAsset.code"
+            :color=" isBuy ? 'primary':'error'"
             ></v-text-field>
-            <v-slider v-model="num"  hide-details 
-              class="buy-amount-slider"
-              dark
-              max=100 step=10 ticks
-              append-icon='keyboard_tab'  v-bind:style="'width: 90% !important'"
-              :append-icon-cb = 'toMax'
-              :color="isBuy ? 'primary':'error'"
-              ></v-slider>
+          <v-slider v-model="num"  hide-details 
+            class="buy-amount-slider"
+            dark
+            max=100 step=10 ticks
+            append-icon='keyboard_tab'  v-bind:style="'width: 100% !important'"
+            :append-icon-cb = 'toMax'
+            :color="isBuy ? 'primary':'error'"
+            ></v-slider>
           <!--总额，自动计算-->
-          <v-text-field
-              name="amount"
-              :label="$t('Trade.Total')+CounterAsset.code"
-              :value="total"
-              dark
-              disabled
-              type="text"
+          <v-text-field v-model="total"   name="total" dark
+            :prefix="$t('Trade.Total')"
+            :suffix="CounterBalance.code"
+            :value="total"
+            type="number" hide-details  v-bind:style="'width: 100% !important'"
+            :tabindex = '2'
+            :color="isBuy ? 'primary':'error'"
             ></v-text-field>
-
+           
           <!--按钮
           <v-btn class="primary btn-buy" :loading="working" @click.stop="doBuy">{{$t('Trade.Buy')}}{{BaseAsset.code}}</v-btn>
 -->
@@ -331,12 +328,11 @@ export default {
     total(newvalue,oldvalue){
       if(this.justify) return
       this.justify = true
-      if(new Decimal(newvalue||0).isNaN()){
+      if(newvalue === null || typeof newvalue === 'undefined' || new Decimal(newvalue||0).isNaN()){
         this.total = 0
       }
       console.log("total watch: " + this.price, this.amount,this.total)
       if(this.isBuy){
-        //this.setTotal()
         this.setNum()
         this.setAmount()
       }
@@ -440,15 +436,17 @@ export default {
     toMax(){
       if(this.justify) return
       this.justify = true
-      this.num = 100
-      console.log(`-----`)
-      if(this.isBuy){
-        this.total = this.tradeBalance
-        this.setAmount()
-      }else {
-        this.amount = this.tradeBalance
-        this.setNum()
-        this.setTotal()
+      if( this.price != null && typeof this.price != 'undefined' && this.price > 0){
+        this.num = 100
+        console.log(`-----`)
+        if(this.isBuy){
+          this.total = this.tradeBalance
+          this.setAmount()
+        }else {
+          this.amount = this.tradeBalance
+          this.setNum()
+          this.setTotal()
+        }
       }
       this.resetJustify()
     },
@@ -474,7 +472,6 @@ export default {
         amount:  Number(this.amount), 
         price: Number(this.price)
       }
-      console.log(this.tradeType + '--- option: $s',option)
       doOffer(this.accountData.seed, option)
         .then(data=>{
           this.sending = false
@@ -544,11 +541,11 @@ export default {
       }
       this.resetJustify()
     },
-    doSwitchTradePair(){
-      this.switchSelectedTradePair()
-    },
     afterChoseTradePair(){
-
+      this.price = null
+      this.num = 0
+      this.amount = 0
+      this.total = 0
     },
     hiddenLoading(){
       this.sending = false

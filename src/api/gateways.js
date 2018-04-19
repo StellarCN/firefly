@@ -98,6 +98,9 @@ export const ASSETS_ISSUER_HOST = {
 
 export const BASE_RESERVE = 0.5
 
+//fee 100stroops 
+export const BASE_FEE = 0.00001
+
 // 默认axios超时时间
 export const AXIOS_DEFAULT_TIMEOUT = 5000
 

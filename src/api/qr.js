@@ -16,8 +16,9 @@ export function exportNameCard(account){
     }
   }
   */
-  let data =account.address
-  return JSON.stringify(data)
+  // let data =account.address
+  // return JSON.stringify(data)
+  return account.address||account
 }
 
 // 导出账户，包括公私钥信息

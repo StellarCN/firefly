@@ -4,6 +4,7 @@ import { getFchainRss } from '@/api/fchain'
 export const GET_MESSAGES = "GET_MESSAGES"//获取到新的message
 export const READ_MESSAGE = "READ_MESSAGE"//读取某个消息
 export const SET_CURRENT_MESSAGE = 'SET_CURRENT_MESSAGE'
+export const READ_ALL = 'READ_ALL'
 
 const state = {
   items: [],//消息列表,
@@ -34,6 +35,11 @@ const actions = {
     readMsg(msg.link)
     commit(READ_MESSAGE,msg)
   },
+  readAllMsg({commit,state}){
+    let ids = state.items.map(item=> item.link)
+    setReadMsgs(ids)
+    commit(READ_ALL)
+  }
   
 
 }
@@ -50,6 +56,9 @@ const mutations = {
   },
   [SET_CURRENT_MESSAGE](state,item){
     state.currItem = item
+  },
+  [READ_ALL](state){
+    state.reads = state.items.map(item=>item.link)
   }
 }
 

@@ -67,7 +67,7 @@
                   </div>
                 </v-flex>
                 <v-flex xs8>
-                  <k-line :key="index" :base="pair.from" :counter="pair.to" :height="56" :timeout="100*index"></k-line>
+                  <k-line :key="index" :base="pair.from" :counter="pair.to" :height="56" :timeout="10*index"></k-line>
                 </v-flex>
 
               </v-layout>

@@ -8,9 +8,11 @@
       :showbackicon="showbackicon"
       ref="toolbar"
       >
-      <!-- <div class="right" slot="right-tool" @click="toAddAsset">
-        <i class="material-icons">&#xE145;</i>
-      </div> -->
+      <v-btn icon slot='left-tool' @click="toThirdApps">
+        <i class="material-icons">apps</i>
+      </v-btn>
+
+
       <v-btn icon slot='right-tool' @click="toAddAsset">
         <i class="material-icons">&#xE145;</i>
       </v-btn>
@@ -43,14 +45,14 @@
     <div class="flex-row">
       <div class="flex2">&nbsp;</div>
       <div class="flex1">
-        <v-btn depressed small flat color="primary" @click="hiddenMyAssets">
+        <v-btn depressed flat color="primary" @click="hiddenMyAssets">
           <span class="no-upper">{{is_Flag === 'filter_zero'? $t('ShowZeroAsset'): $t('HideZeroAsset')}}</span>
         </v-btn>
       </div>
       <div class="flex1">
         
          <v-menu offset-y>
-          <v-btn depressed small flat color="primary" slot="activator">
+          <v-btn depressed flat color="primary" slot="activator">
             <span class="no-upper">{{$t(selectedSortItem.label)}}</span>
           </v-btn>
           <v-list>
@@ -435,6 +437,9 @@ export default {
     chgSortItem(item){
       this.selectedSortItem = item;
       this.sort_flag = item.key; 
+    },
+    toThirdApps(){
+      this.$router.push({name: 'Apps'})
     }
    
   },

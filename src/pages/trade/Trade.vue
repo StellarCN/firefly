@@ -3,13 +3,13 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-05 10:51:54 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-21 15:56:20
+ * @Last Modified time: 2018-04-12 17:18:04
  * @License MIT 
  */
 <template>
   <div class="page">
     <!-- toolbar -->
-    <trade-pair-tool-bar @choseTradePair="choseTradePair"/>
+    <trade-pair-tool-bar @choseTradePair="choseTradePair" @switchTradePair="switchTradePair"/>
 
     <div class="content">
       <!--K线图-->
@@ -143,6 +143,13 @@ export default {
       return defaultsDeep({}, this.balances.filter(item=> item.code === asset.code && item.issuer === asset.issuer)[0])
     },
     choseTradePair({index,tradepair}){//选择交易对
+      this.$nextTick(()=>{
+        this.$refs.kgraph.reload()
+        this.$refs.orderbook.reload()
+      })
+    },
+    //交换了交易队
+    switchTradePair(){
       this.$nextTick(()=>{
         this.$refs.kgraph.reload()
         this.$refs.orderbook.reload()

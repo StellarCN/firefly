@@ -148,7 +148,7 @@
   "Error.SaveHorizonFial": "保存恆星公網節點地址失敗",
 
   "FederationName": "聯邦賬戶名",
-  "FederationName.Description": "本服務由 fed.network 提供，你可以訪問該網站以了解更多的信息。在這裡你可以註冊一個諸如 name*fed.network 的用戶名，其他用戶可以通過該用戶名給你發送資產。但是需要注意的是本服務只是為了讓用戶便於輸入地址，還請用戶自行核對解析後的地址是否正確。註冊一個地址需要支付 0.5 XLM。",
+  "FederationName.Description": "本服務由 fed.network 提供，你可以訪問該網站以了解更多的信息。在這裡你可以註冊一個諸如 name*fed.network 的用戶名，其他用戶可以通過該用戶名給你發送資產。但是需要注意的是本服務只是為了讓用戶便於輸入地址，還請用戶自行核對解析後的地址是否正確。註冊一個地址需要支付 0.5 XLM。取消註冊需要支付 1 XLM。",
   "FederationName.Address": "你的地址：",
   "FederationName.Connecting": "正在與服務建立連接...",
   "FederationName.ConnectionFailed": "網絡連接失敗，請稍後再試",
@@ -156,6 +156,7 @@
   "FederationName.Unavailable": "該用戶名不可用，請更換",
   "FederationName.NetworkError": "網絡錯誤",
   "FederationName.Error": "發生了一個預期之外的錯誤",
+  "unlink":"解除綁定",
 
   "SaveSuccess":"保存成功",
   "SaveFailed":"保存失敗",
@@ -449,7 +450,15 @@
   "AddAll":"添加全部",
   "Pin":"pin碼",
   "HorizonVersion":"horizon版本",
-  "LoadMore":"載入更多"
+  "LoadMore":"載入更多",
+  "Title.ThirdApp":"第三方應用",
+  "Error.AjaxTimeout":"連接服務器超時，請稍後再試",
+  "Third.OpenAppHint":"即將打開第三方DApp {0} ",
+  "Third.SendTo":"向 {0} 支付",
+  "ChooseAsset":"請選擇資產",
+  "ReadAllMsg":"消息全部設置為已閱讀",
+  "Recovery":"恢複數據",
+  "Backup":"備份數據"
 
 
 }

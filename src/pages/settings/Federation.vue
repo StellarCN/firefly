@@ -22,7 +22,10 @@
               v-model="federation"
               dark
             ></v-text-field>
-          <p v-else-if="currentState=='received' && existFederation">{{$t('FederationName.Address')}} {{existFederation}}</p>
+          <p v-else-if="currentState=='received' && existFederation">{{$t('FederationName.Address')}} 
+            <span class="fed">{{existFederation}}</span>
+            <span class="cancel_fed pa-1" @click="()=> confirmDlg = true">{{$t('unlink')}}</span>
+            </p>
           <p v-else-if="currentState=='connecting'">{{$t('FederationName.Connecting')}}</p>
           <p v-else>{{$t('FederationName.ConnectionFailed')}}</p>
         </div>
@@ -35,6 +38,24 @@
       <div class="btn-group">
         <v-btn class="btn-save" color="primary" primary @click="setName" v-if="currentState=='received' && !existFederation">{{$t('Save')}}</v-btn>
       </div>
+
+    <v-dialog v-model="confirmDlg" max-width="95%" persistent>
+      <div>
+        <div class="card-content dlg-content">
+          <div class="avatar-div textcenter">
+            <v-avatar>
+              <img src="../../assets/img/logo-red.png" />
+            </v-avatar>
+          </div>
+          <div class="t2 skip-white pt-2 pb-4">{{$t('unlink')}}<span class="fed pl-2">{{existFederation}}</span></div>
+          <div class="btns flex-row">
+            <div class="flex1 skip-red textcenter" @click="doUnlink">{{$t('Button.OK')}}</div>
+            <div class="flex1 skip-red textcenter" @click="confirmDlg = false">{{$t('Button.Cancel')}}</div>
+          </div>
+        </div>
+      </div>
+    </v-dialog>
+
     </div>
   </div>
 </template>
@@ -55,7 +76,8 @@ export default {
       existFederation: null,
       currentState: 'connecting',
       msg: null,
-      working: false
+      working: false,
+      confirmDlg: false,
     }
   },
   computed: {
@@ -126,6 +148,24 @@ export default {
           }
         }
       )
+    },
+    doUnlink(){
+      if(this.working)return;
+      this.working = true
+      getAccountIdByAddress(FED_NETWORK_BIND_ADDRESS)
+        .then( data => {
+          let params = {
+            destination: data.account_id,
+            amount: "1",
+            memo_type: "None"
+          }
+          this.working = false
+          this.$router.push({name: 'SendAsset', params: params})
+        }).catch(error => {
+          this.working = false
+          this.$toasted.error(this.$t('FederationName.NetworkError'))
+        })
+
     }
   },
   components: {
@@ -161,4 +201,25 @@ export default {
         margin: 0px 0px
         width: 100%
         height: 36px
+.fed
+  color: $primarycolor.green
+.cancel_fed
+  background: $primarycolor.red
+  color: $primarycolor.font
+.card-content
+  padding: 20px 10px
+.t1
+  font-size: 20px
+  padding-top: 5px
+  padding-bottom: 5px
+.t2
+  font-size: 16px
+.skip-red
+  color: $primarycolor.red
+.btns
+  font-size: 16px
+.dlg-green
+  color: $primarycolor.green
+.dlg-content
+  background: $secondarycolor.gray
 </style>

@@ -71,11 +71,13 @@ export default {
     mixins: [orderbookMixins, kmixins],
     data(){
         return {
-           height: 290,//默认的K张图完整高度
+           height: 340,//默认的K张图完整高度
            width: 100,//K张图宽度
            topH: 71,//底部工具条的高度
            blank: 30,//图中的空白
+           miniBlank: 10,//
            kH: 120, //K线图高度
+           dH: 20,//内容选择框高度
            vH: 40,//交易量高度
            mH: 40,//macd图的高度
            toolH: 37,//底部切换区间的工具条的高度
@@ -93,11 +95,12 @@ export default {
       let clientH = document.documentElement.clientWidth
       this.width = document.documentElement.clientHeight - 10
       let allkH = new Decimal(clientH).minus(this.topH).minus(this.toolH)
-      let h = this.height - this.blank*3
-      let allkHB = allkH.minus(this.blank*3)
+      let h = this.height - this.blank*3 - this.miniBlank - this.toolH
+      let allkHB = allkH.minus(this.blank*3).minus(this.miniBlank)
       this.kH = allkHB.times(this.kH).div(h).toNumber()
       this.vH = allkHB.times(this.vH).div(h).toNumber()
       this.mH = allkHB.times(this.mH).div(h).toNumber()
+      this.dH = allkHB.times(this.dH).div(h).toNumber()
       this.height = allkH.toNumber()
     },
     mounted () {
@@ -114,8 +117,6 @@ export default {
     },
     methods: {
         initView() {
-           console.log(`--------init view---` )
-          console.log(this.macd)
             this.ele = echarts.init(document.getElementById(this.id))
             this.opt = this.koption()
             this.ele.setOption(this.opt)
@@ -164,10 +165,10 @@ export default {
                         let lowlabel = this.$t('low_price')
                         let volumelabel = this.$t('volumes')
                         if(series[0].data){
-                            result += `${openlabel}: ${series[0].data[0]}<br/>`
-                            + `${closelabel}: ${series[0].data[1]}<br/>`
-                            + `${highlabel}: ${series[0].data[2]}<br/>`
-                            + `${lowlabel}: ${series[0].data[3]}<br/>`
+                            result += `${openlabel}: ${series[0].data[1]}<br/>`
+                            + `${closelabel}: ${series[0].data[2]}<br/>`
+                            + `${highlabel}: ${series[0].data[3]}<br/>`
+                            + `${lowlabel}: ${series[0].data[4]}<br/>`
                             
                         }
                         try{
@@ -189,6 +190,16 @@ export default {
                 axisPointer: { link: [{xAxisIndex: [0, 1, 2]}]
                 },
                 dataZoom: [{
+                    type: 'slider',
+                    xAxisIndex: [0, 1, 2],
+                    realtime: false,
+                    start: 50,
+                    end: 100,
+                    top: this.blank*2+this.kH,//65,
+                    height: this.dH,
+                    handleIcon: 'M10.7,11.9H9.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4h1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+                    handleSize: '120%'
+                },{
                     type: 'inside',
                     xAxisIndex: [0, 1, 2],
                     start: 50,
@@ -285,13 +296,13 @@ export default {
                     left: 5,
                     right: 5,
                     height: this.vH,
-                    top: this.blank*2+this.kH,
+                    top: this.blank*2 + this.miniBlank+this.kH + this.dH,
                     bottom: 0
                 }, {
                     left: 5,
                     right: 5,
                     height: this.mH,
-                    top: this.blank*3+this.kH+this.vH,
+                    top: this.blank*3+ this.miniBlank+this.kH+this.dh + this.vH,
                     bottom: 0
                 }],
                 series: [{
@@ -300,16 +311,16 @@ export default {
                     data: this.data,
                     itemStyle: {
                         normal: {
-                            color: '#ef232a',
-                            color0: '#14b143',
-                            borderColor: '#ef232a',
-                            borderColor0: '#14b143'
+                            color: '#14b143',
+                            color0: '#ef232a',
+                            borderColor: '#14b143',
+                            borderColor0: '#ef232a'
                         },
                         emphasis: {
-                            color: 'black',
-                            color0: '#444',
-                            borderColor: 'black',
-                            borderColor0: '#444'
+                            color: '#444',
+                            color0: 'black',
+                            borderColor: '#444',
+                            borderColor0: 'black'
                         }
                     }
                 }, {

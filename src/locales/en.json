@@ -46,7 +46,7 @@
   "Title.Scan": "Scan",
   "Title.MyWallet":"My wallet",
   "Title.Account":"Account",
-  "Title.MyAssets":"My assets",
+  "Title.MyAssets":"My Assets",
   "CopySuccess":"Copy success",
 
 
@@ -80,7 +80,7 @@
   "Error.SeedWrong":"wrong secret key",
   "Account.AccountAddress":"address",
 
-  "ManullayAddTrust":"Manully Add",
+  "ManullayAddTrust":"Manully",
   "AssetCode":"Asset Code",
   "AssetIssuer":"Issuer Account ID",
   "Error.AssetCodeNull":"asset code cannot be empty",
@@ -117,7 +117,7 @@
   "AddAsset":"Add Asset",
   "AddAssetSuccess":"asset added",
   "AddAssetNotFound": "asset info not found",
-  "FederationUrl":"federation host URL",
+  "FederationUrl":"Host",
   "Working":"working...",
   "Reset":"reset",
 
@@ -125,18 +125,18 @@
   "Info.ChangeAccountSuccess":"success",
   "Error.PasswordWrong":"password incorrect",
 
-  "Menu.MyAssets":"My assets",
+  "Menu.MyAssets":"My Assets",
   "Menu.Funding":"Funding",
   "Menu.MyAddress":"Address book",
   "Menu.Contacts":"Contacts",
   "Menu.Settings":"Settings",
   "Menu.Help":"Trade help",
-  "Menu.My":"my",
+  "Menu.My":"My",
   "Menu.History": "History",
   "Menu.MessageCenter":"Message Center",
 
   "ManageAccount":"manage account",
-  "MessageCenter": "message center",
+  "MessageCenter": "Message Center",
   "PinCode":"pin code",
   "Language":"language",
   "ModifyAccount":"modify account",
@@ -152,7 +152,7 @@
   "Error.SaveHorizonFial": "save public network URL failed",
 
   "FederationName": "Federation Name",
-  "FederationName.Description": "This service is provided by fed.network, you can visit this website for more information. Here you can register a username such as name*fed.network, and other users can send the asset to you with it. However, it should be noted that this service is only for the convenience of the user in inputting the address, please recheck the really address by yourself. To register for an address you need to pay 0.5 XLM.",
+  "FederationName.Description": "This service is provided by fed.network, you can visit this website for more information. Here you can register a username such as name*fed.network, and other users can send the asset to you with it. However, it should be noted that this service is only for the convenience of the user in inputting the address, please recheck the really address by yourself. To register for an address you need to pay 0.5 XLM. To ungegister for an address you need to pay 1 XLM.",
   "FederationName.Address": "Your federation address:",
   "FederationName.Connecting": "Connecting...",
   "FederationName.ConnectionFailed": "Network connection failed. Please try later.",
@@ -160,6 +160,7 @@
   "FederationName.Unavailable": "The name is unavailable，please change it",
   "FederationName.NetworkError": "Network Error",
   "FederationName.Error": "Error",
+  "unlink":"unlink",
 
   "SaveSuccess":"save successful",
   "SaveFailed":"save failed",
@@ -457,8 +458,15 @@
   "AddAll":"Add all",
   "Pin":"Pin",
   "HorizonVersion":"HorizonVersion",
-  "LoadMore":"Load More"
-   
+  "LoadMore":"Load More",
+  "Title.ThirdApp":"apps",
+  "Error.AjaxTimeout":"connection server timed out, please try again later",
+  "Third.OpenAppHint":"will open DApp {0}",
+  "Third.SendTo":"pay to {0}",
+  "ChooseAsset":"choose a asset",
+  "ReadAllMsg":"read all messages",
+  "Recovery":"recovery",
+  "Backup":"back up"
  
 
 }

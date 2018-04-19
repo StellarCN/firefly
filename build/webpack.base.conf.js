@@ -30,6 +30,11 @@ module.exports = {
     },
     symlinks: false
   },
+  // externals: {
+  //   "moment": 'moment',
+  //   "echarts": 'echarts',
+  //   // "xml2js": 'xml2js'
+  // },
   module: {
     rules: [
       {

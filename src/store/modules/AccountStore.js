@@ -3,7 +3,7 @@ import * as transactionsapi from '@/api/transactions'
 import * as paymentsapi from '@/api/payments'
 import * as ledgerapi from '@/api/ledger'
 import { isNativeAsset } from '@/api/assets'
-import { BASE_RESERVE } from '@/api/gateways'
+import { BASE_RESERVE, BASE_FEE } from '@/api/gateways'
 import { getDepositeAndWithdrawRecords, getAllEffectOffers } from '@/api/fchain'
 
 
@@ -167,6 +167,16 @@ const getters = {
   },
   reserve: (state, getters) => {
     return (state.data.subentry_count + 2 ) * getters.base_reserve
+  },
+  base_fee: (state, getters) => {
+    if(state.ledger){
+      let base = state.ledger.records[0].base_fee
+      if(base === null || typeof base === 'undefined'){
+        return state.ledger.records[0].base_fee_in_stroops / 10000000
+      }
+      return base
+    }
+    return BASE_FEE
   },
   native: (state, getters) =>{
     if(!getters.balances)return {}
