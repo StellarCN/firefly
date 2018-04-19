@@ -342,6 +342,8 @@
   "History.Transaction": "收发记录",
   "History.Trade": "成交记录",
   "History.DepositAndWithdraw": "充提记录",
+  "History.Effects":"变动记录",
+  "History.Transactions":"所有操作",
 
 	"op_success":"操作成功",
 	"op_malformed":"操作格式不正确",
@@ -445,8 +447,10 @@
   "AssetNotExistMessage":"暂时无法获取更多资产信息，请联系发行方。",
   "NetWorkErrorMessage":"网络环境异常，请稍后再试。",
   "DeterministicTransmission":"确定发送",
-  "AddAll":"添加全部"  
-
+  "AddAll":"添加全部",
+  "Pin":"pin",
+  "HorizonVersion":"horizon版本",
+  "LoadMore":"载入更多"
   
   
 

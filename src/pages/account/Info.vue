@@ -413,6 +413,8 @@ export default {
       if(!this.canModify){
         // this.showPwdSheet = true;
         // this.inpassword = null;
+        console.log("----------")
+        console.log(this.showaccount)
         this.showViewkeySheet = true;
         this.isB=false;
         this.isC=true;

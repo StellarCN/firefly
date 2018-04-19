@@ -348,6 +348,8 @@
   "History.Transaction": "Transaction",
   "History.Trade": "Trade",
   "History.DepositAndWithdraw": "Deposit/Withdraw",
+  "History.Effects":"Effects",
+  "History.Transactions":"Transactions",
 
 	"op_success":"operation success",
 	"op_malformed":"opernation incorrect",
@@ -452,7 +454,11 @@
   "AssetNotExistMessage":"For more information , please contact the publisher",
   "NetWorkErrorMessage":"Network environment exception, please try again late",
   "DeterministicTransmission":"Deterministic transmission",
-  "AddAll":"Add all" 
+  "AddAll":"Add all",
+  "Pin":"Pin",
+  "HorizonVersion":"HorizonVersion",
+  "LoadMore":"Load More"
+   
  
 
 }
