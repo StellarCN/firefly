@@ -212,3 +212,8 @@ export function getVersionInfo(){
     })
   })
 }
+
+//获取节点地址的pin值信息
+export function getAddressPinInfo(url){
+  return axios.get(url)
+}
