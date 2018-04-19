@@ -343,6 +343,8 @@
   "History.Transaction": "收发记录",
   "History.Trade": "成交记录",
   "History.DepositAndWithdraw": "充提记录",
+  "History.Effects":"变动记录",
+  "History.Transactions":"所有操作",
 
 	"op_success":"操作成功",
 	"op_malformed":"操作格式不正确",
@@ -447,6 +449,9 @@
   "NetWorkErrorMessage":"网络环境异常，请稍后再试。",
   "DeterministicTransmission":"确定发送",
   "AddAll":"添加全部",
+  "Pin":"pin",
+  "HorizonVersion":"horizon版本",
+  "LoadMore":"载入更多",
   "Title.ThirdApp":"第三方应用",
   "Error.AjaxTimeout":"连接服务器超时，请稍后再试",
   "Third.OpenAppHint":"即将打开第三方DApp {0} ",

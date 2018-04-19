@@ -25,7 +25,6 @@
 </template>
 
 <script>
-
   import {mapState, mapActions, mapGetters} from 'vuex'
   import Toolbar from '@/components/Toolbar'
   import HistoryOffer from '@/components/HistoryOffer'
@@ -33,7 +32,6 @@
   import HistoryTrade from '@/components/HistoryTrade'
   import HistoryDepositAndWithdraw from '@/components/HistoryDepositAndWithdraw'
   import Card from '@/components/Card'
-
   export default {
     data() {
       return {
@@ -101,5 +99,4 @@
         .menu-li.active
           border-bottom: 2px solid $primarycolor.green
           color: $primarycolor.green
-
 </style>
