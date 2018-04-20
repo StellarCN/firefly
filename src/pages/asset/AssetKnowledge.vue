@@ -11,7 +11,7 @@
     </toolbar>   
     <div class="content_all">
           <div class="content_asset_image" v-if="asset_info.image!=undefined&asset_info.image!=null&asset_info.image!=''">
-            <span><img :src="asset_info.image"/></span>
+            <span><img width="200px" height="200px" :src="asset_info.image"/></span>
             </div>
           <div class="content_asset_code_info" v-if="asset_info.code!=undefined&asset_info.code!=null&asset_info.code!=''">
             <span >{{$t("AssetCode")}}</span><br/>
@@ -27,12 +27,12 @@
             </div>
           
           <div class="content_asset_info_info" v-if="this.$i18n.locale==='zh_cn'&asset_info.info_zh_cn!=''&asset_info.info_zh_cn!=undefined&asset_info.info_zh_cn!=null">
-            <span>{{$t("AssetSummary")}}</span><br/>
-            <span class="content_contentcolor">{{this.asset_info.info_zh_cn}}</span>
+            <div>{{$t("AssetSummary")}}</div>
+            <div class="content_contentcolor" v-image-wrapper v-html="asset_info.info_zh_cn"></div>
             </div>
           <div class="content_asset_info_info" v-else-if="this.$i18n.locale==='en'&asset_info.info_en!=''&asset_info.info_en!=undefined&asset_info.info_en!=null">
             <span>{{$t("AssetSummary")}}</span><br/>
-            <span class="content_contentcolor">{{asset_info.info_en}}</span>
+            <span class="content_contentcolor" v-image-wrapper v-html="asset_info.info_en"></span>
             </div>
           
 
