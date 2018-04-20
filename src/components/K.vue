@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-04-12 17:37:15
+ * @Last Modified time: 2018-04-20 16:24:46
  * @License: MIT 
  */
 <template>
@@ -200,7 +200,6 @@ export default {
             setTimeout(()=>{
                  //开启定时器
                 this.tinterval = setInterval(this.fetch, this.resolution)
-                this.fetchLastTradeAggregation()
                 this.reload();
             }, this.timeout)
            
@@ -215,6 +214,7 @@ export default {
             this.cleanData()
             this.init();
             this.fetch();
+            this.fetchLastTradeAggregation()
             this.fetchLastTrade()
         },
         cleanData(){
