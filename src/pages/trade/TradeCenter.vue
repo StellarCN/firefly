@@ -26,11 +26,11 @@
       ></picker>
       <card class="trade-card" margin="10px 0px" padding="2px 0px">
         <div class="flex-row textcenter" slot="card-content">
-          <div class="flex1" @click="doFilter('All')">{{$t('All')}}</div>
-          <div class="flex1" @click="doFilter('XLM')">XLM</div>
-          <div class="flex1" @click="doFilter('XCN')">XCN</div>
-          <div class="flex1" @click="doFilter('BTC')">BTC</div>
-          <div class="flex1" @click="doFilter('ETH')">ETH</div>
+          <div :class="'flex1 filter-tag ' + (filterTag==='All' ? 'active':'')" @click="doFilter('All')">{{$t('All')}}</div>
+          <div :class="'flex1 filter-tag ' + (filterTag==='XLM' ? 'active':'')" @click="doFilter('XLM')">XLM</div>
+          <div :class="'flex1 filter-tag ' + (filterTag==='XCN' ? 'active':'')" @click="doFilter('XCN')">XCN</div>
+          <div :class="'flex1 filter-tag ' + (filterTag==='BTC' ? 'active':'')" @click="doFilter('BTC')">BTC</div>
+          <div :class="'flex1 filter-tag ' + (filterTag==='ETH' ? 'active':'')" @click="doFilter('ETH')">ETH</div>
         </div>
       </card>
 
@@ -472,6 +472,7 @@ export default {
   -webkit-transition: 0.3s
   transform: translate(-50%, 0)
   transition: 0.3s
-
+.filter-tag.active
+  color: $primarycolor.green
 </style>
 
