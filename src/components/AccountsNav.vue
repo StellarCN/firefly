@@ -3,14 +3,16 @@
  * @Author: mazhaoyong@gmail.com
  * @Date: 2018-01-30 16:58:05
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-24 09:20:19
+ * @Last Modified time: 2018-04-20 17:11:53
  * @License: MIT
  */
 <template>
   <div class="account-nav">
       <!--切换账户-->
     <v-navigation-drawer
-      absolute temporary dark
+      absolute
+      temporary
+      dark
       v-model="showview"
       class='aside'
      >

@@ -76,7 +76,7 @@
     "vue-router": ">=2.7.0",
     "vue-toasted": ">=1.1.21",
     "vuedraggable": ">=2.16.0",
-    "vuetify": ">0.17.2",
+    "vuetify": "^1.0.16",
     "vuex": ">=2.4.0",
     "x5webview-cordova-plugin": "git+https://github.com/imloama/x5webview-cordova-plugin.git",
     "xml2js": "^0.4.19"
