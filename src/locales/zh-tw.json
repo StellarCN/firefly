@@ -454,7 +454,8 @@
   "ChooseAsset":"請選擇資產",
   "ReadAllMsg":"消息全部設置為已閱讀",
   "Recovery":"恢複數據",
-  "Backup":"備份數據"
+  "Backup":"備份數據",
+  "lastUpdate":"上次更新"
   
 
 }

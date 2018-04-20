@@ -36,6 +36,7 @@
 
       <card class="trade-card" padding="0px 0px">
         <div class="card-content trade-card-content" slot="card-content">
+          <scroll :refresh="refresh" :readLabelTxt="readLabelTxt">
           <ul class="tradepairs-ul">
             <transition-group>
             <li class="tradepair-li" v-for="(pair,index) in pairs" :key="index"
@@ -67,7 +68,12 @@
                   </div>
                 </v-flex>
                 <v-flex xs8>
-                  <k-line :key="index" :base="pair.from" :counter="pair.to" :height="56" :timeout="10*index"></k-line>
+                  <k-line 
+                    :base="pair.from" :counter="pair.to" 
+                    :height="56" :timeout="10*index"
+                    :tradepairIndex="pair.tradepairIndex"
+                    :ref="'kline'+pair.tradepairIndex"
+                    ></k-line>
                 </v-flex>
 
               </v-layout>
@@ -81,7 +87,7 @@
               </li>
             </transition-group>
           </ul>
-
+          </scroll>
         </div>
       </card>
     </div>
@@ -117,6 +123,7 @@ import { getAsset } from '@/api/assets'
 import { getTrades } from '@/api/trade'
 var moment = require('moment')
 import {Decimal} from 'decimal.js'
+import Scroll from '@/components/Scroll'
 
 const TAG_ALL = 'All', TAG_XCN = 'XCN', TAG_XLM = 'XLM', TAG_BTC = 'BTC', TAG_ETH = 'ETH'
 
@@ -149,16 +156,39 @@ export default {
       tradepairs: state => state.accounts.accountData.tradepairs,
       islogin: state => state.accounts.accountData.seed ? true:false,
       assethosts: state => state.asset.assethosts,
-      notfunding: state => state.account.account_not_funding
+      notfunding: state => state.account.account_not_funding,
+      tradePairKLineData: state => state.accounts.tradePairKLineData
     }),
     ...mapGetters([
       'balances',
     ]),
+    readLabelTxt(){
+      try{
+        if(this.tradePairKLineData){
+          let result = this.$t('lastUpdate')+':'
+          for(let key in this.tradePairKLineData){
+            result += new moment(this.tradePairKLineData[key].date).format('YYYY-MM-DD HH:mm:ss')
+            break
+          }
+          return result
+        }
+      }catch(err){
+        console.error(err)
+      }
+      return 'ReleaseToRefresh'
+    },
     pairs(){
-      return this.tradepairs.filter(item => {
-        if(this.filterTag === TAG_ALL) return true
-        return item.to.code === this.filterTag
-      })
+      let result = []
+      for(let i=0,n=this.tradepairs.length;i<n;i++){
+        if(this.filterTag === TAG_ALL || this.tradepairs[i].to.code === this.filterTag){
+          result.push(Object.assign({tradepairIndex: i}, this.tradepairs[i]))
+        }
+      }
+      return result
+      // return this.tradepairs.filter(item => {
+      //   if(this.filterTag === TAG_ALL) return true
+      //   return item.to.code === this.filterTag
+      // })
     },
     items(){
       if(!this.balances)return []
@@ -339,6 +369,14 @@ export default {
     doFilter(tag){
       this.filterTag = tag
     },
+    refresh(){
+      let funcs = []
+      this.pairs.forEach(item=>{
+        let key = 'kline'+item.tradepairIndex
+        funcs.push(this.$refs[key][0].reload())
+      })
+      return Promise.all(funcs)
+    }
    
   },
   components: {
@@ -349,7 +387,8 @@ export default {
     KLine,
     TabBar,
     //draggable,
-    AccountsNav
+    AccountsNav,
+    Scroll
   }
 }
 </script>

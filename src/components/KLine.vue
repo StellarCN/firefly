@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-26 15:59:49 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-21 15:54:29
+ * @Last Modified time: 2018-04-20 15:13:52
  * @License MIT 
  */
 
@@ -19,13 +19,14 @@
               {{titleData.rate}}%</div>
       </div>
       <div class="flex1 working" v-else>
-          <v-progress-circular indeterminate color="primary" v-if="working"></v-progress-circular>
+          <v-progress-circular indeterminate color="primary" v-if="lastTrade && lastTradeAggregation"></v-progress-circular>
           <span v-else></span>
       </div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 var moment = require('moment')
 //var echarts = require('echarts')
 import echarts from '@/libs/pkgs/initEcharts'
@@ -38,6 +39,8 @@ import { getTrades } from '@/api/trade'
 import  defaultsDeep  from 'lodash/defaultsDeep'
 import {Decimal} from 'decimal.js'
 
+import { SET_TRADEPAIR_KLINE_LASTTRADE,SET_TRADEPAIR_KLINE_TRADEAGGREGATION, SET_TRADEPAIR_KLINE_7DAY_TRADEAGGREGATION } from '@/store/modules/AccountsStore'
+
 const TRADE_INTERVAL = 60000
 
 export default {
@@ -46,14 +49,14 @@ export default {
             id: null,//元素主键
             ele: null,//echarts对象
             opt: null,
-            dates:[],
-            data: [],
+            //dates:[],
+            //data: [],
             tinterval: null,//定时器
             lasttime: null,//上次的执行时间
             
-            lastTradeAggregation:null,
+            //lastTradeAggregation:null,
             //最新的成交价格统计
-            lastTrade:null,
+            //lastTrade:null,
             tradeInterval: null,//查询最新一次交易数据的interval
             working: true,
         }
@@ -101,10 +104,37 @@ export default {
         //需要多长时间后进行界面数据展示
         timeout: {
             type: Number,
-            default: 100
+            default: 10
+        },
+        //位于交易对中的索引值
+        tradepairIndex: {
+            type: Number,
+            required: true
         }
     },
     computed: {
+        ...mapState({
+            tradePairKLineData: state => state.accounts.tradePairKLineData
+        }),
+        lineData(){
+            return this.tradePairKLineData[this.tradepairIndex]
+        },
+        lastTrade(){
+            return this.lineData ? this.lineData.lastTrade : null
+        },
+        lastTradeAggregation(){
+            return this.lineData ? this.lineData.tradeAggregation : null
+        },
+        //7天的聚合数据
+        sevenDayTradeAggregation(){
+            return this.lineData ? this.lineData.sevenDayTradeAggregation : null
+        },
+        sevenData(){
+            return this.sevenDayTradeAggregation ? this.sevenDayTradeAggregation.data || [] : []
+        },
+        sevenDates(){
+            return this.sevenDayTradeAggregation ? this.sevenDayTradeAggregation.dates||[] : []
+        },
         titleData(){
           if(this.lastTradeAggregation && this.lastTrade){
             let price = new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
@@ -139,17 +169,29 @@ export default {
        
     },
     beforeDestroy () {
-        //关闭定时器
-        if(this.tinterval){
-            clearInterval(this.tinterval)
-            this.tinterval = null
-        }
-        this.deleteTradeInterval()
+        this.clearAll()
     },
     mounted () {
+        //先从缓存中取值
+
         this.init()
     },
     methods: {
+        reload(){
+            return new Promise((resolve,reject)=>{
+                this.clearAll()
+                this.init()
+                resolve()
+            })
+        },
+        clearAll(){
+            //关闭定时器
+            if(this.tinterval){
+                clearInterval(this.tinterval)
+                this.tinterval = null
+            }
+            this.deleteTradeInterval()
+        },
         init() {
             this.$nextTick(()=>{
                 setTimeout(()=>{
@@ -166,10 +208,7 @@ export default {
         //请求api，获取数据
         fetch(){
           let start_time = null, end_time=null;
-          if(this.lasttime){
-              start_time = this.lasttime;
-              end_time = new Date().getTime()
-          }else{//初次请求，判断start是否存在
+          //初次请求，判断start是否存在
             if(this.start < 0){
                 //前7天
                 start_time = Number(moment().subtract(7,"days").format('x'))
@@ -181,7 +220,6 @@ export default {
             }else{
                 end_time = this.end
             }
-          }
           this.working = true
           getTradeAggregation(getAsset(this.base), getAsset(this.counter), 
                 start_time, end_time, this.resolution, 200, 'desc')
@@ -192,16 +230,16 @@ export default {
                 // if(_data.length > 0){
                 //     this.lastTradeAggregation = _.defaultsDeep({}, _data[0])
                 // }
+                let opt_data = this.incremental ? [...this.sevenData]:[]
+                let opt_dates = this.incremental ? [...this.sevenDates]:[]
                 _data.map(item=>{
-                    if(this.incremental){
-                        this.data = []
-                        this.dates = []
-                    }
-                    this.dates.push(new Date(item.timestamp).Format('MM-dd hh:mm'))
-                    this.data.push(Number(item.avg))
+                    opt_dates.push(new Date(item.timestamp).Format('MM-dd hh:mm'))
+                    opt_data.push(Number(item.avg))
                 })
-                this.opt.xAxis.date = this.dates
-                this.opt.series[0].data = this.data
+                this.$store.commit(SET_TRADEPAIR_KLINE_7DAY_TRADEAGGREGATION,{
+                    index: this.tradepairIndex, date: this.lasttime, data: {data: opt_data, dates:opt_dates}})
+                this.opt.xAxis.date = opt_dates
+                this.opt.series[0].data = opt_data
                 this.ele.setOption(this.opt)
                 this.working = false
             })
@@ -222,7 +260,7 @@ export default {
                 xAxis: {
                     show: false,
                     type: 'category',
-                    data: this.dates
+                    data: this.sevenDates
                 },
                 yAxis: {
                     show: false,
@@ -235,7 +273,7 @@ export default {
                     }
                 },
                 series: [{
-                    data: this.data,
+                    data: this.sevenData,
                     type: 'line',
                     sampling: 'average'
                 }]
@@ -243,14 +281,14 @@ export default {
         }, // end of koption
         calculateMA(dayCount) {
             var result = [];
-            for (var i = 0, len = this.data.length; i < len; i++) {
+            for (var i = 0, len = this.sevenData.length; i < len; i++) {
                 if (i < dayCount) {
                     result.push('-');
                     continue;
                 }
                 var sum = 0;
                 for (var j = 0; j < dayCount; j++) {
-                    sum += this.data[i - j][1];
+                    sum += this.sevenData[i - j][1];
                 }
                 result.push((sum / dayCount).toFixed(2));
             }
@@ -265,7 +303,12 @@ export default {
             .then(data => {
                 let records = data.records
                 if(records && records.length > 0){
-                    this.lastTradeAggregation = records[0]
+                    //this.lastTradeAggregation = records[0]
+                    this.$store.commit(SET_TRADEPAIR_KLINE_TRADEAGGREGATION, {
+                        index: this.tradepairIndex,
+                        date: end_time,
+                        data: records[0]
+                    })
                 }
             })
             .catch(err=>{
@@ -286,7 +329,7 @@ export default {
         deleteTradeInterval(){
             if(this.tradeInterval!= null && typeof this.tradeInterval != 'undefined'){
                 clearInterval(this.tradeInterval)
-                this.lastTrade = null
+                //this.lastTrade = null
                 this.tradeInterval = null
             }
         },
@@ -297,7 +340,12 @@ export default {
             getTrades(baseasset,counterasset,"desc",1)
                 .then(data=>{
                     if(data.records && data.records.length > 0){
-                        this.lastTrade = data.records[0]
+                        //this.lastTrade = data.records[0]
+                        this.$store.commit(SET_TRADEPAIR_KLINE_LASTTRADE,{
+                            index: this.tradepairIndex,
+                            date: this.lasttime,
+                            data: data.records[0]
+                        })
                     }
                 }).catch(err=>{
                     console.log(err)

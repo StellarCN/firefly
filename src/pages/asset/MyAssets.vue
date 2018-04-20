@@ -429,7 +429,7 @@ export default {
         })
     },
     refresh(){
-      this.load()
+      return this.load()
     },
     assetIcon(code,issuer){
       return COINS_ICON[code] || WORD_ICON[code.substring(0,1)] || DEFAULT_ICON
