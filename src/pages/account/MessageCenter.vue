@@ -12,13 +12,13 @@
     </tool-bar>
       <ul class="content">
         <li v-for="(item ,index) in messages" class="item" @click="goToDetils(item)" :key="index">
-          <div class="item-title"> 
+          <div :class="'item-title' + (reads.indexOf(item.link) === -1  ? '':' read')"> 
             {{item.title }}
           </div>
           <div class="item-time">
              {{ item.date }}
           </div>
-          <span class="circular" v-if="reads.indexOf(item.link) > -1 "></span>
+          <span class="circular" v-if="reads.indexOf(item.link) === -1 "></span>
         </li>
       </ul>
   </div>
@@ -75,6 +75,7 @@
   @require '~@/stylus/color.styl'
    .content
       .item
+        position relative
         padding: .2rem .2rem
         background #303034
         margin: .1rem auto
@@ -84,6 +85,8 @@
           font-size .45rem!important
           white-space: nowrap
           overflow hidden
+          &.read
+            color: $secondarycolor.font  
 
         .item-time
           font-size: .35rem
@@ -96,11 +99,11 @@
           white-space nowrap
           padding-top 15px
         .circular
-          position absolute
-          width 8px
-          height 8px
-          background red
-          border-radius 7.5px
-          right 2px
-          top 2px
+          position: absolute
+          width .2rem
+          height .2rem
+          background: $primarycolor.red
+          border-radius .2rem
+          right .1rem 
+          top .1rem
 </style>

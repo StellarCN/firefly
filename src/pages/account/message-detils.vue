@@ -5,7 +5,7 @@
               :showbackicon="true"
               @goback="back"></tool-bar>
     <div class="message-detils">
-      <div class="message-content" v-html="item.content"> </div>
+      <div class="message-content" v-image-wrapper v-html="item.content"> </div>
     </div>
   </div>
 </template>
@@ -41,4 +41,5 @@
     .message-content
       width: 100%
       height: 100%
+      overflow: auto
 </style>

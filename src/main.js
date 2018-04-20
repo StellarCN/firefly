@@ -10,6 +10,7 @@ import store from './store'
 import { i18n }  from './locales/index'
 require('./filters/index')
 //require('./directives/swiper')
+import imageHW from './directives/imageHW'
 require('./api/index')
 import { setVuexStore } from './streams'
 import { AXIOS_DEFAULT_TIMEOUT } from './api/gateways'
@@ -18,6 +19,7 @@ require('./api/utils')
 
 // animate.css
 // import 'animate.css'
+Vue.directive('image-wrapper', imageHW)
 
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 Vue.use(VueAwesomeSwiper)
