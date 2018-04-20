@@ -33,7 +33,7 @@
       </v-select>
      </div>
     
-  <scroll :refresh="queryDW">
+  <scroll :refresh="reload">
     <!-- 菜单： 充值/提现  -->
     <div class="menu-wrapper" v-if="selectedasset.code">
       <ul class="menu-ul">
@@ -164,6 +164,12 @@ const TYPE_WITHDRAW = 'withdraw'
      
     },
     methods: {
+      reload(){
+        return new Promise((resolve,reject)=>{
+          this.queryDW()
+          resolve()
+        })
+      },
       queryDW(){
         console.log(this.selectedasset.code)
         console.log(!this.selectedasset.code)
@@ -172,7 +178,7 @@ const TYPE_WITHDRAW = 'withdraw'
         if(this.working)return
         this.working = true
         this.error = null
-        getDepositAndWithdrawRecords(this.account.address, this.selectedasset.code, this.selectedasset.issuer)
+          getDepositAndWithdrawRecords(this.account.address, this.selectedasset.code, this.selectedasset.issuer)
           .then(response=>{
             this.records = response.data
             this.working = false

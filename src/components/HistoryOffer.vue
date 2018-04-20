@@ -127,7 +127,7 @@ import { getXdrResultCode } from '@/api/xdr'
         switchTradePair: 'switchTradePair'
       }),
       setup() {
-        this.queryMyOffers()
+        return this.queryMyOffers()
       },
       switchPair(offer) {
         let index = offer.pair_id

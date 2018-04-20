@@ -12,14 +12,19 @@ import VuePullRefresh  from 'vue-pull-refresh'
   export default {
     data(){
       return {
-        pullconfig: {
-          startLabel: this.$t('ReleaseToRefresh'),
-          loadingLabel: this.$t('Loading'),
-          readyLabel: this.$t('ReleaseToRefresh'),
-          errorLabel: this.$t('LoadFail'),
-          pullDownHeight: 60,
-        }
+        
       }
+    },
+    computed: {
+      pullconfig() {
+          return {
+            startLabel: this.$t(this.startLabelTxt),
+            loadingLabel: this.$t(this.loadingLabelTxt),
+            readyLabel: this.$t(this.readLabelTxt),
+            errorLabel: this.$t(this.errorLabelTxt),
+            pullDownHeight: this.$t(this.minHeight),
+          }
+        }
     },
     props: {
       /**
@@ -29,6 +34,27 @@ import VuePullRefresh  from 'vue-pull-refresh'
         type: Function,
         required: true
       },
+      startLabelTxt: {
+        type: String,
+        default: 'ReleaseToRefresh'
+      },
+      loadingLabelTxt: {
+        type: String,
+        default: 'Loading'
+      },
+      readLabelTxt: {
+        type: String,
+        default: 'ReleaseToRefresh'
+      },
+      errorLabelTxt: {
+        type: String,
+        default: 'LoadFail'
+      },
+      minHeight :{
+        type: Number,
+        default: 60
+      }
+
     },
     mounted() {
     },
