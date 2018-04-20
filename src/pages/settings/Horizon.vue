@@ -28,19 +28,15 @@
                     </v-layout>
                   </v-flex>
                   <v-flex xs1 class='select'>
-                    <i class="iconfont icon-dot1" v-if="horizon === stellar"></i>
-                    <i class="iconfont icon-dot" v-else></i>
+                    <!-- <i class="iconfont icon-dot1" v-if="horizon === stellar"></i>
+                    <i class="iconfont icon-dot" v-else></i> -->
                   </v-flex>
               </v-flex>
-              <v-flex xs12 v-if="this.horizon_version_stellar!=null">
-                <v-flex xs12>
-                    <v-layout row wrap>
-                        <v-flex xs3 :class="{horizon_timeusestyle:true, horizon_timeusebgcone:timeUse_stellar<=50,horizon_timeusebgctwo:timeUse_stellar<=100&&timeUse_stellar>50,horizon_timeusebgcthree:timeUse_stellar<=150&&timeUse_stellar>100,horizon_timeusebgcfour:timeUse_stellar<=200&&timeUse_stellar>150,horizon_timeusebgcfive:timeUse_stellar>=200}">{{$t("Pin")}}:{{timeUse_stellar}}</v-flex>
-                        <v-flex xs5 class="horizon_msgstyle">{{horizon_version_stellar}}</v-flex>
-                    </v-layout>
-                </v-flex>
+              <v-flex class="tag-wrapper" xs12 v-if="this.horizon_version_stellar!=null">
+                <span :class="{horizon_timeusestyle:true, horizon_timeusebgcone:timeUse_stellar<=50,horizon_timeusebgctwo:timeUse_stellar<=100&&timeUse_stellar>50,horizon_timeusebgcthree:timeUse_stellar<=150&&timeUse_stellar>100,horizon_timeusebgcfour:timeUse_stellar<=200&&timeUse_stellar>150,horizon_timeusebgcfive:timeUse_stellar>=200}">{{timeUse_stellar}}ms</span>
+                <span class="horizon_msgstyle">{{$t('HorizonVersion')}}{{horizon_version_stellar}}</span>
               </v-flex>
-              <v-flex d-flex xs12 sm6 md3  @click="changeHorizon(chinapublic)" >
+              <!-- <v-flex d-flex xs12 sm6 md3  @click="changeHorizon(chinapublic)" >
                   <v-flex d-flex xs11>
                     <v-layout row wrap>
                       <v-flex d-flex xs12 class='label'>{{$t('ChinaPublic')}}</v-flex>
@@ -79,13 +75,13 @@
                       <v-flex xs5 class="horizon_msgstyle">{{horizon_version_wancloud}}</v-flex>
                   </v-layout>
                 </v-flex>
-              </v-flex>
+              </v-flex> -->
             </v-layout>
           </v-container>
         </div> 
       </card>
-      <div class="btn-group">
-        <v-btn class="btn-save" primary @click="save">{{$t('Save')}}</v-btn>
+      <div class="btn-group btns">
+        <v-btn class="btn-save" color="error" @click="save">{{$t('Save')}}</v-btn>
       </div>
     </div>
 
@@ -245,7 +241,6 @@ export default {
   border-radius:5px
   text-align:center
 .horizon_timeusestyle
-  border-radius:5px
   text-align:center
   font-size:10px
   margin-right:10px
@@ -262,9 +257,18 @@ export default {
 
 .horizon_msgstyle
   background:$primarycolor.red
-  border-radius:5px
   text-align:center
   font-size:10px
+.tag-wrapper
+  padding: 0px 2px 0px 8px!important
+  span
+    padding: 2px 4px
+.btns
+  position: absolute
+  left: 0
+  right: 0
+  bottom: .2rem
+  padding: .1rem .2rem
 //颜色分类
   // brand-primary: darken(#428bca, 6.5%); // #337ab7
   // @brand-success: #5cb85c;

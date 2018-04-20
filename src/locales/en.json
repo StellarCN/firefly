@@ -466,7 +466,8 @@
   "ChooseAsset":"choose a asset",
   "ReadAllMsg":"read all messages",
   "Recovery":"recovery",
-  "Backup":"back up"
+  "Backup":"back up",
+  "lastUpdate":"last update"
  
 
 }

@@ -9,7 +9,7 @@
     <date-range-picker :start="start" :end="end" @doSearch="doSearch" />
   </div>
 
-  <scroll :refresh="queryAllOffers">
+  <scroll :refresh="reload">
     <div v-for="(item, index) in records" :key="index">
       <card class="offer-card" padding="10px 10px">
         <div class="myoffer-table offer-table" slot="card-content">
@@ -106,6 +106,10 @@ import  defaultsDeep  from 'lodash/defaultsDeep'
       this.queryAllOffers()
     },
     methods: {
+      reload(){
+         let _address = this.account.address
+        return getAllEffectOffers(_address, this.start, this.end)
+      },
       queryAllOffers(){
         //暂时只查询一周的委单数据
         //let start_time = Number(moment().subtract(7,"days").format('x'))
@@ -114,8 +118,8 @@ import  defaultsDeep  from 'lodash/defaultsDeep'
         //let end_time = moment(this.end)
         //start_time = new Date(start_time.year(), start_time.month()+1, start_time.date()).getTime()
         //end_time = new Date(end_time.year(), end_time.month()+1, end_time.date()).getTime()
-        let _address = this.account.address
-        getAllEffectOffers(_address, this.start, this.end)
+       
+          this.reload()
           .then(response=>{
             this.records = response.data.map(item=>{
               return defaultsDeep({}, item, { total: new Decimal(item.amount).times(item.price).toFixed(7)})

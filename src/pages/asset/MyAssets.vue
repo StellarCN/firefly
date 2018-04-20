@@ -97,7 +97,7 @@
                  <span class="balance">{{item.balance > 0 ? item.balance.toFixed(7) : 0}}</span>
                  <span class="label">{{$t('Total')}}</span> 
                  <br/>
-                  <span v-if="item.total >=0">≈{{item.total}}&nbsp;&nbsp;XCN</span>
+                  <span v-if="item.total >=0">≈{{item.total > 0 ? item.balance.toFixed(7) : 0}}&nbsp;&nbsp;XCN</span>
               </div>
             </v-flex>
           </v-layout>
@@ -429,7 +429,7 @@ export default {
         })
     },
     refresh(){
-      this.load()
+      return this.load()
     },
     assetIcon(code,issuer){
       return COINS_ICON[code] || WORD_ICON[code.substring(0,1)] || DEFAULT_ICON

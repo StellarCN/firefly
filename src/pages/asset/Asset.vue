@@ -37,7 +37,7 @@
           <v-layout row wrap class="asset-amount asset_amount">
             <v-flex xs12 class="row asset_row" d-flex justify-center align-center>
                 <v-flex xs2 class="label asset_label">{{$t('Total')}}</v-flex>
-                <v-flex class="amount asset_amount">{{item.balance}}</v-flex>
+                <v-flex class="amount asset_amount">{{item.balance > 0 ? item.balance.toFixed(7):0}}</v-flex>
             </v-flex>
             <v-flex d-flex justify-center align-center xs12 class="row" v-if="isNative(item)"> 
                 <v-flex xs2 class="label asset_label">{{$t('Available')}}</v-flex>
@@ -87,13 +87,15 @@
       </card>
     </div>
     <!-- 发送和接收按键放在最底部-->
-            <v-flex d-flex xs12 class="row btns">
-                <v-spacer></v-spacer>
-                <v-btn   class="primary btn receive_btn" @click.stop="receive">{{$t('Receive')}}</v-btn>
-                <v-spacer></v-spacer>
-                <v-btn   class="error btn send_btn" @click.stop="send">{{$t('Send')}}</v-btn>
-                <v-spacer></v-spacer>
-              </v-flex>
+    <v-layout class="fixed-bottom btns">
+      <v-flex d-flex xs12 class="row">
+          <v-spacer></v-spacer>
+          <v-btn   class="primary btn receive_btn" @click.stop="receive">{{$t('Receive')}}</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn   class="error btn send_btn" @click.stop="send">{{$t('Send')}}</v-btn>
+          <v-spacer></v-spacer>
+        </v-flex>
+    </v-layout>
     
   </div>
 </template>
