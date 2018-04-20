@@ -79,7 +79,6 @@
         <auto-install enabled="false" />
         <config-file url="https://update.fchain.io/v2/chcp.json" />
     </chcp>
-    <plugin name="com.instabug.cordova.plugin" spec="~1.0.0" />
     <plugin name="cordova-plugin-x-socialsharing" spec="^5.3.2" />
     <plugin name="cordova-plugin-themeablebrowser" spec="https://github.com/imloama/cordova-plugin-themeablebrowser.git" />
     <engine name="browser" spec="&gt;=5.0.1" />
