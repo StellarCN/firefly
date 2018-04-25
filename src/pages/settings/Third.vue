@@ -94,6 +94,7 @@ import BackUpData from '@/components/third/BackUpData'
 import { FFWScript, FFW_EVENT_TYPE_PAY,FFW_EVENT_TYPE_PATHPAYMENT,FFW_EVENT_TYPE_SIGN
    ,FFW_EVENT_TYPE_BACKUP,FFW_EVENT_TYPE_RECOVERY,FFW_EVENT_TYPE_TRUST } from '@/api/ffw'
 import { signToBase64, verifyByBase64 } from '@/api/keypair'
+import debounce from 'lodash/debounce'
 
 // export const FFW_EVENT_TYPE_PAY = 'pay'
 // export const FFW_EVENT_TYPE_PATHPAYMENT = 'pathPayment'
@@ -247,25 +248,25 @@ export default {
         })
 
       })
-    
-      this.appInstance.addEventListener('message', e => {
+      let that = this
+      this.appInstance.addEventListener('message', debounce(function (e){
         console.log('-----------get message ---- ')
         console.log(JSON.stringify(e))
         let type = e.data.type
         if(type === FFW_EVENT_TYPE_PAY){
           this.doPayEvent(e)
         }else if(type === FFW_EVENT_TYPE_PATHPAYMENT){
-          this.doPathPaymentEvent(e)
+          that.doPathPaymentEvent(e)
         }else if(type === FFW_EVENT_TYPE_SIGN){
-          this.appEventType = e.data.type
-          this.appEventData = e.data
-          this.doSign(e)
+          that.appEventType = e.data.type
+          that.appEventData = e.data
+          that.doSign(e)
         }else{  
-          this.appEventType = e.data.type
-          this.appEventData = e.data
-          this.appInstance.hide()
+          that.appEventType = e.data.type
+          that.appEventData = e.data
+          that.appInstance.hide()
         }
-      })
+      },100))
     },
     doPayEvent(e){
       try{
