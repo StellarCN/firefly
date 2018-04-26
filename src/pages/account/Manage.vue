@@ -159,8 +159,8 @@ export default {
       this.selectedIndex = index
       this.showPwdSheet = true
     },
-    modify(){
-      this.$router.push({name: 'AccountInfo'});
+    modify(address){
+      this.$router.push({name: 'AccountInfo', query: {address: address}});
     },
     back(){
       this.$router.back()
