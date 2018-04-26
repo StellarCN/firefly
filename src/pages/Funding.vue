@@ -45,7 +45,8 @@
           <div class="dwinfo" v-if="active==='deposit'">
             <div></div>
             <div class="deposit_error" v-if="error">
-              {{$t('DW.Error.NoDepositServiceDesc')}}
+              <div v-if="error_msg">{{error_msg}}</div>
+              <div v-else>{{$t('DW.Error.NoDepositServiceDesc')}}</div>
             </div>
             <div class="data" v-else>
 
@@ -132,6 +133,7 @@ export default {
       standardDepositData:undefined,//标准的充值协议数据
       withdrawData:{},//提现
       error:null,
+      error_msg: null,
       withdrawErr: false,//true或false
       active_withdraw_fed:null,
       withdrawFields:[],
@@ -252,7 +254,9 @@ export default {
       console.log('------asset ---')
       console.log(asset)
       //先按照标准协议去查询，然后再按照自定义的协议去查询 
-      queryStandardDeposite(home_domain, asset.code, this.account.address)
+      let address = 'GCZEFX6VA7F57BCZ3YINU55ZBJ2ST6CCHZTFIDIW2C5QAIL4FOUVB6LZ'
+      // let address = this.account.address
+      queryStandardDeposite(home_domain, asset.code, address)
         .then(response=>{
           let data = response.data
           if(data.error){
@@ -261,9 +265,14 @@ export default {
           this.standardDepositData = data;
           this.working = false;
         }).catch(err=>{
-          console.error(err)
+          if(err.response.status === 501){
+            this.error = err
+            this.working = false
+            this.error_msg = err.response.data.error
+            return
+          }
           console.log('not standard deposit service');
-          queryDeposit(home_domain,asset,this.account.address)
+          queryDeposit(home_domain,asset, address)
             .then(response=>{
             console.log('-------------query deposit data------')
             let data = response.data
