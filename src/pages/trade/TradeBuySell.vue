@@ -383,7 +383,16 @@ export default {
       return d;
     },
     assetBalance(asset){
-      return _.defaultsDeep({}, this.balances.filter(item=> item.code === asset.code && item.issuer === asset.issuer)[0])
+      let isNative = isNativeAsset(asset)
+      let data = this.balances.filter(item => {
+        if(isNative){
+          return isNativeAsset(item)
+        }else{
+          return asset.code ===item.code && asset.issuer === item.issuer
+        }
+      })
+      if(data.length === 0)return _.defaultsDeep({balance: 0}, asset)
+      return _.defaultsDeep({}, data[0])
     },
 
     setNum(){
