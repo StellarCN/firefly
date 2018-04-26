@@ -9,7 +9,7 @@ import router from './router'
 import store from './store'
 import { i18n }  from './locales/index'
 require('./filters/index')
-//require('./directives/swiper')
+require('./directives/swiper')
 import imageHW from './directives/imageHW'
 require('./api/index')
 import { setVuexStore } from './streams'

@@ -27,7 +27,7 @@
                 }"
             >
             
-            <div :class="'flex-row account-wrapper ' + (selectedItem === index ? 'selected':'')" >
+            <div class="flex-row account-wrapper"  v-swiper=2>
               <div class="flex1">
                 <div class="avatar">
                   <i class="iconfont icon-erweima"></i>

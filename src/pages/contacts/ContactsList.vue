@@ -24,7 +24,7 @@
                     left: () => selectedItem = index,
                     right: () => selectedItem = null
                   }">
-                <v-layout :class="'mycontacts-li third-li ' + ( selectedItem === index ? 'selected':'')" row wrap @click.stop="toContactDetail(contact.id)">
+                <v-layout class="mycontacts-li third-li" row wrap v-swiper=2.5 @click.stop="toContactDetail(contact.id)">
                   <v-flex xs2 class="mycontacts-wrapper">
                     <v-avatar :tile=false class="grey darken-4 contact-avatar">
                       <i class="avatar iconfont icon-erweima"></i>

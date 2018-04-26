@@ -45,7 +45,7 @@
                     right: () => selectedItem = null
                   }"
               >
-              <v-layout :class="'pair-wrapper ' + (selectedItem === index ? 'selected':'')" row wrap @click="trade(index,pair)">
+              <v-layout class="pair-wrapper" row  v-swiper=1.5 @click="trade(index,pair)">
                 <v-flex xs4>
                   <div class="flex-row">
                     <div class="flex3 from-wrapper">
@@ -396,9 +396,11 @@ export default {
 
 <style lang="stylus" scoped>
 @require '~@/stylus/color.styl'
+
 .trade-card-content
+  // border: 1px solid $secondarycolor.gray
   padding: 5px 5px
-  background: $secondarycolor.gray
+  background: $primarycolor.gray
   border-radius: 5px
 .tradepairs-ul
   padding: 0px 0px
@@ -450,6 +452,7 @@ export default {
 
 .tradepair-li
   border-bottom: 1px solid $secondarycolor.font
+  background: $primarycolor.gray
 .tradepair-li:last-child
   border-bottom: 0px
 .operate-box 
@@ -465,12 +468,13 @@ export default {
     display: flex
     justify-content: center
     align-items: center
-    background-color: $secondarycolor.green
-    color: $primarycolor.font
+    background-color: $primarycolor.gray
+    color: $primarycolor.green
     padding: 0 12px
   .del
-    background-color: $secondarycolor.red
-    border-right: 1px solid $secondarycolor.gray
+    //background-color: $secondarycolor.red
+    //border-right: 1px solid $secondarycolor.gray
+    color: $primarycolor.red
     text-align:center
     vertical-align: middle
     .refreshimg
