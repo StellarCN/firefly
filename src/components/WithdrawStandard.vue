@@ -115,7 +115,7 @@
           ></v-text-field>
       </div>
       <div class="field_btn">
-        <v-btn :loading="working" class="error btn_ok" @click.stop="submitStep2">{{$t('Button.OK')}}</v-btn>
+        <v-btn :loading="working" :disabled="btn_disabled" class="error btn_ok" @click.stop="submitStep2">{{$t('Button.OK')}}</v-btn>
       </div>
     </div>
 
@@ -255,6 +255,24 @@ export default {
         return new Decimal(this.amount).minus(this.fee||0).toNumber().toFixed(7)
       }
       return null
+    },
+    min_amount(){
+      if(this.step === 2 && this.step2data ) return this.step2data.min_amount
+      return null
+    },
+    max_amount(){
+      if(this.step === 2 && this.step2data ) return this.step2data.max_amount
+      return null
+    },
+    btn_disabled(){
+      if( this.amount > 0 && this.amount >= this.min_amount){
+        if(this.max_amount > 0){
+          if(this.amount <= this.max_amount)return false
+          return true
+        }
+        return false
+      }
+      return true
     }
   },
   methods: {
