@@ -266,7 +266,7 @@ export default {
           that.appEventData = e.data
           that.appInstance.hide()
         }
-      },100))
+      },300))
     },
     doPayEvent(e){
       try{

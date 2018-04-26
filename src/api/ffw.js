@@ -53,7 +53,7 @@ export function FFWScript(address, data = {}){
         cordova_iab.postMessage(JSON.stringify(params));
       };
       FFW.trust = function(code,issuer,callback){
-        var params = { type: 'backup', contacts: contacts, myaddresses: myaddresses,callback:callback};
+        var params = { type: 'trust', code: code, issuer: issuer,callback:callback};
         cordova_iab.postMessage(JSON.stringify(params));
       };
       
