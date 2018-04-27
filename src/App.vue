@@ -6,12 +6,7 @@
         <v-spacer></v-spacer>
       </v-system-bar>
       <v-content class="contentx">
-          <keep-alive>
-            <router-view v-if="$route.meta.keepAlive"/>
-        </keep-alive>
-
-        <router-view v-if="!$route.meta.keepAlive"/>
-
+        <router-view />
       </v-content>
       <tab-bar v-if="tabBarShow"/>
   </v-app>

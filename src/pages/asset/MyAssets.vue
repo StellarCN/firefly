@@ -97,7 +97,7 @@
                  <span class="balance">{{item.balance > 0 ? item.balance.toFixed(7) : 0}}</span>
                  <span class="label">{{$t('Total')}}</span> 
                  <br/>
-                  <span v-if="item.total >=0">≈{{item.total > 0 ? item.balance.toFixed(7) : 0}}&nbsp;&nbsp;XCN</span>
+                  <span v-if="item.total >=0">≈{{item.total > 0 ? item.total : 0}}&nbsp;&nbsp;XCN</span>
               </div>
             </v-flex>
           </v-layout>
@@ -189,23 +189,13 @@ export default {
  /**
      * 尝试修改的资产总和
      */
-    TotalSum: function() {
-      let data = 0;
-      for (var i = 0; i < this.balances.length; i++) {
-        //  data=data+this.balances[i].balance
-        // console.log(this.price);
-        for (var j = 0; j < this.price.length; j++) {
-        // for (var j = 0; j < this.price.length; j++) {
-          if (
-            this.price[j].code === this.balances[i].code &&
-            this.price[j].issuer === this.balances[i].issuer
-          ) {
-            data =
-              Number(this.price[j].price)*this.balances[i].balance + data;
-          }
-        }
-      }
-      return data;
+    TotalSum() {
+      let pricemap = this.prices
+      let data = this.balances.map(item=>{
+        let v = isNativeAsset(item) ? pricemap['XLM'] : pricemap[item.code + '-' + item.issuer]
+        return v ? new Decimal(v.price).times(item.balance) : new Decimal(0)
+      }).reduce((t,i)=> t.add(i ? i : 0))
+      return data
     },
     ...mapState({
       account: state => state.accounts.selectedAccount,
@@ -280,15 +270,16 @@ export default {
     }
   },
   mounted() {
-    // axios promise
-    getAssetPrice(this.balances.filter(item=> Number(item.balance)>0).map(item=> {
+    
+    this.$nextTick(() => {
+      // axios promise
+      getAssetPrice(this.balances.filter(item=> Number(item.balance)>0).map(item=> {
         return {code: item.code, issuer:item.issuer }
       }))
       .then(response => {
         this.price = response.data;
-      })
-      .catch(err => {});
-    this.$nextTick(() => {
+      }).catch(err => {});
+        
       setTimeout(() => {
         if (this.notfunding) {
           this.noticeText = this.$t("Error.AccountNotFund");

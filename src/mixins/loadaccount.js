@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-31 09:07:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-21 15:55:26
+ * @Last Modified time: 2018-04-27 10:42:22
  * @License MIT 
  */
 
@@ -19,13 +19,16 @@ export default {
       account: state => state.accounts.selectedAccount,
     }),
   },
-  mounted() {
+  beforeMount () {
     if (this.account.address) {
       this.fetchData()
     }
     this.$watch('account.address', () => {
       this.fetchData()
     })
+  },
+  mounted() {
+    
   },
   beforeDestroy() {
     closePaymentStream()
