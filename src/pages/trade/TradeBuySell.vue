@@ -81,8 +81,12 @@
           <v-btn :class="'full-width btn-reset ' + ( isBuy ? 'btn-green' : 'btn-red' )"  @click="clean">{{$t('Reset')}}</v-btn>
         </div>
         <div class="flex2 btn-flex">
-          <v-btn class="full-width btn-buy" color="primary" v-if="isBuy" @click="showConfirmSheet = true">{{$t('Trade.Buy')}} {{BaseAsset.code}}</v-btn>
-          <v-btn class="full-width btn-sell" color="error" v-if="isSell" @click="showConfirmSheet = true">{{$t('Trade.Sell')}} {{BaseAsset.code}}</v-btn>
+          <v-btn class="full-width btn-buy" color="primary" 
+            :disabled="!(CounterBalance.balance>0 && total> 0 && CounterBalance.balance >= total)" 
+            v-if="isBuy" @click="showConfirmSheet = true">{{$t('Trade.Buy')}} {{BaseAsset.code}}</v-btn>
+          <v-btn class="full-width btn-sell" color="error" 
+            :disabled="!(BaseBalance.balance>0 && total> 0 && BaseBalance.balance >= total)" 
+            v-if="isSell" @click="showConfirmSheet = true">{{$t('Trade.Sell')}} {{BaseAsset.code}}</v-btn>
         </div>
       </div>
 
@@ -194,11 +198,11 @@ export default {
     CounterBalance(){
       return this.assetBalance(this.CounterAsset)
     },
-    choseTradePair({index,tradepair}){//选择交易对
-      this.$nextTick(()=>{
-        this.$refs.orderbook.reload()
-      })
-    },
+    // choseTradePair({index,tradepair}){//选择交易对
+    //   this.$nextTick(()=>{
+    //     this.$refs.orderbook.reload()
+    //   })
+    // },
     isBuy(){
       return this.flag === FLAG_BUY
     },
@@ -555,6 +559,9 @@ export default {
       this.num = 0
       this.amount = 0
       this.total = 0
+      this.$nextTick(()=>{
+        this.$refs.orderbook.reload()
+      })
     },
     hiddenLoading(){
       this.sending = false
