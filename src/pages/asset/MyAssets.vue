@@ -140,6 +140,7 @@ import TabBar from '@/components/TabBar'
 import  defaultsDeep  from 'lodash/defaultsDeep'
 import { getAssetPrice } from '@/api/fchain'
 import { Decimal } from 'decimal.js'
+import throttle from 'lodash/throttle'
 
 //过滤0资产
 const FLAG_FILTER_ZERO = "filter_zero";
@@ -168,6 +169,8 @@ export default {
       sort_flag: SORT_DEFAULT,
       price:[],
 
+      _getPriceFn: null,
+
       selectedItem: null,
 
       sortItems: [{
@@ -194,8 +197,9 @@ export default {
       let data = this.balances.map(item=>{
         let v = isNativeAsset(item) ? pricemap['XLM'] : pricemap[item.code + '-' + item.issuer]
         return v ? new Decimal(v.price).times(item.balance) : new Decimal(0)
-      }).reduce((t,i)=> t.add(i ? i : 0))
-      return data
+      })
+      if(data.length === 0)return 0
+      return data.reduce((t,i)=> t.add(i ? i : 0))
     },
     ...mapState({
       account: state => state.accounts.selectedAccount,
@@ -267,19 +271,26 @@ export default {
   watch: {
     sort_flag(){
       this.selectedItem = null
+    },
+    balances(){
+      if(this._getPriceFn){
+        this._getPriceFn()
+      }
     }
   },
   mounted() {
     
-    this.$nextTick(() => {
-      // axios promise
+    this._getPriceFn = throttle(()=>{
       getAssetPrice(this.balances.filter(item=> Number(item.balance)>0).map(item=> {
         return {code: item.code, issuer:item.issuer }
       }))
       .then(response => {
         this.price = response.data;
       }).catch(err => {});
-        
+    },60000)
+
+    this.$nextTick(() => {
+      
       setTimeout(() => {
         if (this.notfunding) {
           this.noticeText = this.$t("Error.AccountNotFund");
