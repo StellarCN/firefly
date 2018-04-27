@@ -85,7 +85,6 @@
           @input="chgAmount"
           dark
           :suffix="asset.code"
-          type="Number"
           ></v-text-field>
         <v-slider v-model="num"  hide-details 
           class="amount-slider"
@@ -389,14 +388,14 @@ export default {
       //1. 数量不能大于最大值
       let nval = Number(val)
       if(nval >= this.balance){
-        this.amount = this.balance
+        this.amount = ''+this.balance
         if(this.amount === 0){
           this.num = 0
         }else{
           this.num = 100
         }
       }else{
-        this.amount = nval
+  //      this.amount = nval
         //计算
         this.num = new Decimal(this.amount).times(100).div(this.balance).round().toNumber()
       }
