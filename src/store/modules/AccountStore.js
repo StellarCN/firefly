@@ -148,6 +148,7 @@ const getters = {
         obj.issuer = element.asset_issuer
       }
       obj.balance = Number(element.balance)
+      obj.origin_balance = element.balance
       obj.limit = Number(element.limit)
       obj.type = element.asset_type
       data.push(obj)

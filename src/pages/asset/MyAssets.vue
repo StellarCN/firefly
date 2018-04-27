@@ -50,7 +50,6 @@
         </v-btn>
       </div>
       <div class="flex1">
-        
          <v-menu offset-y>
           <v-btn depressed flat color="primary" slot="activator">
             <span class="no-upper">{{$t(selectedSortItem.label)}}</span>
@@ -60,8 +59,7 @@
               <v-list-tile-title @click="chgSortItem(item)">{{ $t(item.label) }}</v-list-tile-title>
             </v-list-tile>
           </v-list>
-        </v-menu>
-        
+        </v-menu> 
       </div>
     </div>
 
@@ -94,7 +92,7 @@
             </v-flex>
             <v-flex xs6 class="myassets-wrapper">
               <div class="myassets-balance third">
-                 <span class="balance">{{item.balance > 0 ? item.balance.toFixed(7) : 0}}</span>
+                 <span class="balance">{{item.balanceStr}}</span>
                  <span class="label">{{$t('Total')}}</span> 
                  <br/>
                   <span v-if="item.total >=0">≈{{item.total > 0 ? item.total : 0}}&nbsp;&nbsp;XCN</span>
@@ -196,7 +194,7 @@ export default {
       let pricemap = this.prices
       let data = this.balances.map(item=>{
         let v = isNativeAsset(item) ? pricemap['XLM'] : pricemap[item.code + '-' + item.issuer]
-        return v ? new Decimal(v.price).times(item.balance) : new Decimal(0)
+        return v ? new Decimal(v.price || 0).times(item.balance) : new Decimal(0)
       })
       if(data.length === 0)return 0
       return data.reduce((t,i)=> t.add(i ? i : 0))
@@ -255,7 +253,7 @@ export default {
           let p = this.prices[key]
           if(p){
             item.price = p.price
-            item.total = new Decimal(p.price).times(item.balance).toNumber();
+            item.total = new Decimal(p.price || 0).times(item.balance).toNumber();
             if(item.total >0){
               item.total = item.total.toFixed(7)
             }
@@ -265,7 +263,10 @@ export default {
           item.total = 0
         }
       }) 
-      return data
+      return data.map(item=> {
+          item.balanceStr = item.balance > 0 ? item.origin_balance: 0
+          return item
+      })
     }
   },
   watch: {
