@@ -254,8 +254,8 @@ export default {
       console.log('------asset ---')
       console.log(asset)
       //先按照标准协议去查询，然后再按照自定义的协议去查询 
-      let address = 'GCZEFX6VA7F57BCZ3YINU55ZBJ2ST6CCHZTFIDIW2C5QAIL4FOUVB6LZ'
-      // let address = this.account.address
+      //let address = 'GCZEFX6VA7F57BCZ3YINU55ZBJ2ST6CCHZTFIDIW2C5QAIL4FOUVB6LZ'
+      let address = this.account.address
       queryStandardDeposite(home_domain, asset.code, address)
         .then(response=>{
           let data = response.data
