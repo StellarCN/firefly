@@ -139,6 +139,7 @@ import { offer as doOffer } from '@/api/offer'
 import { mapState, mapActions, mapGetters} from 'vuex'
 import { getAsset, isNativeAsset } from '@/api/assets'
 import { Decimal } from 'decimal.js'
+import debounce from 'lodash/debounce'
 
 const FLAG_BUY = 'buy'
 const FLAG_SELL = 'sell'
@@ -314,7 +315,7 @@ export default {
         }
         this.setTotal()
         this.setNum()
-        this.setAmount()
+       // this.setAmount()
       }else if(this.isSell){
         if(newvalue > this.tradeBalance){
           this.$nextTick(()=>{
@@ -439,13 +440,13 @@ export default {
         this.total = Number(new Decimal(this.amount||0).times(this.price).toFixed(7))
       }
     },
-    resetJustify(){
+    resetJustify:debounce(function(){
       this.$nextTick(()=>{
         console.log('before reset Justify->'+this.justify)
         this.justify = false
         console.log('after reset Justify->'+this.justify)
       })
-    },
+    },1000),
     toMax(){
       if(this.justify) return
       this.justify = true
