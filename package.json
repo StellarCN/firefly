@@ -21,7 +21,6 @@
     "ios": "cordova prepare ios && cordova run ios",
     "android": "cordova prepare android",
     "lint": "eslint --ext .js,.vue src",
-    "postinstall": "npm run build && cordova prepare",
     "cordova": "cordova prepare -d",
     "analyz": "NODE_ENV=production npm_config_report=true npm run build",
     "chcp": "cordova-hcp build"
