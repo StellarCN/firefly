@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-04-20 16:24:46
+ * @Last Modified time: 2018-04-28 16:50:33
  * @License: MIT 
  */
 <template>
@@ -83,6 +83,14 @@ const RESOLUTIONS = {
     "hour": RESOLUTION_1HOUR,
     "15min": RESOLUTION_15MIN,
     "1min": RESOLUTION_1MIN
+}
+
+const RESOLUTION_HOURS = {
+    "week": 5880,
+    "day": 840,
+    "hour": 48,
+    "15min": 24,
+    "1min": 24
 }
 
 export default {
@@ -229,6 +237,13 @@ export default {
         init() {
             this.initView()
         },
+        getStartTime(){
+            let defHour = RESOLUTION_HOURS[this.resolution_key]
+            if(!defHour){
+                defHour = 24
+            }
+            return Number(moment().subtract(defHour,"hours").format('x'))
+        },
         //请求api，获取数据
         fetch(){
           let start_time = null, end_time=null;
@@ -237,8 +252,8 @@ export default {
               end_time = new Date().getTime()
           }else{//初次请求，判断start是否存在
             if(this.start < 0){
-                //前48小时
-                start_time = Number(moment().subtract(48,"hours").format('x'))
+                
+                start_time = this.getStartTime()
             }else{
                 start_time = this.start;
             }
