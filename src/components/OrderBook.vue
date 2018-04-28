@@ -13,8 +13,8 @@
           @click.stop="active='sell'">{{$t('Trade.SellOffer')}}</div>
       <div :class="'myoffer offermenu' + (active==='myoffer'?' active':'')" 
           @click.stop="active='myoffer'">{{$t('Trade.MyOffer')}}({{myofferlen}})</div>
-      <!-- <div :class="'myoffer offermenu' + (active==='myTradeHistory'?' active':'')" 
-          @click.stop="active='myTradeHistory'">{{$t('Trade.MyTradeHistory')}}</div> -->
+      <div :class="'myoffer offermenu' + (active==='myTradeHistory'?' active':'')" 
+          @click.stop="active='myTradeHistory'">{{$t('History.Trade')}}</div>
     </div>
 
     <card class="offer-card" padding="10px 10px">
@@ -32,9 +32,9 @@
           @click.stop="chooseItem('buy',item)"
           >
           <div class="b-row price">{{item.price}}</div>
-          <div class="b-row">{{item.amount}}</div>
-          <div class="b-row">{{item.num}}</div>
-          <div class="b-row depth">{{item.depth}}</div>
+          <div class="b-row">{{[locale.key,item.amount] | I18NNumberFormat }}</div>
+          <div class="b-row">{{[locale.key,item.num] | I18NNumberFormat}}</div>
+          <div class="b-row depth">{{[locale.key,item.depth] | I18NNumberFormat}}</div>
         </div>
       </div>
       <div class="selloffer-table offer-table" v-if="active === 'sell'" slot="card-content">
@@ -51,9 +51,9 @@
             @click.stop="chooseItem('sell',item)"
           >
           <div class="b-row price">{{item.price}}</div>
-          <div class="b-row">{{item.amount}}</div>
-          <div class="b-row">{{item.num}}</div>
-          <div class="b-row depth">{{item.depth}}</div>
+          <div class="b-row">{{[locale.key,item.amount] | I18NNumberFormat}}</div>
+          <div class="b-row">{{[locale.key,item.num] | I18NNumberFormat}}</div>
+          <div class="b-row depth">{{[locale.key,item.depth] | I18NNumberFormat}}</div>
         </div>
       </div>
       <div class="myoffer-table offer-table" v-if="active === 'myoffer'" slot="card-content">
@@ -61,42 +61,39 @@
           <div class="headcol">{{$t('Trade.Price')}}</div>
           <div class="headcol">{{BaseAsset.code}}</div>
           <div class="headcol">{{CounterAsset.code}}</div>
-          <div class="headcol">&nbsp;</div>
+          <div class="headcol"></div>
         </div>
         <div class="table-row body-2" 
           v-for="(item,index) in myoffers" :key="index" :class='item.type'>
           <div class="b-row price" >{{Number(item.price.toFixed(4))}}</div>
-          <div class="b-row" v-if="item.type==='buy'">+{{Number(item.base.toFixed(4))}}</div>
-          <div class="b-row" v-else>-{{Number(item.amount.toFixed(4))}}</div>
-          <div class="b-row" v-if="item.type==='buy'">-{{Number(item.amount.toFixed(4))}}</div>
-          <div class="b-row" v-else>+{{Number(item.base.toFixed(4))}}</div>
+          <div class="b-row" v-if="item.type==='buy'">+{{[locale.key,Number(item.base.toFixed(4))] | I18NNumberFormat}}</div>
+          <div class="b-row" v-else>-{{[locale.key,Number(item.amount.toFixed(4))] | I18NNumberFormat}}</div>
+          <div class="b-row" v-if="item.type==='buy'">-{{[locale.key,Number(item.amount.toFixed(4))] | I18NNumberFormat}}</div>
+          <div class="b-row" v-else>+{{[locale.key,Number(item.base.toFixed(4))] | I18NNumberFormat}}</div>
           <div class="b-row depth">
             <span class="working" v-if="working && delindex===index"></span>
             <a v-else href="javascript:void(0)"   @click.stop="cancelMyOffer(item,index)">{{$t('Trade.Cancel')}}</a>
           </div>
         </div>
       </div>
-      <!-- <div class="myoffer-table offer-table" v-if="active === 'myTradeHistoryr'" slot="card-content">
+      
+      <div class="myoffer-table offer-table" v-if="active === 'myTradeHistory'" slot="card-content">
         <div class="table-head body-2">
           <div class="headcol">{{$t('Trade.Price')}}</div>
           <div class="headcol">{{BaseAsset.code}}</div>
-          <div class="headcol">{{CounterAsset.code}}</div>
-          <div class="headcol">&nbsp;</div>
-          
+          <div class="headcol">{{CounterAsset.code}}</div>    
+          <div class="headcol">{{$t('status')}}</div>      
         </div>
         <div class="table-row body-2" 
-          v-for="(item,index) in myoffers" :key="index" :class='item.type'>
+          v-for="(item,index) in deals" :key="index" :class='item.type'>
           <div class="b-row price" >{{Number(item.price.toFixed(4))}}</div>
-          <div class="b-row" v-if="item.type==='buy'">{{item.base}}</div>
-          <div class="b-row" v-else>{{item.amount}}</div>
-          <div class="b-row" v-if="item.type==='buy'">{{item.amount}}</div>
-          <div class="b-row" v-else>{{item.base}}</div>
-          <div class="b-row depth">
-            <span class="working" v-if="working && delindex===index"></span>
-            <a v-else href="javascript:void(0)" error @click.stop="cancelMyOffer(item,index)">{{$t('Trade.Cancel')}}</a>
-          </div>
+          <div class="b-row" v-if="item.base_asset === BaseAsset.code && item.base_issuer === BaseAsset.issuer">+{{Number(item.amount).toFixed(4)}}</div>
+          <div class="b-row" v-else>-{{Number(item.total).toFixed(4)}}</div>
+          <div class="b-row" v-if="item.base_asset === CounterAsset.code && item.base_issuer === CounterAsset.issuer">+{{Number(item.amount).toFixed(4)}}</div>
+          <div class="b-row" v-else>-{{Number(item.total).toFixed(4)}}</div>
+          <div class="b-row">{{$t(item.type)}}</div>
         </div>
-      </div> -->
+      </div>
 
     </card>
   </scroll>
@@ -111,6 +108,10 @@ import { DEFAULT_INTERVAL } from '@/api/gateways'
 import { getAsset } from '@/api/assets'
 import Scroll from '@/components/Scroll'
 import { myofferConvert } from '@/api/offer'
+import {Decimal} from 'decimal.js'
+import { getAllEffectOffers } from '@/api/fchain'
+var moment = require('moment')
+
 export default {
   data(){
     return {
@@ -120,6 +121,7 @@ export default {
       working: false,
       delindex: -1,
       timeInterval: null,
+      deals:[],
     }
   },
   props:{
@@ -127,14 +129,6 @@ export default {
       type:String,
       default: 'buy'
     },
-    pairIndex: {
-      type: Number,
-      default: null
-    },
-    blank:{
-      type: Boolean,
-      default: false
-    }
   },
   computed:{
     ...mapState({
@@ -148,6 +142,7 @@ export default {
       asks: state => state.accounts.selectedTradePair.asks,//卖单
       my: state => state.accounts.selectedTradePair.my.records,
       onpause: state => state.onpause,
+      locale: state => state.app.locale,
 
     }),
     ...mapGetters([
@@ -159,14 +154,6 @@ export default {
       }
       return 4
     },
-    // active: {
-    //   getter: function(){
-    //     return this.activetab
-    //   },
-    //   setter: function(value){
-    //     this.emit()
-    //   }
-    // },
     BaseAsset(){
       return this.selectedTrade.from
     },
@@ -174,70 +161,57 @@ export default {
       return this.selectedTrade.to
     },
     myofferlen(){
-      if(this.blank)return 0;
       return this.myoffers.length;
     },
     myoffers(){
-      if(this.blank)return []
       if(this.my){
         return myofferConvert(this.BaseAsset,this.CounterAsset,this.my)
       }
       return []
     },
     bidsdata(){
-      if(this.blank)return []
-      let data = []
-      let dep = 0
-      let n=this.bids.length
-      for(var i=0;i<n;i++){
-        let obj = Object.assign({}, this.bids[i])
-        obj.num = Number(obj.amount).toFixed(4)
-        obj.price = Number(obj.price).toFixed(this.decimal)
-        obj.amount = (obj.num * obj.price_r.d / obj.price_r.n).toFixed(2)
-        dep += Number(obj.num)
-        obj.depth = dep.toFixed(2)
-        obj.origin = this.bids[i]
-        data.push(obj)
-      }
-      data.forEach(ele=>{
-        let p = ele.depth / dep
-        ele.percent = Number((p * 100).toFixed(2))
+      let dep = new Decimal(0)
+      let newdata = this.bids.map(obj=>{
+        let amount = new Decimal(obj.amount)
+        dep = dep.add(amount)
+        return Object.assign({}, obj, {
+          origin: obj,
+          num: amount.toFixed(4),
+          price: new Decimal(obj.price).toFixed(this.decimal),
+          amount: amount.times(obj.price_r.d).dividedBy(obj.price_r.n).toFixed(2),
+          depth: Number(dep.toFixed(2)),
+        })
+      })
+      newdata.forEach(ele=>{
+        ele.percent = Number(new Decimal(ele.depth).times(100).dividedBy(dep).toFixed(2))
         ele.blank = 100 - ele.percent
       })
-      return data
+      return newdata
     },
     asksdata(){
-      if(this.blank)return []
-      let data = []
-      let dep = 0
-      // for (ask of asks){
-
-      // }
-      let n=this.asks.length
-      for(var i=0;i<n;i++){
-        let obj = Object.assign({}, this.asks[i])
-        obj.amount = Number(obj.amount).toFixed(2)
-        obj.price = Number(obj.price).toFixed(this.decimal)
-        obj.num = (obj.price * obj.amount).toFixed(4)
-        dep += Number(obj.num)
-        obj.depth = dep.toFixed(2)
-        obj.origin = this.asks[i]
-        data.push(obj)
-      }
-      data.forEach(ele=>{
-        let p = ele.depth / dep
-        ele.percent = Number((p * 100).toFixed(2))
+      let dep = new Decimal(0)
+      let newdata = this.asks.map(obj => {
+        let amount = new Decimal(obj.amount)
+        let num = amount.times(obj.price)
+        dep = dep.add(num);
+        return Object.assign({}, obj, {
+          amount: amount.toFixed(2),
+          price: new Decimal(obj.price).toFixed(this.decimal),
+          num: num.toFixed(4),
+          depth: dep.toFixed(2),
+          origin: obj,
+        });
+      })
+      newdata.forEach(ele=>{
+        ele.percent =  Number(new Decimal(ele.depth).times(100).dividedBy(dep).toFixed(2))
         ele.blank = 100 - ele.percent
       })
-      return data
+      return newdata
     },
 
   },
   beforeDestroy: function() {
-    console.log('OrderBook before Destroy......................--------------------------------..')
-    if(this.timeInterval!=null){
-      clearInterval(this.timeInterval)
-    }
+    this.clean()
   },
  
   watch: {
@@ -251,25 +225,17 @@ export default {
           clearInterval(this.timeInterval)
         }
       }else{
-        if(!this.timeInterval && !this.blank){
+        if(!this.timeInterval){
           this.setup()
         }
       }
     },
-    blank(val){
-      if(this.timeInterval){
-          clearInterval(this.timeInterval)
-       }
-      if(!val){
-        this.setup()
-      }
-    },//end of blank
   },
   mounted(){
     this.setup();
   },
   beforeUpdate(){
-    if(!this.blank && !this.timeInterval){
+    if(!this.timeInterval){
       this.setup()
     }
   },
@@ -286,17 +252,21 @@ export default {
       orderBookStreamHandler: 'orderBookStreamHandler'
 
     }),
-    setup(){
-      if(this.blank)return
-      if(this.selectedTradeIndex === this.pairIndex){
-        this.fetchData()
-        this.timeInterval = setInterval(()=>{this.fetchData()},DEFAULT_INTERVAL)
-        this.$nextTick(function(){
-          this.$emit('intervalChanged',this.timeInterval)
-        })
-        this.fetchData()
-
+    reload(){
+      this.clean()
+      this.setup()
+    },
+    clean(){
+      if(this.timeInterval!=null){
+        clearInterval(this.timeInterval)
       }
+    },
+    setup(){
+      this.timeInterval = setInterval(()=>{this.fetchData()},DEFAULT_INTERVAL)
+      this.$nextTick(function(){
+        this.$emit('intervalChanged',this.timeInterval)
+      })
+      this.fetchData()
     },
     //查询买单和卖单
     fetchData(){
@@ -306,7 +276,7 @@ export default {
       })
     },
     load(){
-      return Promise.all([this.queryOrderBook(), this.queryMyOffers()])
+      return Promise.all([this.queryOrderBook(), this.queryMyOffers(), this.queryAllOffers()])
     },
     //撤消委单
     cancelMyOffer(item,index){
@@ -331,6 +301,47 @@ export default {
     },
     chooseItem(type,data){
       this.$emit('choose',{type,data})
+    },
+    queryAllOffers(){
+      //暂时只查询一周的委单数据
+      let start_time = Number(moment().subtract(100,"days").format('x'))
+      let end_time = Number(moment().format('x'))
+      getAllEffectOffers(this.account.address, start_time, end_time)
+        .then(response=>{
+          if(!response.data)return;
+          console.log('----response--data--')
+          console.log(response.data)
+          this.deals = response.data.map(item=>{
+            return Object.assign({}, item, { total: new Decimal(item.amount).times(item.price).toFixed(7), 
+              counter_issuer: item.counter_issuer ? item.counter_issuer : 'stellar.org',
+              base_issuer: item.base_issuer ? item.base_issuer : 'stellar.org',
+              price: Number(item.price)
+            })
+          }).filter(item=>{
+            let key1 = item.base_asset + item.base_issuer + item.counter_asset+item.counter_issuer
+            let key2 = item.counter_asset + item.counter_issuer + item.base_asset+item.base_issuer
+            let from = this.selectedTrade.from
+            let to = this.selectedTrade.to
+            let key01 = from.code + from.issuer + to.code + to.issuer
+            let key02 = to.code + to.issuer + from.code + from.issuer
+            if(key01===key1 && key02 === key2){
+              item.itype = 'buy'
+              return true
+            }else if(key01===key2 && key02 === key1){
+              item.itype = 'sell'
+              item.price = Number(new Decimal(1).div(item.price).toFixed(7))
+              return true
+            }else{
+              return false
+            }
+          })
+        })
+        .catch(err=>{
+          console.error(err)
+          if(err.message){
+            this.$toasted.error(err.message)
+          }
+        })
     }
    
   },
@@ -342,64 +353,6 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-@require '../stylus/color.styl'
-.ordermenu
-  display: flex
-  font-size: 16px
-  padding-top: 10px
-  margin-bottom: 3px
-  color: $secondarycolor.font
-  .offermenu
-    display: flex
-    padding-left: 20px
-    padding-right: 20px
-  .offermenu.active
-    border-bottom: 2px solid $primarycolor.green
-.table-head
-  display: flex
-  font-size: 18px
-  color: $secondarycolor.font
-  padding-top: 2px
-  padding-bottom: 2px
-  .headcol
-    flex: 1
-    text-align: right
-  .headcol:nth-child(1)
-    text-align: left
-.table-row
-  display: flex
-  font-size: 18px
-  color: $secondarycolor.font
-  padding-top: 10px
-  /*margin-bottom: 20px*/
-  .b-row
-    flex: 1
-    text-align: right
-    padding-right: 1px
-  .b-row.price
-    text-align: left
-  .b-row.depth
-    text-align: right
-    &>a
-      color: $primarycolor.green
-    
-
-.working
-    display: block
-    width: 20px
-    height: 20px
-    float: right
-    background: url(../assets/img/refresh-icon.png) no-repeat center center
-    background-size: 16px 16px
-    animation: rotate 2s infinite
-    animation-timing-function: linear
-    margin: auto auto
-
-.buy
-  padding: 5px;
-  color: $primarycolor.green
-.sell
-  padding: 5px;
-  color: $primarycolor.red
+@require './orderbook.styl'
 </style>
  

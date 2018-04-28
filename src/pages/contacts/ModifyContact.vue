@@ -68,6 +68,7 @@
 import Toolbar from '@/components/Toolbar'
 import Card from '@/components/Card'
 import { mapState, mapActions, mapGetters} from 'vuex'
+import {isValidMemo} from '@/api/account'
 
 let loseCode = function(str) {
   let hash = 0;
@@ -94,8 +95,7 @@ export default {
       address: '',
       memotype: '',
       memo: '',
-      memorequired: false,
-      memotype_real: ''
+      memorequired: false
     }
   },
    computed:{
@@ -128,20 +128,22 @@ export default {
     },
     onMemoTypeInput () {
       if(this.memotype === 'None'){
-        this.memotype_real = ''
         this.memo = ''
         this.memorequired = false
       }else{
-        this.memotype_real = this.memotype
         this.memorequired = true
       }
     },
     modifyContact() {
       //let length = this.accountData.contacts.length
-      let contact_temp = {name: this.name, address: this.address, memotype: this.memotype_real, memo: this.memo}
-      let hash_temp = loseCode(this.address + this.memotype_real + this.memo)
+      let contact_temp = {name: this.name, address: this.address, memotype: this.memotype, memo: this.memo}
+      let hash_temp = loseCode(this.name + this.address + this.memotype + this.memo)
       if (hash_temp === this.contact.hash) {
         this.$toasted.error(this.$t('Error.ContactExist'))
+        return
+      }
+      if(contact_temp.memotype !== 'None' && !isValidMemo(contact_temp.memotype, contact_temp.memo)) {
+        this.$toasted.error(this.$t('Error.MemoIsInvalid'))
         return
       }
       //console.log(contact_temp)
@@ -186,4 +188,3 @@ export default {
 .modify
   background-color #21ce90  !important
 </style>
-

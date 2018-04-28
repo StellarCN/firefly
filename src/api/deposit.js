@@ -3,6 +3,7 @@
 import axios from 'axios'
 import { getServer} from './server'
 import { federation } from './federation'
+import StellarSdk from 'stellar-sdk'
 var Promise = require('es6-promise').Promise
 
 /**
@@ -22,3 +23,32 @@ export function queryDeposit(domain,asset,address){
   })
 }
 
+/**
+ * =====sep 0006 标准的充值接口
+ * 1. 拿到stellar.toml中的DEPOSIT_SERVER 
+ * 2. 请求DEPOSIT_SERVER，GET请求，参数：asset_code（必填），account(必填)，memo_type(可选)，memo(可选)
+ * 3. 拿到结果，JSON格式，
+ * {
+ *    how: 一般是恒星地址，
+ *    eta: 可选 int , 预估多长时间后充值会生效 
+ *    min_account: 可选，float ， 最小充值金额
+ *    max_account: 可选，float ，最大充值金额
+ *    fee_fixed: 可选，float， 固定的充值费用
+ *    fee_percent: 可选，float，充值费率
+ *    extra_info： 可选，object，
+ * }
+ * 4. 根据充值内容给用户提示相应的信息，都是文本内容
+ * 
+ */  
+export function queryStandardDeposite(homedomain,asset_code,address){
+  return StellarSdk.StellarTomlResolver.resolve(homedomain)
+    .then(data => {
+      console.log('---query standard---')
+      console.log(data)
+      if(data.DEPOSIT_SERVER){
+        let url = `${data.DEPOSIT_SERVER}?asset_code=${asset_code}&account=${address}`
+        return axios.get(url)
+      }
+      throw new Error('DW.Error.NoDepositService')
+    })
+}

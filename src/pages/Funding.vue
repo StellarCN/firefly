@@ -21,7 +21,7 @@
               v-model="selectedasset"
               :label="$t('Asset')"
               class="selectasset"
-              item-value="code"
+              item-value="id"
               item-text="code"
               dark
               :return-object="assetChoseReturnObject"
@@ -29,52 +29,60 @@
             >
             <template slot="selection" slot-scope="data">
               <span class="asset-select-code show">{{data.item.code}}</span>
-              <span class="asset-select-issuer show" v-if="assethosts[data.item.code]">{{assethosts[data.item.code]}}</span>
-              <span class="asset-select-issuer show" v-else-if="assethosts[data.item.issuer]">{{assethosts[data.item.issuer]}}</span>
+              <span class="asset-select-issuer show" v-if="assethosts[data.item.issuer]">{{assethosts[data.item.issuer]}}</span>
+              <span class="asset-select-issuer show" v-else-if="assethosts[data.item.code]">{{assethosts[data.item.code]}}</span>
               <span class="asset-select-issuer show" v-else>{{data.item.issuer|miniaddress}}</span>
 
             </template>
             <template slot="item" slot-scope="data">
               <span class="asset-select-code">{{data.item.code}}</span>
-              <span class="asset-select-issuer show" v-if="assethosts[data.item.code]">{{assethosts[data.item.code]}}</span>
-              <span class="asset-select-issuer show" v-else-if="assethosts[data.item.issuer]">{{assethosts[data.item.issuer]}}</span>
+              <span class="asset-select-issuer show" v-if="assethosts[data.item.issuer]">{{assethosts[data.item.issuer]}}</span>
+              <span class="asset-select-issuer show" v-else-if="assethosts[data.item.code]">{{assethosts[data.item.code]}}</span>
               <span class="asset-select-issuer show" v-else>{{data.item.issuer|miniaddress}}</span>
             </template>
           </v-select>
 
           <div class="dwinfo" v-if="active==='deposit'">
+            <div></div>
             <div class="deposit_error" v-if="error">
-              {{$t('DW.Error.NoDepositServiceDesc')}}
+              <div v-if="error_msg">{{error_msg}}</div>
+              <div v-else>{{$t('DW.Error.NoDepositServiceDesc')}}</div>
             </div>
             <div class="data" v-else>
-              <div class="label" v-if="depositData.deposit_info">{{$t('DW.DepositInfo')}}</div>
-              <div class="deposit_info" @click="copy(depositData.deposit_info)">{{depositData.deposit_info}}</div>
-              <div class="extra_info">{{depositData.extra_info}}</div>
-              <div class="extra_info">{{depositData.extra_info_cn}}</div>
+
+              <div v-if="standardDepositData">
+                <div class="label">{{$t('DW.DepositInfo')}}</div>
+                <div class="deposit_info" @click="copy(standardDepositData.how)">{{standardDepositData.how}}</div>
+                <div class="extra_info" v-if="standardDepositData.eta!= undefined">{{$t('DW.DepositInfo.eta',[standardDepositData.eta])}}</div>
+                <div class="extra_info" v-if="standardDepositData.min_amount!=undefined">{{$t('DW.DepositInfo.min', [standardDepositData.min_amount])}}</div>
+                <div class="extra_info" v-if="standardDepositData.max_amount!=undefined">{{$t('DW.DepositInfo.max', [standardDepositData.max_amount])}}</div>
+                <div class="extra_info" v-if="standardDepositData.fee_fixed!=undefined">{{$t('DW.DepositInfo.feefixed', [standardDepositData.fee_fixed])}}</div>
+                <div class="extra_info" v-if="standardDepositData.fee_percent!=undefined">{{$t('DW.DepositInfo.feepercent', [standardDepositData.fee_percent * 100])}}</div>
+                <div v-if="Array.isArray(standardDepositData.extra_info)">
+                  <div class="extra_info" v-for="(value,index) in standardDepositData.extra_info" :key="index" :id="index">{{value}}</div>
+                </div>
+                <div v-else>
+                  <div class="extra_info">{{standardDepositData.extra_info}}</div>
+                </div>
+              </div>
+ 
+              <div v-else>
+                <div class="label" v-if="depositData.deposit_info">{{$t('DW.DepositInfo')}}</div>
+                <div class="deposit_info" @click="copy(depositData.deposit_info)">{{depositData.deposit_info}}</div>
+                <div class="extra_info">{{depositData.extra_info}}</div>
+                <div class="extra_info">{{depositData.extra_info_cn}}</div>
+              </div>
+
             </div>
           </div>
 
           <div class="dwinfo" v-if="active==='withdraw'">
-            <div class="withdraw_err_info" v-if="withdrawErr">
-              <div class="noservice">{{$t('DW.Error.NoWithdrawService')}}</div>
-              <div class="noservicedesc">{{$t('DW.Error.NoWithdrawServiceDesc')}}</div>
-            </div>
-            <div class="withdraw_info" v-else>
-              <div class="withdraw_list" v-if="withdrawData.services">
-                <div class="withdraw_row" v-for="(item,index) in withdrawData.services" :key="index" @click="choseWithdrawService(index)">
-                  <div :class="'withdraw_desc '+(item.federation_address === active_withdraw_fed?'active':'')">
-                    <div class="description" v-for="(desc,index) in withdrawDesc(item)" :key="'desc'+index">
-                      {{desc}}
-                    </div>
-                  </div>
-                  <div class="withdraw_icon">
-                    <i class="iconfont icon-dot1" v-if="item.federation_address === active_withdraw_fed"></i>
-                    <i class="iconfont icon-dot" v-else></i>
-                  </div>
-                </div>
-  
-              </div>
-            </div>
+            <withdraw-standard v-if="selectedasset && assetAccounts[selectedasset.issuer]"
+              :homedomain="assetAccounts[selectedasset.issuer].home_domain"
+              :asset="selectedasset"
+              ref="withdraw"
+            ></withdraw-standard>
+            
           </div>
 
          
@@ -82,41 +90,43 @@
 
       </card>
 
-      <card margin="20px 0px" padding="10px 10px" class="withdraw_form_card" v-show="working">
+      <card margin="20px 0px" padding="10px 10px" class="withdraw_form_card" v-if="working">
         <div class="working" slot="card-content">
-          <!-- <div class="refreshimg"></div> -->
           <v-progress-circular indeterminate color="primary"></v-progress-circular>
         </div>
       </card>
 
-
-      <card margin="20px 0px" padding="10px 10px" class="withdraw_form_card" v-if="!working && active==='withdraw' && withdrawData.services">
-          <withdraw-input slot="card-content"
-                  :fields="withdrawFields"
-                  :federation="active_withdraw_fed"
-                  :withdrawurl="withdrawurl"
-                  :asset="selectedasset"
-                  :accountId="withdrawAccountId"
-                ></withdraw-input>
-
+      <card margin="20px 0px" padding="0 0" class="withdraw_form_card">
+        <div class="working fundinginfo" slot="card-content">
+          {{$t('FundingInfo')}}
+        </div>
       </card>
 
+
+
     </div>
+<!--   
+    <tab-bar /> -->
 
    <bottom-notice :show.sync="notice" :text="noticeText">    </bottom-notice>
   </div>
 </template>
 
 <script>
-import Toolbar from '../components/Toolbar'
-import Card from '../components/Card'
+import Toolbar from '@/components/Toolbar'
+import Card from '@/components/Card'
 import BottomNotice from '@/components/BottomNotice'
 import { mapState, mapActions, mapGetters} from 'vuex'
-import { queryDeposit } from '../api/deposit'
-import { getAssetWithdrawUrl,submitQuote } from '../api/withdraw'
-import { resolveByFedAddress, federation, resolveByFedDomain} from '../api/federation'
-import { send } from '../api/account'
-import WithdrawInput from '../components/WithdrawInput'
+import { queryDeposit,queryStandardDeposite } from '@/api/deposit'
+import { getAssetWithdrawUrl,submitQuote } from '@/api/withdraw'
+import { resolveByFedAddress, federation, resolveByFedDomain} from '@/api/federation'
+import { send } from '@/api/account'
+import { isNativeAsset } from '@/api/assets'
+import WithdrawInput from '@/components/WithdrawInput'
+import WithdrawStandard from '@/components/WithdrawStandard'
+import TabBar from '@/components/TabBar'
+import  defaultsDeep  from 'lodash/defaultsDeep'
+
 export default {
   data(){
     return {
@@ -126,8 +136,10 @@ export default {
       selectedasset:{},
       assetChoseReturnObject: true,
       depositData:{},//充值
+      standardDepositData:undefined,//标准的充值协议数据
       withdrawData:{},//提现
       error:null,
+      error_msg: null,
       withdrawErr: false,//true或false
       active_withdraw_fed:null,
       withdrawFields:[],
@@ -146,6 +158,7 @@ export default {
       assetAccounts: state => state.asset.assets,
       assethosts: state => state.asset.assethosts,
       islogin: state => state.accounts.accountData.seed ? true:false,
+      notfunding: state => state.account.account_not_funding
     }),
     ...mapGetters([
       'balances',
@@ -154,8 +167,8 @@ export default {
        if(!this.balances)return []
        let data = []
        this.balances.forEach((element) => {
-        if(element.code != 'XLM'){
-          data.push(Object.assign({}, element))
+        if( !isNativeAsset(element)){
+          data.push(defaultsDeep({id: element.code+"-"+element.issuer}, element))
         }
       })
       return data
@@ -171,7 +184,7 @@ export default {
       this.changeAsset(this.selectedasset)
     }
     setTimeout(()=>{
-      if(!this.balances.length){
+      if(this.notfunding){
         this.noticeText = this.$t('Error.AccountNotFund')
         this.notice = true
       }
@@ -188,7 +201,7 @@ export default {
       }
     },
     back(){
-      this.$router.push(`/main`)
+      this.$router.push({name: 'Main'})
     },
     switchMenu(action){
       this.active = action
@@ -198,27 +211,40 @@ export default {
 
     },
     changeAsset(item){
-      this.working = true
-      this.error = null
-      this.depositData ={}
-      this.withdrawData = {}
+      this.working = true;
+      this.error = null;
+      this.depositData ={};
+      this.standardDepositData = undefined;
+      this.withdrawData = {};
       let info = this.assetAccounts[item.issuer]
       //根据home_dome查询数据
       if(info){
         if(this.active === 'deposit'){
           this.getDeposit(info.home_domain,item)
         }else{
-          this.getWithdraw(info.home_domain,item)
+          this.working = false
+          this.$nextTick(()=>{
+            if(this.$refs.withdraw){
+              this.$refs.withdraw.resetStep()
+            }
+          })
+         // this.getWithdraw(info.home_domain,item)
         }
       }else{
         this.getAssetsAccount(item.issuer)
           .then(data=>{
-            console.log('----------------------')
-            console.log(this.assetAccounts[item.issuer])
              if(this.active === 'deposit'){
                 this.getDeposit(this.assetAccounts[item.issuer].home_domain,item)
               }else{
-                this.getWithdraw(this.assetAccounts[item.issuer].home_domain,item)
+               // this.getWithdraw(this.assetAccounts[item.issuer].home_domain,item)
+                this.working = false
+                this.$nextTick(()=>{
+                  if(this.$refs.withdraw){
+                    this.$refs.withdraw.resetStep()
+                  }
+                })
+
+
               }
           })
           .catch(err=>{
@@ -231,24 +257,47 @@ export default {
 
     },
     getDeposit(home_domain,asset){
-      queryDeposit(home_domain,asset,this.account.address)
+      console.log('------asset ---')
+      console.log(asset)
+      //先按照标准协议去查询，然后再按照自定义的协议去查询 
+      //let address = 'GCZEFX6VA7F57BCZ3YINU55ZBJ2ST6CCHZTFIDIW2C5QAIL4FOUVB6LZ'
+      let address = this.account.address
+      queryStandardDeposite(home_domain, asset.code, address)
         .then(response=>{
-          console.log('-------------query deposit data------')
           let data = response.data
-          if(data){
-            this.depositData = data
-          }else{
-            this.error = this.$t('DW.Error.NoDepositService')
-            this.$toasted.error(this.$t('DW.Error.NoDepositService'))
+          if(data.error){
+            throw new Error(data.error)
           }
-          this.working = false
+          this.standardDepositData = data;
+          this.working = false;
+        }).catch(err=>{
+          if(err.response && err.response.status === 501){
+            this.error = err
+            this.working = false
+            this.error_msg = err.response.data.error
+            return
+          }
+          console.log('not standard deposit service');
+          queryDeposit(home_domain,asset, address)
+            .then(response=>{
+            console.log('-------------query deposit data------')
+            let data = response.data
+            if(data){
+              this.depositData = data
+            }else{
+              this.error = this.$t('DW.Error.NoDepositService')
+              this.$toasted.error(this.$t('DW.Error.NoDepositService'))
+            }
+            this.working = false
+          })
+          .catch(err=>{
+            console.error(err)
+            this.error = err
+            this.$toasted.error(this.$t('DW.Error.NoDepositService'))
+            this.working = false
+          })
         })
-        .catch(err=>{
-          console.error(err)
-          this.error = err
-          this.$toasted.error(this.$t('DW.Error.NoDepositService'))
-          this.working = false
-        })
+        
     },
     getWithdraw(home_domain,asset){
       console.log(`---------get withdraw info ------`)
@@ -272,7 +321,7 @@ export default {
     },
     choseWithdrawService(index){
       this.withdrawFields = []
-      let services = this.withdrawData.services
+      let services = this.withdrawData.services||[]
       let service = services[index]
       if(!service)return
       this.active_withdraw_fed  = service.federation_address
@@ -335,6 +384,8 @@ export default {
     Card,
     BottomNotice,
     WithdrawInput,
+    WithdrawStandard,
+    TabBar,
   }
 }
 </script>
@@ -347,6 +398,7 @@ export default {
   color: $primarycolor.font
   .content
     padding: 10px 10px
+    padding-bottom: 40px
 
   .mytoolbar
     background: $primarycolor.green
@@ -415,34 +467,14 @@ export default {
     padding-bottom: 2px
   .noservicedesc
     color: $secondarycolor.font
-//提现部分提示内容
-.withdraw_row
-  display: flex
-  align-items: center 
-  font-size: 16px
-  color: $secondarycolor.font
-  padding-top: 5px
-  padding-bottom: 5px
-  border-bottom: 1px solid $secondarycolor.font
-  .withdraw_desc
-    flex: 4
-    &.active
-      color: $primarycolor.green
-  .withdraw_icon
-    flex: 1
-    text-align: right
-    height: 100%
-    .icon-dot1
-      color: $primarycolor.green
-    .iconfont
-      font-size: 24px
-  &:last-child
-    border-bottom: 0px
 .working
   font-size: 16px
   text-align:center
   vertical-align: middle
   padding-top: 5px
+  &.fundinginfo
+    color: $secondarycolor.font
+    text-align: left
   // .refreshimg
   //   display: block
   //   width: 200px

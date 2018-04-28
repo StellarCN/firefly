@@ -17,18 +17,18 @@
           <h2 class="name">{{account.name}}</h2>
           <div class="address">{{account.address | shortaddress}}</div>
           <div class="assets">
-            <v-layout class="myassets-li" row wrap v-for="item in balances" :key="item.name" @click.stop="toAsset(item)">
+            <v-layout class="myassets-li" row wrap v-for="item in balances" :key="item.issuer||item.name" @click.stop="toAsset(item)">
               <v-flex xs4 class="myassets-wrapper">
                 <div class="myassets">
                   <div class="myassets-name">{{item.code}}</div>
-                  <div class="myassets-issuer" v-if="assethosts[item.code]">{{assethosts[item.code]}}</div>
-                  <div class="myassets-issuer" v-else-if="assethosts[item.issuer]">{{assethosts[item.issuer]}}</div>
+                  <div class="myassets-issuer" v-if="assethosts[item.issuer]">{{assethosts[item.issuer]}}</div>
+                  <div class="myassets-issuer" v-else-if="assethosts[item.code]">{{assethosts[item.code]}}</div>
                   <div class="myassets-issuer" v-else>{{item.issuer | miniaddress}}</div>
                 </div>
               </v-flex>
               <v-flex xs6 class="myassets-wrapper">
                 <div class="myassets-balance">
-                    {{Number(item.balance.toFixed(7))}}
+                    {{item.balance > 0 ? item.balance.toFixed(7): item.balance}}
                 </div>
               </v-flex>
               <v-flex xs2 class="myassets-wrapper">
@@ -90,6 +90,7 @@ import * as accountapi from '../api/account'
 import { getAddressByAccountId } from '../api/federation'
 import Scroll from '../components/Scroll'
 import { listenPaymentStream, closePaymentStream, getPaymentStream, convertRecords } from '@/api/payments'
+import { ACCOUNT_IS_FUNDING,ACCOUNT_NOT_FUNDING } from '@/store/modules/AccountStore'
 
 export default {
   data(){
@@ -173,6 +174,7 @@ export default {
         this.load()
           .then(data => {
             this.updateFederationAndInflationInfo()
+            this.$store.commit(ACCOUNT_IS_FUNDING)
           })
           .catch(err => {
             console.log("errorhere");
@@ -186,6 +188,7 @@ export default {
             console.error(err)
             if (err.data && err.data.status === 404) {
               this.noticeText = this.$t('Error.AccountNotFund')
+              this.$store.commit(ACCOUNT_NOT_FUNDING)
               this.notice = true
             }
             // this.snackbarText = this.$t('Error.AccountNotFund')
@@ -220,7 +223,7 @@ export default {
       }
     },
     load(){
-      this.cleanAccount()
+      //this.cleanAccount()
       let address = this.account.address
      // let process = [this.getAccountInfo(address),this.getPayments(address)]
       //console.log(process)
@@ -245,15 +248,15 @@ export default {
         navigator.app.exitApp();  
     },  
     toNameCard(){
-      this.$router.push(`/account/namecard`)
+      this.$router.push({name:'AccountNameCard'})
     },
     toAsset(item){
       this.selectAsset(item)
-      this.$router.push(`/asset`)
+      this.$router.push({name:'Asset'})
     },
     toTranscation(item){
       this.selectPayment(item)
-      this.$router.push(`/transaction`)
+      this.$router.push({name:'Transaction'})
     },
 
   },
@@ -269,17 +272,6 @@ export default {
 
 <style lang="stylus" scoped>
 @require '~@/stylus/color.styl'
-.page
-  // position: absolute
-  //top: 0
-  //left: 0
-  //right: 0
-  //bottom: 0
-  background: $primarycolor.gray
-  color: $primarycolor.font
-.content
-  padding: 8px 8px
-  overflow-y:auto
   .infocard
     text-algin: center
     .title

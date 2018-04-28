@@ -9,13 +9,16 @@ export function xdrMsg(err){
 }
 
 export function getXdrResultCode(err){
-    if(err.data.extras && err.data.extras.result_codes){
+    if(err.data && err.data.extras && err.data.extras.result_codes){
         let codes = err.data.extras.result_codes
-        if(codes.transaction){
-            return codes.transaction
-        }
         if(codes.operation){
             return codes.operation
+        }
+        if(codes.operations && codes.operations.length > 0){
+            return codes.operations[0]
+        }
+        if(codes.transaction){
+            return codes.transaction
         }
     }
 }

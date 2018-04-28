@@ -119,11 +119,12 @@ export default {
       if(this.seed === null || typeof this.seed === 'undefined'){
         return
       }
+      this.seed = this.seed.toUpperCase()
       if(!isValidSeed(this.seed)){
         this.$toasted.error(this.$t('Error.NotValidSeed'))
         return
       }
-      this.$router.push('/createaccount')
+      this.$router.push({name: 'CreateAccount'})
     }
 
   },

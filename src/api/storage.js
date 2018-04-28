@@ -1,6 +1,6 @@
 /**
  * storage use file
- */ 
+ */
 import {encrypt,decrypt} from './crypt'
 var Promise = require('es6-promise').Promise
 //import * as fileStorage from './filestorage'
@@ -12,6 +12,9 @@ import { OFFICIAL_HORIZON } from './horizon'
 export const FILENAME_ACCOUNTS = 'accounts.firefly'
 export const FILENAME_LOCK = 'lock.firefly'
 export const FILENAME_APP_SETTING = 'appsetting.firefly'
+export const FILENAME_MESSAGE = 'msg.firefly'
+export const FILENAME_MESSAGE_READ = 'read_msg.firefly'
+
 const LOCK_KEY = 'ilovefirefly'
 
 
@@ -51,7 +54,7 @@ export function readAccounts(){
       }else{
         reject('Error.NoData')
       }
-    }) 
+    })
   })
 }
 
@@ -152,15 +155,56 @@ export function saveByEncrypt(file,value,password = LOCK_KEY){
   if(isbrowser){
     return localstorage.saveFile(file,value)
   }else{
+    localstorage.saveFile(file,value)
     return sqlstorage.saveFile(file,value)
   }
 }
 
 export function deleteAccountData(address){
-  let file = address +'.firefly'  
+  let file = address +'.firefly'
   if(isbrowser){
     return localstorage.deleteFile(file)
   }else{
+    localstorage.deleteFile(file)
     return sqlstorage.deleteFile(file)
+  }
+}
+
+//获取现有消息link地址数组
+export function getMsgLinks(){
+  //直接从localStorage，不是localstorage.js中的
+  let data = localStorage.getItem(FILENAME_MESSAGE)
+  if(data){
+    return JSON.parse(data)//结果为link的数组
+  }
+  return []//没有数据，返回空值
+}
+
+//保存link地址数组
+export function setMsgLinks(links = []){
+  localStorage.setItem(FILENAME_MESSAGE, JSON.stringify(links))
+  //清理掉已经不存在的读取过的id
+  let data = getReadMsgs()
+  data = data.filter(id=> links.indexOf(id)>-1)
+  setReadMsgs(data)
+}
+//读了某个消息
+export function readMsg(link){
+  let data = getReadMsgs()
+  data = data.filter(id=>id!==link)
+  data.push(link)
+  setReadMsgs(data)
+}
+
+export function setReadMsgs(data=[]){
+  localStorage.setItem(FILENAME_MESSAGE_READ,JSON.stringify(data))
+}
+
+export function getReadMsgs(){
+  let data = localStorage.getItem(FILENAME_MESSAGE_READ)
+  if(data){
+    return JSON.parse(data)
+  }else{
+    return []
   }
 }

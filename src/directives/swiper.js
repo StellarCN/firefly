@@ -41,6 +41,12 @@ Vue.directive('swiper',{
         if (!isTouchMove) {
             return;
         }
+        let allnodes = element.parentNode.parentNode.childNodes
+        allnodes.forEach(ele => {
+            let item = ele.childNodes[0]
+            item.style.transition = "0.3s"
+            item.style.marginLeft = '0px'
+        })
         var touches = e.changedTouches[0],
             endTx = touches.clientX,
             endTy = touches.clientY,
@@ -61,5 +67,7 @@ Vue.directive('swiper',{
             }
         }
     }, false);
+
+
   }
 })

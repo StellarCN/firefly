@@ -1,0 +1,329 @@
+// 资产界面的样式表
+@require '~@/stylus/app.styl'
+.assets
+  border-radius: 10px    
+
+.assets-row
+  overflow: hidden
+  position: relative
+  
+  background: $primarycolor.gray
+  
+
+  .myassets-li
+    position: relative
+    z-index: 2
+    padding: 5px 5px
+    border-radius: 5px 5px 5px 5px
+    background: $secondarycolor.gray
+    
+    width: 100%
+    
+    .myassets-wrapper
+      
+      .myassets
+        margin-top: 5px
+        .myassets-name
+          font-size: 16px
+        .myassets-issuer
+          color: $secondarycolor.font
+          font-size: 14px
+      .myassets-balance
+        text-align: right
+        color: $secondarycolor.font
+        .balance
+          color: $primarycolor.green
+          font-size: 16px
+          padding-right: 10px
+      .myassets-reserve
+        text-align: right  
+        color: $secondarycolor.font
+        .balance
+          padding-right: 10px
+.myassets-balance.third
+  height: 100%
+  padding-top: 5px
+.assets-row
+  border-bottom: 1px solid $secondarycolor.font
+.assets-row:last-child
+  border-bottom: 0px
+.operate-box 
+  position: absolute
+  z-index: 1
+  height: 100%
+  right: 0
+  top: 0
+  display: flex
+  .send
+  .receive
+  .del
+    display: flex
+    justify-content: center
+    align-items: center
+    background-color: $secondarycolor.green
+    color: $primarycolor.font
+    padding: 0 1px
+  .receive
+    border-left: 1px solid $secondarycolor.gray
+  .del
+    background-color: $secondarycolor.red
+    border-right: 1px solid $secondarycolor.gray
+
+.myassets-operate-box 
+  position: absolute
+  z-index: 1
+  height: 100%
+  right: 0
+  top: 0
+  display: flex
+  .send
+  .receive
+  .del
+    display: flex
+    justify-content: center
+    align-items: center
+    // background-color: $secondarycolor.green
+    color: $primarycolor.font
+    padding: 0 12px
+  .receive
+    // border-left: 1px solid $secondarycolor.gray
+    color:$primarycolor.green
+  .del
+    // background-color: $secondarycolor.red
+    // border-right: 1px solid $secondarycolor.gray
+    color:$primarycolor.red
+  .send
+    color:$primarycolor.green
+
+//=== asset page==
+
+.assets-wrapper
+  background: $primarycolor.green
+  height: 46px
+  margin: 0 !important
+  min-height:42px !important
+  .swiper-slide 
+    width: 100px;
+    height: 100%;
+    opacity: 0.6;
+  .swiper-slide-active 
+    opacity: 1;
+    font-weight 600
+
+.assets-code
+  font-size: 16px
+  text-align: center
+.assets-issuer
+  text-align center
+
+.gallery-content 
+   width: 100%;
+.infocard
+   min-height 10em
+   max-width: 100%
+.asset_infocard
+     background-color: $secondarycolor.gray
+     overflow-y: auto
+   
+.myassets_infocard_thirdassets
+  background-color:$primarycolor.gray
+/*
+.asset-amount
+  padding: 10px
+  min-height 10vh
+  .row
+    margin-top:10px
+    .label
+      padding-top:10px
+    .label-reserve
+      color: $secondarycolor.font
+      padding-top:10px      
+    .amount
+      font-size: 20px
+      padding-left: 10px
+      padding-right: 20px
+      color: $primarycolor.green
+      padding-top:10px
+    .available
+      font-size: 18px
+      padding-left: 10px
+      padding-right: 20px
+      padding-top:10px
+    .reserve
+      font-size: 18px
+      padding-left: 10px
+      padding-right: 20px
+      padding-top:10px
+    .label-reserve
+      padding-left: 10px
+     
+.btns
+  position:relative
+  bottom: -120px
+  background-color:$secondarycolor.gray
+  margin:0px 10px
+
+  // padding-top: 20px
+  // padding-bottom: 10px
+  .btn
+    width 50%
+
+    */
+.asset_amount
+  .asset_row
+    margin-top:10px
+    .asset_label
+      padding-top:10px
+    .asset_label-reserve
+      padding-top:10px      
+    .asset_amount
+      color: $primarycolor.green
+      padding-top:10px
+    .asset_available
+      padding-top:10px
+    .asset_reserve
+      padding-top:10px
+.asset-amount
+  padding: 10px
+  min-height 10vh
+  .row
+    .label
+    .label-reserve
+      color: $secondarycolor.font
+    .amount
+      font-size: 20px
+      padding-left: 10px
+      padding-right: 20px
+    .available
+      font-size: 18px
+      padding-left: 10px
+      padding-right: 20px
+    .reserve
+      font-size: 18px
+      padding-left: 10px
+      padding-right: 20px
+    .label-reserve
+      padding-left: 10px
+.btns
+  // padding-top: 20px
+  // padding-bottom: 10px
+  position:fixed
+  bottom: .1rem
+  left: 0
+  right: 0
+  // background-color:$secondarycolor.gray
+  margin:0px 10px
+  .btn
+    width 50%
+  .receive_btn
+    margin-left:0px
+  .send_btn
+    margin-right:0px
+.knowledge_of_assets
+  margin-top:30px
+  text-align: center
+  color:$primarycolor.green
+    
+    
+
+.subtitle
+  padding-left: 10px
+  padding-top: 10px
+  padding-bottom: 5px
+  margin-bottom: 0px
+  color: $secondarycolor.font
+  font-size: 16px
+.history-li
+  padding-top: 5px
+  padding-bottom: 5px
+  font-size: 16px
+.history-amount
+  text-align: right
+.history-amount.add
+  color: $primarycolor.green
+.history-amount.minus
+  color: $primarycolor.red
+.page
+  
+  background-color:  $primarycolor.gray
+.accountandtotalasset
+  display: block
+  border-radius:1px
+  background-color:$secondarycolor.gray
+  margin:10px 10px
+  border-radius: 5px
+.accountnameaddress
+    z-index: 2
+    padding-left:0px
+    padding-top:15px
+    background: $secondarycolor.gray
+    margin-left:5px
+    margin-right:5px
+    border:none
+    //   border-radius:1px
+    
+    
+  //这里是wdp改动的地方--------------------------------------------------------------------------
+.myassets_totalSum
+  font-size: 20px
+  padding-left: 20px
+  left: 0px
+  color: $primarycolor.green
+  background-color:  $secondarycolor.gray
+  padding-top:0px
+  padding-bottom:10px
+  margin-left:5px
+  margin-right:5px
+  border:none
+ 
+  .myassets_TotalSumWord
+    font-size: 16px
+    color:$secondarycolor.font
+
+  
+.content   
+  padding-bottom:0px
+.asset_content
+    background-color: $primarycolor.gray
+    padding-bottom:0px
+    margin-bottom:0px
+    height:400px
+.myassets_sort
+  height:40px
+  padding-left: 150px
+  padding-top:10px
+
+
+  left:0px
+  color: $primarycolor.green 
+  position: relative
+  
+  background-color: $primarycolor.gray  
+  position: absoluted 
+  
+.myassets_sort_hidden
+  
+
+.myassets_sort_select
+  position:relative
+  background-color: $primarycolor.gray
+  margin-left:5px
+.myassets_sort_byValue
+  background-color: $primarycolor.gray
+  font-size: 10px
+  font-family: simei   
+  width:30px
+
+.icon-wrapper
+  margin: 0 auto
+  text-align: center
+  padding-top: 2px
+  .iconfont
+    font-size: 36px
+    color: $primarycolor.green
+.selected
+  -webkit-transform: translate(-50%, 0)
+  -webkit-transition: 0.3s
+  transform: translate(-50%, 0)
+  transition: 0.3s
+  

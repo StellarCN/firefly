@@ -50,11 +50,12 @@
 </template>
 
 <script>
-import Toolbar from '../../components/Toolbar'
+import Toolbar from '@/components/Toolbar'
 import { mapState, mapActions} from 'vuex'
-import Card from '../../components/Card'
-import { INFLATION_POOL } from '../../api/gateways'
+import Card from '@/components/Card'
+import { INFLATION_POOL } from '@/api/gateways'
 import { setOptions } from '@/api/operations'
+import  defaultsDeep  from 'lodash/defaultsDeep'
 export default {
   data(){
     return {
@@ -70,6 +71,8 @@ export default {
       workindex: null,
       workaccount:null,
 
+      needUpdateOpt: false,//是否要修改Options
+
     }
   },
   computed:{
@@ -83,10 +86,11 @@ export default {
   beforeMount(){
       let address = this.$route.query.address || account.address
       this.seed = this.$route.query.seed
+      // console.log("--------------"+this.seed)
       for(var i=0,n=this.accounts.length;i<n;i++){
         if(this.accounts[i].address === address){
           this.workindex = i
-          let showaccount = Object.assign({},this.accounts[i])
+          let showaccount = defaultsDeep({},this.accounts[i])
           this.workaccount = showaccount
           this.name  = showaccount.name
           this.address = showaccount.address
@@ -116,11 +120,19 @@ export default {
       address: this.address,
       federationAddress: this.federation,
       inflationAddress: this.inflation})
+
+      if(this.workaccount.federationAddress != this.federation || this.inflationAddress!=this.inflation){
+        this.needUpdateOpt = true
+      }
+      console.log(this.workaccount)
+      console.log(data)
       let params = {index: this.workindex, account: data}
       this.updateAccount(params)
         .then((data)=>{
           try{
-            this.saveInflationAndFed()
+            if(this.needUpdateOpt){
+              this.saveInflationAndFed()
+            }
             this.$toasted.show(this.$t('SaveSuccess'))
           }catch(err){
             console.error(err)
@@ -177,11 +189,7 @@ export default {
 
 
 <style lang="stylus" scoped>
-@require '../../stylus/color.styl'
-.page
-  background: $primarycolor.gray
-  .content
-    padding: 10px 10px
+@require '~@/stylus/color.styl'
 .hintinfo
   color: $secondarycolor.font
   margin-top: -20px

@@ -11,23 +11,45 @@
   "setPinCodeError": "Pin code mismatch",
   "ImportAccount":"Import",
   "CreateAccount":"Create",
+  "ResetPassword":"reset",
+  "LatestVersion":"latest version",
+  "CheckForUpdates":"check for updates",
+  "UpdateHint":"updating...",
+  "AfterUpdate":"update success",
+  "NothingToInstall":"already latest version",
+  "FetchUpdateError":"fail to fetch updates",
+  "All":"ALL",
+  "week":"Week",
+  "day":"Day",
+  "hour":"Hour",
+  "minute":"Min",
+  "high":"High",
+  "low":"Low",
+  "volume":"Lol",
+  "open_price":"open",
+  "close_price":"close",
+  "high_price":"high",
+  "low_price":"low",
+  "volumes":"volume",
+  "Congratulations":"Congratulations",
 
   "TermsOfServiceTitle":"Terms Of Service",
   "TermsOfService":"This is a binding Agreement between Muyu Network Technology Co.,Ltd. (\"Muyu\" or \"We\") and the person, persons, or entity (\"You\" or \"Your\") using the service, Software, or application (\"Software\").<br/><br/>RIGHTS AND OBLIGATIONS<br/><br/>Muyu provides the Software solely on the terms and conditions set forth in this Agreement and on the condition that You accept and comply with them. By using the Software You (a) accept this Agreement and agree that You are legally bound by its terms; and (b) represent and warrant that: (i) You are of legal age to enter into a binding agreement; and (ii) if You are a corporation, governmental organization or other legal entity, You have the right, power and authority to enter into this Agreement on behalf of the corporation, governmental organization or other legal entity and bind them to these terms. <br/><br/>This Software functions as a free, open source, and multi-signature digital wallet. The Software does not constitute an account where We or other third parties serve as financial intermediaries or custodians of Your Cryptocurrencies. <br/><br/>While the Software has undergone beta testing and continues to be improved by feedback from the open-source user and developer community, We cannot guarantee there will not be bugs in the Software. You acknowledge that Your use of this Software is at Your own discretion and in compliance with all applicable laws. You are responsible for safekeeping Your passwords, private key pairs, PINs, and any other codes You use to access the Software. <br/><br/>IF YOU LOSE ACCESS TO YOUR WALLET OR YOUR ENCRYPTED PRIVATE KEYS AND YOU HAVE NOT SEPARATELY STORED A BACKUP OF YOUR WALLET AND CORRESPONDING PASSWORD, YOU ACKNOWLEDGE AND AGREE THAT ANY CRYPTOCURRENCY YOU HAVE ASSOCIATED WITH THAT WALLET WILL BECOME INACCESSIBLE. All transaction requests are irreversible. The authors of the Software, employees and affiliates of Muyu, copyright holders, and Muyu, Ltd. cannot retrieve Your private keys or passwords if You lose or forget them and cannot guarantee transaction confirmation as they do not have control over the Cryptocurrency network system. <br/><br/>DISCLAIMER<br/><br/>THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OF THE SOFTWARE, EMPLOYEES AND AFFILIATES OF MUYU, COPYRIGHT HOLDERS, OR MUYU, LTD. BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. <br/><br/>IN NO EVENT WILL MUYU OR ITS AFFILIATES, OR ANY OF ITS OR THEIR RESPECTIVE SERVICE PROVIDERS, BE LIABLE TO YOU OR ANY THIRD PARTY FOR ANY USE, INTERRUPTION, DELAY OR INABILITY TO USE THE SOFTWARE, LOST REVENUES OR PROFITS, DELAYS, INTERRUPTION OR LOSS OF SERVICES, BUSINESS OR GOODWILL, LOSS OR CORRUPTION OF DATA, LOSS RESULTING FROM SYSTEM OR SYSTEM SERVICE FAILURE, MALFUNCTION OR SHUTDOWN, FAILURE TO ACCURATELY TRANSFER, READ OR TRANSMIT INFORMATION, FAILURE TO UPDATE OR PROVIDE CORRECT INFORMATION, SYSTEM INCOMPATIBILITY OR PROVISION OF INCORRECT COMPATIBILITY INFORMATION OR BREACHES IN SYSTEM SECURITY, OR FOR ANY CONSEQUENTIAL, INCIDENTAL, INDIRECT, EXEMPLARY, SPECIAL OR PUNITIVE DAMAGES, WHETHER ARISING OUT OF OR IN CONNECTION WITH THIS AGREEMENT, BREACH OF CONTRACT, TORT (INCLUDING NEGLIGENCE) OR OTHERWISE, REGARDLESS OF WHETHER SUCH DAMAGES WERE FORESEEABLE AND WHETHER OR NOT WE WERE ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. <br/><br/> INTELLECTUAL PROPERTY<br/><br/>  We retain all right, title, and interest in and to the Content and all of Muyu’s brands, logos, and trademarks, including, but not limited to, Muyu, Ltd., Muyu, Firefly Wallet – One Wallet For All Coins, Firefly Wallet, Firefly App, Firefly Wallet App, and variations of the wording of the aforementioned brands, logos, and trademarks. <br/><br/>  CHOICE OF LAW<br/><br/>  This Agreement, and its application and interpretation, shall be governed exclusively by the laws of The People's Republic of China, without regard to its conflict of law rules. You consent to the exclusive jurisdiction of the courts located in or near Shanghai, China for any dispute arising under this Agreement. <br/><br/>  SEVERABILITY<br/><br/>  In the event any court shall declare any section or sections of this Agreement invalid or void, such declaration shall not invalidate the entire Agreement and all other paragraphs of the Agreement shall remain in full force and effect. <br/><br/>  BINDING AGREEMENT<br/><br/>  The terms and provisions of this Agreement are binding upon Your heirs, successors, assigns, and other representatives. This Agreement may be executed in counterparts, each of which shall be considered to be an original, but both of which constitute the same Agreement. <br/><br/>  You assume any and all risks associated with the use of the Software. We reserve the right to modify this Agreement from time to time. <br/><br/>",
-  
+
   "Return": "Return",
   "Agree": "Agree",
   "Finish":"Finish",
   "NextStep": "Next step",
   "SecretKey": "Secret key",
-  
+  "Validate":"Validate",
+
   "Title.Scan": "Scan",
   "Title.MyWallet":"My wallet",
   "Title.Account":"Account",
-  "Title.MyAssets":"My assets",
+  "Title.MyAssets":"My Assets",
   "CopySuccess":"Copy success",
 
-  
+
   "Error.ScannerPrepareFail": "QR scanner prepare fail",
   "Error.ScannerPermissionDenied": "QR scanner permisstion denied",
   "Error.ScannerContentValidWrong": "the content is wrong",
@@ -39,7 +61,7 @@
 
   "Error.NotValidSeed":"seed is not valid",
   "Error.NotValidStellarAddress":"address is not valid",
-  
+
   "Account.AccountName":"account name",
   "Account.Password":"password",
   "Account.ConfirmPassword":"confirm password",
@@ -47,55 +69,74 @@
   "Account.CreateAccountReadyHint":"this message is very import, save these details and never share them with anyone!",
   "Account.CreateAccountSuccess":"account creation successful",
   "Account.CreateAccountError":"error occured while creating account",
-
+  "Account.InputSecretKey":"please input your secret key start with 'S'",
+  "Account.ConfirmSkip":"skip validate secret key ?",
+  "Account.SkipValidHint":"The loss due to the loss of secret key will be at your own risk. Are you sure to skip this step ?",
+  "Account.Later":"Later",
+  "Account.SecretKeyValidHint":"secret key is valid.Please keep your secret key safe and start.",
+  "Account.Start":"Start",
+  "Account.SecretKeyInValidHint":"secret key is wrong, please re-varify or back to last page to backup",
+  "Account.ReVerify":"Re-Verify",
+  "Error.SeedWrong":"wrong secret key",
   "Account.AccountAddress":"address",
+
+  "ManullayAddTrust":"Manully",
+  "AssetCode":"Asset Code",
+  "AssetIssuer":"Issuer Account ID",
+  "Error.AssetCodeNull":"asset code cannot be empty",
+  "Error.AssetIssuerNull":"issuer account id cannot be empty",
 
   "Add":"add",
   "Manage":"manage",
   "Button.Cancel":"CANCEL",
   "Button.OK":"OK",
-  "ChangeAccount":"change account",
-  "History":"history",
-  "Total":"total",
-  "Reserve":"reserve",
-  "Delete":"delete",
-  "Modify":"modify", 
-  "Export":"export",
-  "Available":"available",
-  "Amount":"amount",
-  "Share":"share",
-  "DestinationAddress":"destination address",
-  "MemoType":"memo type",
-  "Memo":"memo",
-  "MemoContent":"memo content",
+  "ChangeAccount":"Change Account",
+  "History":"History",
+  "Total":"Total",
+  "Reserve":"Reserve",
+  "Delete":"Delete",
+  "Modify":"Modify",
+  "Export":"Export",
+  "Available":"Available",
+  "Amount":"Amount",
+  "Share":"Share",
+  "DestinationAddress":"Destination Address",
+  "MemoType":"Memo Type",
+  "Memo":"Memo",
+  "MemoContent":"Memo Content",
   "PullToRefresh":"pull to refresh",
   "ReleaseToRefresh":"release to refresh",
-  "Loading":"loading...",
-  "LoadOver":"load over",
-  "LoadFail":"load fail",
-  "Detail":"detail",
-  "DateTime":"datetime",
-  "From":"from",
-  "To":"to",
-  "AddContact":"add contact",
-  "AddAsset":"add asset",
+  "Loading":"Loading...",
+  "LoadOver":"Load Over",
+  "LoadFail":"Load Fail",
+  "Detail":"Detail",
+  "DateTime":"Datetime",
+  "From":"From",
+  "To":"To",
+  "AddContact":"Add Contact",
+  "AddAsset":"Add Asset",
   "AddAssetSuccess":"asset added",
   "AddAssetNotFound": "asset info not found",
-  "FederationUrl":"federation host URL",
+  "FederationUrl":"Host",
   "Working":"working...",
+  "Reset":"reset",
 
 
   "Info.ChangeAccountSuccess":"success",
   "Error.PasswordWrong":"password incorrect",
 
-  "Menu.MyAssets":"My assets",  
+  "Menu.MyAssets":"My Assets",
   "Menu.Funding":"Funding",
   "Menu.MyAddress":"Address book",
   "Menu.Contacts":"Contacts",
   "Menu.Settings":"Settings",
   "Menu.Help":"Trade help",
+  "Menu.My":"My",
+  "Menu.History": "History",
+  "Menu.MessageCenter":"Message Center",
 
   "ManageAccount":"manage account",
+  "MessageCenter": "Message Center",
   "PinCode":"pin code",
   "Language":"language",
   "ModifyAccount":"modify account",
@@ -110,6 +151,17 @@
   "SaveHorizonSuccess":"save public network URL success",
   "Error.SaveHorizonFial": "save public network URL failed",
 
+  "FederationName": "Federation Name",
+  "FederationName.Description": "This service is provided by fed.network, you can visit this website for more information. Here you can register a username such as name*fed.network, and other users can send the asset to you with it. However, it should be noted that this service is only for the convenience of the user in inputting the address, please recheck the really address by yourself. To register for an address you need to pay 0.5 XLM. To ungegister for an address you need to pay 1 XLM.",
+  "FederationName.Address": "Your federation address:",
+  "FederationName.Connecting": "Connecting...",
+  "FederationName.ConnectionFailed": "Network connection failed. Please try later.",
+  "FederationName.Available": "The name is available，please pay as soon as possible",
+  "FederationName.Unavailable": "The name is unavailable，please change it",
+  "FederationName.NetworkError": "Network Error",
+  "FederationName.Error": "Error",
+  "unlink":"unlink",
+
   "SaveSuccess":"save successful",
   "SaveFailed":"save failed",
 
@@ -118,8 +170,8 @@
   "Error.PinCodeIsWrong": "pin code is wrong",
   "RemovePinCodeSuccess": "pin code removed successfully",
   "Error.RemovePinCodeFailed":"failed to remove pin code",
-  
-  
+
+
 
   "Random.Planets":"Mercury|Venus|Earth|Mars|Jupiter|Saturn|Uranus|Neptune|Pluto",
   "Random.Colors":"Red|Orange|Yellow|Green|Cyan|Blue|Violet|Black|White",
@@ -140,6 +192,16 @@
   "Account.NameCard":"name card",
   "Account.WhetherCoverAccount": "whether cover the account",
   "Account.NetworkError":"network error",
+  "Account.OriginPassword":"original password",
+  "Account.NewPassword":"new password",
+  "Account.RePassword":"retype new password",
+  "Account.PasswordNotNull":"password is empty",
+  "Account.PasswordNotSame":"two passwords is not the same",
+  "Account.PasswordResetSuccess":"reset password successed",
+  "Account.PasswordResetFail":"reset password failed",
+  "Account.SecretStoredAndExit":"backed up the secret, skip this step",
+  "Account.Skip":"Skip",
+
   "Error.NotEnoughAssetToFundAccount":"send more than 20 XLM to fund the target",
 
   "Error.NotEnoughAsset":"asset funding insufficient",
@@ -152,11 +214,28 @@
   "DW.Error.NoDepositServiceDesc":"cannot deposit this asset,please contact the issuer.",
   "DW.Error.NoWithdrawService":"no withdraw service",
   "DW.Error.NoWithdrawServiceDesc":"cannot withdraw this asset,please contact the issuer.",
+  "DW.Error.NoDest":"no destination",
   "DW.DepositInfo":"deposit info",
   "Error.SubmitQuoteFail":"submit quote failed",
+  "DW.DepositInfo.eta": "the deposit will take {0} seconds to credit",
+  "DW.DepositInfo.min":"the min of deposit is {0}",
+  "DW.DepositInfo.max":"the max of deposit is {0}",
+  "DW.DepositInfo.feefixed":"the deposit fee is {0}",
+  "DW.DepositInfo.feepercent":"the deposit rate is {0}%",
+  "bank_account":"bank account",
+  "crypto":"crypto",
+  "DW.Withdraw.ForwardType":"forward type",
+  "DW.Withdraw.feefixed":"the withdraw fee is {0}",
+  "DW.Withdraw.feepercent":"the withdraw rate is {0}",
+  "DW.Withdraw.min_amount":"the min of withdraw is {0}",
+  "DW.Withdraw.max_amount":"the max of withdraw is {0}",
+  "DW.Withdraw.extra_info":"the withdraw extra info is:{0}",
+  "DW.Withdraw.eta":"the withdraw may take {0} seconds to credit",
+  "DW.Fee":"fee",
+  "DW.Receive":"receive",
 
-  
-  "Menu.TradeCenter":"Trade Center",  
+
+  "Menu.TradeCenter":"Trade Center",
   "Trade.SelfSelection":"self selection",
   "Trade.Buy":"Buy",
   "Trade.Sell":"Sell",
@@ -164,6 +243,9 @@
   "Trade.SellOffer":"Asks",
   "Trade.MyOffer":"My Offers",
   "Trade.UnitPrice":"Unit Price",
+  "UnitPriceAbbreviation":"U/P",
+  "AmountAbbreviation":"QTY",
+  "TotalAbbreviation":"TTL",
   "Trade.Price":"Price",
   "Trade.Depth":"Depth",
   "Trade.Cancel":"Cancel",
@@ -197,9 +279,11 @@
   "Error.DestinationIsRequired":"destination is required",
   "Error.AmountIsRequired":"amount is required",
   "Error.MemoIsRequired":"memo is required",
+  "Error.MemoIsInvalid": "memo is invalid",
 
   "Error.DeleteTrustError":"delete trust error",
   "DeleteTrustSuccess":"delete trust success",
+  "AssetNotZero":"cannot delete trust, because the asset is not zero",
 
   "ContactAdd.Sussess": "add new contact success",
   "ContactAdd.name": "name",
@@ -221,12 +305,19 @@
   "MyAddress.DuplicateAddress":"address is not unique",
   "MyAddress.DeleteSuccess":"delete success",
   "MyAddress.DeleteFail":"delete failed",
-  
+
+  "Transaction.ContactName": "Name",
+
   "ContactBook.Title": "Contact Book",
-  
-  
+
+
   "Cancel":"Cancel",
   "Confirm":"Confirm",
+
+
+  "canceled":"Canceled",
+  "finished":"Finished",
+  "status":"status",
 
   "required": "Required",
   "Next": "next",
@@ -243,9 +334,23 @@
 
 
   "About.Title":"about",
+  "About.UpdateTo": "Update to",
+
+  "OfficialSite": "official",
 
   "App.ClickOneMoreTimeExit":"click one more time to exit!",
 
+
+  "Q.DeleteAccount":"will delete the account, please confirm ?",
+  "Q.ResetPassword":"will reset the password, please confirm ?",
+
+  "History.Title": "History",
+  "History.Offer": "Offer",
+  "History.Transaction": "Transaction",
+  "History.Trade": "Trade",
+  "History.DepositAndWithdraw": "Deposit/Withdraw",
+  "History.Effects":"Effects",
+  "History.Transactions":"Transactions",
 
 	"op_success":"operation success",
 	"op_malformed":"opernation incorrect",
@@ -301,6 +406,69 @@
 	"op_no_account": "operation error,no account",
 	"op_immutable_set": "operation error, immutable set",
 	"op_has_sub_entries": "operation error, has sub entries",
-	"op_not_time": "operation error, not time"
+  "op_not_time": "operation error, not time",
+
+  "ShowZeroAsset":"show zero",
+  "HideZeroAsset":"hide zero",
+  "DefaultSort":"sort by default",
+  "SortByName":"sort by name",
+  "SortByAsset":"sort by balance",
+  "TotalAssets":"Total",
+  "StellarAddressBarCode":"Account QR code",
+  "ViewKey":"View Secret Key",
+  "Warning_msg":"Warning",
+  "Account_secretkey":"Secret Key",
+  "Account_secretkeycode":"Screct QR code",
+
+  "Start":"Start",
+  "TransactionPassword":"Transaction Password",
+  "TransactionPassword_MsgOne":"Important",
+  "TransactionPassword_MsgTwo":"Transaction password, if forgotten, can not be recovered;",
+  "TransactionPassword_MsgThree":"You can retrieve your account only with the key",
+
+
+  "Account_secretkey_MsgOne":"Very important!",
+  "Account_secretkey_MsgTwo":"Lose the key, lose everything!",
+  "Account_secretkey_MsgThree":"Copy or print the key and store it in a secure place. Do not save the screenshot or store it directly in your cell phone, disk, or mailbox.",
+
+  "TDO":"To da moon!",
+  "TDO_MsgOne":"Congratulations!",
+  "TDO_MsgTwo":"After keeping the information,",
+  "TDO_MsgThree":"You can start using a firefly wallet.",
+
+  "LastStep":"Last Step",
+  "AllRight":"All Right",
+
+
+  "BackedUp":"Backed Up",
+  "ReceiveAssetMsg":"Scan the QR code to send me",
+  "Change":"Change",
+  "MyAccount":"My Account",
+  "MemoBook.MyAddress":"My Address",
+  "StartDate":"start date",
+  "EndDate":"end date",
+  "StartDateIsAfterEndDate":"start date should before end date",
+  "AssetImage":"image",
+  "AssetDomain":"domain",
+  "AssetSummary":"summary",
+  "Understand":"learn more ",
+  "AssetNotExistMessage":"For more information , please contact the publisher",
+  "NetWorkErrorMessage":"Network environment exception, please try again late",
+  "DeterministicTransmission":"Deterministic transmission",
+  "AddAll":"Add all",
+  "Pin":"Pin",
+  "HorizonVersion":"HorizonVersion",
+  "LoadMore":"Load More",
+  "Title.ThirdApp":"apps",
+  "Error.AjaxTimeout":"connection server timed out, please try again later",
+  "Third.OpenAppHint":"will open DApp {0}",
+  "Third.SendTo":"pay to {0}",
+  "ChooseAsset":"choose a asset",
+  "ReadAllMsg":"read all messages",
+  "Recovery":"recovery",
+  "Backup":"back up",
+  "lastUpdate":"last update",
+  "FundingInfo":"The assets that you are planning to deposit / withdraw are built-in assets in the Stellar network and can only be deposited / withdrawn by receiving and sending operations."
+ 
 
 }

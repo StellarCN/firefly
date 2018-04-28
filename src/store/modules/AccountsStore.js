@@ -1,12 +1,34 @@
 // 钱包账户地址
-import { createAccount as createAccountApi, readAccounts, 
+import { createAccount as createAccountApi, readAccounts,
     saveAccounts, readAccountData, saveAccountData,deleteAccountData } from '../../api/storage'
 import { getDefaultTradePairs } from '../../api/gateways'
 import { getOrderbook } from '../../api/orderbook'
 import { getAsset } from '../../api/assets'
-import { fetchEffects } from '../../api/effetcts'
+import { fetchEffects } from '../../api/effects'
 import { queryOffer } from '../../api/offer'
 
+
+export const LOAD_ACCOUNTS = 'LOAD_ACCOUNTS'
+export const CHANGE_ACCOUNT = 'CHANGE_ACCOUNT'
+export const CREATE_ACCOUNT = 'CREATE_ACCOUNT'
+export const LOAD_ACCOUNT_DATA = 'LOAD_ACCOUNT_DATA'
+export const CHANGE_ACCOUNT_NO_PASSWORD = 'CHANGE_ACCOUNT_NO_PASSWORD'
+export const CLEAN_ACCOUNT_DATA = 'CLEAN_ACCOUNT_DATA'
+
+export const SELECT_TRADE_PAIR = 'SELECT_TRADE_PAIR'
+export const QUERY_ORDERBOOK = 'QUERY_ORDERBOOK'
+export const QUERY_MY_OFFERS = 'QUERY_MY_OFFERS'
+export const ORDERBOOK_STREAM_HANDLER = 'ORDERBOOK_STREAM_HANDLER'
+export const CONTACT_ID_INCREMENT = 'CONTACT_ID_INCREMENT'
+export const RESET_PASSWORD = 'RESET_PASSWORD'
+export const QUERY_MY_EFFECTS = 'QUERY_MY_EFFECTS'
+export const CLEAN_MY_EFFECTS = 'CLEAN_MY_EFFECTS'
+export const CHANGE_CURRENT_HISTORY_COMPONENT = 'CHANGE_CURRENT_HISTORY_COMPONENT'
+export const SORT_TRADEPAIRS = 'SORT_TRADEPAIRS'
+
+export const SET_TRADEPAIR_KLINE_LASTTRADE = 'SET_TRADEPAIR_KLINE_LASTTRADE'
+export const SET_TRADEPAIR_KLINE_TRADEAGGREGATION = 'SET_TRADEPAIR_KLINE_TRADEAGGREGATION'
+export const SET_TRADEPAIR_KLINE_7DAY_TRADEAGGREGATION = 'SET_TRADEPAIR_KLINE_7DAY_TRADEAGGREGATION'
 // 状态字段
 const state = {
   error:undefined,
@@ -36,8 +58,14 @@ const state = {
     bids:[],//买单
     asks:[],//卖单
     my: []//我的委单
-  }
-
+  },
+  effects:{
+    records: [],
+    nextPage: null
+  },
+  //交易对的K线数据（针对短期的数据）
+  tradePairKLineData:{},
+  currentHistoryComponent: 'offer' // 记住用户的历史页面 not perfect but works
 }
 
 const BLANK_ACCOUNT = {seed: null, tradepairs: []}
@@ -54,7 +82,7 @@ const actions = {
     let accounts = {data: state.data, selected: state.selected}
     await saveAccounts(accounts)
   },
-  // 输入密码切换账户 
+  // 输入密码切换账户
   // @param index 序号
   // @param address 地址
   // @param password 密码
@@ -126,6 +154,15 @@ const actions = {
     commit(LOAD_ACCOUNTS, accounts)
     // dispatch('cleanAccount')
   },
+  /**
+   * 重置账户密码
+   */
+  async resetAccountPwd({dispatch, commit, state}, {index, account, password, newpassword}){
+    let address = account.address
+    let data = await readAccountData(address,password)
+    await saveAccountData(address,data,newpassword)
+    commit(RESET_PASSWORD, {index, newpassword})
+  },
   // 删除账户
   async deleteAccount({dispatch, commit, state}, {index, account}){
     let statedata = [...state.data]
@@ -178,9 +215,9 @@ const actions = {
   },
   //查询当前的盘面
   async queryOrderBook({commit,state}){
-    let buyAsset = getAsset(state.selectedTradePair.tradepair.to.code, 
+    let buyAsset = getAsset(state.selectedTradePair.tradepair.to.code,
         state.selectedTradePair.tradepair.to.issuer)
-    let sellAsset = getAsset(state.selectedTradePair.tradepair.from.code, 
+    let sellAsset = getAsset(state.selectedTradePair.tradepair.from.code,
         state.selectedTradePair.tradepair.from.issuer)
     let records = await getOrderbook(sellAsset,buyAsset)
     // console.log(`---------------query order book : ${records}`)
@@ -189,7 +226,8 @@ const actions = {
 
   //交换当前盘面资产
   async switchSelectedTradePair({dispatch,commit,state}){
-    let tradepair = {from: state.selectedTradePair.to, to: state.selectedTradePair.from}
+    let tradepair = {from: state.selectedTradePair.tradepair.to, to: state.selectedTradePair.tradepair.from}
+    let index = state.selectedTradePair.index
     commit(SELECT_TRADE_PAIR,{index, tradepair})
     await dispatch('queryOrderBook')
     await dispatch('queryMyOffers')
@@ -203,16 +241,37 @@ const actions = {
   //盘面监听得到数据后处理
   orderBookStreamHandler({commit,state}, data){
     commit(ORDERBOOK_STREAM_HANDLER, data)
+  },
+
+
+
+
+
+  // TODO: 分页获取我的交易记录，获取的数据是未处理的，需要进一步处理，只保留 type 为 trade 的
+  async queryMyEffects({commit,state}, nextPage=false) {
+    let queryData;
+    let recordPerPage = 20;
+    if (!nextPage) {
+      commit(CLEAN_MY_EFFECTS)
+      queryData = await fetchEffects(state.selectedAccount.address, 'desc', recordPerPage)
+    } else {
+      if (!state.effects.nextPage) {
+        throw new Error('No nextPage, please check state.accounts.effects.nextPage first.');
+      }
+      queryData = await state.effects.nextPage()
+    }
+    if (queryData.records.length < recordPerPage) {
+      queryData.next = null
+    }
+    commit(QUERY_MY_EFFECTS, queryData)
+  },
+  changeCurrentHistoryComponent({commit,state}, current) {
+    commit(CHANGE_CURRENT_HISTORY_COMPONENT, current)
   }
-
-  
-
-
-
 }
 
 const mutations = {
-  LOAD_ACCOUNTS(state, accounts){
+  [LOAD_ACCOUNTS](state, accounts){
     state.data = accounts.data
     state.selected = accounts.selected
     let account = accounts.data[accounts.selected]
@@ -222,22 +281,20 @@ const mutations = {
       state.selectedAccount = {name: null , address: null, memo: null}
     }
   },
-  CHANGE_ACCOUNT_NO_PASSWORD(state, { index, address}){
+  [CHANGE_ACCOUNT_NO_PASSWORD](state, { index, address}){
     state.selected = index
     state.password = null
     state.selectedAccount = state.data[index]
     state.accountData = Object.assign({},BLANK_ACCOUNT)
   },
-  CHANGE_ACCOUNT(state, {index, address, password, accountdata}){
-    console.log('---mutation CHANGE_ACCOUNT')
-
+  [CHANGE_ACCOUNT](state, {index, address, password, accountdata}){
     // 当前选择的账户信息要调整
     state.selected = index
     state.password = password
     state.selectedAccount = state.data[index]
     state.accountData = accountdata
   },
-  CREATE_ACCOUNT(state, { accounts, password, newaccountdata}){
+  [CREATE_ACCOUNT](state, { accounts, password, newaccountdata}){
     console.log('create account mutation')
     console.log(accounts)
     console.log(password)
@@ -248,10 +305,10 @@ const mutations = {
     state.password = password
     state.accountData = newaccountdata
   },
-  LOAD_ACCOUNT_DATA(state,accountData){
+  [LOAD_ACCOUNT_DATA](state,accountData){
     state.accountData = accountData
   },
-  CLEAN_ACCOUNT_DATA(state){
+  [CLEAN_ACCOUNT_DATA](state){
     state.accountData = {
         seed: null,
         contacts:[],
@@ -265,8 +322,8 @@ const mutations = {
         my: []//我的委单
       }
   },
-    
-  SELECT_TRADE_PAIR(state, { index, tradepair}){
+
+  [SELECT_TRADE_PAIR](state, { index, tradepair}){
     state.selectedTradePair = {
       index,
       tradepair,
@@ -275,19 +332,64 @@ const mutations = {
       my: []
     }
   },
-  QUERY_ORDERBOOK(state,records){
+  [QUERY_ORDERBOOK](state,records){
     state.selectedTradePair.bids = records.bids
     state.selectedTradePair.asks = records.asks
   },
-  QUERY_MY_OFFERS(state,records){
+  [QUERY_MY_OFFERS](state,records){
     state.selectedTradePair.my = records
   },
 
-  ORDERBOOK_STREAM_HANDLER(state,data){
+  [ORDERBOOK_STREAM_HANDLER](state,data){
     console.log('-------------------------state ORDERBOOK_STREAM_HANDLER')
     console.log(data)
   },
-
+  [RESET_PASSWORD](state,{index,newpassword}){
+    if(index === state.selected){
+      state.password = newpassword;
+    }
+  },
+  [QUERY_MY_EFFECTS](state, data) {
+    state.effects.records.push(...data.records)
+    state.effects.nextPage = data.next
+  },
+  [CLEAN_MY_EFFECTS](state) {
+    state.effects.records = []
+    state.effects.nextPage = null
+  },
+  [CHANGE_CURRENT_HISTORY_COMPONENT](state, data) {
+    state.currentHistoryComponent = data
+  },
+  [SORT_TRADEPAIRS](state,pairs){
+    state.accountData.tradepairs = pairs
+  },
+  [SET_TRADEPAIR_KLINE_LASTTRADE](state,{index,date,data}){
+    let _data = state.tradePairKLineData[index]
+    if(_data){
+      _data = Object.assign(_data, {date, lastTrade: data})
+    }else{
+      _data = {date, lastTrade: data}
+    }
+    state.tradePairKLineData[index] = _data
+  },
+  [SET_TRADEPAIR_KLINE_TRADEAGGREGATION](state, {index, date, data}){
+    let _data = state.tradePairKLineData[index]
+    if(_data){
+      _data = Object.assign(_data, {date, tradeAggregation: data})
+    }else{
+      _data = {date, tradeAggregation: data}
+    }
+    state.tradePairKLineData[index] = _data
+  },
+  [SET_TRADEPAIR_KLINE_7DAY_TRADEAGGREGATION](state, {index,date, data}){
+    let _data = state.tradePairKLineData[index]
+    if(_data){
+      _data = Object.assign(_data, {date, sevenDayTradeAggregation: data})
+    }else{
+      _data = {date, sevenDayTradeAggregation: data}
+    }
+    state.tradePairKLineData[index] = _data
+  }
 }
 
 export default {
@@ -295,16 +397,3 @@ export default {
   actions,
   mutations
 }
-
-export const LOAD_ACCOUNTS = 'LOAD_ACCOUNTS'
-export const CHANGE_ACCOUNT = 'CHANGE_ACCOUNT'
-export const CREATE_ACCOUNT = 'CREATE_ACCOUNT'
-export const LOAD_ACCOUNT_DATA = 'LOAD_ACCOUNT_DATA'
-export const CHANGE_ACCOUNT_NO_PASSWORD = 'CHANGE_ACCOUNT_NO_PASSWORD'
-export const CLEAN_ACCOUNT_DATA = 'CLEAN_ACCOUNT_DATA'
-
-export const SELECT_TRADE_PAIR = 'SELECT_TRADE_PAIR'
-export const QUERY_ORDERBOOK = 'QUERY_ORDERBOOK'
-export const QUERY_MY_OFFERS = 'QUERY_MY_OFFERS'
-export const ORDERBOOK_STREAM_HANDLER = 'ORDERBOOK_STREAM_HANDLER'
-export const CONTACT_ID_INCREMENT = 'CONTACT_ID_INCREMENT'

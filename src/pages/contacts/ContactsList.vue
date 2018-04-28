@@ -3,13 +3,7 @@
  */
 <template>
   <div class="page">
-    <toolbar :title="$t(title)" 
-      :showmenuicon="showmenuicon" 
-      :showbackicon="showbackicon"
-    >
-      <!-- <div class="right" slot="right-tool" @click="toAddContact">
-        <i class="material-icons">&#xE145;</i>
-      </div> -->
+    <toolbar :title="$t(title)" :showbackicon="true"  @goback="back">
       <v-btn icon slot='right-tool' @click="toAddContact">
         <i class="material-icons">&#xE145;</i>
       </v-btn>
@@ -25,8 +19,12 @@
                           class="search"  hide-details single-line >
             </v-text-field>
             <div class="contracts-list">
-               <div class="contacts-row" v-for="contact in filteredContacts" :key="contact.id">
-                <v-layout class="mycontacts-li third-li" row wrap v-swiper=3 @click.stop="toContactDetail(contact.id)">
+               <div class="contacts-row" v-for="(contact,index) in filteredContacts" :key="contact.id"
+                  v-touch="{
+                    left: () => selectedItem = index,
+                    right: () => selectedItem = null
+                  }">
+                <v-layout class="mycontacts-li third-li" row wrap v-swiper=2.5 @click.stop="toContactDetail(contact.id)">
                   <v-flex xs2 class="mycontacts-wrapper">
                     <v-avatar :tile=false class="grey darken-4 contact-avatar">
                       <i class="avatar iconfont icon-erweima"></i>
@@ -39,10 +37,10 @@
                     <div class="contact-address grey--text text--darken-1">{{contact.address|miniaddress}}</div>
                   </v-flex>
                 </v-layout>
-                <div class="operate-box">
+                <div class="operate-box" >
                   <div class="del"     @click.stop="del(contact)"    >{{$t('Delete')}} </div>
-                  <div class="send"    @click.stop="sendto(contact)"   >{{$t('Send')}}   </div>
                   <div class="receive" @click.stop="toModifyContact(contact.id)">{{$t('Modify')}}</div>
+                  <div class="send"    @click.stop="sendto(contact)"   >{{$t('Send')}}   </div>
                 </div>
               </div>
             </div>
@@ -63,14 +61,14 @@ export default {
   data() {
     return {
       title: 'Menu.Contacts',
-      showbackicon: false,
-      showmenuicon: true,
       search: '',
       avatarSize: '64px',
 
       working: false,
       delok: false,
       delerror: false,
+
+      selectedItem: null
     }
   },
   computed: {
@@ -90,6 +88,9 @@ export default {
   },
   methods: {
     ...mapActions(['deleteContact']),
+    back(){
+      this.$router.back()
+    },
     toAddContact() {
       //跳转到添加联系人菜单
       this.$router.push({name: 'AddContact'})
@@ -107,6 +108,7 @@ export default {
         .then(data=>{
           this.delok = true
           this.delerror  = false
+          this.selectedItem = null
           setTimeout(()=>{
             this.working = false
           },1000)
@@ -142,7 +144,6 @@ export default {
   font-size: 16px
   overflow-y: auto
   .content
-    padding: 10px 10px
     .infocard
       margin 0
       padding-left 15px
@@ -153,13 +154,20 @@ export default {
 .contacts
   overflow: hidden
   position: relative
+
   .search
     padding-bottom 25px
     padding 15px 15px 15px 15px
+    background-color:$secondarycolor.gray
+    border-radius:5px
+    
+   
   .contacts-row
     overflow: hidden
     position: relative
     border-bottom: 1px solid $secondarycolor.font
+    background-color:$primarycolor.gray
+    border-radius:5px
     &:last-child
       border-bottom: 0px
     .mycontacts-li
@@ -169,6 +177,7 @@ export default {
       background: $secondarycolor.gray
       width: 100%
       min-height 45px
+      border-radius:5px
       .mycontacts-wrapper
         font-size: 16px
         display flex
@@ -216,19 +225,28 @@ export default {
     display: flex
     justify-content: center
     align-items: center
-    background-color: $secondarycolor.green
-    color: $primarycolor.font
+    background-color: $primarycolor.gray
+    // background-color: $secondarycolor.green
+    color: $primarycolor.green
     padding: 0 12px
   .receive
-    border-left: 1px solid $secondarycolor.gray
+    // border-left: 1px solid $secondarycolor.gray
+    color:$primarycolor.green
   .del
-    background-color: $secondarycolor.red
-    border-right: 1px solid $secondarycolor.gray
+    background-color: $primarycolor.gray
+    color:$primarycolor.red
+    // background-color: $secondarycolor.red
+    // border-right: 1px solid $secondarycolor.gray
 .contact-avatar
   min-width 42px
   min-height 42px
 .contracts-list
-  padding-left:15px
-  padding-right: 15px
+  border-radius:5px
+.selected
+  -webkit-transform: translate(-50%, 0)
+  -webkit-transition: 0.3s
+  transform: translate(-50%, 0)
+  transition: 0.3s
+
 </style>
 

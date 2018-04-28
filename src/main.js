@@ -1,6 +1,6 @@
 // main
 import Vue from 'vue'
-import Vuetify from 'vuetify'
+//import Vuetify from 'vuetify'
 import 'babel-polyfill'
 import FastClick from 'fastclick'
 import './stylus/main.styl'
@@ -10,31 +10,19 @@ import store from './store'
 import { i18n }  from './locales/index'
 require('./filters/index')
 require('./directives/swiper')
+import imageHW from './directives/imageHW'
 require('./api/index')
 import { setVuexStore } from './streams'
 import { AXIOS_DEFAULT_TIMEOUT } from './api/gateways'
 import axios from 'axios'
-import './api/utils'
+require('./api/utils') 
 
 // animate.css
-import 'animate.css'
+// import 'animate.css'
+Vue.directive('image-wrapper', imageHW)
 
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 Vue.use(VueAwesomeSwiper)
-
-import vueMethodsPromise from 'vue-methods-promise'
-
-Vue.use(vueMethodsPromise, {
-  hookName: '$promise', // Component default hook name
-  promise: (mp) => { // Promise callback
-    mp.then(function (res) {
-        //console.log(res)
-      })
-      .catch(function (err) {
-       // console.log(err.msg) // Test error
-      })
-  }
-})
 
 var VueCordova = require('./libs/vue-cordova');
 Vue.use(VueCordova);
@@ -56,13 +44,26 @@ if (window.location.protocol === 'file:' || window.location.port === '3000') {
 }
 
 // Vue.use(Vuetify)
-Vue.use(Vuetify, {
-  theme: {
-    primary: '#21ce90',
-    error: "#f35833",
-    notice: "#303034",
-  }
-})
+// Vue.use(Vuetify, {
+//   theme: {
+//     primary: '#21ce90',
+//     error: "#f35833",
+//     notice: "#303034",
+//   }
+// })
+
+import '@/libs/pkgs/initVuetify'
+
+FastClick.prototype.focus = function(targetElement) {
+	var length;
+	// Issue #160: on iOS 7, some input elements (e.g. date datetime month) throw a vague TypeError on setSelectionRange. These elements don't have an integer value for the selectionStart and selectionEnd properties, but unfortunately that can't be used for detection because accessing the properties also throws a TypeError. Just check the type instead. Filed as Apple bug #15122724.
+	if (targetElement.setSelectionRange && targetElement.type.indexOf('date') !== 0 && targetElement.type !== 'time' && targetElement.type !== 'month' && targetElement.type !== 'number') {
+		length = targetElement.value.length;
+		targetElement.setSelectionRange(length, length);
+	} else {
+		targetElement.focus();
+	}
+};
 FastClick.attach(document.body)
 Vue.config.productionTip = false
 

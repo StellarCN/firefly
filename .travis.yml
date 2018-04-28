@@ -1,3 +1,48 @@
-language: node_js
-node_js:
-  - "node"
+os: linux
+language: android
+
+android:
+  components:
+    - tools
+    - platform-tools
+    - build-tools-26.0.2
+    - android-26
+    - extra-google-m2repository
+    - extra-android-m2repository
+  licenses:
+    - 'android-sdk-preview-license-.+'
+    - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
+
+env:
+  global:
+    - JAVA_HOME=/usr/lib/jvm/java-8-oracle
+
+before_install:
+  - export LANG=en_US.UTF-8
+
+install:
+  - nvm install 8
+  - npm install -g cordova@7.1.0
+  - npm install
+
+script:
+  - npm run build
+  - cordova build android
+
+before_deploy:
+  - git config --local user.name "StellarCN Travis CI"
+  - git config --local user.email "travis@stellarcn.org"
+  - git tag "Debug-$(date +'%Y%m%d')-$(git log --format=%h -1)"
+  - cd platforms/android/build/outputs/apk/debug/
+  - mv android-debug.apk "firefly-debug-$(date +'%Y%m%d')-$(git log --format=%h -1).apk"
+
+deploy:
+  provider: releases
+  file_glob: true
+  api_key:
+    secure: a6kA4zpPPxnII6cEQdnzZ7aqkjUuN3Ryuj5fBu/s8gjAhxD1l0EZoFQyLAJR6/qbpEZ1tbBeaTeAIlDOd360W/kODSdL4fGSZtTaUYM6/ykBSc+yXaFyTcj9pNMbQ2Btz16jpXQSPmS1fV12mn3+l+rD3YF1cHDOX/cNnZxo0bym/yFXmxFe5F6ftLzifP9M4qt9foE6x94xqP6R7gVpqLGv24rVfw7U2tnitziiYsqkuGW3pGFOKT0ts+0Wf3EfGlpc0TMQ3d6szAbtdq2uEuG/V5dPKB5QCx3o+HkAYPitLKWUtVBNJah/CoorFcHkVShp2DSlbCGB8/FD3uHzqXZKa4d0b3LioJn2SNauPo9G2HdW3BjhYrp5G/YAFvYjch3VWxkYIy6xWoVaKcKGoYcoFAKgsOLXvucdvXfF6QJ3h2t7WYsaAR6TqJywIRl6NMNV5Ltd1HcEQR14QgAGw8hrssVzSeCGHhUNvnxU3fGYmmWO88oW/jlhZFAhfR2hXo5kxM/RN6fxu+TcXgyCbSzc2lgkhqo2vUL1G8pjlm92yhKy+dPjaUT11V75ZAFgb9ia5NZo5DUwgT0nC8k59RL6o0hN2VdDmql9n0Urq0YqtoDmRkqhIcdWAKk4ZDj8s+Kr9uokH2Fy5krGvIKB7GlbB5F7KRd5UfwiDeZkzxU=
+  file: ./*.apk
+  skip_cleanup: true
+  on:
+    all_branches: true

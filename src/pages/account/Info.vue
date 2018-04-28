@@ -9,13 +9,13 @@
 
     <div class="content">
       
-      <card class="mycard" padding="20px 10px 20px 10px">
+      <card :class="[{ Info_mycard: isB, Info_mycardB:isC }]" padding="20px 10px 20px 10px">
 
         <div class="card-content" slot="card-content">
-          <div class="avatar-wrapper">
-            <span class="avatar">
+          <div class="avatar-wrapper">{{$t("Account.AccountName")}}
+            <!-- <span class="avatar">
               <i class="iconfont icon-erweima"></i>
-            </span>
+            </span> -->
           </div>
           <div class="name">
               {{showaccount.name}}
@@ -23,7 +23,17 @@
 
           
           <div class="label">{{$t('Account.AccountAddress')}}</div>
-          <div class="value" @click="copy(showaccount.address)">{{showaccount.address}}</div>
+          <div class="value" @click="copy(showaccount.address)">{{showaccount.address}}</div> <!-- 账户地址-->
+
+          <div class="label" v-if="showaccount.federationAddress">{{$t('FederationAddress')}}</div>
+          <div class="value" v-if="showaccount.federationAddress" @click="copy(showaccount.federationAddress)">{{showaccount.federationAddress}}&nbsp;</div><!-- 联邦地址-->
+         
+          
+          <div class="label" v-if="showaccount.inflationAddress">{{$t('InflationAddress')}}</div>
+          <div class="value" v-if="showaccount.inflationAddress" @click="copy(showaccount.inflationAddress)">
+            {{inflationPoolSite}}
+          </div><!-- 通胀地址-->
+          <!--
           <div class="label">{{$t('SecretKey')}}</div>
           <div class="value seed" >
             <div class="secret" @click="copySeed">{{showseedinfo}}</div>
@@ -32,33 +42,41 @@
               <v-icon class="secreticons" v-else>visibility_off</v-icon>
             </div>
           </div>
-          <div class="label">{{$t('FederationAddress')}}</div>
-          <div class="value" @click="copy(showaccount.federationAddress)">{{showaccount.federationAddress}}&nbsp;</div>
-          <div class="label">{{$t('InflationAddress')}}</div>
-          <div class="value" @click="copy(showaccount.inflationAddress)">{{showaccount.inflationAddress}}&nbsp;</div>
-        
-          <div class="qrcode">
-            <qrcode :text="qrtext" :callback="qrcodecallback"/>
+         
+          <div class="label" v-if="showaccount.federationAddress">{{$t('FederationAddress')}}</div>
+          <div class="value" v-if="showaccount.federationAddress" @click="copy(showaccount.federationAddress)">{{showaccount.federationAddress}}&nbsp;</div>
+          <div class="label" v-if="showaccount.inflationAddress">{{$t('InflationAddress')}}</div>
+          <div class="value" v-if="showaccount.inflationAddress" @click="copy(showaccount.inflationAddress)">
+            {{inflationPoolSite}}
           </div>
+         -->
+          <!-- <div class="qrcode" v-if="showseed">
+            <qrcode :text="qrtext" :callback="qrcodecallback" color="red"/>
+          </div> -->
         </div>
 
       </card>
       
-      <!-- <div class="btn-group">
-         <v-btn class="primary btn-export" primary @click.stop="toAccount">{{$t('Export')}}</v-btn>
-      </div> -->
-      <div class="footer" v-if="canModify">
+      
+      <div :class="'footer' + (canModify ? ' active':' unactive') ">
         <v-layout row wrap>
-          <v-flex xs6 @click="del">
+          <!-- <v-flex xs4 @click="del">
             <span>{{$t('Delete')}}</span>
+          </v-flex> -->
+          <v-flex xs4 @click="modify">
+            <span class="Info_menu_color">{{$t('Modify')}}</span>
           </v-flex>
-          <v-flex xs6 @click="modify">
-            <span>{{$t('Modify')}}</span>
+          <v-flex xs4 @click="resetpwd">
+            <span class="Info_menu_color">{{$t('ResetPassword')}}</span>
+          </v-flex>
+           <v-flex xs4 @click="toViewKey">
+            <span class="Info_menu_color">{{$t('ViewKey')}}</span>
           </v-flex>
         </v-layout>  
       </div>
 
-      <div class="pwdSheetWrapper"v-if="showPwdSheet">
+
+      <div class="pwdSheetWrapper" v-if="showPwdSheet">
         <v-bottom-sheet  v-model="showPwdSheet"  dark>
           <div class="sheet-content">
             <div class="sheet-input">
@@ -79,18 +97,125 @@
           </div>
         </v-bottom-sheet>
       </div>
+        <!--尝试添加的bottom-sheet的例子，可以弹出来的是密钥信息和密钥二维码 -->
+      <!-- <div v-if="showViewkeySheet">
+        <v-bottom-sheet class="showViewkeySheetPosition" v-model="showViewkeySheet">                   -->
+              <!-- <v-text-field
+                    name="password"
+                    :label="$t('Account.Password')"
+                    v-model="inpassword"
+                    :append-icon="pwdvisible ? 'visibility' : 'visibility_off'"
+                    :append-icon-cb="() => (pwdvisible = !pwdvisible)"
+                    :type="pwdvisible ? 'text':'password'"
+                    required dark
+                  ></v-text-field> -->
+              <!-- <v-text-field   required dark>账户密钥为重要信息，请做好备份并谨慎保存，切勿与他人分享</v-text-field> -->
+        <!-- </v-bottom-sheet>
+      </div> -->
+      <div class="text-xs-center" v-if="showViewkeySheet">
+          <v-bottom-sheet v-model="showViewkeySheet" dark>
+            <v-list >
+              <v-subheader class="info_warning_msg_style">{{$t("Warning_msg")}}</v-subheader>
+              <v-subheader class="info_account_miyao_style">{{$t("Account_secretkey")}}</v-subheader>
+              <v-subheader @click="copy(seed)"  class="info_showaccount_address_style">{{seed}}</v-subheader>
+              <v-subheader class="info_showaccount_barcode_style">{{$t("Account_secretkeycode")}}</v-subheader>
+              <qrcode class="info_qrcode_style" :text="qrtext" :callback="qrcodecallback" color="red"/>
+              <v-subheader class="info_account_close_style" @click="change_value0f_vk">{{$t("Close")}}</v-subheader>
+            </v-list>
+          </v-bottom-sheet>
+      </div>
+
+      <v-dialog v-model="dlgshow" persistent max-width="260">
+        <v-card>
+          <v-card-text class="dlg-content">{{$t(dlgtitle)}}</v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" flat @click="dlgBtnCancel">{{$t('Button.Cancel')}}</v-btn>
+            <v-btn color="green darken-1" flat @click="dlgBtnOK">{{$t('Button.OK')}}</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <!-- 修改密码 -->
+       <div class="pwdSheetWrapper rePwdSheetWrapper" v-if="showResetPwdSheet">
+        <v-bottom-sheet  v-model="showResetPwdSheet"  dark>
+          <div class="sheet-title">
+            <div class="stitle">
+             {{$t('ResetPassword')}}
+            </div>
+          </div>
+          <div class="sheet-content">
+            <div class="sheet-input">
+              <div class="sheet-input">
+                <v-text-field
+                      name="password1"
+                      :label="$t('Account.OriginPassword')"
+                      v-model="inpassword1"
+                      :append-icon="pwd1visible ? 'visibility' : 'visibility_off'"
+                      :append-icon-cb="() => (pwd1visible = !pwd1visible)"
+                      :type="pwd1visible ? 'text':'password'"
+                      required dark
+                    ></v-text-field>
+              </div>
+              <div class="sheet-input">
+                <v-text-field
+                      name="password2"
+                      :label="$t('Account.NewPassword')"
+                      v-model="inpassword2"
+                      :append-icon="pwd2visible ? 'visibility' : 'visibility_off'"
+                      :append-icon-cb="() => (pwd2visible = !pwd2visible)"
+                      :type="pwd2visible ? 'text':'password'"
+                      required dark
+                    ></v-text-field>
+              </div>
+              <v-text-field
+                    name="password"
+                    :label="$t('Account.RePassword')"
+                    v-model="inpassword3"
+                    :append-icon="pwd3visible ? 'visibility' : 'visibility_off'"
+                    :append-icon-cb="() => (pwd3visible = !pwd3visible)"
+                    :type="pwd3visible ? 'text':'password'"
+                    required dark
+                  ></v-text-field>
+            </div>
+            <div  class="sheet-btns">
+              <div class="sheet-btn" @click="cancleResetPwdInput">{{$t('Button.Cancel')}}</div>
+              <div class="sheet-btn" @click="okResetPwdInput">{{$t('Button.OK')}}</div>
+            </div>
+          </div>
+        </v-bottom-sheet>
+      </div>
+
+      <!--密码输入界面，在查看密钥之前
+      <password-sheet 
+        :accountname=""
+        :address=""
+        @cancel="cancelCheckPWD"
+        @ok="checkPWDSuccess"
+        v-if="checkPWD"
+        />-->
+
 
     </div>
   </div>
 </template>
 
 <script>
-import Toolbar from '../../components/Toolbar'
 import { mapState, mapActions} from 'vuex'
-import QRCode from '../../components/QRCode'
-import Card from '../../components/Card'
-import { exportNameCard,exportAccount } from '../../api/qr'
+import Toolbar from '@/components/Toolbar'
+import QRCode from '@/components/QRCode'
+import Card from '@/components/Card'
+import PasswordSheet from '@/components/PasswordSheet'
+import { exportNameCard,exportAccount } from '@/api/qr'
 import {readAccountData} from '@/api/storage'
+import { INFLATION_POOL } from '@/api/gateways'
+
+const ACTION_DEL = 'delete';
+const ACTION_MODIFY = 'modify'
+const ACTION_VIEWSECRET = 'viewSecret'
+const ACTION_RESET_PASSWORD = 'resetpassword';
+const QUESTION_DELETE_ACCOUNT = 'Q.DeleteAccount';
+const QUESTION_RESET_PASSWORD = 'Q.ResetPassword';
 
 export default {
   data(){
@@ -104,9 +229,28 @@ export default {
       qrcodebase64:null,
 
       showPwdSheet:false,//是否显示输入密码窗口
+      showViewkeySheet:false,//是否显示密钥信息
+
       inpassword:null,
       pwdvisible:false,
       seed:null,
+
+
+      action: null,
+      dlgshow: false,
+      dlgtitle:"",
+
+      showResetPwdSheet: false,//显示重置密码窗口
+      inpassword1: null,
+      pwd1visible: false,
+      inpassword2: null,
+      pwd2visible: false,
+      inpassword3: null,
+      pwd3visible: false,
+
+      isB:true,
+      isC:false,
+
     }
   },
   computed:{
@@ -141,9 +285,22 @@ export default {
       return '********'
     },
 
+    inflationPoolSite(){
+      let address = this.showaccount.inflationAddress
+      if(!address)return '';
+      for(var i=0,n=INFLATION_POOL.length; i<n; i++){
+        let d = INFLATION_POOL[i];
+        if(d.address === address)return d.host;
+      }
+      return '';
+    }
+
   },
   beforeMount(){
       let address = this.$route.query.address || this.account.address
+      // federationAddress&inflationAddress
+      // let federationAddress = this.$route.query.federationAddress || this.account.federationAddress
+      // let inflationAddress = this.$route.query.inflationAddress || this.account.inflationAddress
       for(var i=0,n=this.accounts.length;i<n;i++){
         if(this.accounts[i].address === address){
           this.showaccount = this.accounts[i]
@@ -153,22 +310,23 @@ export default {
           break
         }
       }
+      console.log(this.accounts)
+    
+      
   },
-  mounted(){
+  mounted(){ 
   },
   methods: {
     ...mapActions({
       deleteAccount:'deleteAccount',
       cleanAccount: 'cleanAccount',
+      resetAccountPwd: 'resetAccountPwd',
     }),
     back(){
       this.$router.back()
     },
     qrcodecallback(img){
       this.qrcodebase64 = img
-    },
-    toAccount(){
-      this.$router.push(`/account`)
     },
     copy(value){
       if(value && cordova.plugins.clipboard){
@@ -182,7 +340,38 @@ export default {
         this.$toasted.show(this.$t('CopySuccess'))
       }
     },
+    dlgBtnCancel(){
+      this.action = null;
+      this.dlgshow = false;
+
+    },
+    dlgBtnOK(){
+      if(this.action === ACTION_DEL){
+        this.dlgshow = false;
+        this.doDel();
+      }else if(ACTION_RESET_PASSWORD === this.action){
+        this.dlgshow = false;
+        this.showResetPwdSheet = true;
+        this.inpassword1 = null;
+        this.inpassword2 = null;
+        this.inpassword3 = null;
+
+        
+      }
+    },
     del(){
+      if(!this.canModify){
+        this.showPwdSheet = true;
+        this.inpassword = null;
+        return;
+      }
+      this.dlgshow = true;
+      this.action = ACTION_DEL;
+      this.dlgtitle = QUESTION_DELETE_ACCOUNT;
+
+    },
+    doDel(){
+
       let selected = this.showaccount.address === this.account.address
       let index = -1
       for(var i=0,n=this.accounts.length;i<n;i++){
@@ -199,7 +388,7 @@ export default {
             }
             this.$toasted.show(this.$t('Account.DeleteSuccess'))
             if(this.accounts.length === 0){
-              this.$router.push(`/wallet`)
+              this.$router.push({name: 'Wallet'})
             }else{
               this.$router.back()
             }
@@ -210,8 +399,65 @@ export default {
         })
     },
     modify(){
-      this.$router.push({path: '/account/modify', 
-        query: {address: this.showaccount.address, seed: this.seed}});
+      if(!this.canModify){
+        this.showPwdSheet = true;
+        this.action = ACTION_MODIFY
+        this.inpassword = null;
+        return;
+      }
+      this.$router.push({name: 'ModifyAccount', query: {address: this.showaccount.address, seed: this.seed}});
+    },
+    toViewKey(){
+      this.showPwdSheet=true
+      this.inpassword = null
+      this.action = ACTION_VIEWSECRET
+    },
+    viewkey(){
+      this.showViewkeySheet = true;
+      this.isB=false;
+      this.isC=true;
+    },
+    change_value0f_vk(){
+      if(this.showViewkeySheet == true)
+      this.showViewkeySheet = false;
+      this.isB=true;
+        this.isC=false;
+      // console.log(this.showaccount);
+    },
+    resetpwd(){
+      this.dlgshow = true;
+      this.action = ACTION_RESET_PASSWORD;
+      this.dlgtitle = QUESTION_RESET_PASSWORD;
+    },
+    doResetPwd(){
+      if(!this.inpassword1 || !this.inpassword2 || !this.inpassword3){
+        this.$toasted.error(this.$t('Account.PasswordNotNull'))
+        return;
+      }
+      if(this.inpassword2!=this.inpassword3){
+        this.$toasted.error(this.$t("Account.PasswordNotSame"));
+        return;
+      }
+      let index = -1
+      for(var i=0,n=this.accounts.length;i<n;i++){
+        if(this.accounts[i].address === this.showaccount.address){
+          index = i
+          break
+        }
+      }
+      this.resetAccountPwd({index, account: this.showaccount, password: this.inpassword1, newpassword: this.inpassword2})
+        .then(data=>{
+          this.$toasted.show(this.$t('Account.PasswordResetSuccess'));
+          this.showResetPwdSheet = false;
+          this.inpassword1 = null;
+          this.inpassword2 = null;
+          this.inpassword3 = null;
+        })
+        .catch(error=>{
+          console.log(error)
+          this.$toasted.error(this.$t('Account.PasswordResetFail'));
+        })
+      
     },
     canclePwdInput(){
       this.showPwdSheet = false
@@ -225,7 +471,13 @@ export default {
             if(data.seed){
               this.seed = data.seed
               this.showPwdSheet = false
-              this.showseed = true
+              if(this.action === ACTION_MODIFY){
+                this.$router.push({name: 'ModifyAccount', query: {address: this.showaccount.address, seed: this.seed}});
+              }else if(this.action === ACTION_VIEWSECRET){
+                this.showseed = true
+                this.viewkey()
+              }
+              
             }else{
               this.$toasted.error(this.$t('Error.PasswordWrong'))
             }
@@ -236,6 +488,27 @@ export default {
           })
       }
     },
+    // viewkey_okPwdInput(){
+    //   if(this.inpassword!=null){
+    //     readAccountData(this.showaccount.address,this.inpassword)
+    //       .then(data=>{
+    //         this.inpassword = false
+    //         if(data.seed){
+    //           this.seed = data.seed
+    //           this.showPwdSheet = false
+    //           this.showseed = false
+    //           this.showViewkeySheet = true
+              
+    //         }else{
+    //           this.$toasted.error(this.$t('Error.PasswordWrong'))
+    //         }
+    //       })
+    //       .catch(err=>{
+    //         this.$toasted.error(this.$t('Error.PasswordWrong'))
+    //         // this.inpassword = false
+    //       })
+    //   }
+    // },
     seedIconClick(){
       //showseed=!showseed
       if(this.showseed){
@@ -248,32 +521,42 @@ export default {
       
     },
 
+    cancleResetPwdInput(){
+      this.showResetPwdSheet = false
+    },
+
+    okResetPwdInput(){
+      this.doResetPwd()
+    },
+
   },
   components: {
     Toolbar,
     qrcode: QRCode,
     Card,
+    PasswordSheet,
   }
 }
 </script>
 
 
 <style lang="stylus" scoped>
-@require '../../stylus/color.styl'
+@require '~@/stylus/color.styl'
 .page
   background: $primarycolor.gray
   .content
-    padding: 10px 10px
+    height: 100%
+    overflow-y:auto
 
 .card-content
   .label
-    font-size: 14px
-    color: $secondarycolor.font
+    font-size: 16px
+    color: $primarycolor.green
     padding-top: 2px
     padding-bottom: 2px
   .value
     display: block
-    font-size: 16px
+    font-size: 14px
     color: $primarycolor.font
     width: 100%
     white-space:normal
@@ -294,19 +577,28 @@ export default {
     text-align: center
 .footer
   background: $primarycolor.gray
-  height:36px
-  line-height:36px
-  font-size:16px
-  margin-top: 10px
+  height:40px
+  line-height:40px
+  font-size:14px
+  margin-top: 3px
   text-align:center
-  color:$primarycolor.green
+  position: fixed
+  bottom: 5px
+  left: 0
+  right: 0
+  
+  &.active
+    color:$primarycolor.green
+  &.unactive
+    color: $secondarycolor.font
 .btn-available
   color:$primarycolor.green
 .btn-unavailable
   color:$secondarycolor.green
 .avatar-wrapper
   display: block
-  text-align: center
+  text-align: left
+  color:$primarycolor.green
   .avatar
     width: 56px
     height: 56px
@@ -317,8 +609,8 @@ export default {
       font-size: 32px
 .name
   display: block
-  text-align: center
-  font-size: 16px
+  text-align: left
+  font-size: 14px
   color: $primarycolor.font
   padding-top: 10px
   padding-bottom: 10px
@@ -337,6 +629,9 @@ export default {
   bottom: 0
   right: 0
   left: 0
+  z-index: 100
+  &.rePwdSheetWrapper
+    height: 320px
 .sheet-content
   padding: 10px 10px
 .sheet-btns
@@ -347,6 +642,60 @@ export default {
   .sheet-btn
     flex: 1
     text-align: center
+.dlg-content
+  font-size: 14px
+.stitle
+  text-align: center
+  font-size: 16px
+  height: 32px
+  line-height: 32px
+  padding-top: 10px
+
+
+.Info_mycard
+  background-color:$secondarycolor.gray  
+  height:550px
+.Info_mycardB
+  background-color:$secondarycolor.black
+  opacity:0.3
+.Info_menu_color
+  color:$primarycolor.green
+  font-size:18px
+.showViewkeySheetPosition
+  height:5000px
+  width:3750px
+  background-color:green
+.viewkeySheetWrapper
+  height:100px
+  width:100px
+  font-size:20px
+  color:red
+
+.info_warning_msg_style
+  padding-top:10px
+  color:$primarycolor.red
+  font-size:16px
+  text-align :center
+.info_account_miyao_style
+  color:$primarycolor.red
+  font-size:15px
+.info_showaccount_address_style
+  color:$primarycolor.font
+  font-size:17px
+  text-align:center
+  word-break:break-all
+.info_showaccount_barcode_style
+  color:$primarycolor.red
+  font-size:16px
+  // text-align:center
+  padding-left:150px
+.info_qrcode_style
+  text-align:center
+.info_account_close_style
+  color:$primarycolor.red
+  font-size:16px
+  // text-align:center
+  padding-left:175px
   
 </style>
 

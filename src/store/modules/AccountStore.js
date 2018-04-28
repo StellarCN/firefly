@@ -1,8 +1,27 @@
-import * as accountapi from '../../api/account'
-import * as transactionsapi from '../../api/transactions'
-import * as paymentsapi from '../../api/payments'
+import * as accountapi from '@/api/account'
+import * as transactionsapi from '@/api/transactions'
+import * as paymentsapi from '@/api/payments'
 import * as ledgerapi from '@/api/ledger'
-import { BASE_RESERVE } from '@/api/gateways'
+import { isNativeAsset } from '@/api/assets'
+import { BASE_RESERVE, BASE_FEE } from '@/api/gateways'
+import { getDepositeAndWithdrawRecords, getAllEffectOffers } from '@/api/fchain'
+
+
+
+export const ACCOUNT_INFO_SUCCESS = 'ACCOUNT_INFO_SUCCESS'
+export const GET_TRANSACTIONS_SUCCESS = 'GET_TRANSACTIONS_SUCCESS'
+export const GET_PAYMENTS_SUCCESS = 'GET_PAYMENTS_SUCCESS'
+export const SELECT_PAYMENT = 'SELECT_PAYMENT'
+export const CLEAN_ACCOUNT = 'CLEAN_ACCOUNT'
+export const GET_LEDGER_INFO = 'GET_LEDGER_INFO'
+export const GET_PAYMENT_STREAM = 'GET_PAYMENT_STREAM'
+export const CLEAN_PAYMENTS = 'CLEAN_PAYMENTS'
+export const ACCOUNT_IS_FUNDING = 'ACCOUNT_IS_FUNDING'
+export const ACCOUNT_NOT_FUNDING = 'ACCOUNT_NOT_FUNDING'
+export const GET_ALL_OFFERS = 'GET_ALL_OFFERS'
+export const CLEAN_ACCOUNT_BYSTREAM = 'CLEAN_ACCOUNT_BYSTREAM'
+export const ACCOUNTINFO_BYSTREAM = 'ACCOUNTINFO_BYSTREAM'
+
 
 // 某个账户的相关操作
 const state = {
@@ -13,6 +32,10 @@ const state = {
   payments: { records:[] },
   selectedPayment:null,//当前选择的payment的
   ledger: null,
+  account_not_funding: false,//账户是否未激活
+  alloffers:[],//查询账户某个时间段内的成交记录
+  //depositeRecords:[],//某种资产充值记录
+  //withdrawRecords:[],//某种资产提现记录
 }
 
 const actions = {
@@ -52,6 +75,10 @@ const actions = {
   paymentSteamData({commit,state},rows){
     commit(GET_PAYMENT_STREAM, rows)
   },
+  async getAllOffers({commit,state}, {account,start_time,end_time}){
+    let data = await getAllEffectOffers(account, start_time, end_time)
+    commit(GET_ALL_OFFERS, data)
+  }
 
 
 }
@@ -60,14 +87,21 @@ const mutations = {
   CLEAN_ACCOUNT(state){
     state.data = {balances:[]}
     state.transations = { records:[] }
-    //state.payments = { records:[] }
     state.selectedPayment = null
+  },
+  [CLEAN_ACCOUNT_BYSTREAM](state){
+    state.data = {balances:[]}
+  },
+  [ACCOUNTINFO_BYSTREAM](state, data){
+    state.data = data
   },
   CLEAN_PAYMENTS(state){
     state.payments = { records: [] }
   },
   ACCOUNT_INFO_SUCCESS(state,info){
-    state.data = info
+    state.transations = { records:[] };
+    state.selectedPayment = null;
+    state.data = info;
   },
   GET_TRANSACTIONS_SUCCESS(state,data){
     state.transactions = data
@@ -85,9 +119,19 @@ const mutations = {
     state.selectedPayment = data
   },
   GET_LEDGER_INFO(state, ledger){
-    console.log('get newest ledger info')
     state.ledger = ledger
   },
+
+  ACCOUNT_IS_FUNDING(state){
+    state.account_not_funding = false
+  },
+  ACCOUNT_NOT_FUNDING(state){
+    state.account_not_funding = true
+  },
+  GET_ALL_OFFERS(state, data){
+    state.alloffers = data
+  }
+
 }
 
 const getters = {
@@ -104,7 +148,9 @@ const getters = {
         obj.issuer = element.asset_issuer
       }
       obj.balance = Number(element.balance)
+      obj.origin_balance = element.balance
       obj.limit = Number(element.limit)
+      obj.type = element.asset_type
       data.push(obj)
     });
     return data.reverse()
@@ -112,18 +158,32 @@ const getters = {
   },
   base_reserve: state =>{
     if(state.ledger){
-      return state.ledger.records[0].base_reserve
+      let base = state.ledger.records[0].base_reserve
+      if(base === null || typeof base === 'undefined'){
+        return  (state.ledger.records[0].base_reserve_in_stroops/10000000)
+      }
+      return base
     }
     return BASE_RESERVE
   },
   reserve: (state, getters) => {
     return (state.data.subentry_count + 2 ) * getters.base_reserve
   },
+  base_fee: (state, getters) => {
+    if(state.ledger){
+      let base = state.ledger.records[0].base_fee
+      if(base === null || typeof base === 'undefined'){
+        return state.ledger.records[0].base_fee_in_stroops / 10000000
+      }
+      return base
+    }
+    return BASE_FEE
+  },
   native: (state, getters) =>{
     if(!getters.balances)return {}
     let xlm = {}
     getters.balances.forEach((element) => {
-      if(element.code === 'XLM'){
+      if(isNativeAsset(element)){
         xlm = Object.assign({},element)
       }
     })
@@ -157,17 +217,8 @@ const getters = {
     return null
   },
   
+  
 }
-
-export const ACCOUNT_INFO_SUCCESS = 'ACCOUNT_INFO_SUCCESS'
-export const GET_TRANSACTIONS_SUCCESS = 'GET_TRANSACTIONS_SUCCESS'
-export const GET_PAYMENTS_SUCCESS = 'GET_PAYMENTS_SUCCESS'
-export const SELECT_PAYMENT = 'SELECT_PAYMENT'
-export const CLEAN_ACCOUNT = 'CLEAN_ACCOUNT'
-export const GET_LEDGER_INFO = 'GET_LEDGER_INFO'
-export const GET_PAYMENT_STREAM = 'GET_PAYMENT_STREAM'
-export const CLEAN_PAYMENTS = 'CLEAN_PAYMENTS'
-
 export default {
   state,
   getters,

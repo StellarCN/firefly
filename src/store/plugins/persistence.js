@@ -1,8 +1,11 @@
-/**
+/*
+ * vuex state 复制保存插件
  * 代码复制来自于  https://github.com/crossjs/vuex-localstorage
+ * @Author: mazhaoyong
+ * @Date: 2018-01-16 09:59:52
  */
 import shvl from 'shvl'
-
+import  defaultsDeep  from 'lodash/defaultsDeep'
 let index = Date.now()
 
 /**
@@ -101,6 +104,7 @@ export function createStorage ({
  * @param  {function}   [param.reducer]         用于数据过滤的方法
  * @param  {string[]}   [param.paths = []]      需要持久化的数据的路径，state 的 keys。
  *                                              如需处理更多层级，可以配合自定义 reducer 实现
+ * @param  {string[]}   [param.blocks = {} ]    不需要保存的数据
  * @return {function(store: object)}            插件函数
  * @example
  * const plugin = createPersist()
@@ -118,7 +122,8 @@ export default function createPersist ({
   expires,
   merge = defaultMerge,
   reducer = defaultReducer,
-  paths = []
+  paths = [],
+  blocks = {}
 } = {}) {
   return store => {
     const storage = createStorage({
@@ -130,28 +135,42 @@ export default function createPersist ({
       merge,
       expires
     })
-
     store.replaceState(
       merge(store.state, storage.get())
     )
 
     store.subscribe((mutation, state) => {
-      storage.set(reducer(state, paths))
+      storage.set(reducer(defaultsDeep({},state), paths, blocks))
     })
   }
 }
 
 function defaultMerge (...args) {
-  return Object.assign({}, ...args)
+  return defaultsDeep({}, ...args)
 }
 
-function defaultReducer (state, paths) {
-  return paths.length === 0
+function defaultReducer (state, paths = [], blocks = []) {
+  let newstate = paths.length === 0
   ? state
   : paths.reduce((substate, path) => {
     if (state.hasOwnProperty(path)) {
-      return Object.assign(substate, { [path]: state[path] })
+      return defaultsDeep(substate, { [path]: state[path] })
     }
     return substate
   }, {})
+  let prostate = defaultsDeep({} , newstate, {})
+  blocks.forEach(path=>{
+    deleteAttribute(prostate,path)
+  })
+  return prostate
+}
+
+/**
+ * 从对象中删除某个属性
+ * @param {Object} object 
+ * @param {String} key 
+ */
+function deleteAttribute(object, path, obj){
+  path = path.split ? path.split('.') : path
+  delete path.slice(0,-1).reduce((obj,k1)=>obj[k1]||{},obj=object)[path.pop()]
 }

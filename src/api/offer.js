@@ -1,3 +1,4 @@
+import NP from 'number-precision'
 import StellarSdk from 'stellar-sdk'
 import {getServer} from './server'
 import { address as getAddress } from './account'
@@ -91,8 +92,8 @@ function undefinedToNull(val){
 }
 
 export function myofferConvert(_sellasset,_buyasset,my){
-  let sellasset = Object.assign({}, _sellasset)
-  let buyasset = Object.assign({}, _buyasset)
+  let sellasset = JSON.parse(JSON.stringify(_sellasset))
+  let buyasset = JSON.parse(JSON.stringify(_buyasset))
   let data = []
   my.forEach(ele=>{
     let sellcode = 'XLM'
@@ -121,21 +122,19 @@ export function myofferConvert(_sellasset,_buyasset,my){
 
     let obj = null
     if(codeandissuer_sb === codeandissuer_sb_target && codeandissuer_bs === codeandissuer_bs_target){
-      obj = Object.assign({}, ele, {type: 'sell'})
+      obj = JSON.parse(JSON.stringify(Object.assign({}, ele, {type: 'sell'})))
       obj.amount = Number(obj.amount)
       obj.price = Number(obj.price)
-      obj.base = Number((obj.amount * obj.price).toFixed(7))
+      obj.base = NP.round(Number(obj.amount * obj.price), 7)
       data.push(obj)
     }else if(
       codeandissuer_sb === codeandissuer_bs_target && codeandissuer_bs === codeandissuer_sb_target
     ){
-      console.log("----------------xxxxxxx")
-      console.log(ele)
-      obj = Object.assign({}, ele, {type: 'buy'})
+      obj = JSON.parse(JSON.stringify(Object.assign({}, ele, {type: 'buy'})))
       obj.amount = Number(obj.amount)
       obj.price = Number(obj.price)
-      obj.base = Number((obj.amount * obj.price_r.n / obj.price_r.d).toFixed(7))
-      obj.price = Number((1 / obj.price).toFixed(4))
+      obj.base = NP.round(Number(obj.amount * obj.price_r.n / obj.price_r.d), 7)
+      obj.price = Number(NP.round((1 / obj.price), 4))
       data.push(obj)
     }
   })

@@ -2,10 +2,13 @@
 
 萤火钱包是[恒星网络](https://stellar.org)的手机钱包，支持安卓和IOS平台
 
+
+## [English Document](README.md)
+
 ## [帮助文档](https://wallet.fchain.io/manual/#0)
 
 
-## [路线图](https://github.com/StellarCN/firefly/blob/master/docs/ROADMAP_CN.MD)
+## [路线图](docs/ROADMAP_CN.MD)
 
 ## 主要功能:
 * 多账户
@@ -24,13 +27,17 @@
 	* 扫描二维码发送资产
 	* 接收资产
 	* 信任资产
+	* 资产预估（XCN）
 * 充值提现
 	* 充值
 	* 提现
+	* 历史记录查询
 * 交易
 	* 自定义交易对
 	* 交易盘面
 	* 撤消委单
+	* K线图展示功能
+	* 交易历史
 * 安全
 	* PIN
 	* 密码
@@ -39,21 +46,28 @@
 * 多语言
 
 
-
-## 构造
+## 开发
 ```
-npm install -g cordova
-npm install
-npm run build
-cordova prepare
+# 可以使用cnpm或yarn代替npm
+
+# 需要安装cordova7.x的版本
+npm i -g cordova@7.1.0
+git clone https://github.com/stellarcn/firelfy.git
+cd firefly
+npm i
+# 打包
+npm run build # 生成js css等文件
+npm run chcp  # 生成运态更新文件
+npm run cordova # 下载android和ios及相关插件
+# 解压 firefly/docs/resources/android-res.zip到firefly/platforms/android/res目录
+# 解压firefly/docs/resources/ios-Images.xcassets.zip到firefly/platforms/ios/firefly目录，替换Images.xcassets
+
+# 使用android studio打开firefly/platforms/android，即可远行android项目
+
+# 使用xcode打开firefly/platforms/ios，即可运行ios项目
+
 ```
 
-### 生成APK需要用到
-- android studio
-- android sdk 19 +
-
-### 生在IPA需要
-- xcode
 
 
 ## 开源协议

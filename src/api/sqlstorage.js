@@ -6,7 +6,6 @@ let db = undefined
 
 export const DB_NAME = 'firefly.db'
 export const CREATE_TABLE = `CREATE TABLE IF NOT EXISTS firefly (K TEXT PRIMARY KEY NOT NULL,V TEXT)`
-
 /**
  * 初始化数据库
  * @param {string} dbname 数据库名称
@@ -24,6 +23,7 @@ export function initDB(dbname){
                 console.error(err)
                 reject(error)
               }, () => {
+              console.log("创建成功")
                 resolve(db)
               });
         }catch(err){
@@ -91,7 +91,7 @@ export function saveFile(key,value){
     return new Promise((resolve,reject) => {
       db.transaction(tx=>{
         tx.executeSql(`SELECT V FROM firefly where K=?`,[key],(tr,rs)=>{
-          let sql = null      
+          let sql = null
           if(rs.rows.length === 0){
             sql = `INSERT INTO firefly (K,V)values(?,?)`
             tx.executeSql(sql,[key,value],(itr,irs)=>{
@@ -114,3 +114,4 @@ export function saveFile(key,value){
     });
   })
 }
+

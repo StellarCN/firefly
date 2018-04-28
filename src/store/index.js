@@ -5,7 +5,9 @@ import AppSettingStore from './modules/AppSettingStore'
 import AccountStore from './modules/AccountStore'
 import AssetStore from './modules/AssetStore'
 import createPersist from './plugins/persistence'
+import TradesStore from './modules/tradesStore'
 import { APP_NAME, APP_VERSION } from '@/api/gateways'
+import   MessageStore from "./modules/MessageStore"
 var Base64 = require('js-base64').Base64
 
 Vue.use(Vuex)
@@ -22,11 +24,11 @@ const state = {
   memo: null,
   iosstatusbarcolor: 'primary',
   onpause: false,//is app on pause
-  
+
 }
 
 const getters = {
-  
+
 }
 
 const actions = {
@@ -60,7 +62,7 @@ const actions = {
   onResume({commit}){
     commit(ON_RESUME)
   }
-  
+
 
 }
 
@@ -85,8 +87,8 @@ const mutations = {
     state.seedExtData = extdata
   },
   SET_CREATE_ACCOUNT_DATA(state,{name,password,memo}){
-    state.name = name
-    state.password = password
+    state.accountname = name
+    state.accountpassword = password
     state.memo = memo
   },
   SHOW_LOADING(state){
@@ -113,7 +115,34 @@ const mutations = {
   }
 }
 
-export default new Vuex.Store({
+const blocks = [
+  'error',
+  'seed',
+  'seedExtData',
+  'accountname',
+  'accountpassword',
+  'password',
+  'memo',
+  'accounts.password',
+  'accounts.error',
+  'accounts.accountData.seed',
+  'accounts.accountData.tradepairs',
+  'account.account_not_funding'
+]
+
+
+let persistencePlugin = createPersist({
+  namespace: APP_NAME + '-vuex-',
+  initialState: {},
+  serialize,
+  deserialize,
+  // never expire
+  expires: 0,
+  blocks
+})
+let plugins = [persistencePlugin]
+
+const store = new Vuex.Store({
   state,
   getters,
   actions,
@@ -122,25 +151,22 @@ export default new Vuex.Store({
     accounts: AccountsStore,
     app: AppSettingStore,
     account: AccountStore,
-    asset: AssetStore
+    asset: AssetStore,
+    trades: TradesStore,
+    message:MessageStore
   },
-  plugins: [createPersist({
-    namespace: APP_NAME + '-vuex-',
-    initialState: {},
-    serialize,
-    deserialize,
-    // never expire
-    expires: 0
-  })]
+  plugins
 
 })
 
 function serialize(value){
-  return Base64.encode(JSON.stringify(value))
+  //return Base64.encode(JSON.stringify(value))
+  return JSON.stringify(value)
 }
 
 function deserialize(value){
-  return JSON.parse(Base64.decode(value))
+  //return JSON.parse(Base64.decode(value))
+  return JSON.parse(value)
 }
 
 export const IMPORT_ACCOUNT_CHANGE = 'IMPORT_ACCOUNT_CHANGE'
@@ -155,3 +181,21 @@ export const CLEAN_GLOBAL_STATE = 'CLEAN_GLOBAL_STATE'
 export const CHANGE_IOSSTATUSBAR_COLOR = 'CHANGE_IOSSTATUSBAR_COLOR'
 export const ON_PAUSE = 'ON_PAUSE'
 export const ON_RESUME = 'ON_RESUME'
+
+// if (module.hot) {
+//   module.hot.accept([
+//     './modules/AccountsStore',
+//     './modules/AccountStore',
+//     './modules/AppSettingStore',
+//     './modules/AssetStore'
+//   ], () => {
+//     store.hotUpdate({
+//       app: require('./modules/AppSettingStore'),
+//       account: require('./modules/AccountStore'),
+//       accounts: require('./modules/AccountsStore'),
+//       asset: require('./modules/AssetStore')
+//     })
+//   })
+// }
+
+export default store

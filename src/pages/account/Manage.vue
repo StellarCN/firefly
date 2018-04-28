@@ -17,36 +17,45 @@
 
     </toolbar>
     <div class="content">
-      <card padding="10px 10px" class="mycard">
+      <card class="mycard">
         <div class="card-content" slot="card-content">
-          <div class="account-row"  v-for="(item,index) in accounts" :key="index" @click.stop="info(item)">
+          <div class="account-row"  v-for="(item,index) in accounts" :key="index" 
+            @click.stop="info(item)" 
+                v-touch="{
+                  left: () => selectedItem = index,
+                  right: () => selectedItem = null
+                }"
+            >
             
-            <v-layout class="account-wrapper" row wrap v-swiper=1 >
-              <v-flex xs2>
+            <div class="flex-row account-wrapper"  v-swiper=2>
+              <div class="flex1">
                 <div class="avatar">
                   <i class="iconfont icon-erweima"></i>
                 </div>
-              </v-flex>
-              <v-flex xs4 class="name">
+              </div>
+              <div class="name flex2">
                 {{item.name}}
-              </v-flex>
-              <v-flex xs4 class="address">
+              </div>
+              <div class="address flex2">
                 <span class="label">{{item.address | miniaddress}}</span>
-              </v-flex>
-              <v-flex xs2 class="icons">
+              </div>
+              <div class="icons flex1">
                 <i class="material-icons"  v-if="item.address === account.address">&#xE876;</i>
-              </v-flex>
-            </v-layout>
+              </div>
+            </div>
 
             <div class="operate-box">
               <div class="del" @click.stop="del(item,index)">{{$t('Delete')}}</div>
+              <div class="modify" @click.stop="modify(item.address)">{{$t('Modify')}}</div>
+              <div class="change" @click.stop="changeaccount(index,item)">{{$t('Change')}}</div>
             </div>
             
           </div>
         </div>
       </card>
     </div>
-    <loading :show="working" :loading="working" :success="delok" :fail='delerror' />
+    <loading :show="showLoading"  :loading="working" :success="delok" :fail='delerror' 
+      :title="loadingTitle" :msg="loadingMsg" :closeable="delerror" @close="hideLoadingView"/>
 
      <div class="pwdSheetWrapper"v-if="showPwdSheet">
         <v-bottom-sheet  v-model="showPwdSheet"  dark>
@@ -79,7 +88,8 @@ import Card from '../../components/Card'
 import Loading from '@/components/Loading'
 import { mapState, mapActions} from 'vuex'
 import {readAccountData} from '@/api/storage'
-import { closeStreams, initStreams } from '@/streams'
+import { closeStreams, initStreams, cleanStreamData } from '@/streams'
+import { ACCOUNT_IS_FUNDING,ACCOUNT_NOT_FUNDING } from '@/store/modules/AccountStore'
 export default {
   data(){
     return {
@@ -98,6 +108,13 @@ export default {
       workindex:null,
       workaccount: null,
 
+      showLoading: false,
+      loadingTitle: null,
+      loadingMsg: null,
+
+      selectedItem: null,
+
+
     }
   },
   computed:{
@@ -105,9 +122,10 @@ export default {
       accounts: state => state.accounts.data,
       account: state => state.accounts.selectedAccount,
       accountData: state => state.accounts.accountData,
-      app: state => state.app
+      app: state => state.app,
+      selectedAccountIndex: state => state.accounts.selected,
     }),
-  
+   
   },
   mounted(){
     
@@ -120,15 +138,38 @@ export default {
       getAccountInfo: 'getAccountInfo',
       getPayments: 'getPayments',
 
+      choseAccount: 'changeAccount',
+      choseAccountNoPwd: 'changeAccountNoPassword'
+
     }),
+    changeaccount(index,item){
+      //console.log('------change account----')
+      //if(item.address === this.account.address){
+      //  return;
+      //}
+      // 弹出密码对话框，
+      this.worktype = 'change'
+      this.showmenu = !this.showmenu
+      if(this.changeAccount){
+        this.changeAccount(index,item)
+      }
+    },
+     changeAccount(index,item){
+      this.selectedAccount = item
+      this.selectedIndex = index
+      this.showPwdSheet = true
+    },
+    modify(address){
+      this.$router.push({name: 'AccountInfo', query: {address: address}});
+    },
     back(){
       this.$router.back()
     },
     toAccount(){
-      this.$router.push(`/wallet`)
+      this.$router.push({name: 'Wallet'})
     },
     info(account){
-      this.$router.push({path: '/account/info', query: {address: account.address}});
+      this.$router.push({name: 'AccountInfo', query: {address: account.address}});
     },
     del(account,index){
       this.workindex = index
@@ -147,36 +188,31 @@ export default {
     },
     okPwdInput(){
       if(this.inpassword ===  null)return
+      this.showLoading = true
       this.working = true
-      let selected = this.workaccount.address === this.account.address
+      this.loadingTitle = null
+      this.loadingMsg = null
       if('del' === this.worktype){
+      let selected = this.workaccount.address === this.account.address
         readAccountData(this.workaccount.address,this.inpassword)
           .then(data=>{
             return this.deleteAccount({ index: this.workindex, account: this.workaccount})
           })
           .then(()=>{
-            try{
-              let doms = window.document.querySelectorAll('.account-wrapper')
-                for(var i=0,n=doms.length;i<n;i++){
-                  let element = doms[i]
-                  element.style.transition = "0.3s"
-                  element.style.marginLeft = 0 + "px"
-                }
-              }catch(error){
-                console.error(error)
-              }
+            this.selectedItem = null
             if(selected){
               this.cleanAccount()
             }
-            this.$toasted.show(this.$t('Account.DeleteSuccess'))
+            this.loadingTitle = this.$t('Account.DeleteSuccess')
             this.delok = true
             this.delerror = false
             this.inpassword = null
             this.showPwdSheet = false
+            this.working = false
             setTimeout(()=>{
-              this.working = false
+              this.showLoading = false
               if(this.accounts.length === 0){
-                this.$router.push(`/wallet`)
+                this.$router.push({name: 'Wallet'})
               }else{
                 //重新读取数据
                 let address = this.account.address
@@ -184,8 +220,10 @@ export default {
                   .then(data=>{
                     //重新处理stream
                     try{
-                      closeStreams()
-                      initStreams(this.account.address)
+                      this.$store.commit(ACCOUNT_IS_FUNDING)
+                      cleanStreamDa();
+                      closeStreams();
+                      initStreams(this.account.address);
                     }catch(err){
                       console.error(`stream error`)
                       console.error(err)
@@ -197,6 +235,11 @@ export default {
                       this.$toasted.error(this.$t('Account.NetworkError'))
                       return
                     }
+                    if (err.data && err.data.status === 404) {
+                      this.noticeText = this.$t('Error.AccountNotFund')
+                      this.$store.commit(ACCOUNT_NOT_FUNDING)
+                      this.notice = true
+                    }
                   })
               }
             },1000)
@@ -204,24 +247,95 @@ export default {
           .catch(err=>{
             this.showPwdSheet = false
             console.error(err)
+             this.loadingTitle = this.$t('Account.DeleteFailed')
             if(err === 'Error.PasswordWrong'){
-              this.$toasted.error(this.$t('Error.PasswordWrong'))
-            }else{
-              this.$toasted.error(this.$t('Account.DeleteFailed'))
-              this.inpassword = null
+              this.loadingMsg = this.$t('Error.PasswordWrong')
             }
-            this.delok = true
-            this.delerror = false
-            setTimeout(()=>{
-              this.working = false
-            },1000)
+            this.inpassword = null
+            this.working = false
+            this.delok = false
+            this.delerror = true
           })
 
+      } 
+      // if('change' === this.worktype){
+      else{
+      // if(this.checkPwd)return
+     // 无密码则报错
+      // if(!this.inpassword){
+      //   this.$toasted.error(this.$t('Error.PasswordWrong')) //请输入密码
+      //   return
+      // }
+      //检验密码
+      this.checkPwd = true
+      let data = {
+        index: this.selectedIndex === null ? this.selectedAccountIndex : this.selectedIndex,
+        address: this.selectedAccount.address || this.account.address,
+        password: this.inpassword
       }
-      
-      
+      this.choseAccount(data).then(account=>{
+        this.$toasted.show(this.$t('Info.ChangeAccountSuccess'));
+        this.showPwdSheet = false;
+        this.checkPwd = false;
+        this.inpassword = null;
+        setTimeout(()=>{
+              this.showLoading = false
+              if(this.accounts.length === 0){
+                this.$router.push({name: 'Wallet'})
+              }else{
+                //重新读取数据
+                let address = this.account.address
+                Promise.all([this.getAccountInfo(this.account.address)])//,this.getPayments(this.account.address)
+                  .then(data=>{
+                    //重新处理stream
+                    try{
+                      this.$store.commit(ACCOUNT_IS_FUNDING)
+                      closeStreams();
+                      cleanStreamData();
+                      initStreams(this.account.address);
+                    }catch(err){
+                      console.error(`stream error`)
+                      console.error(err)
+                    }
+                  }).catch(err=>{
+                    this.cleanAccount()
+                    let msg = err.message
+                    if(msg && 'Network Error' === msg){
+                      this.$toasted.error(this.$t('Account.NetworkError'))
+                      return
+                    }
+                    if (err.data && err.data.status === 404) {
+                      this.noticeText = this.$t('Error.AccountNotFund')
+                      this.$store.commit(ACCOUNT_NOT_FUNDING)
+                      this.notice = true
+                    }
+                  })
+              }
+            },1000)
+      })
+      .catch(err=>{
+        console.error('change account error')
+        console.error(err)
+        this.$toasted.error(this.$t('Error.PasswordWrong'))
+        this.checkPwd = false
+        this.showPwdSheet = false;
+        this.inpassword=null;
+        setTimeout(()=>{
+              this.showLoading = false
+              if(this.accounts.length === 0){
+                this.$router.push({name: 'Wallet'})
+              }      
+            },1000)
         
+      })
     }
+    },
+    hideLoadingView(){
+      this.delerror = false
+      this.working = false
+      this.showLoading = false
+    },
+      
   },
   components: {
     Toolbar,
@@ -233,22 +347,25 @@ export default {
 
 
 <style lang="stylus" scoped>
-@require '../../stylus/color.styl'
+@require '~@/stylus/color.styl'
 .page
   background: $primarycolor.gray
   color: $primarycolor.font
   font-size: 16px
-  .content
-    padding: 10px 10px
 .right
   .material-icons
     font-size: 36px
 .card-content
   overflow: hidden
+  background: $primarycolor.gray
+  
 .account-row
   overflow: hidden
   position: relative
   border-bottom: 1px solid $secondarycolor.font
+  border-radius:5px
+  
+  
 .account-row:last-child
   border-bottom: 0px
 .account-wrapper
@@ -259,6 +376,7 @@ export default {
   padding-top: 5px
   padding-bottom: 5px
   background: $secondarycolor.gray
+  padding-left:5px
   .avatar
     width: 40px
     height: 40px
@@ -297,14 +415,30 @@ export default {
   right: 0
   top: 0
   display: flex
+  .change
+  .modify
   .del
     display: flex
     justify-content: center
     align-items: center
-    color: $primarycolor.font
+    background-color: $primarycolor.gray
+    // background-color: $secondarycolor.green
+    color: $primarycolor.green
     padding: 0 12px
-    background-color: $secondarycolor.red
-    border-right: 1px solid $secondarycolor.gray
+  .modify
+    // border-left: 1px solid $secondarycolor.gray
+    color:$primarycolor.green
+  .del
+    background-color: $primarycolor.gray
+    color:$primarycolor.red
+  // .del
+  //   display: flex
+  //   justify-content: center
+  //   align-items: center
+  //   color: $primarycolor.font
+  //   padding: 0 12px
+  //   background-color: $secondarycolor.red
+  //   border-right: 1px solid $secondarycolor.gray
 .pwdSheetWrapper
   background: $secondarycolor.gray
   height: 140px
@@ -312,6 +446,7 @@ export default {
   bottom: 0
   right: 0
   left: 0
+  z-index: 100
 .sheet-content
   padding: 10px 10px
 .sheet-btns
@@ -322,6 +457,13 @@ export default {
   .sheet-btn
     flex: 1
     text-align: center
-  
+.mycard
+  padding:0px 0px
+.selected
+  -webkit-transform: translate(-50%, 0)
+  -webkit-transition: 0.3s
+  transform: translate(-50%, 0)
+  transition: 0.3s
+
 </style>
 

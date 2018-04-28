@@ -95,7 +95,7 @@ import Toolbar from '@/components/Toolbar'
 import Card from '@/components/Card'
 import QRScan from '@/components/QRScan'
 import { mapState, mapActions, mapGetters} from 'vuex'
-import {isValidateAddress} from '@/api/account'
+import {isValidateAddress, isValidMemo} from '@/api/account'
 import {importContact} from '@/api/qr.js'
 
 let loseCode = function(str) {
@@ -179,7 +179,11 @@ export default {
       }
       if(this.memoswitch){
         if(!this.memotype || !this.memo){
-          this.$toasted.error(this.$t('Memo'))
+          this.$toasted.error(this.$t('Error.MemoIsRequired'))
+          return
+        }
+        if(!isValidMemo(this.memotype, this.memo)) {
+          this.$toasted.error(this.$t('Error.MemoIsInvalid'))
           return
         }
       }
@@ -255,7 +259,6 @@ export default {
 .page
   background: $primarycolor.gray
   .content
-    padding: 8px 8px
     display flex
     flex-direction column
     //min-height calc(100vh - 48px)

@@ -3,7 +3,9 @@
  */
 <template>
 <div class="withdraw_wrapper">
-  <loading :show="onsend" :loading="sending" :success="sendsuccess" :fail='sendfail' />
+  <loading :show="onsend" :loading="sending" :success="sendsuccess" :fail='sendfail' 
+    :title="loadingTitle" :msg="loadingMsg" :closeable="sendfail" @close="hiddenLoadingView"
+    />
   <div class="withdraw_form" v-if="!senddata">
 
     <div class="withdraw_fld" v-for="(field,index) in fields" :key="index">
@@ -104,6 +106,7 @@ import { getAssetWithdrawUrl,submitQuote } from '../api/withdraw'
 import Loading from './Loading'
 import ContactBook from '@/components/ContactBook'
 import { xdrMsg,getXdrResultCode } from '@/api/xdr'
+import  defaultsDeep  from 'lodash/defaultsDeep'
 export default {
   data(){
     return {
@@ -118,8 +121,9 @@ export default {
       sending: false,//发送中
       sendsuccess: false,//发送成功
       sendfail: false,//发送失败
-
-
+      loadingTitle: null,
+      loadingMsg: null,
+      
       showbook: false,
       bookkey: null,
       bookdata: ['myaddress']
@@ -228,7 +232,7 @@ export default {
           return
         }
       }
-      let data = Object.assign({}, this.values, {
+      let data = defaultsDeep({}, this.values, {
           address: this.account.address,
           account_id: this.accountId,
           asset_code: this.asset.code,
@@ -283,23 +287,21 @@ export default {
           this.amount = null
           this.num = 0
           this.senddata = null
-          
+          this.loadingTitle = this.$t('SendAssetSuccess')
           this.hideLoading()
-          this.$toasted.show(this.$t('SendAssetSuccess'))
         })
         .catch(err=>{
           console.error(err)
           this.sending = false
           this.sendsuccess = false
           this.sendfail = true
-          this.hideLoading()
-          this.$toasted.error(this.$t('Error.SendAssetFail'))
+          this.loadingTitle = this.$t('Error.SendAssetFail')
           let msg = getXdrResultCode(err)
           setTimeout(()=>{
             if(msg){
-              this.$toasted.error(this.$t(msg))
+              this.loadingMsg = this.$t(msg)
             }else{
-              this.$toasted.error(this.$t(err.message))
+              this.loadingMsg = this.$t(err.message)
             }
           },1000)
 
@@ -309,7 +311,7 @@ export default {
 
     hideLoading(){
       setTimeout(()=>{
-          this.onsend = false
+          this.hiddenLoadingView()
         },3000)
     },
 
@@ -323,9 +325,16 @@ export default {
       this.values[this.bookkey] = data.address
       this.bookkey = null
     },
+    hiddenLoadingView(){
+      this.onsend = false
+      this.sendfail = false
+      this.sendsuccess = false
+      this.loadingTitle = null
+      this.loadingMsg = null
+    }
 
   },
-
+  
   components:{
     Loading,
     ContactBook,

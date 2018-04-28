@@ -1,10 +1,14 @@
 # firefly wallet [![Build Status](https://travis-ci.org/StellarCN/firefly.svg)](https://travis-ci.org/StellarCN/firefly)
 
+
 firefly is a mobile wallet for [Stellar](https://stellar.org) network. It supports android and ios platforms
+
+
+## [中文文档](README-CN.md)
 
 ## [Help Document](https://wallet.fchain.io/manual/#0)
 
-## [RoadMap](https://github.com/StellarCN/firefly/blob/master/docs/ROADMAP.MD)
+## [RoadMap](docs/ROADMAP.MD)
 
 ## Main features:
 * Accounts
@@ -23,13 +27,17 @@ firefly is a mobile wallet for [Stellar](https://stellar.org) network. It suppor
 	* Send Asset By QRCode
 	* Receive Asset
 	* Trust
+	* estimation (XCN)
 * Funding
 	* Deposite
 	* Withdraw
+	* History
 * Trade
 	* Custom Trade Pair
 	* Order Book
 	* Cancel Trade
+	* Candlestick chart
+	* History
 * Security
 	* PIN
 	* Password
@@ -38,20 +46,28 @@ firefly is a mobile wallet for [Stellar](https://stellar.org) network. It suppor
 * Multi Language
 
 
-## Building
+## Develop
 ```
-npm install -g cordova
-npm install
-npm run build
-cordova prepare
+# You can use cnpm or yarn instead of npm
+
+# firefly depend on cordova7.x
+npm i -g cordova@7.1.0
+
+git clone https://github.com/stellarcn/firelfy.git
+cd firefly
+npm i
+# build 
+npm run build # generate js and css files
+npm run chcp  # generate hot code update files
+npm run cordova # download android and ios plugins
+# unzip firefly/docs/resources/android-res.zip  to firefly/platforms/android/res
+# unzip firefly/docs/resources/ios-Images.xcassets.zip to firefly/platforms/ios/firefly，replace folder Images.xcassets
+
+# use android studio to open firefly/platforms/android, run for android
+
+# use xcode to open firefly/platforms/ios, run for ios
+
 ```
-
-### Build APK Need
-- android studio
-- android sdk 19 +
-
-### Build IPA Need
-- xcode
 
 
 ## License

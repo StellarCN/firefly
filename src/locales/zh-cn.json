@@ -11,23 +11,45 @@
   "setPinCodeError": "两次Pin码不相同",
   "ImportAccount":"导入账户",
   "CreateAccount":"创建账户",
-  
-  
+  "ResetPassword":"重置密码",
+  "LatestVersion":"最新版本",
+  "CheckForUpdates":"检查更新",
+  "UpdateHint":"发现新版本，正在升级...",
+  "AfterUpdate":"升级成功，将自动重启应用。",
+  "NothingToInstall":"已经是最新版本",
+  "FetchUpdateError":"获取更新内容失败",
+  "All":"全部",
+  "week":"周",
+  "day":"天",
+  "hour":"小时",
+  "minute":"分钟",
+  "high":"高",
+  "low":"低",
+  "volume":"量",
+  "open_price":"开盘价",
+  "close_price":"收盘价",
+  "high_price":"最高价",
+  "low_price":"最低价",
+  "volumes":"成交量",
+  "Congratulations":"恭喜您",
+
+
   "TermsOfServiceTitle":"服务条款",
   "TermsOfService":"重要提示：本协议是您（个人、公司或其他任何实体）与Muyu Network Technology Co., Ltd（以下简称“Muyu”）签订的关于使用萤火钱包的最终用户许可协议（以下简称本“协议”）。在使用您的萤火钱包前，请仔细阅读本协议。您使用萤火钱包将被视为您已同意接受本协议中所述的约束条件。如您不同意本协议，请勿使用萤火钱包。<br/><br/>1.重要提示<br/><br/>在您使用萤火钱包之前，请仔细阅读使用说明，创建钱包之后自行备份您的钱包私钥和密码，并妥善保管您的密码和钱包。为了确保萤火钱包绝对安全，本公司无法存储您的钱包私钥和密码，正是由于这一安全机制，本公司无法给您提供密码找回功能。如因您个人直接或间接导致钱包私钥、密码、萤火钱包丢失、遗忘或被盗，由此引起的一切风险、责任、损失、费用等应由您自行承担。<br/><br/>2.使用限制<br/><br/>2.1 未经本公司事先许可，不得使用本公司的技术或知识产权来设计、开发、制造、销售与萤火钱包相关联的第三方设备/附件或授予许可。 <br/>2.2 除非另有明示许可，您不得且同意不会或促使其他任何人复制、反向工程、反编译、反汇编或创作萤火钱包的衍生作品。 <br/>2.3 您同意在使用萤火钱包时遵守钱包驻留或使用的国家或地区的所有适用法律和法规。<br/><br/>3.权利保留<br/><br/>3.1本公司及其许可方享有和保留对萤火钱包的所有权利和资格，并保留本协议未明确授予您的其他任何权利。<br/><br/>3.2您确认本钱包是“按原样”提供，不存在任何形式的明示或暗示担保，并且在适用法律允许的最大范围内，本公司、其许可方/附属公司或版权持有者均不提供任何明示或暗示的陈述或保证，包括但不限于有关适销性、满意质量、适用于特定目的、准确性、保密权以及不侵犯第三方权利的保证。本公司或任何其他方均不保证钱包中所含的功能将满足您的要求，也不保证钱包的运行不会中断或出错。选择本钱包来达到预期结果，以及使用本钱包并获取结果所带来的所有责任和风险由您承担。<br/><br/>5.责任限制<br/><br/>5.1 对于因滥用、错误使用或未经授权修改所引起的萤火钱包使用问题，本公司不承担任何责任。 <br/>5.2 在适用法律未明令禁止的程度下，对于因使用或无法使用本钱包而引起的任何利润、收入、销售损失、数据丢失或采购替代商品或服务的成本、财产损害、人身伤害、业务中断、商业信息损失，或者任何特殊的、直接的、间接的、附带的、经济性、覆盖性、惩罚性、特殊或从属损害，无论是基于何种责任理论（合同、侵权、过失或其他），本公司及其员工、许可方或附属公司都不承担赔偿责任，即使其已被告知存在此种损害的可能性也是如此。某些司法管辖区不允许对人身伤害、附带或从属损害等进行责任限制，则此限制可能不适用于您。 <br/>5.3不超过在任何情况下，本公司对本协议所承担的总责任限额总额不超过港币200元。<br/><br/>6.争议解决和所依据法律<br/><br/>6.1 本协议受香港特别行政区的相关法律管辖，并依据这些法律进行解释。 <br/>6.2 因本协议引起或与之相关的所有争议应首先通过协议双方的友好协商加以解决。如果协商不成，您应将纠纷或争议提交至本公司公司所在地有管辖权的法院解决。<br/>",
-  
+
   "Return": "返回",
   "Agree": "同意",
   "Finish":"完成",
   "NextStep": "下一步",
   "SecretKey": "钱包密钥",
-  
+  "Validate":"验证",
+
   "Title.Scan": "扫描二维码",
   "Title.MyWallet":"我的钱包",
   "Title.Account":"账户信息",
   "Title.MyAssets":"我的资产",
   "CopySuccess":"复制成功",
-  
+
   "Error.ScannerPrepareFail": "扫描二维码配置失败",
   "Error.ScannerPermissionDenied": "请求摄像头权限被拒绝，请放开权限",
   "Error.ScannerContentValidWrong": "扫描内容解析错误",
@@ -41,14 +63,29 @@
   "Account.AccountName":"账户名称",
   "Account.Password":"密码",
   "Account.ConfirmPassword":"确认密码",
-  "Account.CreateAccountHint":"此密码为账户密钥加密密码，丢失后无法找回，请妥善保存！",
+  "Account.CreateAccountHint":"交易密码为账户密钥加密密码，丢失后无法找回，请妥善保存！",
   "Account.CreateAccountReadyHint":"以上为账户重要信息，遗失后无法找回并造成钱包内资产遗失。请勿与他人分享，妥善保管并备份！",
   "Account.CreateAccountSuccess":"账户创建成功!",
   "Account.CreateAccountError":"账户创建失败！",
+  "Account.InputSecretKey":"请输入您以S开头的账户密钥",
+  "Account.ConfirmSkip":"您确认跳过密钥验证？",
+  "Account.SkipValidHint":"因密钥遗失造成的资产损失，将由您个人承担，您确定跳过该步骤？",
+  "Account.Later":"再想想",
+  "Account.SecretKeyValidHint":"密钥验证已经通过。请妥善保管您的备份密钥，然后开始体验。",
+  "Account.Start":"开始体验",
+  "Account.SecretKeyUnValidHint":"密钥输入有误！请重新验证，或返回上一步重新备份。",
+  "Account.ReVerify":"重新验证",
+
+  "Error.SeedWrong":"密钥错误",
 
   "Account.AccountAddress":"账户地址",
 
-  
+  "ManullayAddTrust":"手动授信",
+  "AssetCode":"资产代码",
+  "AssetIssuer":"发行方账号",
+  "Error.AssetCodeNull":"资产代码不能为空",
+  "Error.AssetIssuerNull":"资产发行方不能为空",
+
   "Add":"添加",
   "Manage":"管理",
   "Button.Cancel":"取消",
@@ -79,21 +116,26 @@
   "AddAssetNotFound": "未探测到资产信息",
   "FederationUrl":"联邦地址",
   "Working":"正在处理...",
+  "Reset":"重置",
 
   "Info.ChangeAccountSuccess":"切换账户成功！",
   "Error.PasswordWrong":"密码错误！",
-  
-  "Menu.MyAssets":"我的资产",  
+
+  "Menu.MyAssets":"我的资产",
   "Menu.Funding":"充值提现",
   "Menu.Contacts":"联系人",
   "Menu.MyAddress":"我的地址簿",
   "Menu.Settings":"设置",
   "Menu.Help":"交易使用教程",
-  
+  "Menu.My":"我的",
+  "Menu.History": "历史记录",
+  "Menu.MessageCenter":"消息中心",
+
   "ManageAccount":"账户管理",
   "PinCode":"Pin码",
   "Language":"语言",
   "ModifyAccount":"修改账户",
+  "MessageCenter" :"消息中心",
   "FederationAddress":"联邦地址",
   "FederationAddressDesc":"联邦地址，即短名服务",
   "InflationAddress": "通胀地址",
@@ -104,30 +146,41 @@
   "WanCloud":"万云公共地址",
   "SaveHorizonSuccess":"保存恒星公网节点地址成功",
   "Error.SaveHorizonFial": "保存恒星公网节点地址失败",
-  
+
+  "FederationName": "联邦账户名",
+  "FederationName.Description": "本服务由 fed.network 提供，你可以访问该网站以了解更多的信息。在这里你可以注册一个诸如 name*fed.network 的用户名，其他用户可以通过该用户名给你发送资产。但是需要注意的是本服务只是为了让用户便于输入地址，还请用户自行核对解析后的地址是否正确。注册一个地址需要支付 0.5 XLM。取消注册需要支付 1 XLM。",
+  "FederationName.Address": "你的地址：",
+  "FederationName.Connecting": "正在与服务建立连接...",
+  "FederationName.ConnectionFailed": "网络连接失败，请稍后再试",
+  "FederationName.Available": "该用户名可用，请尽快支付",
+  "FederationName.Unavailable": "该用户名不可用，请更换",
+  "FederationName.NetworkError": "网络错误",
+  "FederationName.Error": "发生了一个预期之外的错误",
+  "unlink":"解除绑定",
+
   "SaveSuccess":"保存成功",
   "SaveFailed":"保存失败",
-  
+
   "Error.PinCodeIsDifferent":"两次PIN码不相同",
   "SetPinCodeSuccess":"PIN码设置成功",
   "Error.PinCodeIsWrong": "PIN码错误",
   "RemovePinCodeSuccess": "删除PIN码成功",
   "Error.RemovePinCodeFailed":"删除PIN码失败",
-  
+
   "Random.Planets":"水星|金星|地球|火星|木星|土星|天王星|海王星|冥王星",
   "Random.Colors":"红色|橙色|黄色|绿色|青色|蓝色|紫色|黑色|白色",
-  
+
   "payment":"支付",
   "path_payment":"路径支付",
   "create_account":"创建",
   "Receive":"接收",
   "Send":"发送",
-  "Delete":"删除",  
-  "Modify":"修改",  
-  "Export":"导出",  
+  "Delete":"删除",
+  "Modify":"修改",
+  "Export":"导出",
   "SendAssetSuccess":"发送资产成功",
   "Error.SendAssetFail":"发送资产失败",
-  
+
   "Account.DeleteSuccess":"账号删除成功",
   "Account.DeleteFailed":"账号删除失败",
   "Account.Modify":"修改账户",
@@ -135,10 +188,21 @@
   "Account.NameCard":"名片",
   "Account.WhetherCoverAccount": "是否覆盖账户",
   "Account.NetworkError":"网络错误",
+  "Account.OriginPassword":"原密码",
+  "Account.NewPassword":"新密码",
+  "Account.RePassword":"再输一次新密码",
+  "Account.PasswordNotNull":"密码不能为空！",
+  "Account.PasswordNotSame":"两次密码不相同！",
+  "Account.PasswordResetSuccess":"密码重置成功！",
+  "Account.PasswordResetFail":"密码重置失败！",
+  "Account.SecretStoredAndExit":"已经备份密钥，跳过这一步",
+  "Account.Skip":"跳过",
+
+
   "Error.NotEnoughAssetToFundAccount":"发送XLM必须大于20才可以激活账户",
 
   "Error.NotEnoughAsset":"资产不足",
-  
+
   "DW.DepositAndWithdraw":"充值提现",
   "DW.Deposit":"充值",
   "DW.Withdraw":"提现",
@@ -146,12 +210,28 @@
   "DW.Error.NoDepositServiceDesc":"该资产不满足我们的网络充值协议，无法充值。如需充值，请直接联系资产发行方。",
   "DW.Error.NoWithdrawService":"无提现服务",
   "DW.Error.NoWithdrawServiceDesc":"该资产不满足我们的网络提现协议，无法提现。如需提现，请直接联系资产发行方。",
+  "DW.Error.NoDest":"提现地址不能为空",
   "DW.DepositInfo":"充值地址",
   "Error.SubmitQuoteFail":"提交失败",
-  
+  "DW.DepositInfo.eta": "充值需要{0}秒到账",
+  "DW.DepositInfo.min":"最小充值金额为{0}",
+  "DW.DepositInfo.max":"最大充值金额为{0}",
+  "DW.DepositInfo.feefixed":"充值固定收费金额为{0}",
+  "DW.DepositInfo.feepercent":"充值收费比例为{0}",
+  "bank_account":"银行账户",
+  "crypto":"加密货币",
+  "DW.Withdraw.ForwardType":"提现方式",
+  "DW.Withdraw.feefixed":"提现固定收费金额为{0}",
+  "DW.Withdraw.feepercent":"提现收费比例为{0}",
+  "DW.Withdraw.min_amount":"提现最小金额为{0}",
+  "DW.Withdraw.max_amount":"提现最大金额为{0}",
+  "DW.Withdraw.extra_info":"提现额外信息为{0}",
+  "DW.Withdraw.eta":"提现大约需要{0}秒到账",
+  "DW.Fee":"费用",
+  "DW.Receive":"实际收到",
 
 
-  "Menu.TradeCenter":"交易中心",  
+  "Menu.TradeCenter":"交易中心",
   "Trade.SelfSelection":"自选交易",
   "Trade.Buy":"买入",
   "Trade.Sell":"卖出",
@@ -159,6 +239,9 @@
   "Trade.SellOffer":"卖单",
   "Trade.MyOffer":"委单",
   "Trade.UnitPrice":"单价",
+  "UnitPriceAbbreviation":"单价",
+  "AmountAbbreviation":"数量",
+  "TotalAbbreviation":"总计",
   "Trade.Price":"价格",
   "Trade.Depth":"深度",
   "Trade.Cancel":"撤消",
@@ -182,6 +265,7 @@
   "Error.LackOfTrustline":"尚未增加此类型资产,请添加该资产或查看帮助",
   "Error.CounterLackOfTrustline":"尚未增加对手方资产,请添加该资产或查看帮助",
 
+
   "Error.PleaseCompleteForm":"请完善表单",
 
 
@@ -192,10 +276,13 @@
   "Error.DestinationIsRequired":"目标地址不能为空",
   "Error.AmountIsRequired":"数量不能为空",
   "Error.MemoIsRequired":"备注不能为空",
-  
+  "Error.MemoIsInvalid": "备注格式不正确",
+
   "Error.DeleteTrustError":"删除信任线失败",
   "DeleteTrustSuccess":"删除信任线成功",
-  
+  "AssetNotZero":"不能删除信任线，因为资产不为零！",
+
+
   "ContactAdd.Sussess": "新增联系人成功",
   "ContactAdd.name": "名称",
   "ContactAdd.address": "地址",
@@ -217,12 +304,18 @@
   "MyAddress.DeleteSuccess":"地址删除成功",
   "MyAddress.DeleteFail":"地址删除失败",
 
+  "Transaction.ContactName": "名称",
+
   "ContactBook.Title": "通讯录",
-  
+
 
   "Cancel":"撤消",
   "Confirm":"确认",
-  
+
+  "canceled":"已撤销",
+  "finished":"已完成",
+  "status":"状态",
+
   "required": "必要项",
 
   "Next": "继续",
@@ -236,12 +329,23 @@
   "ERROR.SCANNER_CONTENT_VALIDATE":"二维码内容不正确",
 
   "About.Title":"关于",
+  "About.UpdateTo": "升级到",
+  "OfficialSite": "官方网站",
 
 
   "App.ClickOneMoreTimeExit":"再点击一次退出!",
 
+  "Q.DeleteAccount":"您确认删除该账户么？",
+  "Q.ResetPassword":"您确认重置密码么？",
 
-  
+  "History.Title": "历史记录",
+  "History.Offer": "我的委单",
+  "History.Transaction": "收发记录",
+  "History.Trade": "成交记录",
+  "History.DepositAndWithdraw": "充提记录",
+  "History.Effects":"变动记录",
+  "History.Transactions":"所有操作",
+
 	"op_success":"操作成功",
 	"op_malformed":"操作格式不正确",
 	"op_underfunded":"操作资金不足",
@@ -296,6 +400,71 @@
 	"op_no_account": "无目标对象",
 	"op_immutable_set": "账号不可更改",
 	"op_has_sub_entries": "存在数据条目",
-	"op_not_time": "未指定时间"
+  "op_not_time": "未指定时间",
+
+  "ShowZeroAsset":"显示0资产",
+  "HideZeroAsset":"隐藏0资产",
+  "DefaultSort":"默认排序",
+  "SortByName":"按名称排序",
+  "SortByAsset":"按资产排序",
+  "TotalAssets":"总资产",
+  "StellarAddressBarCode":"恒星地址二维码",
+  "ViewKey":"查看密钥",
+  "Warning_msg":"账户密钥为重要信息，请做好备份并谨慎保存，勿与他人分享",
+  "Account_secretkey":"账户密钥",
+  "Account_secretkeycode":"密钥二维码",
+
+  "Start":"开始",
+  "TransactionPassword":"交易密码",
+  "TransactionPassword_MsgOne":"重要！",
+  "TransactionPassword_MsgTwo":"交易密码，如果遗忘则不能找回;",
+  "TransactionPassword_MsgThree":"仅能通过密钥重新找回账户",
+
+
+  "Account_secretkey_MsgOne":"非常重要！",
+  "Account_secretkey_MsgTwo":"丢失密钥，即丢失一切！",
+  "Account_secretkey_MsgThree":"将密钥抄写或打印出来，并存放于安全的地方。切勿截图保存或直接存放于手机、网盘、邮箱中。",
+
+  "TDO":"To da moon!",
+  "TDO_MsgOne":"祝贺您！",
+  "TDO_MsgTwo":"保存好信息后，",
+  "TDO_MsgThree":"您就可以开始使用萤火钱包了",
+
+  "LastStep":"上一步",
+  "AllRight":"明白了",
+
+  "BackedUp":"已备份",
+  "ReceiveAssetMsg":"扫描二维码向我发送",
+  "Change":"切换",
+  "MyAccount":"我的账户",
+  "MemoBook.MyAddress":"地址簿",
+  "StartDate":"起始日期",
+  "EndDate":"结束日期",
+  "StartDateIsAfterEndDate":"开始日期不能大于结束日期",
+  "AssetImage":"资产图片",
+  "AssetDomain":"网站",
+  "AssetSummary":"资产简介",
+  "Understand":"了解",
+  "AssetNotExistMessage":"暂时无法获取更多资产信息，请联系发行方。",
+  "NetWorkErrorMessage":"网络环境异常，请稍后再试。",
+  "DeterministicTransmission":"确定发送",
+  "AddAll":"添加全部",
+  "Pin":"pin",
+  "HorizonVersion":"horizon版本",
+  "LoadMore":"载入更多",
+  "Title.ThirdApp":"第三方应用",
+  "Error.AjaxTimeout":"连接服务器超时，请稍后再试",
+  "Third.OpenAppHint":"即将打开第三方DApp {0} ",
+  "Third.SendTo":"向 {0} 支付",
+  "ChooseAsset":"请选择资产",
+  "ReadAllMsg":"消息全部设置为已阅读",
+  "Recovery":"恢复数据",
+  "Backup":"备份数据",
+  "lastUpdate":"上次更新",
+  "FundingInfo":"您正在进行充值/提现操作的资产为恒星系资产，只能通过接收和发送来达到充提目的。"
+ 
+
+  
+  
 
 }

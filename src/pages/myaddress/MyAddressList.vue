@@ -3,10 +3,7 @@
  */
 <template>
   <div class="page">
-    <toolbar :title="$t(title)" 
-      :showmenuicon="showmenuicon" 
-      :showbackicon="showbackicon"
-      >
+    <toolbar :title="$t(title)" :showbackicon="true"  @goback="back"  >
       <!-- <div class="right" slot="right-tool" @click="toAdd">
         <i class="material-icons">&#xE145;</i>
       </div> -->
@@ -24,8 +21,13 @@
             <v-text-field append-icon="search" v-model="search" dark 
                           class="search"  hide-details single-line >
             </v-text-field>
-            <div class="myaddress-row" v-for="(data,index) in filtered" :key="index">
-              <v-layout class="myaddress-li third-li" row wrap v-swiper=2 @click.stop="toView(data)">
+            <div class="myaddress-row" v-for="(data,index) in filtered" :key="index"
+               v-touch="{
+                    left: () => selectedItem = index,
+                    right: () => selectedItem = null
+                  }"
+              >
+              <v-layout class="myaddress-li third-li" row wrap v-swiper=2  @click.stop="toView(data)">
                 <v-flex xs4 class="myaddress-wrapper">
                   <div class="myaddress-name grey--text text--lighten-1">{{data.name}}</div>
                 </v-flex>
@@ -55,12 +57,11 @@ export default {
   data() {
     return {
       title: 'MyAddress.Title',
-      showbackicon: false,
-      showmenuicon: true,
       search: '',
       working: false,
       delok: false,
       delerror: false,
+      selectedItem: null,
     }
   },
   computed: {
@@ -81,9 +82,12 @@ export default {
   },
   methods: {
     ...mapActions(['deleteMyAddress']),
+    back(){
+      this.$router.back()
+    },
     toAdd() {
       //跳转到添加联系人菜单
-      this.$router.push('/myaddress/add')
+      this.$router.push({name: 'MyAddressAdd'})
     },
     toEdit(data){
       this.$router.push({name: 'MyAddressEdit', params: {name: data.name}})
@@ -99,6 +103,7 @@ export default {
         .then(result=>{
           this.delok = true
           this.delerror  = false
+          this.selectedItem = null
           setTimeout(()=>{
             this.working = false
           },1000)
@@ -153,10 +158,13 @@ export default {
 .list
   overflow: hidden
   position: relative
-  background: $secondarycolor.gray
+  background: $primarycolor.gray
+  border-radius:5px
   .search
     padding-bottom 25px
     padding 10px 2px
+    border-radius:5px
+    background:$secondarycolor.gray
   .myaddress-row
     overflow: hidden
     position: relative
@@ -167,6 +175,7 @@ export default {
       background: $secondarycolor.gray
       width: 100%
       min-height 50px
+      border-radius:5px
       .myaddress-wrapper
         font-size: 16px
         display flex
@@ -200,16 +209,27 @@ export default {
     display: flex
     justify-content: center
     align-items: center
-    background-color: $secondarycolor.green
-    color: $primarycolor.font
+    background-color: $primarycolor.gray
+    // background-color: $secondarycolor.green
+    color: $primarycolor.green
     padding: 0 12px
   .receive
-    border-left: 1px solid $secondarycolor.gray
+    border-left: 1px solid $primarycolor.gray
+    // border-left: 1px solid $secondarycolor.gray
   .del
-    background-color: $secondarycolor.red
-    border-right: 1px solid $secondarycolor.gray
+    background-color: $primarycolor.gray
+    border-right: 1px solid $primarycolor.gray
+    color: $primarycolor.red
+    // background-color: $secondarycolor.red
+    // border-right: 1px solid $secondarycolor.gray
 .contact-avatar
   min-width 64px
   min-height 64px
+.selected
+  -webkit-transform: translate(-40%, 0)
+  -webkit-transition: 0.3s
+  transform: translate(-40%, 0)
+  transition: 0.3s
+
 </style>
 

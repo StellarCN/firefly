@@ -3,19 +3,18 @@
  */
 <template>
   <div class="page">
-    <toolbar :title="$t(title)" 
-      :showmenuicon="showmenuicon" 
-      :showbackicon="showbackicon"
-      ref="toolbar"
-      >
-      <!-- <div class="right" slot="right-tool" @click="add" v-if="islogin">
-        <i class="material-icons">&#xE145;</i>
-      </div> -->
+    <toolbar :title="$t(title)" :showbackicon="false" ref="toolbar">
+      <v-btn icon @click.native="showAccounts" slot="left-tool">
+          <i class="material-icons">repeat</i>
+      </v-btn>
+    
        <v-btn icon slot='right-tool' @click="pickershow()" v-if="islogin">
         <i class="material-icons">&#xE145;</i>
       </v-btn>
       <span slot="switch_password">{{$t('Account.Password')}}</span>
     </toolbar>
+    <accounts-nav :show="showaccountsview" @close="closeView"/>
+
     <div class="content">
       <picker @select="pairchosen" 
               :data="items" 
@@ -25,30 +24,58 @@
               :cancelTxt="$t('Cancel')"
               :confirmTxt="$t('Confirm')"
       ></picker>
-      
-      <card class="trade-card" padding="10px 10px">
-        <div class="card-content" slot="card-content">
-      
+      <card class="trade-card" margin="10px 0px" padding="2px 0px">
+        <div class="flex-row textcenter" slot="card-content">
+          <div :class="'flex1 filter-tag ' + (filterTag==='All' ? 'active':'')" @click="doFilter('All')">{{$t('All')}}</div>
+          <div :class="'flex1 filter-tag ' + (filterTag==='XLM' ? 'active':'')" @click="doFilter('XLM')">XLM</div>
+          <div :class="'flex1 filter-tag ' + (filterTag==='XCN' ? 'active':'')" @click="doFilter('XCN')">XCN</div>
+          <div :class="'flex1 filter-tag ' + (filterTag==='BTC' ? 'active':'')" @click="doFilter('BTC')">BTC</div>
+          <div :class="'flex1 filter-tag ' + (filterTag==='ETH' ? 'active':'')" @click="doFilter('ETH')">ETH</div>
+        </div>
+      </card>
+
+      <card class="trade-card" padding="0px 0px">
+        <div class="card-content trade-card-content" slot="card-content">
+          <scroll :refresh="refresh" :readLabelTxt="readLabelTxt">
           <ul class="tradepairs-ul">
-            <li class="tradepair-li" v-for="(pair,index) in tradepairs" :key="index">
-              <v-layout class="pair-wrapper" row wrap v-swiper=2  @click="trade(index,pair)">
-                <v-flex xs5 class="from-wrapper">
-                  <div class="code">{{pair.from.code}}</div>
-                  <div class="issuer" v-if="assethosts[pair.from.code]">{{assethosts[pair.from.code]}}</div>
-                  <div class="issuer" v-else-if="assethosts[pair.from.issuer]">{{assethosts[pair.from.issuer]}}</div>
-                  <div class="issuer" v-else>{{pair.from.issuer | miniaddress}}</div>
-                </v-flex>
-                <v-flex xs2 class="exchange-wrapper">
-                  <div class="exchange">
-                    <i class="icons material-icons">&#xE8D4;</i>
+            <transition-group>
+            <li class="tradepair-li" v-for="(pair,index) in pairs" :key="index"
+              v-touch="{
+                    left: () => selectedItem = index,
+                    right: () => selectedItem = null
+                  }"
+              >
+              <v-layout class="pair-wrapper" row  v-swiper=1.5 @click="trade(index,pair)">
+                <v-flex xs4>
+                  <div class="flex-row">
+                    <div class="flex3 from-wrapper">
+                      <div class="code">{{pair.from.code}}</div>
+                      <div class="issuer" v-if="assethosts[pair.from.code]">{{assethosts[pair.from.code]}}</div>
+                      <div class="issuer" v-else-if="assethosts[pair.from.issuer]">{{assethosts[pair.from.issuer]}}</div>
+                      <div class="issuer" v-else>{{pair.from.issuer | miniaddress}}</div>
+                    </div>
+                    <div class="flex1 exchange-wrapper">
+                      <div class="exchange">
+                        <i class="icons material-icons">&#xE8D4;</i>
+                      </div>
+                    </div>
+                    <div class="flex3 to-wrapper">
+                      <div class="code">{{pair.to.code}}</div>
+                      <div class="issuer" v-if="assethosts[pair.to.code]">{{assethosts[pair.to.code]}}</div>
+                      <div class="issuer" v-else-if="assethosts[pair.to.issuer]">{{assethosts[pair.to.issuer]}}</div>
+                      <div class="issuer" v-else>{{pair.to.issuer | miniaddress}}</div>
+                    </div>
                   </div>
                 </v-flex>
-                <v-flex xs5 class="to-wrapper">
-                  <div class="code">{{pair.to.code}}</div>
-                  <div class="issuer" v-if="assethosts[pair.to.code]">{{assethosts[pair.to.code]}}</div>
-                  <div class="issuer" v-else-if="assethosts[pair.to.issuer]">{{assethosts[pair.to.issuer]}}</div>
-                  <div class="issuer" v-else>{{pair.to.issuer | miniaddress}}</div>
+                <v-flex xs8>
+                  <k-line 
+                    :base="pair.from" :counter="pair.to" 
+                    :height="56" :timeout="10*index"
+                    :tradepairIndex="pair.tradepairIndex"
+                    :ref="'kline'+pair.tradepairIndex"
+                    ></k-line>
                 </v-flex>
+
               </v-layout>
               <div class="operate-box">
                 <div class="del" @click="del(index,pair)">
@@ -57,29 +84,14 @@
                 </div>
                 <div class="trade" @click="trade(index,pair)">{{$t('Trade.Trade')}}</div>
               </div>
-              
-            </li>
+              </li>
+            </transition-group>
           </ul>
-
+          </scroll>
         </div>
       </card>
     </div>
 
-    <div class="mask" v-if="isadd">
-     
-     
-      <!-- <picker class="picker" v-model="isadd" :data-items="items" @change="onPicker">
-        <div class="bottom-content" slot="bottom-content">
-          <div class="btn-group">
-            <div class="btn-cancel" @click="addCancel">{{$t('Button.Cancel')}}</div>
-            <div class="btn-ok" @click="addOK">{{$t('Button.OK')}}</div>
-          </div>
-        </div>
-      </picker> -->
-     <!--
-     <trade-pair-picker :items="items"></trade-pair-picker>
-     -->
-    </div>
      <v-snackbar
       :timeout="5000"
       bottom
@@ -88,21 +100,34 @@
       :color = 'snackbarColor'
       >
       {{ snackbarText }}
-        <v-btn outline dark small @click.native="snackbar = false">{{$t('Close')}}</v-btn>
+        <v-btn flat  dark small @click.native="snackbar = false">{{$t('Close')}}</v-btn>
       </v-snackbar>
+      <!-- <tab-bar/> -->
   </div>
 </template>
 
 <script>
-import Toolbar from '../../components/Toolbar'
-import Card from '../../components/Card'
-// import Picker from '../../libs/vue-picker'
+import draggable from 'vuedraggable'
+import Toolbar from '@/components/Toolbar'
+import Card from '@/components/Card'
 import Picker from "@/components/picker"
-import TradePairPicker from '../../components/TradePairPicker'
-
-
+import TradePairPicker from '@/components/TradePairPicker'
+import AccountsNav from '@/components/AccountsNav'
 import { mapState, mapActions,mapGetters} from 'vuex'
 import { miniAddress } from '@/api/account'
+import { isNativeAsset } from '@/api/assets'
+import KLine from '@/components/KLine'
+import TabBar from '@/components/TabBar'
+import { getTradeAggregation,getTradeAggregation1day,RESOLUTION_1HOUR } from '@/api/tradeAggregation'
+import { getAsset } from '@/api/assets'
+import { getTrades } from '@/api/trade'
+var moment = require('moment')
+import {Decimal} from 'decimal.js'
+import Scroll from '@/components/Scroll'
+
+const TAG_ALL = 'All', TAG_XCN = 'XCN', TAG_XLM = 'XLM', TAG_BTC = 'BTC', TAG_ETH = 'ETH'
+
+
 export default {
   data(){
     return {
@@ -115,7 +140,12 @@ export default {
       addpair:null,
       snackbarText: '',
       snackbar: false,
-      snackbarColor: 'primary'
+      snackbarColor: 'primary',
+      filterTag: TAG_ALL,
+
+      showaccountsview: false,
+
+      selectedItem: null,
 
     }
   },
@@ -125,24 +155,56 @@ export default {
       accountData: state => state.accounts.accountData,
       tradepairs: state => state.accounts.accountData.tradepairs,
       islogin: state => state.accounts.accountData.seed ? true:false,
-      assethosts: state => state.asset.assethosts
+      assethosts: state => state.asset.assethosts,
+      notfunding: state => state.account.account_not_funding,
+      tradePairKLineData: state => state.accounts.tradePairKLineData
     }),
     ...mapGetters([
       'balances',
     ]),
+    readLabelTxt(){
+      try{
+        if(this.tradePairKLineData){
+          let result = this.$t('lastUpdate')+':'
+          for(let key in this.tradePairKLineData){
+            result += new moment(this.tradePairKLineData[key].date).format('YYYY-MM-DD HH:mm:ss')
+            break
+          }
+          return result
+        }
+      }catch(err){
+        console.error(err)
+      }
+      return 'ReleaseToRefresh'
+    },
+    pairs(){
+      let result = []
+      for(let i=0,n=this.tradepairs.length;i<n;i++){
+        if(this.filterTag === TAG_ALL || this.tradepairs[i].to.code === this.filterTag){
+          result.push(Object.assign({tradepairIndex: i}, this.tradepairs[i]))
+        }
+      }
+      return result
+      // return this.tradepairs.filter(item => {
+      //   if(this.filterTag === TAG_ALL) return true
+      //   return item.to.code === this.filterTag
+      // })
+    },
     items(){
       if(!this.balances)return []
       let values = []
       let hosts = []
       this.balances.forEach((element) => {
-          values.push(element.code)
-          if(this.assethosts[element.code]){
-            hosts.push(this.assethosts[element.code])
-          }else if(this.assethosts[element.issuer]){
+        values.push(element.code)
+        if(isNativeAsset(element)){
+          hosts.push(this.assethosts[element.code])
+        }else{
+          if(this.assethosts[element.issuer]){
             hosts.push(this.assethosts[element.issuer])
           }else{
             hosts.push(miniAddress(element.issuer))
           }
+        }
       })
       var x = []
       this.balances.forEach((element,i)=>{
@@ -156,12 +218,14 @@ export default {
       if(!this.items.length) return
       return parseInt((this.items.length-1)/2)
     },
+
   },
   mounted(){
     if(!this.islogin){
       this.$refs.toolbar.showPasswordLogin()
       return
     }
+
   },
   methods: {
     ...mapActions({
@@ -172,8 +236,15 @@ export default {
       getAssetsAccount: 'assetsAccount'
 
     }),
+
+    showAccounts(){
+        this.showaccountsview = true
+    },
+    closeView(){
+        this.showaccountsview = false
+    },
     pickershow(){
-      if(!this.items.length){
+      if(this.notfunding){
         this.snackbarText = this.$t('Error.AccountNotFund')
         this.snackbarColor = 'primary'
         this.snackbar = true
@@ -259,16 +330,7 @@ export default {
             this.$toasted.show(this.$t('Trade.DeleteTradePairSuccess'))
             this.working = false
             this.delworking = false
-            try{
-              let doms = window.document.querySelectorAll('.myassets-li')
-              for(var i=0,n=doms.length;i<n;i++){
-                let element = doms[i]
-                element.style.transition = "0.3s"
-                element.style.marginLeft = 0 + "px"
-              }
-            }catch(error){
-              console.error(error)
-            }
+            this.selectedItem = null
           })
           .catch(err=>{
             this.working = false
@@ -302,7 +364,18 @@ export default {
     },
     trade(index,tradepair){
       this.selectTradePair({index,tradepair})
-      this.$router.push(`/trade`)
+      this.$router.push({name: 'Trade'})
+    },
+    doFilter(tag){
+      this.filterTag = tag
+    },
+    refresh(){
+      let funcs = []
+      this.pairs.forEach(item=>{
+        let key = 'kline'+item.tradepairIndex
+        funcs.push(this.$refs[key][0].reload())
+      })
+      return Promise.all(funcs)
     }
    
   },
@@ -311,6 +384,11 @@ export default {
     Card,
     Picker,
     TradePairPicker,
+    KLine,
+    TabBar,
+    //draggable,
+    AccountsNav,
+    Scroll
   }
 }
 </script>
@@ -318,11 +396,12 @@ export default {
 
 <style lang="stylus" scoped>
 @require '~@/stylus/color.styl'
-.page
-  background: $primarycolor.gray
-  .content
-    padding: 10px 10px
 
+.trade-card-content
+  // border: 1px solid $secondarycolor.gray
+  padding: 5px 5px
+  background: $primarycolor.gray
+  border-radius: 5px
 .tradepairs-ul
   padding: 0px 0px
 .tradepair-li
@@ -332,9 +411,13 @@ export default {
     position: relative
     z-index: 2
     padding: 2px 2px 
+    padding-bottom: 0px
     background: $secondarycolor.gray
     width: 100%
+    overflow:hidden
     .from-wrapper
+      width: 100%
+      overflow: hidden
       .code
         font-size: 16px
         color: $primarycolor.font
@@ -343,7 +426,11 @@ export default {
       .issuer
         color: $secondarycolor.font
         text-align: center
+        font-size: 14px
+        overflow: hidden
     .to-wrapper
+      width: 100%
+      overflow: hidden
       .code
         font-size: 16px
         color: $primarycolor.font
@@ -352,17 +439,20 @@ export default {
       .issuer
         color: $secondarycolor.font
         text-align: center
+        font-size: 14px
+        overflow: hidden
     .exchange-wrapper
       .exchange
         text-align: center
         .icons.material-icons
-          font-size: 32px
+          font-size: 20px
           color: $secondarycolor.font
           padding-top: 10px
 
 
 .tradepair-li
   border-bottom: 1px solid $secondarycolor.font
+  background: $primarycolor.gray
 .tradepair-li:last-child
   border-bottom: 0px
 .operate-box 
@@ -378,12 +468,13 @@ export default {
     display: flex
     justify-content: center
     align-items: center
-    background-color: $secondarycolor.green
-    color: $primarycolor.font
+    background-color: $primarycolor.gray
+    color: $primarycolor.green
     padding: 0 12px
   .del
-    background-color: $secondarycolor.red
-    border-right: 1px solid $secondarycolor.gray
+    //background-color: $secondarycolor.red
+    //border-right: 1px solid $secondarycolor.gray
+    color: $primarycolor.red
     text-align:center
     vertical-align: middle
     .refreshimg
@@ -419,6 +510,12 @@ export default {
     line-height: 48px
     font-size: 16px
     color: $primarycolor.green
-
+.selected
+  -webkit-transform: translate(-50%, 0)
+  -webkit-transition: 0.3s
+  transform: translate(-50%, 0)
+  transition: 0.3s
+.filter-tag.active
+  color: $primarycolor.green
 </style>
 

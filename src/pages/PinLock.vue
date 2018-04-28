@@ -63,7 +63,7 @@ export default {
       //判断当前用户输入的pin是否正确
       if(code === this.alldata.app.pin){
         //跳转到main界面上
-        this.$router.push('/main')
+        this.$router.push({name:'MyAssets'})
       }else{
         this.$toasted.error(this.$t('Error.PinCodeIsWrong'))
       }

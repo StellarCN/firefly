@@ -12,6 +12,9 @@ module.exports = {
   entry: {
     app: './src/main.js'
   },
+  node: {
+    fs: "empty"
+  },
   output: {
     path: config.build.assetsRoot,
     filename: '[name].js',
@@ -27,6 +30,11 @@ module.exports = {
     },
     symlinks: false
   },
+  // externals: {
+  //   "moment": 'moment',
+  //   "echarts": 'echarts',
+  //   // "xml2js": 'xml2js'
+  // },
   module: {
     rules: [
       {
@@ -37,7 +45,9 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        exclude: /node_modules/
+        exclude: /node_modules/,
+        //include: [ path.resolve(__dirname, "node_modules", "ed25519-hd-key")],
+        //exclude: [ path.resolve(__dirname, "node_modules")],
       },
       {
         test: /\.json$/,
@@ -67,7 +77,7 @@ module.exports = {
     loaders: [
       {
         test: /\.styl$/,
-        loaders: ['style-loader','css-loader', 'stylus-loader']
+        loaders: ['style-loader', 'stylus-loader', { loader: 'css-loader', options: { minimize: true } }]
       }
     ]
   }

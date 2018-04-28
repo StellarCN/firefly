@@ -4,6 +4,7 @@
 // json数据格式
 import StellarSdk from 'stellar-sdk'
 export function exportNameCard(account){
+ /*
   let data = {
     "stellar": {
       "account":  {
@@ -14,7 +15,10 @@ export function exportNameCard(account){
       }
     }
   }
-  return JSON.stringify(data)
+  */
+  // let data =account.address
+  // return JSON.stringify(data)
+  return account.address||account
 }
 
 // 导出账户，包括公私钥信息
