@@ -460,7 +460,9 @@
   "ReadAllMsg":"消息全部设置为已阅读",
   "Recovery":"恢复数据",
   "Backup":"备份数据",
-  "lastUpdate":"上次更新"
+  "lastUpdate":"上次更新",
+  "FundingInfo":"您正在进行充值/提现操作的资产为恒星系资产，只能通过接收和发送来达到充提目的。"
+ 
 
   
   

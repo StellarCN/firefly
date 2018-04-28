@@ -96,6 +96,12 @@
         </div>
       </card>
 
+      <card margin="20px 0px" padding="0 0" class="withdraw_form_card">
+        <div class="working fundinginfo" slot="card-content">
+          {{$t('FundingInfo')}}
+        </div>
+      </card>
+
 
 
     </div>
@@ -265,7 +271,7 @@ export default {
           this.standardDepositData = data;
           this.working = false;
         }).catch(err=>{
-          if(err.response.status === 501){
+          if(err.response && err.response.status === 501){
             this.error = err
             this.working = false
             this.error_msg = err.response.data.error
@@ -466,6 +472,9 @@ export default {
   text-align:center
   vertical-align: middle
   padding-top: 5px
+  &.fundinginfo
+    color: $secondarycolor.font
+    text-align: left
   // .refreshimg
   //   display: block
   //   width: 200px

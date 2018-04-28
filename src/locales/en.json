@@ -467,7 +467,8 @@
   "ReadAllMsg":"read all messages",
   "Recovery":"recovery",
   "Backup":"back up",
-  "lastUpdate":"last update"
+  "lastUpdate":"last update",
+  "FundingInfo":"The assets that you are planning to deposit / withdraw are built-in assets in the Stellar network and can only be deposited / withdrawn by receiving and sending operations."
  
 
 }
