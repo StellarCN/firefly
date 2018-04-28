@@ -79,7 +79,6 @@
     <plugin name="cordova-plugin-globalization" spec="^1.0.9" />
     <plugin name="cordova-plugin-screen-orientation" spec="^3.0.1" />
     <plugin name="cordova-plugin-wkwebview-engine" spec="git+https://github.com/apache/cordova-plugin-wkwebview-engine.git" />
-    <plugin name="x5webview-cordova-plugin" spec="git+https://github.com/imloama/x5webview-cordova-plugin.git" />
     <plugin name="cordova-plugin-advanced-http" spec="^1.11.1" />
     <plugin name="cordova-hot-code-push-plugin" spec="^1.5.3" />
     <plugin name="cordova-plugin-x-socialsharing" spec="^5.3.2" />

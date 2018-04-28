@@ -78,7 +78,6 @@
     "vuedraggable": ">=2.16.0",
     "vuetify": "^1.0.16",
     "vuex": ">=2.4.0",
-    "x5webview-cordova-plugin": "git+https://github.com/imloama/x5webview-cordova-plugin.git",
     "xml2js": "^0.4.19"
   },
   "devDependencies": {
@@ -160,7 +159,6 @@
       "cordova-plugin-globalization": {},
       "cordova-plugin-screen-orientation": {},
       "cordova-plugin-wkwebview-engine": {},
-      "x5webview-cordova-plugin": {},
       "cordova-plugin-advanced-http": {},
       "cordova-hot-code-push-plugin": {},
       "cordova-plugin-x-socialsharing": {},

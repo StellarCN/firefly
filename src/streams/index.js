@@ -37,7 +37,8 @@ export function initPaymentStream(){
     if(paymentsdata && paymentsdata.length > 0 ){
         token = paymentsdata[0].paging_token
     }
-    listenAccountStream(_data.address, data => {
+    let address = _data.address
+    listenAccountStream(address, data => {
         _data.store.commit(ACCOUNTINFO_BYSTREAM, data)
     }, err => {
         console.error(err)
