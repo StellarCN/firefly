@@ -29,6 +29,13 @@ export default {
             "15min": RESOLUTION_15MIN,
             "1min": RESOLUTION_1MIN
           },
+          RESOLUTION_HOURS: {
+            "week": 5880,
+            "day": 840,
+            "hour": 48,
+            "15min": 24,
+            "1min": 24
+        },
             id: null,//元素主键
             ele: null,//echarts对象
             opt: null,
@@ -128,6 +135,7 @@ export default {
             this.cleanData()
             this.fetch();
             this.fetchLastTrade()
+            
         },
         cleanData(){
             this.ele = null
@@ -138,6 +146,13 @@ export default {
             this.tinterval =  null
             this.lasttime = null
         },
+        getStartTime(){
+            let defHour = this.RESOLUTION_HOURS[this.resolution_key]
+            if(!defHour){
+                defHour = 24
+            }
+            return Number(moment().subtract(defHour,"hours").format('x'))
+        },
         //请求api，获取数据
         fetch(){
           let start_time = null, end_time=null;
@@ -145,7 +160,7 @@ export default {
               start_time = this.lasttime;
               end_time = new Date().getTime()
           }else{//初次请求，判断start是否存在
-            start_time = this.start < 0 ? Number(moment().subtract(48,"hours").format('x')) : this.start;
+            start_time = this.start < 0 ? this.getStartTime() : this.start;
             end_time = this.end < 0 ? new Date().getTime() : this.end
           }
           getTradeAggregation(getAsset(this.base), getAsset(this.counter), 
