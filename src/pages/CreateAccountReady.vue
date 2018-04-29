@@ -232,7 +232,7 @@ export default {
     ...mapActions(['createAccount','cleanGlobalState','coverAccount']),
     goback(){
       this.$router.back()
-      this.$router.push({name:'CreateAccount'})
+      //this.$router.push({name:'CreateAccount'})
     },
     copy(value){
       if(cordova.plugins.clipboard){
