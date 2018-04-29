@@ -488,7 +488,7 @@ export default {
           console.log(err)
           this.sending = false
           this.sendfail = true
-          this.realDestination = null
+          //this.realDestination = null
           let msg = getXdrResultCode(err)
           this.loadingTitle = this.$t('Error.SendAssetFail')
           if(msg){

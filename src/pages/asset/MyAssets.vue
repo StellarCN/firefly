@@ -83,14 +83,14 @@
                   <i :class="'iconfont ' + assetIcon(item.code,item.issuer)"></i>
                 </div>
               </v-flex>
-            <v-flex xs4 class="myassets-wrapper">
+            <v-flex xs3 class="myassets-wrapper">
               <div class="myassets">
                 <div class="myassets-name">{{item.code}}</div>
                 <div class="myassets-issuer" v-if="assethosts[item.issuer]">{{assethosts[item.issuer] }}</div>
                  <div class="myassets-issuer" v-else>{{item.issuer | miniaddress}}</div>
               </div>
             </v-flex>
-            <v-flex xs6 class="myassets-wrapper">
+            <v-flex xs7 class="myassets-wrapper">
               <div class="myassets-balance third">
                  <span class="balance">{{item.balanceStr}}</span>
                  <span class="label">{{$t('Total')}}</span> 
@@ -164,7 +164,7 @@ export default {
 
       needpwd: false,
       is_Flag: FLAG_DEFAULT,
-      sort_flag: SORT_DEFAULT,
+      sort_flag: SORT_BANLANCE,
       price:[],
 
       _getPriceFn: null,
@@ -181,8 +181,8 @@ export default {
           key: SORT_BANLANCE,
           label: 'SortByAsset'
         }],
-      selectedSortItem:{key: SORT_DEFAULT,
-          label: 'DefaultSort'}
+      selectedSortItem:{key: SORT_BANLANCE,
+          label: 'SortByAsset'}
     }
   },
   mixins: [backbutton, loadaccount],
@@ -280,7 +280,6 @@ export default {
     }
   },
   mounted() {
-    
     this._getPriceFn = throttle(()=>{
       getAssetPrice(this.balances.filter(item=> Number(item.balance)>0).map(item=> {
         return {code: item.code, issuer:item.issuer }

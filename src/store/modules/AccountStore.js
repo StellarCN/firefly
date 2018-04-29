@@ -86,7 +86,7 @@ const actions = {
 const mutations = {
   CLEAN_ACCOUNT(state){
     state.data = {balances:[]}
-    state.transations = { records:[] }
+    state.transactions = { records:[] }
     state.selectedPayment = null
   },
   [CLEAN_ACCOUNT_BYSTREAM](state){
@@ -99,7 +99,7 @@ const mutations = {
     state.payments = { records: [] }
   },
   ACCOUNT_INFO_SUCCESS(state,info){
-    state.transations = { records:[] };
+    state.transactions = { records:[] };
     state.selectedPayment = null;
     state.data = info;
   },
