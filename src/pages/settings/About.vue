@@ -13,7 +13,7 @@
     <div class="content">
       <card class="icard" padding="20px 10px">
         <div slot="card-content" class="">
-          <div class="logo-wrapper" @click="checkX5WebView">
+          <div class="logo-wrapper">
             <img src="../../assets/img/logox.png" alt="firefly" class="logo-img"/>
           </div>
           <div class="textcenter appname">
@@ -163,13 +163,6 @@ export default {
         }
       });
     },
-    //查看是否使用了X5引擎
-    checkX5WebView:debounce(function(){
-      if(this.counter>=5){
-        window.location.href = `http://soft.imtt.qq.com/browser/tes/feedback.html`
-      }
-      this.counter += 1
-    },500),
   },
   components: {
     Toolbar,

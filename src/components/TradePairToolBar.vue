@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-08 15:40:36 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-04-12 17:17:00
+ * @Last Modified time: 2018-04-29 19:32:43
  * @License MIT 
  */
 
@@ -44,7 +44,7 @@
         <div class="toolbar__title toolbar-title white--text textcenter tb-title">{{$t("Trade.SelfSelection")}}</div>
         <v-btn icon style="visibility:hidden;"><v-icon class="back-icon"></v-icon></v-btn>
       </v-toolbar>
-      <v-card class="dlg-content mt-5">
+      <div class="dlg-content mt-5">
         <div v-for="(item,index) in tradepairs" :key="index" :class="'flex-row row100 pt-2 pb-2 ' + (isChoosenTrade(item.from,item.to) ? 'active':'')" @click="choseTrade(index,item)">
           <div class="flex2">&nbsp;</div>
           <div class="flex3 textcenter">
@@ -62,7 +62,7 @@
           </div>
           <div class="flex2">&nbsp;</div>
         </div>
-      </v-card>
+      </div>
     </v-dialog>
 
 
@@ -169,7 +169,12 @@ export default {
   .material-icons
     font-size: 24px
 .dlg-content
-  padding-top: 70px!important
+  background: $primarycolor.gray
+  padding-top: 48px!important
+  padding-bottom: 48px!important
+  overflow-y: auto
+  -webkit-overflow-scrolling: touch
+  height: 100%!important
 .row100
   width: 100vw
   &.active

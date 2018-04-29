@@ -23,16 +23,7 @@
 
     <div class="content" v-if="!showScanner">
       <div>
-        <v-text-field
-              dark
-              :label="$t('SecretKey')"
-              :value="seed"
-              @input="inputSeed"
-              required
-              multi-line
-              rows=2
-            >
-            </v-text-field>  
+        <secret-key-input ref="secretkeyRef"></secret-key-input>
       </div>
     </div>
     <div class="footer" v-if="!showScanner">
@@ -49,9 +40,10 @@
 </template>
 
 <script>
-import Toolbar from '../components/Toolbar'
-import QRScan from '../components/QRScan'
-import {importAccount,isValidSeed} from '../api/account'
+import Toolbar from '@/components/Toolbar'
+import QRScan from '@/components/QRScan'
+import SecretKeyInput from '@/components/SecretKeyInput'
+import {importAccount,isValidSeed} from '@/api/account'
 import { mapState, mapActions} from 'vuex'
 export default {
   data(){
@@ -67,9 +59,9 @@ export default {
       seed: state => state.seed
     }),
     nextStepClass(){
-      if(this.seed === null || typeof this.seed === 'undefined'){
-        return 'btn-unavailable'
-      }
+      // if(this.seed === null || typeof this.seed === 'undefined'){
+      //   return 'btn-unavailable'
+      // }
       return 'btn-available'
     }
   },
@@ -83,9 +75,9 @@ export default {
     goback(){
       this.$router.back()
     },
-    inputSeed(value){
-      this.setNewSeed({seed:value})
-    },
+    // inputSeed(value){
+    //   this.setNewSeed({seed:value})
+    // },
     scan(){
       //只能识别stargazer类似的格式数据
       if(this.showScanner){
@@ -116,21 +108,20 @@ export default {
       this.title = 'ImportAccount'
     },
     nextStep(){
-      if(this.seed === null || typeof this.seed === 'undefined'){
-        return
-      }
-      this.seed = this.seed.toUpperCase()
+      let seed = this.$refs.secretkeyRef.getSeed()
       if(!isValidSeed(this.seed)){
         this.$toasted.error(this.$t('Error.NotValidSeed'))
         return
       }
+      this.setNewSeed({seed})
       this.$router.push({name: 'CreateAccount'})
     }
 
   },
   components: {
     Toolbar,
-    QRScan
+    QRScan,
+    SecretKeyInput,
   }
 }
 </script>

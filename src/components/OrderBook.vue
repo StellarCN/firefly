@@ -86,11 +86,11 @@
         </div>
         <div class="table-row body-2" 
           v-for="(item,index) in deals" :key="index" :class='item.type'>
-          <div class="b-row price" >{{Number(item.price.toFixed(4))}}</div>
+          <div class="b-row price" >{{Number(item.price.toFixed(7))}}</div>
           <div class="b-row" v-if="item.base_asset === BaseAsset.code && item.base_issuer === BaseAsset.issuer">+{{Number(item.amount).toFixed(4)}}</div>
-          <div class="b-row" v-else>-{{Number(item.total).toFixed(4)}}</div>
+          <div class="b-row" v-else>-{{Number(item.total).toFixed(7)}}</div>
           <div class="b-row" v-if="item.base_asset === CounterAsset.code && item.base_issuer === CounterAsset.issuer">+{{Number(item.amount).toFixed(4)}}</div>
-          <div class="b-row" v-else>-{{Number(item.total).toFixed(4)}}</div>
+          <div class="b-row" v-else>-{{Number(item.total).toFixed(7)}}</div>
           <div class="b-row">{{$t(item.type)}}</div>
         </div>
       </div>
@@ -276,7 +276,11 @@ export default {
       })
     },
     load(){
-      return Promise.all([this.queryOrderBook(), this.queryMyOffers(), this.queryAllOffers()])
+      let queryOffersFn = new Promise((resolve,reject)=>{
+        this.queryAllOffers()
+        resolve()
+      })
+      return Promise.all([this.queryOrderBook(), this.queryMyOffers(), queryOffersFn])
     },
     //撤消委单
     cancelMyOffer(item,index){
@@ -329,7 +333,14 @@ export default {
               return true
             }else if(key01===key2 && key02 === key1){
               item.itype = 'sell'
-              item.price = Number(new Decimal(1).div(item.price).toFixed(7))
+              
+              if(item.type === 'finished'){
+                let t = item.amount
+                item.amount = item.total
+                item.total = t
+              }else{
+                item.price = Number(new Decimal(1).div(item.price).toFixed(7))
+              }
               return true
             }else{
               return false

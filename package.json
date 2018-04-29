@@ -1,6 +1,6 @@
 {
   "name": "firefly",
-  "version": "2.0.1",
+  "version": "2.0.3",
   "description": "stellar mobile wallet",
   "repository": {
     "type": "git",
@@ -50,7 +50,7 @@
     "cordova-plugin-swift-support": "^3.1.1",
     "cordova-plugin-themeablebrowser": "git+https://github.com/imloama/cordova-plugin-themeablebrowser.git",
     "cordova-plugin-whitelist": "^1",
-    "cordova-plugin-wkwebview-engine": "git+https://github.com/apache/cordova-plugin-wkwebview-engine.git",
+    "cordova-plugin-wkwebview-engine": "^1.1.4",
     "cordova-plugin-x-socialsharing": "^5.3.2",
     "cordova-sqlite-storage": "^2.1.2",
     "decimal.js": ">=9.0.1",
@@ -157,11 +157,11 @@
       "cordova-plugin-inappbrowser": {},
       "cordova-plugin-globalization": {},
       "cordova-plugin-screen-orientation": {},
-      "cordova-plugin-wkwebview-engine": {},
       "cordova-plugin-advanced-http": {},
       "cordova-hot-code-push-plugin": {},
       "cordova-plugin-x-socialsharing": {},
-      "cordova-plugin-themeablebrowser": {}
+      "cordova-plugin-themeablebrowser": {},
+      "cordova-plugin-wkwebview-engine": {}
     },
     "platforms": [
       "browser",

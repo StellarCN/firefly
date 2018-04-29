@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-03-05 17:30:09 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-21 15:57:39
+ * @Last Modified time: 2018-04-29 14:05:02
  * @License MIT 
  */
  <template>
@@ -22,7 +22,6 @@
  
  <script>
  import  endsWith  from 'lodash/endsWith'
- import  replace  from 'lodash/replace'
  import util from './SecretKeyInputUtil'
  export default {
    data(){
@@ -78,7 +77,10 @@
      },
 
     getSeed(){
-      return replace(this.seedInput, this.delimiter,'').toUpperCase()
+      if(this.seedInput){
+        return this.seedInput.replace(new RegExp(this.delimiter, 'gm'), '').toUpperCase()
+      }
+      return null
     }
 
    }

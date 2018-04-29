@@ -72,8 +72,10 @@
       <!--盘面
       <order-book ref="orderbook"  @choose="choose"/>
       -->
-      <order-book-lite ref="orderbook"  @choose="choose"/>
-
+      <div class="maintent">
+        <order-book-lite ref="orderbook"  @choose="choose"/>
+      </div>
+      
 
        <!-- 买卖按钮 -->
       <div class="flex-row full-width footer-btns">
@@ -85,7 +87,7 @@
             :disabled="!(CounterBalance.balance>0 && total> 0 && CounterBalance.balance >= total)" 
             v-if="isBuy" @click="showConfirmSheet = true">{{$t('Trade.Buy')}} {{BaseAsset.code}}</v-btn>
           <v-btn class="full-width btn-sell" color="error" 
-            :disabled="!(BaseBalance.balance>0 && total> 0 && BaseBalance.balance >= total)" 
+            :disabled="!(BaseBalance.balance>0 && amount> 0 && BaseBalance.balance >= amount)" 
             v-if="isSell" @click="showConfirmSheet = true">{{$t('Trade.Sell')}} {{BaseAsset.code}}</v-btn>
         </div>
       </div>
@@ -313,13 +315,16 @@ export default {
           this.resetJustify()
           return
         }
+        this.setAmount()
         this.setTotal()
         this.setNum()
-       // this.setAmount()
+
       }else if(this.isSell){
         if(newvalue > this.tradeBalance){
           this.$nextTick(()=>{
             this.amount = this.tradeBalance
+            this.setTotal()
+            this.setNum()
           })
           this.resetJustify()
           return
@@ -437,6 +442,7 @@ export default {
         this.total = total < this.tradeBalance ? total : this.tradeBalance
         console.log('setTotal:   '+this.total)
       }else if(this.isSell){
+        console.log(`-------------amount:${this.amount} ---- price: ${this.price}`)
         this.total = Number(new Decimal(this.amount||0).times(this.price).toFixed(7))
       }
     },
@@ -446,7 +452,7 @@ export default {
         this.justify = false
         console.log('after reset Justify->'+this.justify)
       })
-    },1000),
+    },100),
     toMax(){
       if(this.justify) return
       this.justify = true
