@@ -72,8 +72,10 @@
       <!--盘面
       <order-book ref="orderbook"  @choose="choose"/>
       -->
-      <order-book-lite ref="orderbook"  @choose="choose"/>
-
+      <div class="maintent">
+        <order-book-lite ref="orderbook"  @choose="choose"/>
+      </div>
+      
 
        <!-- 买卖按钮 -->
       <div class="flex-row full-width footer-btns">

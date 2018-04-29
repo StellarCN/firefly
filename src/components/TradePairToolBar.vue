@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-08 15:40:36 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-04-12 17:17:00
+ * @Last Modified time: 2018-04-29 14:20:43
  * @License MIT 
  */
 
@@ -170,6 +170,7 @@ export default {
     font-size: 24px
 .dlg-content
   padding-top: 70px!important
+  overflow-y: auto
 .row100
   width: 100vw
   &.active

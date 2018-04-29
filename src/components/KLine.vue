@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-26 15:59:49 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-04-20 15:13:52
+ * @Last Modified time: 2018-04-29 16:17:03
  * @License MIT 
  */
 
@@ -19,7 +19,7 @@
               {{titleData.rate}}%</div>
       </div>
       <div class="flex1 working" v-else>
-          <v-progress-circular indeterminate color="primary" v-if="lastTrade && lastTradeAggregation"></v-progress-circular>
+          <v-progress-circular indeterminate color="primary" v-if="!lineData"></v-progress-circular>
           <span v-else></span>
       </div>
   </div>
@@ -59,6 +59,8 @@ export default {
             //lastTrade:null,
             tradeInterval: null,//查询最新一次交易数据的interval
             working: true,
+
+            lineData: null,
         }
     },
     props: {
@@ -116,9 +118,9 @@ export default {
         ...mapState({
             tradePairKLineData: state => state.accounts.tradePairKLineData
         }),
-        lineData(){
-            return this.tradePairKLineData[this.tradepairIndex]
-        },
+        // lineData(){
+        //     return this.tradePairKLineData[this.tradepairIndex]
+        // },
         lastTrade(){
             return this.lineData ? this.lineData.lastTrade : null
         },
@@ -161,7 +163,10 @@ export default {
         }
         this.deleteTradeInterval()
         this.init()
-      }  
+      }  ,
+      tradePairKLineData(){
+          this.lineData = this.tradePairKLineData[this.tradepairIndex]
+      }
     },
     beforeMount () {
         //生成随机的id
@@ -173,7 +178,7 @@ export default {
     },
     mounted () {
         //先从缓存中取值
-
+        this.lineData = this.tradePairKLineData[this.tradepairIndex]
         this.init()
     },
     methods: {
@@ -238,6 +243,9 @@ export default {
                 })
                 this.$store.commit(SET_TRADEPAIR_KLINE_7DAY_TRADEAGGREGATION,{
                     index: this.tradepairIndex, date: this.lasttime, data: {data: opt_data, dates:opt_dates}})
+                this.$nextTick(()=>{
+                    this.lineData = this.tradePairKLineData[this.tradepairIndex]
+                })
                 this.opt.xAxis.date = opt_dates
                 this.opt.series[0].data = opt_data
                 this.ele.setOption(this.opt)
