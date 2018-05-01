@@ -9,11 +9,32 @@
         <router-view />
       </v-content>
       <tab-bar v-if="tabBarShow"/>
+
+    <v-dialog v-model="updateConfirmDlg" max-width="95%" persistent>
+      <div>
+        <div class="a-card-content">
+          <div class="avatar-div textcenter">
+            <v-avatar>
+              <img src="./assets/img/logo-red.png" />
+            </v-avatar>
+          </div>
+          <div class="a-t1 a-red textcenter" v-if="updating">{{$t('UpdateHint')}}</div>
+          <div class="a-t1 a-red textcenter" v-if="!updating">{{$t('FindNewVersion',[latestVersion])}}</div>
+          <div class="a-btns flex-row" v-if="!updating">
+            <div class="flex1 a-red textcenter" @click="doUpdate">{{$t('Update')}}</div>
+            <div class="flex1 a-red textcenter" @click="updateConfirmDlg = false">{{$t('Button.Cancel')}}</div>
+          </div>
+        </div>
+      </div>
+    </v-dialog>
+
+
   </v-app>
 
   <div class="fuzzy-view" v-if="showFuzzyView">
 
   </div>
+
 
 </div>
 </template>
@@ -29,6 +50,7 @@ import { getDeviceLanguage } from "@/locales";
 import  TabBar from '@/components/TabBar'
 import { getFchainRss } from '@/api/fchain'
 import initCordovaPlugin from '@/libs/pkgs/initCordovaPlugin'
+import updateMixin from '@/mixins/update'
 
 export default {
   data() {
@@ -42,6 +64,9 @@ export default {
       tabBarItems: ['MyAssets', 'TradeCenter', 'Funding', 'My'],
 
       messagesInterval: null,
+      updateConfirmDlg: false,
+      latestVersion: null,
+      updating: false,
       // items:Store.fetch(),
     };
   },
@@ -64,6 +89,7 @@ export default {
       accounts: state => state.accounts.data
     })
   },
+  mixins: [updateMixin],
   beforeMount() {
     
     if(this.tabBarItems.indexOf(this.$route.name) >=0 ){
@@ -177,6 +203,20 @@ export default {
             this.$router.push({ name: "Picklanguage" });
           }
         });
+
+      //检查更新
+      this.getReleaseVersion()
+        .then(data=>{
+          if(data.needUpdate){
+            this.updateConfirmDlg = true
+            this.latestVersion = data.latestVersion
+          }
+        })
+        .catch(err=>{
+          console.error(err)
+          this.updateConfirmDlg = false
+        })
+
     });
   },
   mounted() {
@@ -218,6 +258,10 @@ export default {
           this.$router.push({ name: "PinLock" });
         }
       }
+    },
+    doUpdate(){
+      this.updating = true
+      this.checkForUpdates()
     }
     // toPicklanguage(){
     //   this.$router.push({name:'Picklanguage'})
@@ -241,7 +285,7 @@ export default {
   background-color: $primarycolor.gray;
 }
 
-.hide {
+.bg-hide {
   background: none;
   background-color: transparent;
 }
@@ -332,6 +376,20 @@ export default {
 // .ios-app
 //   .page
 //     padding-top: .2rem!important
+
+.a-card-content
+  padding: 20px 10px
+  background: $secondarycolor.gray
+.a-t1
+  font-size: 20px
+  padding-top: 5px
+  padding-bottom: 5px
+.a-red
+  color: $primarycolor.red
+.a-btns
+  font-size: 16px
+  
+
 @css {
   html{
     background: none;
@@ -349,7 +407,7 @@ export default {
   .app.application.theme--dark{
     background: #212122;
   }
-  .app.application.theme--dark.hide{
+  .app.application.theme--dark.bg-hide{
     background: none;
     background-color:transparent;
   }
