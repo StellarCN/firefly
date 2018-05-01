@@ -60,7 +60,7 @@
           <div class="headline">{{$t('Account.InputSecretKey')}}</div>
           <v-layout wrap>
             <v-flex xs12 sm6 md4>
-              <secret-key-input ref="secretkeyRef"></secret-key-input>
+              <secret-key-input ref="secretkeyRef" disabled></secret-key-input>
             </v-flex>
           </v-layout>
           
@@ -459,10 +459,11 @@ export default {
 .si-card
   background: $secondarycolor.gray
   border-radius: 5px
-  padding: 5px 5px
-  height: 90%
+  padding: 1rem 5px
+
+  // height: 30%
 .btn-group
-  position: absolute
+  position: fixed
   left: 0
   right: 0
   bottom: 10px
