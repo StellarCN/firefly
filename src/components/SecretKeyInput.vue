@@ -3,30 +3,41 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-03-05 17:30:09 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-04-29 14:05:02
+ * @Last Modified time: 2018-05-01 15:14:45
  * @License MIT 
  */
  <template>
+   <div>
+
    <v-text-field dark
       :label="$t('SecretKey')"
       v-model="seedInput"
       required
       multi-line
+      :disabled="disabled"
       class="seed-input"
-      onpaste="return false"
+      :onpaste="pasteHandler"
+      :onfocus="focusHandler"
       @input="inputText"
-      rows=2></v-text-field>
+      rows=3></v-text-field>
     
+    <secret-keyboard
+      :onChange="keyBoardChange"
+      :onDone="keyBoardDone"
+      :onBack="keyBoardBack"
+      />
+   </div>
 
  </template>
  
  <script>
  import  endsWith  from 'lodash/endsWith'
  import util from './SecretKeyInputUtil'
+ import SecretKeyboard from '@/libs/custom-keyboard/SecretKeyboard'
  export default {
    data(){
      return {
-       seedInput: 'S-',
+       seedInput: '',
        cleaveInstance: null,
        blocks: [1,5,5,5,5,5,5,5,5,5,5,5],
        delimiter: '-',
@@ -36,7 +47,25 @@
 
      }
    },
+   props:{
+     enablePaste:{
+       type: Boolean,
+       default: false
+     },
+     disabled: {
+       type: Boolean,
+       default: false
+     },
+     seed:{
+       type: String
+     }
+   },
+   watch: {
+   },
    methods:{
+     pasteHandler(){
+       return this.enablePaste
+     },
      inputText(value){
        if(value && endsWith(value, this.delimiter)){
          this.seedInput = this.seedInput.substr(0, this.seedInput.length -1)
@@ -77,12 +106,36 @@
      },
 
     getSeed(){
+      if(this.seed)return this.seed.toUpperCase()
       if(this.seedInput){
         return this.seedInput.replace(new RegExp(this.delimiter, 'gm'), '').toUpperCase()
       }
       return null
+    },
+    keyBoardChange(val){
+      let str = this.seedInput||'' 
+      str += val
+      this.inputText(str)
+    },
+    keyBoardDone(){
+      console.log('done')
+    },
+    keyBoardBack(){
+      let str = this.seedInput
+      if(str && str.length > 1)
+      this.seedInput = str.substring(0, str.length -1)
+      this.inputText(this.seedInput)
+      
+    },
+    focusHandler(){
+      //禁止弹出输入框
+       document.activeElement.blur()
     }
+    
 
+   },
+   components: {
+     SecretKeyboard,
    }
  }
  </script>

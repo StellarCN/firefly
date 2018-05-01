@@ -23,7 +23,7 @@
 
     <div class="content" v-if="!showScanner">
       <div>
-        <secret-key-input ref="secretkeyRef"></secret-key-input>
+        <secret-key-input :enablePaste="true" :seed="scanSeed" ref="secretkeyRef"></secret-key-input>
       </div>
     </div>
     <div class="footer" v-if="!showScanner">
@@ -51,6 +51,8 @@ export default {
       title: 'ImportAccount',
       showbackicon: false,
       showScanner: false,
+      scanSeed: null,
+      scanSuccess: false,
       error:null,
     }
   },
@@ -67,6 +69,8 @@ export default {
   },
   created(){
     this.setNewSeed({seed: null,extdata:{}})
+  },
+  mounted () {
   },
   methods: {
     ...mapActions({
@@ -86,35 +90,55 @@ export default {
       }else{
         this.showScanner = true
         this.title = 'Title.Scan'
+        this.scanSuccess = false
       }
     },
     qrvalidator(text){
-      console.log(`validate ---- qrscanner --- text -- ${text}`)
       let result = importAccount(text)
       if(result.status){
-        this.setNewSeed({seed:result.seed,extdata:result.data})
+        this.scanSeed = result.seed
+        this.scanSuccess = true
+        try{
+          this.setNewSeed({seed:result.seed,extdata:result.data})
+          // this.$refs.secretkeyRef.inputText(this.scanSeed)
+          this.setSeedToInput()
+        }catch(err){
+          console.error(err)
+        }
         return true
       }
+      this.scanSuccess = false
       return false;
     },
     qrfinish(result){
       console.log(` qrscanner --- finish -- ${result}`)
       this.showScanner = false
       this.title = 'ImportAccount'
+      try{
+        this.$nextTick(()=>{
+          this.setSeedToInput()
+        })
+      }catch(err){
+        console.error(err)
+      }
       //this.secretkey = result
     },
     qrclose(){
+      alert('qr closed')
       this.showScanner = false
       this.title = 'ImportAccount'
     },
     nextStep(){
-      let seed = this.$refs.secretkeyRef.getSeed()
+      let seed = this.scanSuccess ? this.scanSeed : this.$refs.secretkeyRef.getSeed()
       if(!isValidSeed(this.seed)){
         this.$toasted.error(this.$t('Error.NotValidSeed'))
         return
       }
       this.setNewSeed({seed})
       this.$router.push({name: 'CreateAccount'})
+    },
+    setSeedToInput(){
+      this.$refs.secretkeyRef.inputText(this.scanSeed)
     }
 
   },

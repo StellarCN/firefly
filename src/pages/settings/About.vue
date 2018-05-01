@@ -99,6 +99,9 @@ export default {
       counter: 0,
     };
   },
+  beforeDestroy () {
+    
+  },
   mounted() {
    this.getReleaseVersion()
    document.addEventListener('chcp_nothingToUpdate',()=>{
