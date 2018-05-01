@@ -101,6 +101,9 @@ export default {
     },
     reset(){
       this.inputValue = ''
+    },
+    getInputValue(){
+      return this.inputValue
     }
   }
 }

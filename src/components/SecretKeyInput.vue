@@ -3,11 +3,11 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-03-05 17:30:09 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-05-01 15:14:45
+ * @Last Modified time: 2018-05-01 20:49:32
  * @License MIT 
  */
  <template>
-   <div>
+   <div  onTouchMove={this.preventTouchMove}>
 
    <v-text-field dark
       :label="$t('SecretKey')"
@@ -17,11 +17,12 @@
       :disabled="disabled"
       class="seed-input"
       :onpaste="pasteHandler"
-      :onfocus="focusHandler"
+      onfocus="return false;"
       @input="inputText"
       rows=3></v-text-field>
     
     <secret-keyboard
+      ref="keyboard"
       :onChange="keyBoardChange"
       :onDone="keyBoardDone"
       :onBack="keyBoardBack"
@@ -113,19 +114,18 @@
       return null
     },
     keyBoardChange(val){
-      let str = this.seedInput||'' 
-      str += val
-      this.inputText(str)
+      let value = this.$refs.keyboard.getInputValue()
+      this.seedInput = util.getFormattedValue(
+            value,
+            this.blocks, this.blocks.length,
+            this.delimiter, [], false
+        );
     },
     keyBoardDone(){
       console.log('done')
     },
     keyBoardBack(){
-      let str = this.seedInput
-      if(str && str.length > 1)
-      this.seedInput = str.substring(0, str.length -1)
-      this.inputText(this.seedInput)
-      
+      this.keyBoardChange() 
     },
     focusHandler(){
       //禁止弹出输入框

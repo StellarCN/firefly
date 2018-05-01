@@ -111,7 +111,6 @@ export default {
       return false;
     },
     qrfinish(result){
-      console.log(` qrscanner --- finish -- ${result}`)
       this.showScanner = false
       this.title = 'ImportAccount'
       try{
@@ -124,13 +123,12 @@ export default {
       //this.secretkey = result
     },
     qrclose(){
-      alert('qr closed')
       this.showScanner = false
       this.title = 'ImportAccount'
     },
     nextStep(){
       let seed = this.scanSuccess ? this.scanSeed : this.$refs.secretkeyRef.getSeed()
-      if(!isValidSeed(this.seed)){
+      if(!isValidSeed(seed)){
         this.$toasted.error(this.$t('Error.NotValidSeed'))
         return
       }
