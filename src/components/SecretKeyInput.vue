@@ -17,7 +17,7 @@
       :disabled="disabled"
       class="seed-input"
       :onpaste="pasteHandler"
-      onfocus="return false;"
+      :ontouchend="focusHandler"
       @input="inputText"
       rows=3></v-text-field>
     
