@@ -1,19 +1,25 @@
 // 第三方应用列表界面
 <template>
   <div class="page" dark>
-    <toolbar :title="$t('Title.ThirdApp')" :showbackicon="true"  @goback="back" :shadow="false" lockpass  ref="toolbar"/>
+    <toolbar :title="$t('Title.ThirdApp')" :showbackicon="true"  @goback="back" 
+      :shadow="false" lockpass  ref="toolbar">
+      <!--右侧打开设置界面-->
+      <v-btn icon slot='right-tool' @click="toSetting">
+        <i class="material-icons">extension</i>
+      </v-btn>
+    </toolbar>
     <v-container fluid v-bind="{ [`grid-list-md`]: true }">
-      <card padding="8px 8px" margin="8px 8px" v-if="working">
+      <card padding="8px 0" margin="0 0" v-if="working">
         <div class="mt-5 textcenter">
           <v-progress-circular indeterminate color="primary"></v-progress-circular>
         </div>
       </card>
-      <card  padding="8px 8px" margin="8px 8px" v-else>
+      <card class="server-apps-layout" padding="8px 8px" margin="0 0" v-if="!working && err">
         <p v-if="err">
           {{$t(err)}}
         </p>
       </card>
-      <v-layout row wrap  v-if="!working">
+      <v-layout class="server-apps-layout" row wrap  v-if="!working && apps && apps.length > 0">
         <v-flex
           xs3
           v-for="(app,index) in apps"
@@ -23,6 +29,27 @@
           <v-card flat tile class="pa-2 textcenter app-card" >
              <v-avatar  :size="`80px`">
                <img :src="app.image">
+             </v-avatar>
+             <v-card-title primary-title class="app-title">
+               <div class="textcenter" style="width: 100%;">{{app.title}}</div>
+             </v-card-title>
+          </v-card>
+        </v-flex>
+      </v-layout>
+
+
+      <div class="primary--text subheading pa-2" v-if="myapps.length > 0">{{$t('CustomDApp')}}</div>
+
+      <v-layout class="apps-layout" row wrap  v-if="myapps.length > 0">
+        <v-flex
+          xs3
+          v-for="(app,index) in myapps"
+          :key="index"
+          @click="choose(app)"
+        >
+          <v-card flat tile class="pa-2 textcenter app-card" >
+             <v-avatar class="grey darken-4 app-avatar">
+               <span class="white--text headline">{{app.title.substring(0,1)}}</span> 
              </v-avatar>
              <v-card-title primary-title class="app-title">
                <div class="textcenter" style="width: 100%;">{{app.title}}</div>
@@ -126,7 +153,8 @@ export default {
       accountData: state => state.accounts.accountData,
       islogin: state => (state.accounts.accountData.seed ? true : false),
       allcontacts: state => state.app.contacts||[],
-      myaddresses: state => state.app.myaddresses||[]
+      myaddresses: state => state.app.myaddresses||[],
+      myapps: state => state.app.myapps,
     }),
   },
   beforeMount () {
@@ -137,6 +165,7 @@ export default {
         this.working = false
         //console.log(response)
         this.apps = response.data.apps
+        // this.apps = [{site: '111',title: 'aaa'}]
       })
       .catch(err=>{
         this.working = false
@@ -378,6 +407,9 @@ export default {
     },
     successTrustEvent(){
       this.successEvent()
+    },
+    toSetting(){
+      this.$router.push({name: 'DAppSetting'})
     }
 
 
@@ -414,4 +446,18 @@ export default {
 .dlg-content
   background: $secondarycolor.gray
   color: $primarycolor.red
+
+.server-apps-layout
+  background: $secondarycolor.gray
+  margin: 8px 8px!important
+  border-radius: 5px
+
+.apps-layout
+  background: $secondarycolor.gray
+  margin: 8px 8px!important
+  border-radius: 5px
+  .app-card
+    background: $secondarycolor.gray!important
+    .app-avatar
+      border-radius: 50%!important
 </style>
