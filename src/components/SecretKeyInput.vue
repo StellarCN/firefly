@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-03-05 17:30:09 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-05-01 20:49:32
+ * @Last Modified time: 2018-05-03 12:29:33
  * @License MIT 
  */
  <template>
@@ -14,14 +14,19 @@
       v-model="seedInput"
       required
       multi-line
+      clearable
       :disabled="disabled"
       class="seed-input"
-      :onpaste="pasteHandler"
-      :ontouchend="focusHandler"
+      @paste="pasteHandler($event)"
+      @focus="focusHandler($event)"
+      @blur="blurHandler($event)"
       @input="inputText"
-      rows=3></v-text-field>
+      rows=3
+      :append-icon="hideKeyboard ? 'keyboard' : 'keyboard_hide'"
+      :append-icon-cb="keyboardIconClick"
+      ></v-text-field>
     
-    <secret-keyboard
+    <secret-keyboard v-show="!hideKeyboard"
       ref="keyboard"
       :onChange="keyBoardChange"
       :onDone="keyBoardDone"
@@ -46,6 +51,8 @@
        maxLength: 56,
        uppercase: true,
 
+       hideKeyboard: false,
+
      }
    },
    props:{
@@ -63,8 +70,10 @@
    },
    watch: {
    },
+   beforeDestroy () {
+   },
    methods:{
-     pasteHandler(){
+     pasteHandler(event){
        return this.enablePaste
      },
      inputText(value){
@@ -72,6 +81,7 @@
          this.seedInput = this.seedInput.substr(0, this.seedInput.length -1)
          return;
        }
+       if(value === null)value = ''
        //
        // strip delimiters
         value = util.stripDelimiters(value, this.delimiter, []);
@@ -127,9 +137,24 @@
     keyBoardBack(){
       this.keyBoardChange() 
     },
-    focusHandler(){
+
+    focusHandler(event){
+      //console.log('----focus----')
       //禁止弹出输入框
-       document.activeElement.blur()
+      //document.activeElement.blur()
+      this.hideKeyboard = true
+    },
+    blurHandler(event){
+      this.hideKeyboard = false
+    },
+    focusoutHandler(){
+      this.hideKeyboard = false
+    },
+    keyboardIconClick(){
+      this.hideKeyboard = !this.hideKeyboard
+      if(!this.hideKeyboard){
+        document.activeElement.blur()
+      }
     }
     
 
