@@ -15,6 +15,7 @@ const state = {
   contacts: [],
   nextContactId: 0,
   myaddresses:[],//常用地址信息
+  myapps:[],//当前用户自定义的app
 }
 
 const BLANK_USUAL = {name:null,address:null,memotype:null,memo:null}
@@ -129,6 +130,24 @@ const actions = {
     await dispatch('saveAppSetting', { myaddresses: arr })
   },
   //==========我的常用地址 end===================
+
+  //=======自定义第三方应用功能 start =========
+  async addMyApp({dispatch, commit, state} , app){
+    let apps = [...state.myapps,app]
+    await dispatch('saveAppSetting', { myapps: apps })
+  },
+  async deleteMyApp({dispatch, commit,state}, index){
+    let data = [...state.myapps]
+    data.splice(index, 1)
+    await dispatch('saveAppSetting', { myapps: data })
+  },
+  async modifyMyApp({dispatch, commit, state} , {index, app}){
+    let data = [...state.myapps]
+    data[index] = app
+    await  dispatch('saveAppSetting', { myapps: data })
+  }
+  //========自定义第三方应用功能  end=============
+
 
 }
 

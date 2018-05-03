@@ -12,11 +12,13 @@ import trade from './trade'
 import contacts from './contacts'
 import addresses from './addresses'
 import account from './account'
+import dapps from './dapp'
 
 import Picklanguage from '../pages/Picklanguage'
 import Guidepage from '../pages/Guidepage'
 import Funding from '@/pages/Funding.vue'
 import PinLock from '@/pages/PinLock'
+import dapp from './dapp';
 
 Vue.use(Router)
 
@@ -111,8 +113,8 @@ const router = new Router({
     contacts,
     addresses,
     account,
+    dapps,
     
-
   ]
 })
 

@@ -291,12 +291,14 @@ export default {
 
     this.$nextTick(() => {
       
-      setTimeout(() => {
-        if (this.notfunding) {
-          this.noticeText = this.$t("Error.AccountNotFund");
-          this.notice = true;
-        }
-      }, 3000);
+      // TODO 优化
+      // setTimeout(() => {
+      //   if (this.notfunding) {
+      //     this.noticeText = this.$t("Error.AccountNotFund");
+      //     this.notice = true;
+      //   }
+      // }, 3000);
+
     });
   },
   methods: {
