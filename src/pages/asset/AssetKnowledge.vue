@@ -10,32 +10,27 @@
       >
     </toolbar>   
     <div class="content_all">
-          <div class="content_asset_image" v-if="asset_info.image!=undefined&asset_info.image!=null&asset_info.image!=''">
+          <div class="content_asset_image" v-if="asset_info.image!=undefined&&asset_info.image!=null&&asset_info.image!=''">
             <span><img width="200px" height="200px" :src="asset_info.image"/></span>
             </div>
-          <div class="content_asset_code_info" v-if="asset_info.code!=undefined&asset_info.code!=null&asset_info.code!=''">
+          <div class="content_asset_code_info" v-if="asset_info.code!=undefined&&asset_info.code!=null&&asset_info.code!=''">
             <span >{{$t("AssetCode")}}</span><br/>
             <span class="content_contentcolor">{{asset_info.code}}</span>
             </div>
-          <div class="content_asset_issuer_info" v-if="asset_info.issuer!=undefined&asset_info.issuer!=null&asset_info.issuer!=''">
+          <div class="content_asset_issuer_info" v-if="asset_info.issuer!=undefined&&asset_info.issuer!=null&&asset_info.issuer!=''">
             <span>{{$t("AssetIssuer")}}</span><br/>
             <span class="content_contentcolor">{{asset_info.issuer}}</span>
             </div>
-          <div class="content_asset_domain" v-if="asset_info.domain!=undefined&asset_info.domain!=null&asset_info.domain!=''">
+          <div class="content_asset_domain" v-if="asset_info.domain!=undefined&&asset_info.domain!=null&&asset_info.domain!=''">
             <span>{{$t("AssetDomain")}}</span><br/>
             <span class="content_contentcolor" @click="openURL(asset_info.domain)">{{asset_info.domain}}</span>
             </div>
           
-          <div class="content_asset_info_info" v-if="this.$i18n.locale==='zh_cn'&asset_info.info_zh_cn!=''&asset_info.info_zh_cn!=undefined&asset_info.info_zh_cn!=null">
+          <div class="content_asset_info_info" v-if="info">
             <div>{{$t("AssetSummary")}}</div>
-            <div class="content_contentcolor" v-image-wrapper v-html="asset_info.info_zh_cn"></div>
-            </div>
-          <div class="content_asset_info_info" v-else-if="this.$i18n.locale==='en'&asset_info.info_en!=''&asset_info.info_en!=undefined&asset_info.info_en!=null">
-            <span>{{$t("AssetSummary")}}</span><br/>
-            <span class="content_contentcolor" v-image-wrapper v-html="asset_info.info_en"></span>
+            <div class="content_contentcolor" v-image-wrapper v-html="info"></div>
             </div>
           
-
           <div class="is_networkerror" v-if="isNetWorkError">
                <v-alert  type="error" :value="true">
                   {{$t("NetWorkErrorMessage")}}
@@ -78,7 +73,7 @@ export default {
     return {
         asset_code:'',
         asset_issuer:'',
-        asset_info:'',
+        asset_info:{},
      
         showmenuicon: false,
         showbackicon: true,
@@ -98,6 +93,12 @@ export default {
       'paymentsRecords',
       'reserve',
     ]),
+    info(){
+      let locale = this.$i18n.locale
+      let d = this.asset_info['info_'+locale]
+      if(d)return d
+      return this.asset_info['info_zh_cn']
+    }
   
   },
  
@@ -131,6 +132,7 @@ export default {
     openURL(url) {
       window.open(url, "_system");
     }, 
+    
   },
   components: {
     Card,
