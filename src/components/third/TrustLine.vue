@@ -108,10 +108,6 @@ export default {
     appname: {
       type: String
     },
-    destination: {
-      type: String,
-      required: true
-    },
     asset_code: {
       type:String,
       required: true
