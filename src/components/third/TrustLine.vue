@@ -6,7 +6,7 @@
     <div class="confirm-wrapper">
       <div class="confirm-blank"></div>
       <div  class="confirm-dlg">
-      <v-bottom-sheet v-model="showSendDlg" persistent dark>
+      <v-bottom-sheet v-model="showDlg" persistent dark>
         <div class="menu-head">
           <div class="menu-row">
             <div class=" menu-row-1">
@@ -21,7 +21,7 @@
         </div>
         
         <div class="confirm-content">
-          <div class="confirm-title">
+          <div class="dlg-title text-center">
             <span>{{$t('ManullayAddTrust')}}</span>
           </div>
           <div class="confirm-title">{{$t('AssetCode')}}</div>
@@ -62,7 +62,7 @@
         </div>
         <div  class="sheet-btns">
           <div class="sheet-btn" @click="resetState">{{$t('Button.Cancel')}}</div>
-          <div class="sheet-btn" @click="doPayment">{{$t('Button.OK')}}</div>
+          <div class="sheet-btn" @click="doTrust">{{$t('Button.OK')}}</div>
         </div>
       </div>
     </v-bottom-sheet>
@@ -87,7 +87,7 @@ export default {
   data(){
     return {
       step: 0,//0是初始界面，1是输入密码界面，2是确认支付界面
-      showSendDlg: true,//显示支付界面
+      showDlg: true,//显示界面
       assets:[],//可以支付的资产，通过path payment计算出来
       nodata: false,
       showPwdSheet: false,
@@ -142,18 +142,18 @@ export default {
       getAccountInfo: 'getAccountInfo',
     }),
     showPwdDlg(){
-      this.showSendDlg = false
+      this.showDlg = false
       this.showPwdSheet = true
       this.password = null
       this.pwdvisible = false
     },
     resetState(){
-      this.showSendDlg = true
+      this.showDlg = true
       this.showPwdSheet = false
       this.password = null
       this.pwdvisible = false
     },
-    doPayment(){
+    doTrust(){
       if(this.islogin){
         if(this.working)return
         this.working = true
@@ -192,6 +192,8 @@ export default {
         console.log('enough native asset to continue')
       }else{
         this.$toasted.error('no enough lumens to continue')
+        this.working = false
+        this.sending = false
         return 
       }
       if(this.working) return
@@ -264,19 +266,23 @@ export default {
   background: $primarycolor.gray
   opacity: .8
   position: fixed
-  bottom: 11rem
+  bottom: 8.5rem
   right: 0
   left: 0
   top: 0
   z-index: 9
 .confirm-dlg
   background: $secondarycolor.gray
-  height: 11rem
+  height: 8.5rem
   position: fixed
   bottom: 0
   right: 0
   left: 0
   opacity: 1
+.dlg-title
+  color: $primarycolor.green
+  text-align: center
+  font-size: 16px
 .confirm-title
   height: .8rem
   line-height: .8rem

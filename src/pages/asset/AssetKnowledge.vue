@@ -95,9 +95,11 @@ export default {
     ]),
     info(){
       let locale = this.$i18n.locale
-      let d = this.asset_info['info_'+locale]
+      let key = 'info_'+locale
+      let d = this.asset_info[key]
       if(d)return d
-      return this.asset_info['info_zh_cn']
+      key = 'info_zh_cn'
+      return this.asset_info[key]
     }
   
   },

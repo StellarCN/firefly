@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-26 15:59:49 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-04-29 16:17:03
+ * @Last Modified time: 2018-05-05 19:00:12
  * @License MIT 
  */
 
@@ -171,14 +171,13 @@ export default {
     beforeMount () {
         //生成随机的id
         this.id = 'k_'+ new Date().getTime()
-       
+       //先从缓存中取值
+        this.lineData = this.tradePairKLineData[this.tradepairIndex]
     },
     beforeDestroy () {
         this.clearAll()
     },
     mounted () {
-        //先从缓存中取值
-        this.lineData = this.tradePairKLineData[this.tradepairIndex]
         this.init()
     },
     methods: {

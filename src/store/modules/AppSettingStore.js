@@ -16,6 +16,7 @@ const state = {
   nextContactId: 0,
   myaddresses:[],//常用地址信息
   myapps:[],//当前用户自定义的app
+  price:[],//从自定义api查询到价格表
 }
 
 const BLANK_USUAL = {name:null,address:null,memotype:null,memo:null}
@@ -151,10 +152,15 @@ const actions = {
 
 }
 
+export const SET_PRICE_BY_API = 'SET_PRICE_BY_API'
+
 const mutations = {
   CHANGE_APPSETTING_STATE(state, data){
     state = Object.assign(state, data)
   },
+  [SET_PRICE_BY_API](state,data){
+    state.price = data
+  }
   
 
 }
