@@ -93,15 +93,13 @@
       @exit="exitBackUpEvent" @success="successBackUpEvent" />
 
     <recovery-data v-if="appEventType === 'recovery' && appEventData" 
-      :appname="choosed.title" :encryptData="appEventData.data.data"
+      :appname="choosed.title" :encryptData="appEventData.data"
       @exit="exitRecoveryEvent" @success="successRecoveryEvent" />
 
     <trust-line v-if="appEventType === 'trust' && appEventData" 
       :appname="choosed.title" 
-      :destination="appEventData.data.destination"
-      :asset_code="appEventData.data.code"
-      :asset_issuer="appEventData.data.issuer"
-      :memo_type="sendTarget.memo_type"
+      :asset_code="appEventData.code"
+      :asset_issuer="appEventData.issuer"
       @exit="exitTrustEvent" @success="successTrustEvent" />
   </div>
 </template>
@@ -281,6 +279,7 @@ export default {
       this.appInstance.addEventListener('message', debounce(function (e){
         console.log('-----------get message ---- ')
         console.log(JSON.stringify(e))
+       // alert(JSON.stringify(e))
         let type = e.data.type
         if(type === FFW_EVENT_TYPE_PAY){
           this.doPayEvent(e)
@@ -314,8 +313,10 @@ export default {
       if(data){
         let cdata = signToBase64(this.accountData.seed, data)
         console.log('---------------encrypt data---' + cdata)
+       // alert('sign---'+cdata)
         this.doCallbackEvent(this.callbackData('success', 'success', cdata))
       }else{
+       // alert('sign-fail--')
         this.doCallbackEvent(this.callbackData('fail','no data to sign'))
       }
     },
@@ -383,6 +384,7 @@ export default {
       })
     },
     successEvent(msg='success',data){
+      //alert('----success--event---'+ JSON.stringify(data))
       this.appInstance.show()
       this.doCallbackEvent(this.callbackData('success',msg, data))
       this.$nextTick(()=>{

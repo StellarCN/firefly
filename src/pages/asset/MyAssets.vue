@@ -139,7 +139,7 @@ import  defaultsDeep  from 'lodash/defaultsDeep'
 import { getAssetPrice } from '@/api/fchain'
 import { Decimal } from 'decimal.js'
 import throttle from 'lodash/throttle'
-
+import {SET_PRICE_BY_API} from '@/store/modules/AppSettingStore'
 //过滤0资产
 const FLAG_FILTER_ZERO = "filter_zero";
 //不过滤资产
@@ -187,6 +187,9 @@ export default {
   },
   mixins: [backbutton, loadaccount],
   computed:{
+    ...mapState({
+      priceState: state => state.app.price,
+    }),
  /**
      * 尝试修改的资产总和
      */
@@ -279,6 +282,9 @@ export default {
       }
     }
   },
+  beforeMount () {
+    this.price = this.priceState
+  },
   mounted() {
     this._getPriceFn = throttle(()=>{
       getAssetPrice(this.balances.filter(item=> Number(item.balance)>0).map(item=> {
@@ -286,6 +292,7 @@ export default {
       }))
       .then(response => {
         this.price = response.data;
+        this.$store.commit(SET_PRICE_BY_API, response.data)
       }).catch(err => {});
     },60000)
 
