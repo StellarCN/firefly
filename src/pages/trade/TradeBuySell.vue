@@ -65,10 +65,10 @@
           <!--可用-->
           <div class="flex-row full-width">
             <div class="flex1 available">
-              {{$t('Available')}}{{BaseAsset.code}}: {{BaseBalance.balance||0}}
+              {{$t('Available')}}{{BaseAsset.code}}: {{BaseBalance.balance.toFixed(7)}}
             </div>
               <div class="flex1 available">
-              {{$t('Available')}}{{CounterAsset.code}}: {{CounterBalance.balance||0}}
+              {{$t('Available')}}{{CounterAsset.code}}: {{CounterBalance.balance.toFixed(7)}}
             </div>
           </div>
         </div>
@@ -554,10 +554,12 @@ export default {
         let am = decvalue.div(this.price)
         if(am.lessThan(this.tradeBalance)){
           this.amount = Number(am.toFixed(7))
+          this.total = Number(decvalue.toFixed(7))
         }else{
           this.amount = this.tradeBalance
+          this.setTotal()
         }
-        this.setTotal()
+        
       }
     }
 
