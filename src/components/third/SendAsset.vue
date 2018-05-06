@@ -375,7 +375,7 @@ export default {
           data.filter(record => Number(record.source_amount) > 0)
             .forEach(record => {
               const key = (record.source_asset_type === 'native') ?
-                  'XLM' : record.source_asset_code + '-' + record.source_asset_issuer;
+                  'IDR' : record.source_asset_code + '-' + record.source_asset_issuer;
 
               if (key in paths) {
                 if ((Number(paths[key].source_amount) - Number(record.source_amount)) > 0) {
@@ -395,9 +395,9 @@ export default {
               if(isNativeAsset(asset)){
                 if(canSend(this.native.balance, this.reserve, amount, this.base_fee, 1)){
                   this.assets.push({
-                    id: 'XLM',code: 'XLM', issuer: 'stellar.org', 
+                    id: 'IDR',code: 'IDR', issuer: 'fable.id', 
                     destId: origin.destination_asset_type === 'native' ? 
-                      'XLM': origin.destination_asset_code + '-' + origin.destination_asset_issuer,
+                      'IDR': origin.destination_asset_code + '-' + origin.destination_asset_issuer,
                     amount: Number(origin.source_amount), destination_amount: origin.destination_amount,
                     origin
                   })
@@ -411,7 +411,7 @@ export default {
                     destination_amount: origin.destination_amount,
                     id: origin.source_asset_code + '-' + origin.source_asset_issuer,
                     destId: origin.destination_asset_type === 'native' ? 
-                      'XLM': origin.destination_asset_code + '-' + origin.destination_asset_issuer,
+                      'IDR': origin.destination_asset_code + '-' + origin.destination_asset_issuer,
                     origin
                   })
                 }

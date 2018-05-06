@@ -27,7 +27,7 @@
       <card class="trade-card" margin="10px 0px" padding="2px 0px">
         <div class="flex-row textcenter" slot="card-content">
           <div :class="'flex1 filter-tag ' + (filterTag==='All' ? 'active':'')" @click="doFilter('All')">{{$t('All')}}</div>
-          <div :class="'flex1 filter-tag ' + (filterTag==='XLM' ? 'active':'')" @click="doFilter('XLM')">XLM</div>
+          <div :class="'flex1 filter-tag ' + (filterTag==='IDR' ? 'active':'')" @click="doFilter('IDR')">IDR</div>
           <div :class="'flex1 filter-tag ' + (filterTag==='XCN' ? 'active':'')" @click="doFilter('XCN')">XCN</div>
           <div :class="'flex1 filter-tag ' + (filterTag==='BTC' ? 'active':'')" @click="doFilter('BTC')">BTC</div>
           <div :class="'flex1 filter-tag ' + (filterTag==='ETH' ? 'active':'')" @click="doFilter('ETH')">ETH</div>
@@ -125,7 +125,7 @@ var moment = require('moment')
 import {Decimal} from 'decimal.js'
 import Scroll from '@/components/Scroll'
 
-const TAG_ALL = 'All', TAG_XCN = 'XCN', TAG_XLM = 'XLM', TAG_BTC = 'BTC', TAG_ETH = 'ETH'
+const TAG_ALL = 'All', TAG_XCN = 'XCN', TAG_IDR = 'IDR', TAG_BTC = 'BTC', TAG_ETH = 'ETH'
 
 
 export default {

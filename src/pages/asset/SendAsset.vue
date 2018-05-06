@@ -366,7 +366,7 @@ export default {
             if (payment.asset) {
               this.selectasset = payment.asset
             } else {
-              this.selectasset = {code: 'XLM'}
+              this.selectasset = {code: 'IDR'}
             }
             this.destination = payment.destination
             this.amount = payment.amount

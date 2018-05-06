@@ -50,7 +50,7 @@ const actions = {
     console.log('---------get account info ---'+ address)
     let info = await accountapi.getAccountInfo(address)
     let assets = info.balances.map(ele=>{
-      if(ele.asset_type === 'native')return 'XLM'
+      if(ele.asset_type === 'native')return 'IDR'
       return ele.asset_issuer
     })
     await dispatch('getAssetsAccounts',assets)
@@ -141,8 +141,8 @@ const getters = {
     info.forEach((element,index) => {
      let obj = {};
      if('native' === element.asset_type){
-        obj.code = 'XLM'
-        obj.issuer = 'stellar.org'
+        obj.code = 'IDR'
+        obj.issuer = 'fable.id'
       } else {
         obj.code = element.asset_code
         obj.issuer = element.asset_issuer
@@ -181,13 +181,13 @@ const getters = {
   },
   native: (state, getters) =>{
     if(!getters.balances)return {}
-    let xlm = {}
+    let idr = {}
     getters.balances.forEach((element) => {
       if(isNativeAsset(element)){
-        xlm = Object.assign({},element)
+        idr = Object.assign({},element)
       }
     })
-    return xlm
+    return idr
   },
   records: state => {
     let _records = state.transactions.records

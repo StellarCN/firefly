@@ -34,11 +34,6 @@
         </div>
       </div>
     </div>
-    <div id="TotalSum" class="myassets_totalSum" >
-      <span class="myassets_TotalSumWord" >{{$t('TotalAssets')}}≈</span>
-      <span>{{TotalSum.toFixed(7)}}</span><!-- 要改成资产数组数据的累加的和-->
-      <span>XCN</span>
-    </div>
   </scroll>
 </div>
 
@@ -93,9 +88,6 @@
             <v-flex xs7 class="myassets-wrapper">
               <div class="myassets-balance third">
                  <span class="balance">{{item.balanceStr}}</span>
-                 <span class="label">{{$t('Total')}}</span> 
-                 <br/>
-                  <span v-if="item.total >=0">≈{{item.total > 0 ? item.total : 0}}&nbsp;&nbsp;XCN</span>
               </div>
             </v-flex>
           </v-layout>
@@ -193,7 +185,7 @@ export default {
     TotalSum() {
       let pricemap = this.prices
       let data = this.balances.map(item=>{
-        let v = isNativeAsset(item) ? pricemap['XLM'] : pricemap[item.code + '-' + item.issuer]
+        let v = isNativeAsset(item) ? pricemap['IDR'] : pricemap[item.code + '-' + item.issuer]
         return v ? new Decimal(v.price || 0).times(item.balance) : new Decimal(0)
       })
       if(data.length === 0)return 0

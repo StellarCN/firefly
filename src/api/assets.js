@@ -17,8 +17,8 @@ export function isNativeAsset(_code,_issuer){
     code = _code
     issuer = _issuer
   }
-  if(code!='XLM')return false
-  if(issuer && issuer!='stellar.org')return false
+  if(code!='IDR')return false
+  if(issuer && issuer!='fable.id')return false
   return true
 }
 

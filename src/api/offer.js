@@ -96,9 +96,9 @@ export function myofferConvert(_sellasset,_buyasset,my){
   let buyasset = JSON.parse(JSON.stringify(_buyasset))
   let data = []
   my.forEach(ele=>{
-    let sellcode = 'XLM'
+    let sellcode = 'IDR'
     let sellissuer = null
-    let buycode = 'XLM'
+    let buycode = 'IDR'
     let buyissuer = null
     if(ele.selling.asset_type!='native'){
       sellcode = ele.selling.asset_code
