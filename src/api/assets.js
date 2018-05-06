@@ -4,7 +4,7 @@ import axios from 'axios'
 
 
 /**
- * 验证是否为官方XLM资产（stronghold发行了XLM资产，存在重名）
+ * 验证是否为官方IDR资产（stronghold发行了IDR资产，存在重名）
  * @param {String | Object} _code 
  * @param {String} _issuer 
  */

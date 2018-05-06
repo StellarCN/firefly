@@ -23,7 +23,7 @@ export const FED_NETWORK_BIND_ADDRESS = 'bind*fed.network'
 //通账池
 export const INFLATION_POOL = [
   {
-    host:'xlmpool.com',
+    host:'pool.com',
     address: 'GA3FUYFOPWZ25YXTCA73RK2UGONHCO27OHQRSGV3VCE67UEPEFEDCOPA'
   }
 ]
@@ -34,7 +34,7 @@ export const TRADE_PAIRS = [
 
   {
     from: {
-      code: 'XLM'
+      code: 'IDR'
     },
     to: {
       code: 'XCN',
@@ -43,7 +43,7 @@ export const TRADE_PAIRS = [
   },
   {
     from: {
-      code: 'XLM'
+      code: 'IDR'
     },
     to: {
       code: 'BTC',
@@ -52,7 +52,7 @@ export const TRADE_PAIRS = [
   },
   {
     from: {
-      code: 'XLM'
+      code: 'IDR'
     },
     to: {
       code: 'ETH',
@@ -63,9 +63,9 @@ export const TRADE_PAIRS = [
 
 
 export const ASSETS_ISSUER_HOST = {
-  'XLM': {
-    code: 'XLM',
-    host: 'stellar.org'
+  'IDR': {
+    code: 'IDR',
+    host: 'fable.id'
   },
   'GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX': {
     code: 'CNY',
@@ -181,7 +181,7 @@ export const COINS_ICON = {
   ETC: 'icon-ETC',
   LTC: 'icon-LTC',
   XRP: 'icon-XRP',
-  XLM: 'icon-XLM',
+  IDR: 'icon-XLM',
   ETH: 'icon-ETH',
   BTC: 'icon-btc'
   

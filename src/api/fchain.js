@@ -46,9 +46,9 @@ export function getDepositAndWithdrawRecords(account, asset_code, asset_issuer){
     #     "type": "canceled", # 取消的订单
     #     "amount": "0.4000000", # counter_asset 的数量
     #     "tx": "72b807ff4b98518ee93bed49dc27580f56b9e0e1391d8450e60d113a969b351d",
-    #     "counter_asset": "XLM", # 卖出的 asset
+    #     "counter_asset": "IDR", # 卖出的 asset
     #     "counter_issuer": null,
-    #     "price": "2.4800000", # 2.48 XCN/XLM (base_asset/counter_asset)
+    #     "price": "2.4800000", # 2.48 XCN/IDR (base_asset/counter_asset)
     #     "base_issuer": "GCNY5OXYSY4FKHOPT2SPOQZAOEIGXB5LBYW3HVU3OWSTQITS65M5RCNY",
     #     "time": 15180063040.4300000
     # },

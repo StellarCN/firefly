@@ -28,7 +28,7 @@ function _offer(seed,selling, buying, amount, price) {
   });
 }
 
-// option {type:'buy', currency:'XLM', issuer: '', base: 'CNY', base_issuer: 'GXXX', amount: 100, price: 0.01}
+// option {type:'buy', currency:'IDR', issuer: '', base: 'CNY', base_issuer: 'GXXX', amount: 100, price: 0.01}
 export function offer(seed, option) {
   console.debug('%s %s %s use %s@ %s', option.type, option.amount, option.currency, option.base, option.price);
   var buying, selling;
@@ -108,7 +108,7 @@ export function myofferConvert(_sellasset,_buyasset,my){
       buycode = ele.buying.asset_code
       buyissuer = ele.buying.asset_issuer 
     }
-    let stellarorg = 'stellar.org'
+    let stellarorg = 'fable.id'
     if(stellarorg === sellasset.issuer){
       sellasset.issuer = null
     }

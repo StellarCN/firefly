@@ -317,8 +317,8 @@ export default {
           console.log(response.data)
           this.deals = response.data.map(item=>{
             return Object.assign({}, item, { total: new Decimal(item.amount).times(item.price).toFixed(7), 
-              counter_issuer: item.counter_issuer ? item.counter_issuer : 'stellar.org',
-              base_issuer: item.base_issuer ? item.base_issuer : 'stellar.org',
+              counter_issuer: item.counter_issuer ? item.counter_issuer : 'fable.id',
+              base_issuer: item.base_issuer ? item.base_issuer : 'fable.id',
               price: Number(item.price)
             })
           }).filter(item=>{

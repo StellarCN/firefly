@@ -269,10 +269,10 @@ export default {
       let to_issuer = this.balances[indexPair[1]].issuer
       let pair =  { from: {code:from_code,issuer:from_issuer}, 
               to: { code: to_code, issuer: to_issuer}  }
-      let key = from_code + (from_issuer||'stellar.org') + to_code + (to_issuer||'stellar.org')
+      let key = from_code + (from_issuer||'fable.id') + to_code + (to_issuer||'fable.id')
       for (let tp of this.tradepairs){
-        let key1 = tp.from.code + (tp.from.issuer||'stellar.org')+tp.to.code + (tp.to.issuer||'stellar.org')
-        let key2 = tp.to.code + (tp.to.issuer||'stellar.org')+tp.from.code + (tp.from.issuer||'stellar.org')
+        let key1 = tp.from.code + (tp.from.issuer||'fable.id')+tp.to.code + (tp.to.issuer||'fable.id')
+        let key2 = tp.to.code + (tp.to.issuer||'fable.id')+tp.from.code + (tp.from.issuer||'fable.id')
         if(key === key1 || key === key2){
           this.$toasted.error(this.$t('Error.AddTradePair.ExistPair'))
           return 
