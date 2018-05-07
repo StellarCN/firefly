@@ -336,7 +336,7 @@ export default {
       if(this.appEventData && this.appEventData.callback){
         try{
           let cb = this.appEventData.callback
-          let code = `${cb}({code: "${data.code}",message:"${data.message}",data:"${data.data}"})`
+          let code = `FFW.callback("${cb}",{code: "${data.code}",message:"${data.message}",data:"${data.data}"})`
           console.log('===============callback------event---')
           console.log(code)
           this.appInstance.executeScript({
