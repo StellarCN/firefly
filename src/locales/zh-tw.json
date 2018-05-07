@@ -112,6 +112,7 @@
   "To":"發往",
   "AddContact":"添加聯繫人",
   "AddAsset":"添加資產",
+  "AddAssetFail":"添加資產失敗",
   "AddAssetSuccess":"資產類型已添加",
   "AddAssetNotFound": "未探測到資產信息",
   "FederationUrl":"聯邦地址",

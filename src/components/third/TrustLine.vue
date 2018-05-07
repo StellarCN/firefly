@@ -196,11 +196,10 @@ export default {
         this.sending = false
         return 
       }
-      if(this.working) return
       this.loadingTitle = null
       this.loadingMsg = null
       let params = {
-          seed: this.accountData.seed,
+          seed: seed,
           address: this.account.address,
           code: this.asset_code,
           issuer: this.asset_issuer}
@@ -229,7 +228,7 @@ export default {
       this.sending = false
       this.sendfail = true
       let msg = getXdrResultCode(err)
-      this.loadingTitle = this.$t('AddAsset')+this.$t('SaveFailed')
+      this.loadingTitle = this.$t('AddAssetFail')
       if(msg){
         this.loadingError = this.$t(msg)
       }else{

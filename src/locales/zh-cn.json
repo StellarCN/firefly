@@ -112,6 +112,7 @@
   "To":"发往",
   "AddContact":"添加联系人",
   "AddAsset":"添加资产",
+  "AddAssetFail":"添加资产失败",
   "AddAssetSuccess":"资产类型已添加",
   "AddAssetNotFound": "未探测到资产信息",
   "FederationUrl":"联邦地址",
