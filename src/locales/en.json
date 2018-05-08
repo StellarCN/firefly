@@ -472,7 +472,12 @@
   "FundingInfo":"If the assets that you are planning to deposit / withdraw are built-in assets in the Stellar network, it can only be deposited / withdrawn by receiving and sending operations.",
   "FindNewVersion":"update to new version {0} ? ",
   "Update":"update",
-  "CustomDApp":"custom dapp"
+  "CustomDApp":"custom dapp",
+  "Sign":"sign data to authorize",
+  "Error.NoTxToSign":"Error: no transaction to sign",
+  "limit":"limit",
+  "changeTrust":"change trust",
+  "allowTrust":"allow trust"
 
  
 

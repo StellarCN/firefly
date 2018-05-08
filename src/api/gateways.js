@@ -183,7 +183,9 @@ export const COINS_ICON = {
   XRP: 'icon-XRP',
   XLM: 'icon-XLM',
   ETH: 'icon-ETH',
-  BTC: 'icon-btc'
+  BTC: 'icon-btc',
+  XEL: 'icon-xel',
+  XFF: 'icon-XFF'
   
 }
 

@@ -465,7 +465,13 @@
   "FundingInfo":"如果您正在进行充值/提现操作的资产为恒星系资产，只能通过接收和发送来达到充提目的。",
   "FindNewVersion":"发现新版本 {0} ，是否更新？ ",
   "Update":"更新",
-  "CustomDApp":"自定义应用"
+  "CustomDApp":"自定义应用",
+  "Sign":"签名授权",
+  "Error.NoTxToSign":"错误：没有事务需要签名",
+  "limit":"额度",
+  "changeTrust":"授信",
+  "allowTrust":"允许授信"
+
  
  
 

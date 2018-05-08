@@ -13,6 +13,7 @@ export const FFW_EVENT_TYPE_SIGN = 'sign'
 export const FFW_EVENT_TYPE_BACKUP = 'backup'
 export const FFW_EVENT_TYPE_RECOVERY = 'recovery'
 export const FFW_EVENT_TYPE_TRUST = 'trust'
+export const FFW_EVENT_TYPE_SIGNXDR = 'signXDR'
 
 export function FFWScript(address, data = {}){
   // return [
@@ -71,6 +72,7 @@ export function FFWScript(address, data = {}){
         }
         cordova_iab.postMessage(JSON.stringify(params));
       };
+
       FFW.sign = function(data,callback){
         var params = { type: 'sign', data: data};
         if(typeof callback === 'function'){
@@ -82,6 +84,19 @@ export function FFWScript(address, data = {}){
         }
         cordova_iab.postMessage(JSON.stringify(params));
       };
+
+      FFW.signXDR = function(data,message,callback){
+        var params = { type: 'signXDR', data: data, message: message };
+        if(typeof callback === 'function'){
+          var id = 'FFW_CB_' + new Date().getTime()
+          FFW.addCallback(id, callback)
+          params['callback'] = id
+        }else{
+          params['callback'] = callback
+        }
+        cordova_iab.postMessage(JSON.stringify(params));
+      };
+
 
       FFW.backup = function(callback){
         var params = { type: 'backup'};
