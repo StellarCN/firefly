@@ -22,3 +22,8 @@ export function getXdrResultCode(err){
         }
     }
 }
+//根据xdr，返回Transaction对象
+export function xdrFromTransactionEnvelope(msg){
+   // return StellarSdk.xdr.TransactionEnvelope.fromXDR(msg,"base64")
+   return new StellarSdk.Transaction(msg)
+}

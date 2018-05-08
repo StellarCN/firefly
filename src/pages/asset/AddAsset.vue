@@ -280,7 +280,7 @@ export default {
           this.working = false
           //有可能返回超时，这时候也需要处理一下
           let msg = getXdrResultCode(err)
-          this.loadingTitle = this.$t('AddAsset')+this.$t('SaveFailed')
+          this.loadingTitle = this.$t('AddAssetFail')
           if(msg){
            this.loadingMsg = this.$t(msg)
           }     

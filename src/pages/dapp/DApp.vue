@@ -101,6 +101,15 @@
       :asset_code="appEventData.code"
       :asset_issuer="appEventData.issuer"
       @exit="exitTrustEvent" @success="successTrustEvent" />
+
+    <sign-x-d-r v-if="appEventType === 'signXDR' && appEventData" 
+      :appname="choosed.title"
+      :message="appEventData.message"
+      :xdr="appEventData.data"
+      @exit="exitSignXDREvent"
+      @success="successSignXDREvent"
+      />
+
   </div>
 </template>
 
@@ -112,12 +121,13 @@ import Toolbar from '@/components/Toolbar'
 import Card from '@/components/Card'
 import Loading from '@/components/Loading'
 import  defaultsDeep  from 'lodash/defaultsDeep'
-import SendAsset from '@/components/third/SendAsset'
-import RecoveryData from '@/components/third/RecoveryData'
-import TrustLine from '@/components/third/TrustLine'
-import BackUpData from '@/components/third/BackUpData'
+import SendAsset from '@/components/dapp/SendAsset'
+import RecoveryData from '@/components/dapp/RecoveryData'
+import TrustLine from '@/components/dapp/TrustLine'
+import BackUpData from '@/components/dapp/BackUpData'
+import SignXDR from '@/components/dapp/SignXDR'
 import { FFWScript, FFW_EVENT_TYPE_PAY,FFW_EVENT_TYPE_PATHPAYMENT,FFW_EVENT_TYPE_SIGN
-   ,FFW_EVENT_TYPE_BACKUP,FFW_EVENT_TYPE_RECOVERY,FFW_EVENT_TYPE_TRUST } from '@/api/ffw'
+   ,FFW_EVENT_TYPE_BACKUP,FFW_EVENT_TYPE_RECOVERY,FFW_EVENT_TYPE_TRUST,FFW_EVENT_TYPE_SIGNXDR } from '@/api/ffw'
 import { signToBase64, verifyByBase64 } from '@/api/keypair'
 import debounce from 'lodash/debounce'
 
@@ -214,38 +224,12 @@ export default {
                   showPageTitle: true,
                   staticText: this.choosed.title 
               },
-              backButton: {
-                  image: 'back',
-                  imagePressed: 'back_pressed',
-                  align: 'left',
-                  event: 'backPressed'
-              },
-              forwardButton: {
-                  image: 'forward',
-                  imagePressed: 'forward_pressed',
-                  align: 'left',
-                  event: 'forwardPressed'
-              },
               closeButton: {
                   image: 'close',
                   imagePressed: 'close_pressed',
                   align: 'left',
                   event: 'closePressed'
               },
-              reloadButton: {
-                  image: 'reload',
-                  imagePressed: 'reload_pressed',
-                  align: 'right',
-                  event: 'reloadPressed'
-              },
-              customButtons: [
-                  {
-                      image: 'share',
-                      imagePressed: 'share_pressed',
-                      align: 'right',
-                      event: 'sharePressed'
-                  }
-              ],
               backButtonCanClose: true
           })
           
@@ -286,6 +270,8 @@ export default {
         }else if(type === FFW_EVENT_TYPE_PATHPAYMENT){
           that.doPathPaymentEvent(e)
         }else if(type === FFW_EVENT_TYPE_SIGN){
+          let _temp = JSON.parse(e.data)
+          if(typeof _temp !== 'object')
           that.appEventType = e.data.type
           that.appEventData = e.data
           that.doSign(e)
@@ -336,7 +322,7 @@ export default {
       if(this.appEventData && this.appEventData.callback){
         try{
           let cb = this.appEventData.callback
-          let code = `${cb}({code: "${data.code}",message:"${data.message}",data:"${data.data}"})`
+          let code = `FFW.callback("${cb}",{code: "${data.code}",message:"${data.message}",data:"${data.data}"})`
           console.log('===============callback------event---')
           console.log(code)
           this.appInstance.executeScript({
@@ -410,6 +396,12 @@ export default {
     successTrustEvent(){
       this.successEvent()
     },
+    exitSignXDREvent(){
+      this.exitEvent('cancel signxdr')
+    },
+    successSignXDREvent(data){
+      this.successEvent('success',data)
+    },
     toSetting(){
       this.$router.push({name: 'DAppSetting'})
     }
@@ -424,6 +416,7 @@ export default {
     TrustLine,
     RecoveryData,
     BackUpData,
+    SignXDR,
   }
 }
 </script>

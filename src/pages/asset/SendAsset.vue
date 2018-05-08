@@ -574,6 +574,7 @@ export default {
       this.destination = null
       this.realDestination = null
       this.federationUrlResult = null
+      this.is_sendconfim = false
     
     }
   },

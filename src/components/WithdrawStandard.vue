@@ -11,7 +11,6 @@
 <div class="withdraw_wrapper">
   <loading :show="onsend" :loading="sending" :success="sendsuccess" :fail='sendfail' 
     :title="loadingTitle" :msg="loadingMsg" :closeable="sendfail" @close="hiddenLoadingView"
-    v-if="step === 2"
     />
 
   <!--第1步-->
@@ -150,7 +149,10 @@
             </div>
           </div>
         </div>
-        <div class="confirm-btns flex-row textcenter">
+        <div class="confirm-btns textcenter" v-if="working">
+          <v-progress-circular indeterminate color="error"></v-progress-circular>
+        </div>
+        <div class="confirm-btns flex-row textcenter" v-else>
           <div class="confirm-btn flex1" @click="send">{{$t('Button.OK')}}</div>
           <div class="confirm-btn flex1" @click="()=>{ step = 2; confirmSheetView=false;}">{{$t('Button.Cancel')}}</div>
         </div>
@@ -305,6 +307,7 @@ export default {
           this.$toasted.error(err.message)
         })
     },
+    //发送只能每10秒请求一次
     send(){
       let seed = this.accountData.seed
       if(!seed){
@@ -317,8 +320,8 @@ export default {
       }
       if(this.receive === null)return
       if(Number(this.receive) <=0)return
+      if(this.working)return
       this.working = true
-
       let params = {
         seed,
         address: this.account.address,
@@ -353,13 +356,11 @@ export default {
           this.confirmSheetView = false
           this.step = 2
           let msg = getXdrResultCode(err)
-          setTimeout(()=>{
-            if(msg){
-              this.loadingMsg = this.$t(msg)
-            }else{
-              this.loadingMsg = this.$t(err.message)
-            }
-          },1000)
+          if(msg){
+            this.loadingMsg = this.$t(msg)
+          }else{
+            this.loadingMsg = this.$t(err.message)
+          }
 
         })
       
@@ -377,6 +378,7 @@ export default {
     },
     hiddenLoadingView(){
       this.onsend = false
+      this.sending = false
       this.sendfail = false
       this.sendsuccess = false
       this.loadingTitle = null
@@ -462,14 +464,14 @@ export default {
   background: $primarycolor.gray
   opacity: .8
   position: fixed
-  bottom: 300px
+  bottom: 320px
   right: 0
   left: 0
   top: 0
   z-index: 9
 .confirm-dlg
   background: $secondarycolor.gray
-  height: 300px
+  height: 320px
   position: fixed
   bottom: 0
   right: 0
@@ -499,6 +501,7 @@ export default {
   font-size: 16px
   height: 42px
   line-height: 42px
+  margin: .2rem auto
 .amount-slider
   padding-top: 0px
   padding-bottom: 0px

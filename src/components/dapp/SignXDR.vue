@@ -1,8 +1,8 @@
-// 授信添加资产
+// XDR签名信息确认
 <template>
-  <div class="trust-line-wrapper">
+  <div class="sign-xdr-wrapper">
     
-    <!-- 显示授信界面 -->
+    <!-- 显示确认签名界面 -->
     <div class="confirm-wrapper">
       <div class="confirm-blank"></div>
       <div  class="confirm-dlg">
@@ -22,53 +22,55 @@
         
         <div class="confirm-content">
           <div class="dlg-title text-center">
-            <span>{{$t('ManullayAddTrust')}}</span>
+            <span>{{$t('Sign')}}({{appname}})</span>
           </div>
-          <div class="confirm-title">{{$t('AssetCode')}}</div>
-          <div class="confirm-memo">{{asset_code}}</div>
-          <div class="confirm-title">{{$t('AssetIssuer')}}</div>
-          <div class="confirm-memo">{{asset_issuer | shortaddress}}</div>
+
+          <div class="tx-opt-msg pl-3">
+            {{message}} <span class="confirm-memo">({{tx.operations.length}})</span>
+          </div>
+
+          <!---解析operation-->
+          <div class="tx-opt-content" v-if="tx">
+            <!--手续费，序列号，有效时间，备注，业务操作数-->
+            <div>
+              <span class="confirm-title">{{$t('DW.Fee')}}</span>
+              <span class="confirm-memo">{{fee}}</span>
+            </div>
+
+            <div class="tx-opts">
+              <div class="flex-row tx-opt-item" v-for="(opt,index) in tx.operations" :key="index">
+                <div class="flex1 textcenter">{{index+1}}</div>
+                <div class="flex6" v-if="opt.type === 'payment'">
+                  <span class="pa-1 tx-opt-item-type textcenter">{{$t(opt.type)}}</span>
+                  <span class="pa-1">{{opt.amount}}{{opt.asset.code}}</span>
+                  <span class="pa-1">{{$t('DestinationAddress')}}:{{opt.destination | miniaddress}}</span>
+                </div>
+                <div class="flex6" v-if="opt.type === 'allowTrust'">
+                  <span class="pa-1 tx-opt-item-type">{{$t(opt.type)}}</span>
+                  <span class="pa-1">{{opt.assetCode}}</span>
+                </div>
+                <div class="flex6" v-if="opt.type === 'changeTrust'">
+                  <span class="pa-1 tx-opt-item-type">{{$t(opt.type)}}</span>
+                  <span class="pa-1">{{opt.line.code}}({{opt.line.issuer | miniaddress}})</span>
+                  <span class="pa-1">{{$t('limit')}}:{{opt.limit}}</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="tx-opt-content" v-if="err">
+            {{$t(err)}}
+          </div>
           
         </div>
 
         <div class="confirm-btns flex-row textcenter">
           <div class="confirm-btn flex1" @click="exit">{{$t('Button.Cancel')}}</div>
-          <div class="confirm-btn flex1" @click="showPwdDlg">{{$t('Button.OK')}}</div>
+          <div class="confirm-btn flex1" @click="doSign">{{$t('Button.OK')}}</div>
         </div>
       </v-bottom-sheet>
       </div>
     </div>
-
-    <!--显示密码输入界面-->
-    <v-bottom-sheet persistent v-model="showPwdSheet" v-if="showPwdSheet" dark>
-      <div class="sheet-content">
-        <div class="sheet-title textcenter">
-          <div class="title">{{$t('ManullayAddTrust')}}&nbsp;{{asset_code}}</div>
-        </div>
-        <div class="sheet-title">
-          <div class="label">{{$t('Account.AccountName')}}</div>
-          <div class="value">{{account.name}}</div>
-        </div>
-        <div class="sheet-input">
-          <v-text-field
-                name="password"
-                :label="$t('Account.Password')"
-                v-model="password"
-                :append-icon="pwdvisible ? 'visibility' : 'visibility_off'"
-                :append-icon-cb="() => (pwdvisible = !pwdvisible)"
-                :type="pwdvisible ? 'text':'password'"
-                required dark
-              ></v-text-field>
-        </div>
-        <div  class="sheet-btns">
-          <div class="sheet-btn" @click="resetState">{{$t('Button.Cancel')}}</div>
-          <div class="sheet-btn" @click="doTrust">{{$t('Button.OK')}}</div>
-        </div>
-      </div>
-    </v-bottom-sheet>
-
-    <loading :show="working" :loading="sending" :success="sendsuccess" :fail='sendfail' 
-      color="red" :title="loadingTitle" :msg="loadingError" :closeable="sendfail" @close="hiddenLoading"/>
 
   </div>  
 </template>
@@ -81,38 +83,27 @@ import  defaultsDeep  from 'lodash/defaultsDeep'
 import { shortAddress,canSend,sendByPathPayment, send } from '@/api/account'
 import { isNativeAsset } from '@/api/assets'
 import { readAccountData } from '@/api/storage'
-import { xdrMsg,getXdrResultCode } from '@/api/xdr'
+import { xdrFromTransactionEnvelope } from '@/api/xdr'
+import { signDecoratedByTx } from '@/api/keypair'
+import { Decimal } from 'decimal.js'
 
 export default {
   data(){
     return {
-      step: 0,//0是初始界面，1是输入密码界面，2是确认支付界面
       showDlg: true,//显示界面
-      assets:[],//可以支付的资产，通过path payment计算出来
-      nodata: false,
-      showPwdSheet: false,
-      password: null,
-      pwdvisible: false,
-      loading: false,//是否正在查询path
-
-      working: false,
-      sending: false,
-      sendsuccess: false,
-      sendfail: false,
-      loadingTitle: null,
-      loadingError: null,
-      
+      tx: null,
+      err: null
     }
   },
   props: {
     appname: {
       type: String
     },
-    asset_code: {
-      type:String,
+    message: {
+      type: String,
       required: true
     },
-    asset_issuer: {
+    xdr: {
       type: String,
       required: true
     }
@@ -126,13 +117,21 @@ export default {
       notfunding: state => state.account.account_not_funding
     }),
     ...mapGetters(["balances", "reserve", "native", "base_fee",'base_reserve']),
-    
+    fee(){
+      if(this.tx){
+        return new Decimal(this.tx.fee/10000000).toFixed(7) + 'XLM'
+      }
+      return null
+    },
+    time(){
+
+    }
   },
   beforeMount () {
-    
-  },
-  mounted () {
-    
+    this.tx = xdrFromTransactionEnvelope(this.xdr)
+    if(this.tx === null){
+      this.err = 'Error.NoTxToSign'
+    }
   },
   methods: {
     ...mapActions({
@@ -141,109 +140,22 @@ export default {
       sendPathPayment: 'sendPathPayment',
       getAccountInfo: 'getAccountInfo',
     }),
-    showPwdDlg(){
-      this.showDlg = false
-      this.showPwdSheet = true
-      this.password = null
-      this.pwdvisible = false
-    },
-    resetState(){
-      this.showDlg = true
-      this.showPwdSheet = false
-      this.password = null
-      this.pwdvisible = false
-    },
-    doTrust(){
-      if(this.islogin){
-        if(this.working)return
-        this.working = true
-        this.sending = true
-        this.send(this.accountData.seed)
-        return
-      }
-      if(this.password === null || this.password.length === 0)return
-      if(this.working)return
-      this.working = true
-      this.sending = true
-
-      //校验密码是否正确
-      readAccountData(this.account.address, this.password)
-        .then(data=>{
-          console.log(`-----------------check password----`)
-          console.log(data)
-          let seed = data.seed
-          // 执行支付
-          this.send(seed)
-
-        })
-        .catch(err => {
-          console.log('----error-0---')
-          console.error(err)
-          this.sendfail = true
-          this.loadingError = this.$t('Error.PasswordWrong')
-        })
-
-
-    },
-    send(seed){
-      this.loadingTitle = null
-      this.loadingError = null
-      if(this.native.balance - this.reserve > this.base_reserve){
-        console.log('enough native asset to continue')
-      }else{
-        this.$toasted.error('no enough lumens to continue')
-        this.working = false
-        this.sending = false
-        return 
-      }
-      if(this.working) return
-      this.loadingTitle = null
-      this.loadingMsg = null
-      let params = {
-          seed: this.accountData.seed,
-          address: this.account.address,
-          code: this.asset_code,
-          issuer: this.asset_issuer}
-      this.trust(params)
-        .then(response=>{
-          this.sendSuccess()
-        })
-        .catch(err=>{
-          this.sendFail(err) 
-        })
-
-    },
-    sendSuccess(){
-      this.sending = false
-      this.sendsuccess = true
-      this.loadingTitle = this.$t('AddAssetSuccess')
-      //this.getAccountInfo(this.account.address)
-      setTimeout(()=>{
-        this.working =false
-        this.sendsuccess = false //
-        this.$emit('success')
-      },3000)
-    },
-    sendFail(err){
-      console.log(err)
-      this.sending = false
-      this.sendfail = true
-      let msg = getXdrResultCode(err)
-      this.loadingTitle = this.$t('AddAsset')+this.$t('SaveFailed')
-      if(msg){
-        this.loadingError = this.$t(msg)
-      }else{
-        this.loadingError = this.$t(err.message)
-      }
-    },
     exit(){
-      this.resetState()
+      this.showDlg = false
+      this.tx = null
+      this.err = null
       this.$emit('exit')
     },
-    hiddenLoading(){
-      this.sending = false
-      this.sendfail = false
-      this.working = false
+    doSign(){
+      if(this.tx === null){
+        this.$toasted.error(this.$t(this.err))
+        return
+      }
+      // alert('before-signdx--')
+      let data = signDecoratedByTx(this.accountData.seed, this.tx)
+      // alert('after --signxdr--' + data)
+      this.$emit('success',data)
+
     }
   },
   components: {
@@ -266,14 +178,14 @@ export default {
   background: $primarycolor.gray
   opacity: .8
   position: fixed
-  bottom: 8.5rem
+  bottom: 11rem
   right: 0
   left: 0
   top: 0
   z-index: 9
 .confirm-dlg
   background: $secondarycolor.gray
-  height: 8.5rem
+  height: 11rem
   position: fixed
   bottom: 0
   right: 0
@@ -401,5 +313,11 @@ export default {
       word-break: normal
     &.active
       border: 1px solid $primarycolor.green
+
+.tx-opts
+  height: 3rem
+  overflow-y: auto
+.tx-opt-item
+  color: $secondarycolor.font
 </style>
 
