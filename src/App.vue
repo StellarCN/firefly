@@ -9,7 +9,7 @@
         <router-view />
       </v-content>
       <tab-bar v-if="tabBarShow"/>
-
+<!--
     <v-dialog v-model="updateConfirmDlg" max-width="95%" persistent>
       <div>
         <div class="a-card-content">
@@ -27,6 +27,7 @@
         </div>
       </div>
     </v-dialog>
+    -->
 
 
   </v-app>
@@ -89,7 +90,7 @@ export default {
       accounts: state => state.accounts.data
     })
   },
-  mixins: [updateMixin],
+  mixins: [],
   beforeMount() {
     
     if(this.tabBarItems.indexOf(this.$route.name) >=0 ){
@@ -205,17 +206,17 @@ export default {
         });
 
       //检查更新
-      this.getReleaseVersion()
-        .then(data=>{
-          if(data.needUpdate){
-            this.updateConfirmDlg = true
-            this.latestVersion = data.latestVersion
-          }
-        })
-        .catch(err=>{
-          console.error(err)
-          this.updateConfirmDlg = false
-        })
+      // this.getReleaseVersion()
+      //   .then(data=>{
+      //     if(data.needUpdate){
+      //       this.updateConfirmDlg = true
+      //       this.latestVersion = data.latestVersion
+      //     }
+      //   })
+      //   .catch(err=>{
+      //     console.error(err)
+      //     this.updateConfirmDlg = false
+      //   })
 
     });
   },
@@ -259,10 +260,10 @@ export default {
         }
       }
     },
-    doUpdate(){
-      this.updating = true
-      this.checkForUpdates()
-    }
+    // doUpdate(){
+    //   this.updating = true
+    //   this.checkForUpdates()
+    // }
     // toPicklanguage(){
     //   this.$router.push({name:'Picklanguage'})
     // },

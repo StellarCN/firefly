@@ -62,7 +62,7 @@
               </div>
             </div>
 
-            <div class="field_btn" v-if="needUpdate">
+            <div class="field_btn">
               <v-btn :loading="working" class="error btn_ok" @click.stop="checkForUpdates">{{$t('CheckForUpdates')}}</v-btn>
             </div>
         </div>
