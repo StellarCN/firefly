@@ -39,6 +39,14 @@
           </div>
          
       </div>
+
+      <div class="flex-row atitle" else>
+          <div class="flex1 title-btn-div">
+              <v-btn class="btn-back k-icon" icon @click="back">
+                <i class="material-icons  k-icon">keyboard_arrow_left</i>
+            </v-btn>
+          </div>
+      </div>
              
       <div class="kgraph" :id="id" v-bind:style="{height: height+'px', width: width+'px'}"></div>
       <div class="flex-row textcenter chgresolution">
