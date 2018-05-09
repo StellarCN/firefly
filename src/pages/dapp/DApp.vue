@@ -27,7 +27,7 @@
           @click="choose(app)"
         >
           <v-card flat tile class="pa-2 textcenter app-card" >
-             <v-avatar  :size="`80px`">
+             <v-avatar class="grey darken-4 app-avatar" :size="`48px`">
                <img :src="app.image">
              </v-avatar>
              <v-card-title primary-title class="app-title">
@@ -427,7 +427,7 @@ export default {
 <style lang="stylus" scoped>
 @require '../../stylus/color.styl'
 .app-card
-  background: $primarycolor.gray
+  background: $secondarycolor.gray
 .app-title
   padding: .1rem .1rem
   overflow: hidden
@@ -453,8 +453,8 @@ export default {
   background: $secondarycolor.gray
   margin: 8px 8px!important
   border-radius: 5px
-  .app-card
-    background: $secondarycolor.gray!important
-    .app-avatar
-      border-radius: 50%!important
+.app-card
+  background: $secondarycolor.gray!important
+.app-avatar
+  border-radius: 50%!important
 </style>
