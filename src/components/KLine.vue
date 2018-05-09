@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-26 15:59:49 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-05-05 19:00:12
+ * @Last Modified time: 2018-05-09 16:08:10
  * @License MIT 
  */
 
@@ -182,10 +182,13 @@ export default {
     },
     methods: {
         reload(){
+            //假延迟
             return new Promise((resolve,reject)=>{
                 this.clearAll()
                 this.init()
-                resolve()
+                setTimeout(()=>{
+                    resolve()
+                }, this.timeout+3000)
             })
         },
         clearAll(){

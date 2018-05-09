@@ -375,6 +375,8 @@ export default {
         let key = 'kline'+item.tradepairIndex
         funcs.push(this.$refs[key][0].reload())
       })
+      console.log('-----')
+      console.log(funcs)
       return Promise.all(funcs)
     }
    
