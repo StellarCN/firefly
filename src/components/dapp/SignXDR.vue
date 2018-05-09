@@ -128,8 +128,10 @@ export default {
     }
   },
   beforeMount () {
+    //alert('-------xxxxxxxx----' + this.xdr)
     this.tx = xdrFromTransactionEnvelope(this.xdr)
     if(this.tx === null){
+      //alert('x-----xxx---error---tx=null')
       this.err = 'Error.NoTxToSign'
     }
   },
