@@ -27,7 +27,7 @@
           @click="choose(app)"
         >
           <v-card flat tile class="pa-2 textcenter app-card" >
-             <v-avatar  :size="`80px`">
+             <v-avatar class="grey darken-4 app-avatar" :size="`48px`">
                <img :src="app.image">
              </v-avatar>
              <v-card-title primary-title class="app-title">
@@ -129,6 +129,7 @@ import SignXDR from '@/components/dapp/SignXDR'
 import { FFWScript, FFW_EVENT_TYPE_PAY,FFW_EVENT_TYPE_PATHPAYMENT,FFW_EVENT_TYPE_SIGN
    ,FFW_EVENT_TYPE_BACKUP,FFW_EVENT_TYPE_RECOVERY,FFW_EVENT_TYPE_TRUST,FFW_EVENT_TYPE_SIGNXDR } from '@/api/ffw'
 import { signToBase64, verifyByBase64 } from '@/api/keypair'
+import isJson from '@/libs/is-json'
 import debounce from 'lodash/debounce'
 
 // export const FFW_EVENT_TYPE_PAY = 'pay'
@@ -270,8 +271,6 @@ export default {
         }else if(type === FFW_EVENT_TYPE_PATHPAYMENT){
           that.doPathPaymentEvent(e)
         }else if(type === FFW_EVENT_TYPE_SIGN){
-          let _temp = JSON.parse(e.data)
-          if(typeof _temp !== 'object')
           that.appEventType = e.data.type
           that.appEventData = e.data
           that.doSign(e)
@@ -296,6 +295,9 @@ export default {
     doSign(e){
       //签名
       let data = e.data.data
+      if(!isJson(data)){
+        this.doCallbackEvent(this.callbackData('fail','data is invalid'))
+      }
       if(data){
         let cdata = signToBase64(this.accountData.seed, data)
         console.log('---------------encrypt data---' + cdata)
@@ -425,7 +427,7 @@ export default {
 <style lang="stylus" scoped>
 @require '../../stylus/color.styl'
 .app-card
-  background: $primarycolor.gray
+  background: $secondarycolor.gray
 .app-title
   padding: .1rem .1rem
   overflow: hidden
@@ -451,8 +453,8 @@ export default {
   background: $secondarycolor.gray
   margin: 8px 8px!important
   border-radius: 5px
-  .app-card
-    background: $secondarycolor.gray!important
-    .app-avatar
-      border-radius: 50%!important
+.app-card
+  background: $secondarycolor.gray!important
+.app-avatar
+  border-radius: 50%!important
 </style>
