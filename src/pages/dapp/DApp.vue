@@ -231,7 +231,8 @@ export default {
                   align: 'left',
                   event: 'closePressed'
               },
-              backButtonCanClose: true
+              backButtonCanClose: true,
+              // hidden: true
           })
           
       }
@@ -252,7 +253,9 @@ export default {
         //alert(scriptEle)
         let contacts = this.allcontacts
         let myaddresses = this.myaddresses
-        let script = FFWScript(this.account.address, {contacts,myaddresses} )
+        let isIos = "ios" === cordova.platformId
+        let script = FFWScript(this.account.address, {contacts,myaddresses} ,isIos)
+        // alert(script)
         this.appInstance.executeScript({ code: script },params => {
           //console.log(params)
           //alert('after script insert')
@@ -277,9 +280,13 @@ export default {
         }else{  
           that.appEventType = e.data.type
           that.appEventData = e.data
-          that.appInstance.hide()
+          that.hideDapp()
         }
       },300))
+    },
+    hideDapp(e){
+      this.appInstance.hide()
+      console.log('-----app-event--hideapp--'+JSON.stringify(this.appEventData))
     },
     doPayEvent(e){
       try{
@@ -399,9 +406,11 @@ export default {
       this.successEvent()
     },
     exitSignXDREvent(){
+      //alert('----exit---signxdr---')
       this.exitEvent('cancel signxdr')
     },
     successSignXDREvent(data){
+      //alert('-----signxdr-success---')
       this.successEvent('success',data)
     },
     toSetting(){
