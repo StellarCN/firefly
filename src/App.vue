@@ -45,7 +45,7 @@ import Vue from "vue";
 import { mapActions, mapState } from "vuex";
 import PinCode from "@/components/PinCode";
 import { defaultTradePairsAPI } from "@/api/gateways";
-import { closeStreams, initStreams } from "@/streams";
+//import { closeStreams, initStreams } from "@/streams";
 import { initStorage, checkPlatform } from "@/api/storage";
 import { getDeviceLanguage } from "@/locales";
 import  TabBar from '@/components/TabBar'
@@ -157,8 +157,8 @@ export default {
           try {
             if (this.address) {
               //this.getAccountInfo(this.address)
-              closeStreams();
-              initStreams(this.address);
+              //closeStreams();
+              //initStreams(this.address);
               this.getAllAssetHosts();
             }
           } catch (err) {

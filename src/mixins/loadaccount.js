@@ -3,12 +3,10 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-31 09:07:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-04-27 10:42:22
+ * @Last Modified time: 2018-05-10 17:38:37
  * @License MIT 
  */
-
 import { mapState,mapActions,mapGetters } from 'vuex'
-import { listenPaymentStream,  closePaymentStream,  getPaymentStream,  convertRecords } from '@/api/payments'
 import {  ACCOUNT_IS_FUNDING,  ACCOUNT_NOT_FUNDING} from '@/store/modules/AccountStore'
 import  defaultsDeep  from 'lodash/defaultsDeep'
 export default {
@@ -26,12 +24,6 @@ export default {
     this.$watch('account.address', () => {
       this.fetchData()
     })
-  },
-  mounted() {
-    
-  },
-  beforeDestroy() {
-    closePaymentStream()
   },
   methods: {
     ...mapActions([
