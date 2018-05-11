@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-31 09:07:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-05-10 17:38:37
+ * @Last Modified time: 2018-05-11 11:38:11
  * @License MIT 
  */
 import { mapState,mapActions,mapGetters } from 'vuex'
@@ -21,9 +21,6 @@ export default {
     if (this.account.address) {
       this.fetchData()
     }
-    this.$watch('account.address', () => {
-      this.fetchData()
-    })
   },
   methods: {
     ...mapActions([

@@ -143,7 +143,6 @@ import { exportAccount } from '@/api/qr'
 import Loading from '@/components/Loading'
 import SecretKeyInput from '@/components/SecretKeyInput'
 //import StellarHDWallet from 'stellar-hd-wallet'
-import { closeStreams, initStreams,cleanStreamData } from '@/streams'
 import  defaultsDeep  from 'lodash/defaultsDeep'
 export default {
   data(){
@@ -351,9 +350,6 @@ export default {
     },
     toNextPage(){
       this.showSeedValidDlg = false
-      cleanStreamData()
-      closeStreams()
-      initStreams(this.address)
       this.$router.push({name:'MyAssets'})
     },
     skipValidSecretKey(){

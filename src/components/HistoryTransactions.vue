@@ -25,7 +25,6 @@
   import * as accountapi from '@/api/account'
   import {getAddressByAccountId} from '@/api/federation'
   import Scroll from '@/components/Scroll'
-  import {listenPaymentStream, closePaymentStream, getPaymentStream, convertRecords} from '@/api/payments'
   import { transactionsPage,transactionDetail } from '@/api/transactions'
   export default {
     data() {
@@ -65,9 +64,6 @@
     },
     mounted() {
       this.getTransactionsData()
-    },
-    beforeDestroy() {
-      closePaymentStream()
     },
     methods: {
       ...mapActions([
