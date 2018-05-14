@@ -62,13 +62,13 @@
         <div class="hint">{{$t('DW.Withdraw.eta',[step2data.eta])}}</div>
       </div>
       <div class="field_select" v-if="step2data.min_amount!= null && typeof step2data.min_amount!='undefined'">
-        <div class="hint">{{$t('DW.Withdraw.min_amount',[step2data.min_amount])}}</div>
+        <div class="hint">{{$t('DW.Withdraw.min_amount',[step2data.min_amount])}}{{asset.code}}</div>
       </div>
       <div class="field_select" v-if="step2data.max_amount!= null && typeof step2data.max_amount!='undefined'">
-        <div class="hint">{{$t('DW.Withdraw.max_amount',[step2data.max_amount])}}</div>
+        <div class="hint">{{$t('DW.Withdraw.max_amount',[step2data.max_amount])}}{{asset.code}}</div>
       </div>
       <div class="field_select" v-if="step2data.fee_fixed!= null && typeof step2data.fee_fixed!='undefined'">
-        <div class="hint">{{$t('DW.Withdraw.feefixed',[step2data.fee_fixed])}}</div>
+        <div class="hint">{{$t('DW.Withdraw.feefixed',[step2data.fee_fixed])}}{{asset.code}}</div>
       </div>
       <div class="field_select" v-if="step2data.fee_percent!= null && typeof step2data.fee_percent!='undefined'">
         <div class="hint">{{$t('DW.Withdraw.feepercent',[step2data.fee_percent])}}</div>
