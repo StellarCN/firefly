@@ -5,7 +5,6 @@
         dotScale='1' 
         :size="size" 
         :logoSrc="logo" 
-        :colorDark="frontcolor" 
         :callback="qrcallback"
         margin="10"></vue-qr>
 </template>
