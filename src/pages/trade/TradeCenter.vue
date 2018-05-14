@@ -124,6 +124,7 @@ import { getTrades } from '@/api/trade'
 var moment = require('moment')
 import {Decimal} from 'decimal.js'
 import Scroll from '@/components/Scroll'
+import { REMOVE_TRADEPAIR_KLINE_DATA } from '@/store/modules/AccountsStore' 
 
 const TAG_ALL = 'All', TAG_XCN = 'XCN', TAG_XLM = 'XLM', TAG_BTC = 'BTC', TAG_ETH = 'ETH'
 
@@ -331,6 +332,7 @@ export default {
             this.working = false
             this.delworking = false
             this.selectedItem = null
+            this.$store.commit('REMOVE_TRADEPAIR_KLINE_DATA', index)
           })
           .catch(err=>{
             this.working = false

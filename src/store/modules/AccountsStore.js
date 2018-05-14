@@ -26,6 +26,7 @@ export const CLEAN_MY_EFFECTS = 'CLEAN_MY_EFFECTS'
 export const CHANGE_CURRENT_HISTORY_COMPONENT = 'CHANGE_CURRENT_HISTORY_COMPONENT'
 export const SORT_TRADEPAIRS = 'SORT_TRADEPAIRS'
 
+export const REMOVE_TRADEPAIR_KLINE_DATA = 'REMOVE_TRADEPAIR_KLINE_DATA'
 export const SET_TRADEPAIR_KLINE_LASTTRADE = 'SET_TRADEPAIR_KLINE_LASTTRADE'
 export const SET_TRADEPAIR_KLINE_TRADEAGGREGATION = 'SET_TRADEPAIR_KLINE_TRADEAGGREGATION'
 export const SET_TRADEPAIR_KLINE_7DAY_TRADEAGGREGATION = 'SET_TRADEPAIR_KLINE_7DAY_TRADEAGGREGATION'
@@ -87,13 +88,8 @@ const actions = {
   // @param address 地址
   // @param password 密码
   async changeAccount({dispatch, commit, state}, {index, address, password}){
-    console.log('ready to change account')
-    console.log(address)
-    console.log(password)
     commit(CLEAN_ACCOUNT_DATA)
     let data = await readAccountData(address,password)
-    console.log('change account ok ')
-    console.log(data)
     commit(CHANGE_ACCOUNT, { index, address, password, accountdata:data} )
     dispatch('saveAccountsAction')
     dispatch('cleanAccount')
@@ -389,6 +385,11 @@ const mutations = {
       _data = {date, sevenDayTradeAggregation: data}
     }
     state.tradePairKLineData[index] = _data
+  },
+  [REMOVE_TRADEPAIR_KLINE_DATA](state, index){
+    let obj = Object.assign({}, state.tradePairKLineData)
+    delete obj[index]
+    state.tradePairKLineData = obj
   }
 }
 
