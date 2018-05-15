@@ -40,7 +40,7 @@
          
       </div>
 
-      <div class="flex-row atitle" else>
+      <div class="flex-row atitle" v-else>
           <div class="flex1 title-btn-div">
               <v-btn class="btn-back k-icon" icon @click="back">
                 <i class="material-icons  k-icon">keyboard_arrow_left</i>

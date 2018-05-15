@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-26 15:59:49 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-05-09 16:08:10
+ * @Last Modified time: 2018-05-15 12:01:47
  * @License MIT 
  */
 
@@ -138,8 +138,8 @@ export default {
             return this.sevenDayTradeAggregation ? this.sevenDayTradeAggregation.dates||[] : []
         },
         titleData(){
-          if(this.lastTradeAggregation && this.lastTrade){
-            let price = new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
+          if(this.lastTradeAggregation){
+            let price = new Decimal(this.lastTradeAggregation.close)//new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
             let open = new Decimal(this.lastTradeAggregation.open)
             let change = price.minus(open)
             let rate = change.times(100).dividedBy(open)
@@ -204,11 +204,11 @@ export default {
                 setTimeout(()=>{
                     //开启定时器
                     this.tinterval = setInterval(this.fetch, this.interval)
-                    this.setupTradeInterval()
+                   // this.setupTradeInterval()
                     this.fetchLastTradeAggregation()
                     this.initView()
                     this.fetch();
-                    this.fetchLastTrade();
+                    // this.fetchLastTrade();
                 }, this.timeout)
             })    
         },

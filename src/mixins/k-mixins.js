@@ -91,8 +91,8 @@ export default {
     },
     computed: {
       titleData(){
-          if(this.lastTradeAggregation && this.lastTrade){
-            let price = new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
+          if(this.lastTradeAggregation){
+            let price = new Decimal(this.lastTradeAggregation.close)//new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
             let open = new Decimal(this.lastTradeAggregation.open)
             let change = price.minus(open)
             let rate = change.times(100).dividedBy(open)
@@ -134,7 +134,7 @@ export default {
         reload(){
             this.cleanData()
             this.fetch();
-            this.fetchLastTrade()
+           // this.fetchLastTrade()
             
         },
         cleanData(){

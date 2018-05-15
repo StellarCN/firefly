@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-04-28 16:50:33
+ * @Last Modified time: 2018-05-15 12:00:22
  * @License: MIT 
  */
 <template>
@@ -166,8 +166,8 @@ export default {
     },
     computed: {
       titleData(){
-          if(this.lastTradeAggregation && this.lastTrade){
-            let price = new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
+          if(this.lastTradeAggregation){
+            let price = new Decimal(this.lastTradeAggregation.close)//new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
             let open = new Decimal(this.lastTradeAggregation.open)
             let change = price.minus(open)
             let rate = change.times(100).dividedBy(open)
@@ -223,7 +223,7 @@ export default {
             this.init();
             this.fetch();
             this.fetchLastTradeAggregation()
-            this.fetchLastTrade()
+            // this.fetchLastTrade()
         },
         cleanData(){
             this.ele = null
