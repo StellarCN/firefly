@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-28 11:19:05 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-02-28 16:46:30
+ * @Last Modified time: 2018-04-27 11:23:46
  * @License MIT 
  */
 
@@ -162,12 +162,10 @@ export default {
     },
   },
   mounted(){
-    this.setup();
+    this.reload()
   },
   beforeUpdate(){
-    if(!this.timeInterval){
-      this.setup()
-    }
+    
   },
   methods: {
     ...mapActions({
@@ -180,6 +178,16 @@ export default {
       switchSelectedTradePair: 'switchSelectedTradePair',
 
     }),
+
+    reload(){
+      this.clean()
+      this.setup()
+    },
+    clean(){
+      if(this.timeInterval!=null){
+        clearInterval(this.timeInterval)
+      }
+    },
     setup(){
       this.fetchData()
       this.timeInterval = setInterval(()=>{this.fetchData()},DEFAULT_INTERVAL)

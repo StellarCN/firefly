@@ -19,6 +19,7 @@
 </template>
 
 <script>
+const HIDE_CLASSNAME = 'bg-hide'
 export default {
   data(){
     return {
@@ -55,18 +56,20 @@ export default {
           this.closeQRScanner()
         }else{
           // 成功
-          QRScanner.cancelScan()
+          QRScanner.destroy(()=>{
+            console.log('destory qrscanner')
+          })
           this.$emit('finish',result)
         }
       } 
     })
 
     var body = window.document.querySelector('body')
-    this.addClass(body,'hide')
+    this.addClass(body,HIDE_CLASSNAME)
     var app = window.document.querySelector('.app')
-    this.addClass(app,'hide')
+    this.addClass(app,HIDE_CLASSNAME)
     var page = window.document.querySelector('.page')
-    this.addClass(page,'hide')
+    this.addClass(page,HIDE_CLASSNAME)
     //var loading = window.document.querySelector('.loading')
     //this.addClass(loading,'hide')
     QRScanner.show()
@@ -78,11 +81,11 @@ export default {
     }
     //window.document.querySelector('.app').classList.remove('hide');
     var body = window.document.querySelector('body')
-    this.removeClass(body,'hide')
+    this.removeClass(body,HIDE_CLASSNAME)
     var app = window.document.querySelector('.app')
-    this.removeClass(app,'hide')
+    this.removeClass(app,HIDE_CLASSNAME)
     var page = window.document.querySelector('.page')
-    this.removeClass(page,'hide')
+    this.removeClass(page,HIDE_CLASSNAME)
     //var loading = window.document.querySelector('.loading')
     //this.removeClass(loading,'hide')
     QRScanner.destroy()
@@ -128,7 +131,10 @@ export default {
       this.isBackCamera = !this.isBackCamera
     },
     hasClass(ele, cls) {
-      return ele.className.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"));
+      if(ele){
+        return ele.className.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"));
+      }
+      return false
     },
     //为指定的dom元素添加样式
     addClass(ele, cls) {
@@ -165,18 +171,18 @@ export default {
   left: 0
   right: 0
   .qrscanner-area
-    width: 100%
-    height: 85%
-    background: url(../assets/img/scanner.svg) no-repeat center center
-    background-size: 50%
-    background-color:transparent
+    width: 100%!important
+    height: 85%!important
+    background: url(../assets/img/scanner.svg) no-repeat center center!important
+    background-size: 50%!important
+    background-color:transparent!important
 
   .qrscanner-btn-group
-    text-align: center
-    background: none
+    text-align: center!important
+    background: none!important
     .qrscanner-btn
       padding: 12px 5px
-      display: inline-block
+      display: inline-block!important
       text-align: center
       vertical-align: middle
       justify-content: center;

@@ -60,7 +60,6 @@
 
 <script>
 import { mapState, mapActions} from 'vuex'
-import { closeStreams, initStreams, cleanStreamData } from '@/streams'
 export default {
   data(){
     return {
@@ -130,7 +129,9 @@ export default {
     ...mapActions({
       cleanAccount:'cleanAccount',
       choseAccount: 'changeAccount',
-      choseAccountNoPwd: 'changeAccountNoPassword'
+      choseAccountNoPwd: 'changeAccountNoPassword',
+      getAccountInfo: 'getAccountInfo'
+
     }),
     changetheme(color){
       if (color=== 'ui'){
@@ -177,11 +178,7 @@ export default {
         this.checkPwd = false;
         this.password = null;
         this.showaccounts = false;
-        //重新处理stream
-        closeStreams();
-        cleanStreamData();
-        initStreams(this.account.address);
-
+        this.getAccountInfo(this.account.address)
       }).catch(err=>{
         console.error('change account error')
         console.error(err)
@@ -248,8 +245,9 @@ export default {
         this.checkPwd = false
         this.password = null
         this.showaccounts = false
-        //重新处理stream        closeStreams()
-        initStreams(this.account.address)
+        
+        this.getAccountInfo(this.account.address)
+
       }).catch(err=>{
         console.error('change account error')
         console.error(err)

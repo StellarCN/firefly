@@ -27,7 +27,7 @@
                 }"
             >
             
-            <div :class="'flex-row account-wrapper ' + (selectedItem === index ? 'selected':'')" >
+            <div class="flex-row account-wrapper"  v-swiper=2>
               <div class="flex1">
                 <div class="avatar">
                   <i class="iconfont icon-erweima"></i>
@@ -88,7 +88,6 @@ import Card from '../../components/Card'
 import Loading from '@/components/Loading'
 import { mapState, mapActions} from 'vuex'
 import {readAccountData} from '@/api/storage'
-import { closeStreams, initStreams, cleanStreamData } from '@/streams'
 import { ACCOUNT_IS_FUNDING,ACCOUNT_NOT_FUNDING } from '@/store/modules/AccountStore'
 export default {
   data(){
@@ -139,7 +138,7 @@ export default {
       getPayments: 'getPayments',
 
       choseAccount: 'changeAccount',
-      choseAccountNoPwd: 'changeAccountNoPassword'
+      choseAccountNoPwd: 'changeAccountNoPassword',
 
     }),
     changeaccount(index,item){
@@ -159,8 +158,8 @@ export default {
       this.selectedIndex = index
       this.showPwdSheet = true
     },
-    modify(){
-      this.$router.push({name: 'AccountInfo'});
+    modify(address){
+      this.$router.push({name: 'AccountInfo', query: {address: address}});
     },
     back(){
       this.$router.back()
@@ -218,12 +217,8 @@ export default {
                 let address = this.account.address
                 Promise.all([this.getAccountInfo(this.account.address)])//,this.getPayments(this.account.address)
                   .then(data=>{
-                    //重新处理stream
                     try{
                       this.$store.commit(ACCOUNT_IS_FUNDING)
-                      cleanStreamDa();
-                      closeStreams();
-                      initStreams(this.account.address);
                     }catch(err){
                       console.error(`stream error`)
                       console.error(err)
@@ -287,12 +282,8 @@ export default {
                 let address = this.account.address
                 Promise.all([this.getAccountInfo(this.account.address)])//,this.getPayments(this.account.address)
                   .then(data=>{
-                    //重新处理stream
                     try{
                       this.$store.commit(ACCOUNT_IS_FUNDING)
-                      closeStreams();
-                      cleanStreamData();
-                      initStreams(this.account.address);
                     }catch(err){
                       console.error(`stream error`)
                       console.error(err)

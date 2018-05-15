@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-05 10:51:54 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-04-12 17:18:04
+ * @Last Modified time: 2018-04-26 16:37:58
  * @License MIT 
  */
 <template>
@@ -140,7 +140,17 @@ export default {
       return d;
     },
     assetBalance(asset){
-      return defaultsDeep({}, this.balances.filter(item=> item.code === asset.code && item.issuer === asset.issuer)[0])
+      //return defaultsDeep({}, this.balances.filter(item=> item.code === asset.code && item.issuer === asset.issuer)[0])
+      let isNative = isNativeAsset(asset)
+      let data = this.balances.filter(item => {
+        if(isNative){
+          return isNativeAsset(item)
+        }else{
+          return asset.code ===item.code && asset.issuer === item.issuer
+        }
+      })
+      if(data.length === 0)return _.defaultsDeep({balance: 0}, asset)
+      return _.defaultsDeep({}, data[0])
     },
     choseTradePair({index,tradepair}){//选择交易对
       this.$nextTick(()=>{

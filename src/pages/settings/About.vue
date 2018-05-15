@@ -13,7 +13,7 @@
     <div class="content">
       <card class="icard" padding="20px 10px">
         <div slot="card-content" class="">
-          <div class="logo-wrapper" @click="checkX5WebView">
+          <div class="logo-wrapper">
             <img src="../../assets/img/logox.png" alt="firefly" class="logo-img"/>
           </div>
           <div class="textcenter appname">
@@ -62,7 +62,7 @@
               </div>
             </div>
 
-            <div class="field_btn" v-if="needUpdate">
+            <div class="field_btn">
               <v-btn :loading="working" class="error btn_ok" @click.stop="checkForUpdates">{{$t('CheckForUpdates')}}</v-btn>
             </div>
         </div>
@@ -98,6 +98,9 @@ export default {
       working: false,
       counter: 0,
     };
+  },
+  beforeDestroy () {
+    
   },
   mounted() {
    this.getReleaseVersion()
@@ -163,13 +166,6 @@ export default {
         }
       });
     },
-    //查看是否使用了X5引擎
-    checkX5WebView:debounce(function(){
-      if(this.counter>=5){
-        window.location.href = `http://soft.imtt.qq.com/browser/tes/feedback.html`
-      }
-      this.counter += 1
-    },500),
   },
   components: {
     Toolbar,

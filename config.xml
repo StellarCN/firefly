@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.github.stellarcn.firefly" version="1.2.6" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.github.stellarcn.firefly" version="2.0.10" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>firefly</name>
     <description>
         stellar wallet
@@ -59,29 +59,28 @@
     <preference name="SplashScreenBackgroundColor" value="#21ce90" />
     <preference name="SplashMaintainAspectRatio" value="true" />
     <preference name="ShowSplashScreen" value="true" />
-    <plugin name="cordova-plugin-device" spec="&gt;=1.1.7" />
-    <plugin name="cordova-plugin-whitelist" spec="&gt;=1" />
-    <plugin name="cordova-plugin-qrscanner" spec="&gt;=2.5.0" />
-    <plugin name="cordova-plugin-splashscreen" spec="&gt;=4.1.0" />
-    <plugin name="cordova-plugin-statusbar" spec="&gt;=2.3.0" />
-    <plugin name="cordova-clipboard" spec="&gt;=1.1.1" />
-    <plugin name="cordova-plugin-camera" spec="&gt;=2.4.1" />
-    <plugin name="cordova-sqlite-storage" spec="&gt;=2.1.2" />
-    <plugin name="cordova-plugin-inappbrowser" spec="&gt;=1.7.2" />
-    <plugin name="cordova-plugin-globalization" spec="&gt;=1.0.9" />
-    <plugin name="cordova-plugin-screen-orientation" spec="&gt;=3.0.1" />
-    <plugin name="cordova-plugin-wkwebview-engine" spec="git+https://github.com/apache/cordova-plugin-wkwebview-engine.git" />
-    <plugin name="x5webview-cordova-plugin" spec="git+https://github.com/imloama/x5webview-cordova-plugin.git" />
-    <plugin name="cordova-plugin-advanced-http" spec="^1.11.1" />
-    <plugin name="cordova-hot-code-push-plugin" spec="^1.5.3" />
     <chcp>
         <auto-download enabled="false" />
         <auto-install enabled="false" />
         <config-file url="https://update.fchain.io/v2/chcp.json" />
     </chcp>
+    <engine name="browser" spec="^5.0.1" />
+    <engine name="android" spec="^6.2.3" />
+    <engine name="ios" spec="^4.5.4" />
+    <plugin name="cordova-plugin-device" spec="^1.1.7" />
+    <plugin name="cordova-plugin-whitelist" spec="^1" />
+    <plugin name="cordova-plugin-qrscanner" spec="git+https://github.com/imloama/cordova-plugin-qrscanner.git" />
+    <plugin name="cordova-plugin-splashscreen" spec="^4.1.0" />
+    <plugin name="cordova-plugin-statusbar" spec="^2.3.0" />
+    <plugin name="cordova-clipboard" spec="^1.1.1" />
+    <plugin name="cordova-plugin-camera" spec="^2.4.1" />
+    <plugin name="cordova-sqlite-storage" spec="^2.1.2" />
+    <plugin name="cordova-plugin-inappbrowser" spec="^1.7.2" />
+    <plugin name="cordova-plugin-globalization" spec="^1.0.9" />
+    <plugin name="cordova-plugin-screen-orientation" spec="^3.0.1" />
+    <plugin name="cordova-plugin-advanced-http" spec="^1.11.1" />
+    <plugin name="cordova-hot-code-push-plugin" spec="^1.5.3" />
     <plugin name="cordova-plugin-x-socialsharing" spec="^5.3.2" />
-    <plugin name="cordova-plugin-themeablebrowser" spec="https://github.com/imloama/cordova-plugin-themeablebrowser.git" />
-    <engine name="browser" spec="&gt;=5.0.1" />
-    <engine name="android" spec="&gt;=6.2.3" />
-    <engine name="ios" spec="&gt;=4.5.4" />
+    <plugin name="cordova-plugin-themeablebrowser" spec="git+https://github.com/imloama/cordova-plugin-themeablebrowser.git" />
+    <plugin name="cordova-plugin-wkwebview-engine" spec="^1.1.4" />
 </widget>

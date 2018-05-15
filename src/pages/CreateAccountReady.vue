@@ -4,7 +4,7 @@
 <template>
 <div class="page">
 
-    <toolbar :title="$t(title)" :showbackicon="showbackicon">
+    <toolbar :title="$t(title)" :showbackicon="showbackicon"  v-if="!seedInputDlgShow">
       <v-btn icon style="visibility: hidden;" slot="left-tool">
         <v-icon class="back-icon"/>
       </v-btn>
@@ -24,7 +24,7 @@
       </div>
       <div class="hint">{{$t('Account.CreateAccountReadyHint')}}</div>
     </div>
-    <div class="footer">
+    <div class="footer" v-if="!seedInputDlgShow">
       <v-layout row wrap>
         <v-flex xs6 @click="goback">
           <span>{{$t('Return')}}</span>
@@ -32,7 +32,7 @@
         <v-flex xs6 @click="save">
           <span>{{$t('BackedUp')}}</span>
         </v-flex>
-       </v-layout>  
+       </v-layout>
     </div>
 
     <v-dialog v-model="coveringDlg" persistent max-width="95%">
@@ -46,8 +46,8 @@
       </v-card>
     </v-dialog>
 
-    <!-- 密钥输入窗口 -->
-    <v-dialog class="si-dlg" v-model="seedInputDlgShow" persistent max-width="95%"  fullscreen transition="dialog-bottom-transition" :overlay=false>
+    <!-- 密钥输入窗口 不再使用dialog-->
+    <div class="si-dlg" v-if="seedInputDlgShow">
       <toolbar :title="$t(title)" :showbackicon="showbackicon">
         <div class="si-text" slot="right-tool"  @click="showSkipDlg = true">
           {{$t('Account.Skip')}}
@@ -55,23 +55,22 @@
       </toolbar>
       
       <div class="si-bg">
-
         <div class="si-card">
           <div class="headline">{{$t('Account.InputSecretKey')}}</div>
           <v-layout wrap>
             <v-flex xs12 sm6 md4>
-              <secret-key-input ref="secretkeyRef"></secret-key-input>
+              <secret-key-input ref="secretkeyRef" disabled></secret-key-input>
             </v-flex>
           </v-layout>
-          
         </div>
+
         <div class="btn-group flex-row textcenter">
           <div class="flex1 btn-cancel" @click="seedInputDlgShow = false">{{$t('Return')}}</div>
           <div class="flex1 btn-ok" @click="btnOKSeedInput">{{$t('Validate')}}</div>
         </div>
       </div>
 
-    </v-dialog>
+    </div>
 
     <!-- 是否跳过验证窗口 -->
     <v-dialog v-model="showSkipDlg" max-width="95%" persistent>
@@ -144,7 +143,6 @@ import { exportAccount } from '@/api/qr'
 import Loading from '@/components/Loading'
 import SecretKeyInput from '@/components/SecretKeyInput'
 //import StellarHDWallet from 'stellar-hd-wallet'
-import { closeStreams, initStreams,cleanStreamData } from '@/streams'
 import  defaultsDeep  from 'lodash/defaultsDeep'
 export default {
   data(){
@@ -232,7 +230,7 @@ export default {
     ...mapActions(['createAccount','cleanGlobalState','coverAccount']),
     goback(){
       this.$router.back()
-      this.$router.push({name:'CreateAccount'})
+      //this.$router.push({name:'CreateAccount'})
     },
     copy(value){
       if(cordova.plugins.clipboard){
@@ -352,9 +350,6 @@ export default {
     },
     toNextPage(){
       this.showSeedValidDlg = false
-      cleanStreamData()
-      closeStreams()
-      initStreams(this.address)
       this.$router.push({name:'MyAssets'})
     },
     skipValidSecretKey(){
@@ -459,10 +454,11 @@ export default {
 .si-card
   background: $secondarycolor.gray
   border-radius: 5px
-  padding: 5px 5px
-  height: 90%
+  padding: 1rem 5px
+
+  // height: 30%
 .btn-group
-  position: absolute
+  position: fixed
   left: 0
   right: 0
   bottom: 10px
@@ -486,5 +482,16 @@ export default {
   color: $primarycolor.green
 .dlg-content
   background: $secondarycolor.gray
+
+.si-dlg
+  position: fixed
+  top: 0px
+  bottom: 0px
+  left: 0px
+  right: 0px
+  background: $primarycolor.gray
+  .btn-group
+    z-index: 999
+    background: $primarycolor.gray
 </style>
 

@@ -11,7 +11,6 @@
 <div class="withdraw_wrapper">
   <loading :show="onsend" :loading="sending" :success="sendsuccess" :fail='sendfail' 
     :title="loadingTitle" :msg="loadingMsg" :closeable="sendfail" @close="hiddenLoadingView"
-    v-if="step === 2"
     />
 
   <!--第1步-->
@@ -63,13 +62,13 @@
         <div class="hint">{{$t('DW.Withdraw.eta',[step2data.eta])}}</div>
       </div>
       <div class="field_select" v-if="step2data.min_amount!= null && typeof step2data.min_amount!='undefined'">
-        <div class="hint">{{$t('DW.Withdraw.min_amount',[step2data.min_amount])}}</div>
+        <div class="hint">{{$t('DW.Withdraw.min_amount',[step2data.min_amount])}}{{asset.code}}</div>
       </div>
       <div class="field_select" v-if="step2data.max_amount!= null && typeof step2data.max_amount!='undefined'">
-        <div class="hint">{{$t('DW.Withdraw.max_amount',[step2data.max_amount])}}</div>
+        <div class="hint">{{$t('DW.Withdraw.max_amount',[step2data.max_amount])}}{{asset.code}}</div>
       </div>
       <div class="field_select" v-if="step2data.fee_fixed!= null && typeof step2data.fee_fixed!='undefined'">
-        <div class="hint">{{$t('DW.Withdraw.feefixed',[step2data.fee_fixed])}}</div>
+        <div class="hint">{{$t('DW.Withdraw.feefixed',[step2data.fee_fixed])}}{{asset.code}}</div>
       </div>
       <div class="field_select" v-if="step2data.fee_percent!= null && typeof step2data.fee_percent!='undefined'">
         <div class="hint">{{$t('DW.Withdraw.feepercent',[step2data.fee_percent])}}</div>
@@ -85,7 +84,6 @@
           @input="chgAmount"
           dark
           :suffix="asset.code"
-          type="Number"
           ></v-text-field>
         <v-slider v-model="num"  hide-details 
           class="amount-slider"
@@ -115,7 +113,7 @@
           ></v-text-field>
       </div>
       <div class="field_btn">
-        <v-btn :loading="working" class="error btn_ok" @click.stop="submitStep2">{{$t('Button.OK')}}</v-btn>
+        <v-btn :loading="working" :disabled="btn_disabled" class="error btn_ok" @click.stop="submitStep2">{{$t('Button.OK')}}</v-btn>
       </div>
     </div>
 
@@ -151,7 +149,10 @@
             </div>
           </div>
         </div>
-        <div class="confirm-btns flex-row textcenter">
+        <div class="confirm-btns textcenter" v-if="working">
+          <v-progress-circular indeterminate color="error"></v-progress-circular>
+        </div>
+        <div class="confirm-btns flex-row textcenter" v-else>
           <div class="confirm-btn flex1" @click="send">{{$t('Button.OK')}}</div>
           <div class="confirm-btn flex1" @click="()=>{ step = 2; confirmSheetView=false;}">{{$t('Button.Cancel')}}</div>
         </div>
@@ -255,6 +256,24 @@ export default {
         return new Decimal(this.amount).minus(this.fee||0).toNumber().toFixed(7)
       }
       return null
+    },
+    min_amount(){
+      if(this.step === 2 && this.step2data ) return this.step2data.min_amount
+      return null
+    },
+    max_amount(){
+      if(this.step === 2 && this.step2data ) return this.step2data.max_amount
+      return null
+    },
+    btn_disabled(){
+      if( this.amount > 0 && this.amount >= this.min_amount){
+        if(this.max_amount > 0){
+          if(this.amount <= this.max_amount)return false
+          return true
+        }
+        return false
+      }
+      return true
     }
   },
   methods: {
@@ -288,6 +307,7 @@ export default {
           this.$toasted.error(err.message)
         })
     },
+    //发送只能每10秒请求一次
     send(){
       let seed = this.accountData.seed
       if(!seed){
@@ -300,8 +320,8 @@ export default {
       }
       if(this.receive === null)return
       if(Number(this.receive) <=0)return
+      if(this.working)return
       this.working = true
-
       let params = {
         seed,
         address: this.account.address,
@@ -336,13 +356,11 @@ export default {
           this.confirmSheetView = false
           this.step = 2
           let msg = getXdrResultCode(err)
-          setTimeout(()=>{
-            if(msg){
-              this.loadingMsg = this.$t(msg)
-            }else{
-              this.loadingMsg = this.$t(err.message)
-            }
-          },1000)
+          if(msg){
+            this.loadingMsg = this.$t(msg)
+          }else{
+            this.loadingMsg = this.$t(err.message)
+          }
 
         })
       
@@ -360,6 +378,7 @@ export default {
     },
     hiddenLoadingView(){
       this.onsend = false
+      this.sending = false
       this.sendfail = false
       this.sendsuccess = false
       this.loadingTitle = null
@@ -371,14 +390,14 @@ export default {
       //1. 数量不能大于最大值
       let nval = Number(val)
       if(nval >= this.balance){
-        this.amount = this.balance
+        this.amount = ''+this.balance
         if(this.amount === 0){
           this.num = 0
         }else{
           this.num = 100
         }
       }else{
-        this.amount = nval
+  //      this.amount = nval
         //计算
         this.num = new Decimal(this.amount).times(100).div(this.balance).round().toNumber()
       }
@@ -445,14 +464,14 @@ export default {
   background: $primarycolor.gray
   opacity: .8
   position: fixed
-  bottom: 300px
+  bottom: 320px
   right: 0
   left: 0
   top: 0
   z-index: 9
 .confirm-dlg
   background: $secondarycolor.gray
-  height: 300px
+  height: 320px
   position: fixed
   bottom: 0
   right: 0
@@ -482,6 +501,7 @@ export default {
   font-size: 16px
   height: 42px
   line-height: 42px
+  margin: .2rem auto
 .amount-slider
   padding-top: 0px
   padding-bottom: 0px

@@ -103,22 +103,28 @@ export default {
       this.$emit('exit')
     },
     ok(){
+      // alert('---ok---')
+      // alert('islogin:'+this.islogin)
+      // alert('working:'+this.working)
+      // alert('pasword:'+this.password)
       if(!this.islogin)return
       if(this.working)return
       if(!this.password)return
       //1. 校验密码是否正确
       //2. 保存数据
+      // alert('----encryptdata---' + this.encryptData)
       let value = decryptByBase64(this.password, this.encryptData)
+      // alert('-----recovery--'+value)
       if(value === null || typeof value === 'undefined' || value === ''){
         this.$toasted.error(this.$t('Error.PasswordWrong'))
         return
       }
-      value = JSON.stringify(value)
+      value = JSON.parse(value)
       let contacts = value.contacts || []
       let addresses = value.myaddresses || []
       this.working = true
       this.sending = true
-      this.recoveryContactsAndAddresses({contacts, addresses})
+      this.recoveryContactsAndAddresses({contacts, myaddresses: addresses})
         .then(response=>{
           this.success()
         })
@@ -148,6 +154,10 @@ export default {
       }else{
         this.loadingError = this.$t(err.message)
       }
+    },
+    hiddenLoading(){
+      this.working = false
+      this.sendfail = false
     }
   },
   components: {

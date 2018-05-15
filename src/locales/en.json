@@ -117,6 +117,7 @@
   "AddAsset":"Add Asset",
   "AddAssetSuccess":"asset added",
   "AddAssetNotFound": "asset info not found",
+  "AddAssetFail":"add asset failed",
   "FederationUrl":"Host",
   "Working":"working...",
   "Reset":"reset",
@@ -489,7 +490,16 @@
   "No":"No",
   "Dispatcher":"dispatcher",
   "DetailedInformation":"Detail Info",
-  "AllowTrust":"Allow Trust"
+  "AllowTrust":"Allow Trust",
+  "FundingInfo":"If the assets that you are planning to deposit / withdraw are built-in assets in the Stellar network, it can only be deposited / withdrawn by receiving and sending operations.",
+  "FindNewVersion":"update to new version {0} ? ",
+  "Update":"update",
+  "CustomDApp":"custom dapp",
+  "Sign":"sign data to authorize",
+  "Error.NoTxToSign":"Error: no transaction to sign",
+  "limit":"limit",
+  "changeTrust":"change trust",
+  "allowTrust":"allow trust"
 
  
 

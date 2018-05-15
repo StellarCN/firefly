@@ -69,7 +69,7 @@
           <v-flex xs4 @click="resetpwd">
             <span class="Info_menu_color">{{$t('ResetPassword')}}</span>
           </v-flex>
-           <v-flex xs4 @click="showPwdSheet=true">
+           <v-flex xs4 @click="toViewKey">
             <span class="Info_menu_color">{{$t('ViewKey')}}</span>
           </v-flex>
         </v-layout>  
@@ -211,6 +211,8 @@ import {readAccountData} from '@/api/storage'
 import { INFLATION_POOL } from '@/api/gateways'
 
 const ACTION_DEL = 'delete';
+const ACTION_MODIFY = 'modify'
+const ACTION_VIEWSECRET = 'viewSecret'
 const ACTION_RESET_PASSWORD = 'resetpassword';
 const QUESTION_DELETE_ACCOUNT = 'Q.DeleteAccount';
 const QUESTION_RESET_PASSWORD = 'Q.ResetPassword';
@@ -399,10 +401,16 @@ export default {
     modify(){
       if(!this.canModify){
         this.showPwdSheet = true;
+        this.action = ACTION_MODIFY
         this.inpassword = null;
         return;
       }
       this.$router.push({name: 'ModifyAccount', query: {address: this.showaccount.address, seed: this.seed}});
+    },
+    toViewKey(){
+      this.showPwdSheet=true
+      this.inpassword = null
+      this.action = ACTION_VIEWSECRET
     },
     viewkey(){
       this.showViewkeySheet = true;
@@ -463,8 +471,12 @@ export default {
             if(data.seed){
               this.seed = data.seed
               this.showPwdSheet = false
-              this.showseed = true
-              this.viewkey()
+              if(this.action === ACTION_MODIFY){
+                this.$router.push({name: 'ModifyAccount', query: {address: this.showaccount.address, seed: this.seed}});
+              }else if(this.action === ACTION_VIEWSECRET){
+                this.showseed = true
+                this.viewkey()
+              }
               
             }else{
               this.$toasted.error(this.$t('Error.PasswordWrong'))

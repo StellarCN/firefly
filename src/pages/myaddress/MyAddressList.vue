@@ -27,7 +27,7 @@
                     right: () => selectedItem = null
                   }"
               >
-              <v-layout :class="'myaddress-li third-li ' + (selectedItem === index ? 'selected':'')" row wrap  @click.stop="toView(data)">
+              <v-layout class="myaddress-li third-li" row wrap v-swiper=2  @click.stop="toView(data)">
                 <v-flex xs4 class="myaddress-wrapper">
                   <div class="myaddress-name grey--text text--lighten-1">{{data.name}}</div>
                 </v-flex>

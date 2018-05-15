@@ -20,7 +20,7 @@
   "FetchUpdateError":"獲取更新內容失敗",
   "All":"全部",
   "week":"周",
-  "day":"天",
+  "day":"日",
   "hour":"小時",
   "minute":"分鐘",
   "high":"高",
@@ -112,6 +112,7 @@
   "To":"發往",
   "AddContact":"添加聯繫人",
   "AddAsset":"添加資產",
+  "AddAssetFail":"添加資產失敗",
   "AddAssetSuccess":"資產類型已添加",
   "AddAssetNotFound": "未探測到資產信息",
   "FederationUrl":"聯邦地址",
@@ -481,7 +482,18 @@
   "No":"無",
   "Dispatcher":"收發",
   "DetailedInformation":"詳細信息",
-  "AllowTrust":"允許授信"
+  "AllowTrust":"允許授信",
+  "FundingInfo":"如果您正在進行充值/提現操作的資產為恆星系資產，只能通過接收和發送來達到充提目的。",
+  "FindNewVersion":"發現新版本 {0} ，是否更新？ ",
+  "Update":"更新",
+  "CustomDApp":"自定義應用",
+  "Sign":"簽名授權",
+  "Error.NoTxToSign":"錯誤：沒有事務需要簽名",
+  "limit":"額度",
+  "changeTrust":"授信",
+  "allowTrust":"允許授信"
+ 
+ 
   
 
 }

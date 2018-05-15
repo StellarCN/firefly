@@ -3,14 +3,16 @@
  * @Author: mazhaoyong@gmail.com
  * @Date: 2018-01-30 16:58:05
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-24 09:20:19
+ * @Last Modified time: 2018-05-11 11:30:43
  * @License: MIT
  */
 <template>
   <div class="account-nav">
       <!--切换账户-->
     <v-navigation-drawer
-      absolute temporary dark
+      absolute
+      temporary
+      dark
       v-model="showview"
       class='aside'
      >
@@ -92,7 +94,6 @@
 
 <script>
 import { mapState, mapActions} from 'vuex'
-import { closeStreams, initStreams, cleanStreamData } from '@/streams'
 export default {
   data(){
     return {
@@ -132,7 +133,8 @@ export default {
     ...mapActions({
       cleanAccount:'cleanAccount',
       choseAccount: 'changeAccount',
-      choseAccountNoPwd: 'changeAccountNoPassword'
+      choseAccountNoPwd: 'changeAccountNoPassword',
+      getAccountInfo: 'getAccountInfo'
     }),
     redirect(url){
       this.$router.push(url)
@@ -167,10 +169,7 @@ export default {
         this.showPwdSheet = false;
         this.checkPwd = false;
         this.password = null;
-        //重新处理stream
-        closeStreams();
-        cleanStreamData();
-        initStreams(this.account.address);
+        this.getAccountInfo(this.account.address);
 
       }).catch(err=>{
         console.error('change account error')

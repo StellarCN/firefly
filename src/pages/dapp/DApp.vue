@@ -1,19 +1,25 @@
 // 第三方应用列表界面
 <template>
   <div class="page" dark>
-    <toolbar :title="$t('Title.ThirdApp')" :showbackicon="true"  @goback="back" :shadow="false" lockpass  ref="toolbar"/>
+    <toolbar :title="$t('Title.ThirdApp')" :showbackicon="true"  @goback="back" 
+      :shadow="false" lockpass  ref="toolbar">
+      <!--右侧打开设置界面-->
+      <v-btn icon slot='right-tool' @click="toSetting">
+        <i class="material-icons">extension</i>
+      </v-btn>
+    </toolbar>
     <v-container fluid v-bind="{ [`grid-list-md`]: true }">
-      <card padding="8px 8px" margin="8px 8px" v-if="working">
+      <card padding="8px 0" margin="0 0" v-if="working">
         <div class="mt-5 textcenter">
           <v-progress-circular indeterminate color="primary"></v-progress-circular>
         </div>
       </card>
-      <card  padding="8px 8px" margin="8px 8px" v-else>
+      <card class="server-apps-layout" padding="8px 8px" margin="0 0" v-if="!working && err">
         <p v-if="err">
           {{$t(err)}}
         </p>
       </card>
-      <v-layout row wrap  v-if="!working">
+      <v-layout class="server-apps-layout" row wrap  v-if="!working && apps && apps.length > 0">
         <v-flex
           xs3
           v-for="(app,index) in apps"
@@ -21,8 +27,29 @@
           @click="choose(app)"
         >
           <v-card flat tile class="pa-2 textcenter app-card" >
-             <v-avatar  :size="`80px`">
+             <v-avatar class="grey darken-4 app-avatar" :size="`48px`">
                <img :src="app.image">
+             </v-avatar>
+             <v-card-title primary-title class="app-title">
+               <div class="textcenter" style="width: 100%;">{{app.title}}</div>
+             </v-card-title>
+          </v-card>
+        </v-flex>
+      </v-layout>
+
+
+      <div class="primary--text subheading pa-2" v-if="myapps.length > 0">{{$t('CustomDApp')}}</div>
+
+      <v-layout class="apps-layout" row wrap  v-if="myapps.length > 0">
+        <v-flex
+          xs3
+          v-for="(app,index) in myapps"
+          :key="index"
+          @click="choose(app)"
+        >
+          <v-card flat tile class="pa-2 textcenter app-card" >
+             <v-avatar class="grey darken-4 app-avatar">
+               <span class="white--text headline">{{app.title.substring(0,1)}}</span> 
              </v-avatar>
              <v-card-title primary-title class="app-title">
                <div class="textcenter" style="width: 100%;">{{app.title}}</div>
@@ -66,16 +93,23 @@
       @exit="exitBackUpEvent" @success="successBackUpEvent" />
 
     <recovery-data v-if="appEventType === 'recovery' && appEventData" 
-      :appname="choosed.title" :encryptData="appEventData.data.data"
+      :appname="choosed.title" :encryptData="appEventData.data"
       @exit="exitRecoveryEvent" @success="successRecoveryEvent" />
 
     <trust-line v-if="appEventType === 'trust' && appEventData" 
       :appname="choosed.title" 
-      :destination="appEventData.data.destination"
-      :asset_code="appEventData.data.code"
-      :asset_issuer="appEventData.data.issuer"
-      :memo_type="sendTarget.memo_type"
+      :asset_code="appEventData.code"
+      :asset_issuer="appEventData.issuer"
       @exit="exitTrustEvent" @success="successTrustEvent" />
+
+    <sign-x-d-r v-if="appEventType === 'signXDR' && appEventData" 
+      :appname="choosed.title"
+      :message="appEventData.message"
+      :xdr="appEventData.data"
+      @exit="exitSignXDREvent"
+      @success="successSignXDREvent"
+      />
+
   </div>
 </template>
 
@@ -87,13 +121,16 @@ import Toolbar from '@/components/Toolbar'
 import Card from '@/components/Card'
 import Loading from '@/components/Loading'
 import  defaultsDeep  from 'lodash/defaultsDeep'
-import SendAsset from '@/components/third/SendAsset'
-import RecoveryData from '@/components/third/RecoveryData'
-import TrustLine from '@/components/third/TrustLine'
-import BackUpData from '@/components/third/BackUpData'
+import SendAsset from '@/components/dapp/SendAsset'
+import RecoveryData from '@/components/dapp/RecoveryData'
+import TrustLine from '@/components/dapp/TrustLine'
+import BackUpData from '@/components/dapp/BackUpData'
+import SignXDR from '@/components/dapp/SignXDR'
 import { FFWScript, FFW_EVENT_TYPE_PAY,FFW_EVENT_TYPE_PATHPAYMENT,FFW_EVENT_TYPE_SIGN
-   ,FFW_EVENT_TYPE_BACKUP,FFW_EVENT_TYPE_RECOVERY,FFW_EVENT_TYPE_TRUST } from '@/api/ffw'
+   ,FFW_EVENT_TYPE_BACKUP,FFW_EVENT_TYPE_RECOVERY,FFW_EVENT_TYPE_TRUST,FFW_EVENT_TYPE_SIGNXDR } from '@/api/ffw'
 import { signToBase64, verifyByBase64 } from '@/api/keypair'
+import isJson from '@/libs/is-json'
+import debounce from 'lodash/debounce'
 
 // export const FFW_EVENT_TYPE_PAY = 'pay'
 // export const FFW_EVENT_TYPE_PATHPAYMENT = 'pathPayment'
@@ -125,7 +162,8 @@ export default {
       accountData: state => state.accounts.accountData,
       islogin: state => (state.accounts.accountData.seed ? true : false),
       allcontacts: state => state.app.contacts||[],
-      myaddresses: state => state.app.myaddresses||[]
+      myaddresses: state => state.app.myaddresses||[],
+      myapps: state => state.app.myapps,
     }),
   },
   beforeMount () {
@@ -136,6 +174,7 @@ export default {
         this.working = false
         //console.log(response)
         this.apps = response.data.apps
+        // this.apps = [{site: '111',title: 'aaa'}]
       })
       .catch(err=>{
         this.working = false
@@ -186,39 +225,14 @@ export default {
                   showPageTitle: true,
                   staticText: this.choosed.title 
               },
-              backButton: {
-                  image: 'back',
-                  imagePressed: 'back_pressed',
-                  align: 'left',
-                  event: 'backPressed'
-              },
-              forwardButton: {
-                  image: 'forward',
-                  imagePressed: 'forward_pressed',
-                  align: 'left',
-                  event: 'forwardPressed'
-              },
               closeButton: {
                   image: 'close',
                   imagePressed: 'close_pressed',
                   align: 'left',
                   event: 'closePressed'
               },
-              reloadButton: {
-                  image: 'reload',
-                  imagePressed: 'reload_pressed',
-                  align: 'right',
-                  event: 'reloadPressed'
-              },
-              customButtons: [
-                  {
-                      image: 'share',
-                      imagePressed: 'share_pressed',
-                      align: 'right',
-                      event: 'sharePressed'
-                  }
-              ],
-              backButtonCanClose: true
+              backButtonCanClose: true,
+              // hidden: true
           })
           
       }
@@ -239,7 +253,9 @@ export default {
         //alert(scriptEle)
         let contacts = this.allcontacts
         let myaddresses = this.myaddresses
-        let script = FFWScript(this.account.address, {contacts,myaddresses} )
+        let isIos = "ios" === cordova.platformId
+        let script = FFWScript(this.account.address, {contacts,myaddresses} ,isIos)
+        // alert(script)
         this.appInstance.executeScript({ code: script },params => {
           //console.log(params)
           //alert('after script insert')
@@ -247,25 +263,30 @@ export default {
         })
 
       })
-    
-      this.appInstance.addEventListener('message', e => {
+      let that = this
+      this.appInstance.addEventListener('message', debounce(function (e){
         console.log('-----------get message ---- ')
         console.log(JSON.stringify(e))
+       // alert(JSON.stringify(e))
         let type = e.data.type
         if(type === FFW_EVENT_TYPE_PAY){
           this.doPayEvent(e)
         }else if(type === FFW_EVENT_TYPE_PATHPAYMENT){
-          this.doPathPaymentEvent(e)
+          that.doPathPaymentEvent(e)
         }else if(type === FFW_EVENT_TYPE_SIGN){
-          this.appEventType = e.data.type
-          this.appEventData = e.data
-          this.doSign(e)
+          that.appEventType = e.data.type
+          that.appEventData = e.data
+          that.doSign(e)
         }else{  
-          this.appEventType = e.data.type
-          this.appEventData = e.data
-          this.appInstance.hide()
+          that.appEventType = e.data.type
+          that.appEventData = e.data
+          that.hideDapp()
         }
-      })
+      },300))
+    },
+    hideDapp(e){
+      this.appInstance.hide()
+      console.log('-----app-event--hideapp--'+JSON.stringify(this.appEventData))
     },
     doPayEvent(e){
       try{
@@ -281,11 +302,16 @@ export default {
     doSign(e){
       //签名
       let data = e.data.data
+      if(!isJson(data)){
+        this.doCallbackEvent(this.callbackData('fail','data is invalid'))
+      }
       if(data){
         let cdata = signToBase64(this.accountData.seed, data)
         console.log('---------------encrypt data---' + cdata)
+       // alert('sign---'+cdata)
         this.doCallbackEvent(this.callbackData('success', 'success', cdata))
       }else{
+       // alert('sign-fail--')
         this.doCallbackEvent(this.callbackData('fail','no data to sign'))
       }
     },
@@ -305,7 +331,7 @@ export default {
       if(this.appEventData && this.appEventData.callback){
         try{
           let cb = this.appEventData.callback
-          let code = `${cb}({code: "${data.code}",message:"${data.message}",data:"${data.data}"})`
+          let code = `FFW.callback("${cb}",{code: "${data.code}",message:"${data.message}",data:"${data.data}"})`
           console.log('===============callback------event---')
           console.log(code)
           this.appInstance.executeScript({
@@ -353,6 +379,7 @@ export default {
       })
     },
     successEvent(msg='success',data){
+      //alert('----success--event---'+ JSON.stringify(data))
       this.appInstance.show()
       this.doCallbackEvent(this.callbackData('success',msg, data))
       this.$nextTick(()=>{
@@ -377,6 +404,17 @@ export default {
     },
     successTrustEvent(){
       this.successEvent()
+    },
+    exitSignXDREvent(){
+      //alert('----exit---signxdr---')
+      this.exitEvent('cancel signxdr')
+    },
+    successSignXDREvent(data){
+      //alert('-----signxdr-success---')
+      this.successEvent('success',data)
+    },
+    toSetting(){
+      this.$router.push({name: 'DAppSetting'})
     }
 
 
@@ -389,6 +427,7 @@ export default {
     TrustLine,
     RecoveryData,
     BackUpData,
+    SignXDR,
   }
 }
 </script>
@@ -397,7 +436,7 @@ export default {
 <style lang="stylus" scoped>
 @require '../../stylus/color.styl'
 .app-card
-  background: $primarycolor.gray
+  background: $secondarycolor.gray
 .app-title
   padding: .1rem .1rem
   overflow: hidden
@@ -413,4 +452,18 @@ export default {
 .dlg-content
   background: $secondarycolor.gray
   color: $primarycolor.red
+
+.server-apps-layout
+  background: $secondarycolor.gray
+  margin: 8px 8px!important
+  border-radius: 5px
+
+.apps-layout
+  background: $secondarycolor.gray
+  margin: 8px 8px!important
+  border-radius: 5px
+.app-card
+  background: $secondarycolor.gray!important
+.app-avatar
+  border-radius: 50%!important
 </style>

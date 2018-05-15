@@ -39,14 +39,22 @@
           </div>
          
       </div>
+
+      <div class="flex-row atitle" else>
+          <div class="flex1 title-btn-div">
+              <v-btn class="btn-back k-icon" icon @click="back">
+                <i class="material-icons  k-icon">keyboard_arrow_left</i>
+            </v-btn>
+          </div>
+      </div>
              
       <div class="kgraph" :id="id" v-bind:style="{height: height+'px', width: width+'px'}"></div>
       <div class="flex-row textcenter chgresolution">
-          <div :class="'flex1 ' + (resolution_key === 'week' ? 'active' : '')" @click="chgResolution('week')">{{$t('week')}}</div>
-          <div :class="'flex1 ' + (resolution_key === 'day' ? 'active' : '')" @click="chgResolution('day')">{{$t('day')}}</div>
-          <div :class="'flex1 ' + (resolution_key === 'hour' ? 'active' : '')" @click="chgResolution('hour')">{{$t('hour')}}</div>
-          <div :class="'flex1 ' + (resolution_key === '15min' ? 'active' : '')" @click="chgResolution('15min')">15{{$t('minute')}}</div>
-          <div :class="'flex1 ' + (resolution_key === '1min' ? 'active' : '')" @click="chgResolution('1min')">1{{$t('minute')}}</div>
+          <div :class="'flex1 ' + (resolution_key === 'week' ? 'active' : '')" @click="chgResolutionKey('week')">{{$t('week')}}</div>
+          <div :class="'flex1 ' + (resolution_key === 'day' ? 'active' : '')" @click="chgResolutionKey('day')">{{$t('day')}}</div>
+          <div :class="'flex1 ' + (resolution_key === 'hour' ? 'active' : '')" @click="chgResolutionKey('hour')">{{$t('hour')}}</div>
+          <div :class="'flex1 ' + (resolution_key === '15min' ? 'active' : '')" @click="chgResolutionKey('15min')">15{{$t('minute')}}</div>
+          <div :class="'flex1 ' + (resolution_key === '1min' ? 'active' : '')" @click="chgResolutionKey('1min')">1{{$t('minute')}}</div>
       </div>
   </div>
 </card>
@@ -443,6 +451,17 @@ export default {
                 ]
             }
         }, // end of koption
+        chgResolutionKey(key){
+            this.chgResolution(key)
+            this.reloadAll()
+        },
+        reloadAll(){
+            this.cleanData()
+            this.initView();
+            this.fetch();
+            this.fetchLastTradeAggregation()
+            this.fetchLastTrade()
+        }
 
     },
     components: {

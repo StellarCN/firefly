@@ -56,11 +56,6 @@ export default {
         name: 'About',
         component: resolve => require(['../pages/settings/About'], resolve)
       },
-      {
-        path: 'apps',
-        name: 'Apps',
-        component: resolve => require(['../pages/settings/Third'], resolve)
-      },
      
     ]
   }

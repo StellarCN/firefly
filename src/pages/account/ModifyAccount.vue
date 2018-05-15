@@ -71,6 +71,8 @@ export default {
       workindex: null,
       workaccount:null,
 
+      needUpdateOpt: false,//是否要修改Options
+
     }
   },
   computed:{
@@ -114,15 +116,23 @@ export default {
     },
     save(){
       //if(!this.password)return
-      let data = defaultsDeep({}, this.workaccount, {name: this.name,
+      let data = Object.assign({}, this.workaccount, {name: this.name,
       address: this.address,
       federationAddress: this.federation,
       inflationAddress: this.inflation})
+
+      if(this.workaccount.federationAddress != this.federation || this.inflationAddress!=this.inflation){
+        this.needUpdateOpt = true
+      }
+      console.log(this.workaccount)
+      console.log(data)
       let params = {index: this.workindex, account: data}
       this.updateAccount(params)
         .then((data)=>{
           try{
-            this.saveInflationAndFed()
+            if(this.needUpdateOpt){
+              this.saveInflationAndFed()
+            }
             this.$toasted.show(this.$t('SaveSuccess'))
           }catch(err){
             console.error(err)

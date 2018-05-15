@@ -3,31 +3,47 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-03-05 17:30:09 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-21 15:57:39
+ * @Last Modified time: 2018-05-03 12:29:33
  * @License MIT 
  */
  <template>
+   <div  onTouchMove={this.preventTouchMove}>
+
    <v-text-field dark
       :label="$t('SecretKey')"
       v-model="seedInput"
       required
       multi-line
+      clearable
+      :disabled="disabled"
       class="seed-input"
-      onpaste="return false"
+      @paste="pasteHandler($event)"
+      @focus="focusHandler($event)"
+      @blur="blurHandler($event)"
       @input="inputText"
-      rows=2></v-text-field>
+      rows=3
+      :append-icon="hideKeyboard ? 'keyboard' : 'keyboard_hide'"
+      :append-icon-cb="keyboardIconClick"
+      ></v-text-field>
     
+    <secret-keyboard v-show="!hideKeyboard"
+      ref="keyboard"
+      :onChange="keyBoardChange"
+      :onDone="keyBoardDone"
+      :onBack="keyBoardBack"
+      />
+   </div>
 
  </template>
  
  <script>
  import  endsWith  from 'lodash/endsWith'
- import  replace  from 'lodash/replace'
  import util from './SecretKeyInputUtil'
+ import SecretKeyboard from '@/libs/custom-keyboard/SecretKeyboard'
  export default {
    data(){
      return {
-       seedInput: 'S-',
+       seedInput: '',
        cleaveInstance: null,
        blocks: [1,5,5,5,5,5,5,5,5,5,5,5],
        delimiter: '-',
@@ -35,14 +51,37 @@
        maxLength: 56,
        uppercase: true,
 
+       hideKeyboard: false,
+
      }
    },
+   props:{
+     enablePaste:{
+       type: Boolean,
+       default: false
+     },
+     disabled: {
+       type: Boolean,
+       default: false
+     },
+     seed:{
+       type: String
+     }
+   },
+   watch: {
+   },
+   beforeDestroy () {
+   },
    methods:{
+     pasteHandler(event){
+       return this.enablePaste
+     },
      inputText(value){
        if(value && endsWith(value, this.delimiter)){
          this.seedInput = this.seedInput.substr(0, this.seedInput.length -1)
          return;
        }
+       if(value === null)value = ''
        //
        // strip delimiters
         value = util.stripDelimiters(value, this.delimiter, []);
@@ -78,9 +117,50 @@
      },
 
     getSeed(){
-      return replace(this.seedInput, this.delimiter,'').toUpperCase()
-    }
+      if(this.seed)return this.seed.toUpperCase()
+      if(this.seedInput){
+        return this.seedInput.replace(new RegExp(this.delimiter, 'gm'), '').toUpperCase()
+      }
+      return null
+    },
+    keyBoardChange(val){
+      let value = this.$refs.keyboard.getInputValue()
+      this.seedInput = util.getFormattedValue(
+            value,
+            this.blocks, this.blocks.length,
+            this.delimiter, [], false
+        );
+    },
+    keyBoardDone(){
+      console.log('done')
+    },
+    keyBoardBack(){
+      this.keyBoardChange() 
+    },
 
+    focusHandler(event){
+      //console.log('----focus----')
+      //禁止弹出输入框
+      //document.activeElement.blur()
+      this.hideKeyboard = true
+    },
+    blurHandler(event){
+      this.hideKeyboard = false
+    },
+    focusoutHandler(){
+      this.hideKeyboard = false
+    },
+    keyboardIconClick(){
+      this.hideKeyboard = !this.hideKeyboard
+      if(!this.hideKeyboard){
+        document.activeElement.blur()
+      }
+    }
+    
+
+   },
+   components: {
+     SecretKeyboard,
    }
  }
  </script>

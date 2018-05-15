@@ -148,7 +148,6 @@ import Card from '@/components/Card'
 import * as accountapi from '@/api/account'
 import {getAddressByAccountId} from '@/api/federation'
 import Scroll from '@/components/Scroll'
-import {listenPaymentStream, closePaymentStream, getPaymentStream, convertRecords} from '@/api/payments'
 import { fetchEffects } from '@/api/effects'
 export default {
     data () {

@@ -127,7 +127,22 @@ const blocks = [
   'accounts.error',
   'accounts.accountData.seed',
   'accounts.accountData.tradepairs',
-  'account.account_not_funding'
+  'account.account_not_funding',
+  'account.payments.records',
+  'account.transactions.records',
+  'accounts.effects.records',
+  'accounts.tradePairKLineData',
+  'message.items',
+  'asset.assets',
+  'asset.selected',
+  'trades.trades',
+  'app.contacts',
+  'app.enablePin',
+  'app.horizon',
+  'app.locale',
+  'app.myaddresses',
+  'app.pin'
+
 ]
 
 
@@ -160,8 +175,11 @@ const store = new Vuex.Store({
 })
 
 function serialize(value){
+  // console.log(value)
   //return Base64.encode(JSON.stringify(value))
-  return JSON.stringify(value)
+  let str=  JSON.stringify(value)
+  // console.log('-------------------' + str.length)
+  return str
 }
 
 function deserialize(value){

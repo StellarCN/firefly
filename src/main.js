@@ -9,10 +9,10 @@ import router from './router'
 import store from './store'
 import { i18n }  from './locales/index'
 require('./filters/index')
-//require('./directives/swiper')
+require('./directives/swiper')
 import imageHW from './directives/imageHW'
 require('./api/index')
-import { setVuexStore } from './streams'
+// import { setVuexStore } from './streams'
 import { AXIOS_DEFAULT_TIMEOUT } from './api/gateways'
 import axios from 'axios'
 require('./api/utils') 
@@ -71,7 +71,7 @@ Vue.config.productionTip = false
 axios.defaults.timeout = AXIOS_DEFAULT_TIMEOUT
 
 
-setVuexStore(store)
+// setVuexStore(store)
 
 /* eslint-disable no-new */
 new Vue({

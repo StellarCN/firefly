@@ -15,6 +15,8 @@ const state = {
   contacts: [],
   nextContactId: 0,
   myaddresses:[],//常用地址信息
+  myapps:[],//当前用户自定义的app
+  price:[],//从自定义api查询到价格表
 }
 
 const BLANK_USUAL = {name:null,address:null,memotype:null,memo:null}
@@ -130,12 +132,35 @@ const actions = {
   },
   //==========我的常用地址 end===================
 
+  //=======自定义第三方应用功能 start =========
+  async addMyApp({dispatch, commit, state} , app){
+    let apps = [...state.myapps,app]
+    await dispatch('saveAppSetting', { myapps: apps })
+  },
+  async deleteMyApp({dispatch, commit,state}, index){
+    let data = [...state.myapps]
+    data.splice(index, 1)
+    await dispatch('saveAppSetting', { myapps: data })
+  },
+  async modifyMyApp({dispatch, commit, state} , {index, app}){
+    let data = [...state.myapps]
+    data[index] = app
+    await  dispatch('saveAppSetting', { myapps: data })
+  }
+  //========自定义第三方应用功能  end=============
+
+
 }
+
+export const SET_PRICE_BY_API = 'SET_PRICE_BY_API'
 
 const mutations = {
   CHANGE_APPSETTING_STATE(state, data){
     state = Object.assign(state, data)
   },
+  [SET_PRICE_BY_API](state,data){
+    state.price = data
+  }
   
 
 }

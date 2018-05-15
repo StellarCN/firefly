@@ -23,16 +23,7 @@
 
     <div class="content" v-if="!showScanner">
       <div>
-        <v-text-field
-              dark
-              :label="$t('SecretKey')"
-              :value="seed"
-              @input="inputSeed"
-              required
-              multi-line
-              rows=2
-            >
-            </v-text-field>  
+        <secret-key-input :enablePaste="true" :seed="scanSeed" ref="secretkeyRef"></secret-key-input>
       </div>
     </div>
     <div class="footer" v-if="!showScanner">
@@ -49,9 +40,10 @@
 </template>
 
 <script>
-import Toolbar from '../components/Toolbar'
-import QRScan from '../components/QRScan'
-import {importAccount,isValidSeed} from '../api/account'
+import Toolbar from '@/components/Toolbar'
+import QRScan from '@/components/QRScan'
+import SecretKeyInput from '@/components/SecretKeyInput'
+import {importAccount,isValidSeed} from '@/api/account'
 import { mapState, mapActions} from 'vuex'
 export default {
   data(){
@@ -59,6 +51,8 @@ export default {
       title: 'ImportAccount',
       showbackicon: false,
       showScanner: false,
+      scanSeed: null,
+      scanSuccess: false,
       error:null,
     }
   },
@@ -67,14 +61,16 @@ export default {
       seed: state => state.seed
     }),
     nextStepClass(){
-      if(this.seed === null || typeof this.seed === 'undefined'){
-        return 'btn-unavailable'
-      }
+      // if(this.seed === null || typeof this.seed === 'undefined'){
+      //   return 'btn-unavailable'
+      // }
       return 'btn-available'
     }
   },
   created(){
     this.setNewSeed({seed: null,extdata:{}})
+  },
+  mounted () {
   },
   methods: {
     ...mapActions({
@@ -83,9 +79,9 @@ export default {
     goback(){
       this.$router.back()
     },
-    inputSeed(value){
-      this.setNewSeed({seed:value})
-    },
+    // inputSeed(value){
+    //   this.setNewSeed({seed:value})
+    // },
     scan(){
       //只能识别stargazer类似的格式数据
       if(this.showScanner){
@@ -94,21 +90,36 @@ export default {
       }else{
         this.showScanner = true
         this.title = 'Title.Scan'
+        this.scanSuccess = false
       }
     },
     qrvalidator(text){
-      console.log(`validate ---- qrscanner --- text -- ${text}`)
       let result = importAccount(text)
       if(result.status){
-        this.setNewSeed({seed:result.seed,extdata:result.data})
+        this.scanSeed = result.seed
+        this.scanSuccess = true
+        try{
+          this.setNewSeed({seed:result.seed,extdata:result.data})
+          // this.$refs.secretkeyRef.inputText(this.scanSeed)
+          this.setSeedToInput()
+        }catch(err){
+          console.error(err)
+        }
         return true
       }
+      this.scanSuccess = false
       return false;
     },
     qrfinish(result){
-      console.log(` qrscanner --- finish -- ${result}`)
       this.showScanner = false
       this.title = 'ImportAccount'
+      try{
+        this.$nextTick(()=>{
+          this.setSeedToInput()
+        })
+      }catch(err){
+        console.error(err)
+      }
       //this.secretkey = result
     },
     qrclose(){
@@ -116,21 +127,23 @@ export default {
       this.title = 'ImportAccount'
     },
     nextStep(){
-      if(this.seed === null || typeof this.seed === 'undefined'){
-        return
-      }
-      this.seed = this.seed.toUpperCase()
-      if(!isValidSeed(this.seed)){
+      let seed = this.scanSuccess ? this.scanSeed : this.$refs.secretkeyRef.getSeed()
+      if(!isValidSeed(seed)){
         this.$toasted.error(this.$t('Error.NotValidSeed'))
         return
       }
+      this.setNewSeed({seed})
       this.$router.push({name: 'CreateAccount'})
+    },
+    setSeedToInput(){
+      this.$refs.secretkeyRef.inputText(this.scanSeed)
     }
 
   },
   components: {
     Toolbar,
-    QRScan
+    QRScan,
+    SecretKeyInput,
   }
 }
 </script>

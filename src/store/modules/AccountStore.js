@@ -54,6 +54,7 @@ const actions = {
       return ele.asset_issuer
     })
     await dispatch('getAssetsAccounts',assets)
+    await dispatch('getPayments', address)
     
     commit(ACCOUNT_INFO_SUCCESS, info)
     let ledger = await ledgerapi.getLedger()
@@ -72,6 +73,18 @@ const actions = {
     let ledger = await ledgerapi.getLedger()
     commit(GET_LEDGER_INFO, ledger)
   },
+  async loadmorePayments({state, commit}, address){
+    if(typeof state.payments.next === 'function'){
+      let data = await state.payments.next()
+      let records = state.payments.records
+      let newrecords = [...records, ...data.records]
+      data.records = newrecords
+      commit(GET_PAYMENTS_SUCCESS, data)
+    }else{
+      let data = await paymentsapi.fetchPayments(address)
+      commit(GET_PAYMENTS_SUCCESS, data)
+    }
+  },
   paymentSteamData({commit,state},rows){
     commit(GET_PAYMENT_STREAM, rows)
   },
@@ -86,7 +99,7 @@ const actions = {
 const mutations = {
   CLEAN_ACCOUNT(state){
     state.data = {balances:[]}
-    state.transations = { records:[] }
+    state.transactions = { records:[] }
     state.selectedPayment = null
   },
   [CLEAN_ACCOUNT_BYSTREAM](state){
@@ -99,7 +112,7 @@ const mutations = {
     state.payments = { records: [] }
   },
   ACCOUNT_INFO_SUCCESS(state,info){
-    state.transations = { records:[] };
+    state.transactions = { records:[] };
     state.selectedPayment = null;
     state.data = info;
   },
@@ -148,6 +161,7 @@ const getters = {
         obj.issuer = element.asset_issuer
       }
       obj.balance = Number(element.balance)
+      obj.origin_balance = element.balance
       obj.limit = Number(element.limit)
       obj.type = element.asset_type
       data.push(obj)

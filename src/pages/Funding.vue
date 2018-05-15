@@ -45,7 +45,8 @@
           <div class="dwinfo" v-if="active==='deposit'">
             <div></div>
             <div class="deposit_error" v-if="error">
-              {{$t('DW.Error.NoDepositServiceDesc')}}
+              <div v-if="error_msg">{{error_msg}}</div>
+              <div v-else>{{$t('DW.Error.NoDepositServiceDesc')}}</div>
             </div>
             <div class="data" v-else>
 
@@ -53,10 +54,10 @@
                 <div class="label">{{$t('DW.DepositInfo')}}</div>
                 <div class="deposit_info" @click="copy(standardDepositData.how)">{{standardDepositData.how}}</div>
                 <div class="extra_info" v-if="standardDepositData.eta!= undefined">{{$t('DW.DepositInfo.eta',[standardDepositData.eta])}}</div>
-                <div class="extra_info" v-if="standardDepositData.min_amount!=undefined">{{$t('DW.DepositInfo.min', [standardDepositData.min_amount])}}</div>
-                <div class="extra_info" v-if="standardDepositData.max_amount!=undefined">{{$t('DW.DepositInfo.max', [standardDepositData.max_amount])}}</div>
-                <div class="extra_info" v-if="standardDepositData.fee_fixed!=undefined">{{$t('DW.DepositInfo.feefixed', [standardDepositData.fee_fixed])}}</div>
-                <div class="extra_info" v-if="standardDepositData.fee_percent!=undefined">{{$t('DW.DepositInfo.feepercent', [standardDepositData.fee_percent * 100])}}</div>
+                <div class="extra_info" v-if="standardDepositData.min_amount!=undefined">{{$t('DW.DepositInfo.min', [standardDepositData.min_amount])}}{{selectedasset.code}}</div>
+                <div class="extra_info" v-if="standardDepositData.max_amount!=undefined">{{$t('DW.DepositInfo.max', [standardDepositData.max_amount])}}{{selectedasset.code}}</div>
+                <div class="extra_info" v-if="standardDepositData.fee_fixed!=undefined">{{$t('DW.DepositInfo.feefixed', [standardDepositData.fee_fixed])}}{{selectedasset.code}}</div>
+                <div class="extra_info" v-if="standardDepositData.fee_percent!=undefined">{{$t('DW.DepositInfo.feepercent', [standardDepositData.fee_percent])}}</div>
                 <div v-if="Array.isArray(standardDepositData.extra_info)">
                   <div class="extra_info" v-for="(value,index) in standardDepositData.extra_info" :key="index" :id="index">{{value}}</div>
                 </div>
@@ -92,6 +93,12 @@
       <card margin="20px 0px" padding="10px 10px" class="withdraw_form_card" v-if="working">
         <div class="working" slot="card-content">
           <v-progress-circular indeterminate color="primary"></v-progress-circular>
+        </div>
+      </card>
+
+      <card margin="20px 0px" padding="0 0" class="withdraw_form_card">
+        <div class="working fundinginfo" slot="card-content">
+          {{$t('FundingInfo')}}
         </div>
       </card>
 
@@ -132,6 +139,7 @@ export default {
       standardDepositData:undefined,//标准的充值协议数据
       withdrawData:{},//提现
       error:null,
+      error_msg: null,
       withdrawErr: false,//true或false
       active_withdraw_fed:null,
       withdrawFields:[],
@@ -252,7 +260,9 @@ export default {
       console.log('------asset ---')
       console.log(asset)
       //先按照标准协议去查询，然后再按照自定义的协议去查询 
-      queryStandardDeposite(home_domain, asset.code, this.account.address)
+      //let address = 'GCZEFX6VA7F57BCZ3YINU55ZBJ2ST6CCHZTFIDIW2C5QAIL4FOUVB6LZ'
+      let address = this.account.address
+      queryStandardDeposite(home_domain, asset.code, address)
         .then(response=>{
           let data = response.data
           if(data.error){
@@ -261,9 +271,14 @@ export default {
           this.standardDepositData = data;
           this.working = false;
         }).catch(err=>{
-          console.error(err)
+          if(err.response && err.response.status === 501){
+            this.error = err
+            this.working = false
+            this.error_msg = err.response.data.error
+            return
+          }
           console.log('not standard deposit service');
-          queryDeposit(home_domain,asset,this.account.address)
+          queryDeposit(home_domain,asset, address)
             .then(response=>{
             console.log('-------------query deposit data------')
             let data = response.data
@@ -457,6 +472,9 @@ export default {
   text-align:center
   vertical-align: middle
   padding-top: 5px
+  &.fundinginfo
+    color: $secondarycolor.font
+    text-align: left
   // .refreshimg
   //   display: block
   //   width: 200px

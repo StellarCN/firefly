@@ -50,7 +50,6 @@
         </v-btn>
       </div>
       <div class="flex1">
-        
          <v-menu offset-y>
           <v-btn depressed flat color="primary" slot="activator">
             <span class="no-upper">{{$t(selectedSortItem.label)}}</span>
@@ -60,8 +59,7 @@
               <v-list-tile-title @click="chgSortItem(item)">{{ $t(item.label) }}</v-list-tile-title>
             </v-list-tile>
           </v-list>
-        </v-menu>
-        
+        </v-menu> 
       </div>
     </div>
 
@@ -79,25 +77,25 @@
                 right: () => selectedItem = null
               }"
             >
-            <v-layout :class="'myassets-li third-li ' + ( selectedItem === index ? 'selected':'' )" row wrap @click.stop="toAsset(item)">
+            <v-layout class="myassets-li third-li" row wrap v-swiper=2 @click.stop="toAsset(item)">
               <v-flex xs2 class="myassets-wrapper">
                 <div class="icon-wrapper">
                   <i :class="'iconfont ' + assetIcon(item.code,item.issuer)"></i>
                 </div>
               </v-flex>
-            <v-flex xs4 class="myassets-wrapper">
+            <v-flex xs3 class="myassets-wrapper">
               <div class="myassets">
                 <div class="myassets-name">{{item.code}}</div>
                 <div class="myassets-issuer" v-if="assethosts[item.issuer]">{{assethosts[item.issuer] }}</div>
                  <div class="myassets-issuer" v-else>{{item.issuer | miniaddress}}</div>
               </div>
             </v-flex>
-            <v-flex xs6 class="myassets-wrapper">
+            <v-flex xs7 class="myassets-wrapper">
               <div class="myassets-balance third">
-                 <span class="balance">{{item.balance > 0 ? item.balance.toFixed(7) : 0}}</span>
+                 <span class="balance">{{item.balanceStr}}</span>
                  <span class="label">{{$t('Total')}}</span> 
                  <br/>
-                  <span v-if="item.total >=0">≈{{item.total > 0 ? item.balance.toFixed(7) : 0}}&nbsp;&nbsp;XCN</span>
+                  <span v-if="item.total >=0">≈{{item.total > 0 ? item.total : 0}}&nbsp;&nbsp;XCN</span>
               </div>
             </v-flex>
           </v-layout>
@@ -140,7 +138,8 @@ import TabBar from '@/components/TabBar'
 import  defaultsDeep  from 'lodash/defaultsDeep'
 import { getAssetPrice } from '@/api/fchain'
 import { Decimal } from 'decimal.js'
-
+import throttle from 'lodash/throttle'
+import {SET_PRICE_BY_API} from '@/store/modules/AppSettingStore'
 //过滤0资产
 const FLAG_FILTER_ZERO = "filter_zero";
 //不过滤资产
@@ -165,8 +164,10 @@ export default {
 
       needpwd: false,
       is_Flag: FLAG_DEFAULT,
-      sort_flag: SORT_DEFAULT,
+      sort_flag: SORT_BANLANCE,
       price:[],
+
+      _getPriceFn: null,
 
       selectedItem: null,
 
@@ -180,32 +181,26 @@ export default {
           key: SORT_BANLANCE,
           label: 'SortByAsset'
         }],
-      selectedSortItem:{key: SORT_DEFAULT,
-          label: 'DefaultSort'}
+      selectedSortItem:{key: SORT_BANLANCE,
+          label: 'SortByAsset'}
     }
   },
   mixins: [backbutton, loadaccount],
   computed:{
+    ...mapState({
+      priceState: state => state.app.price,
+    }),
  /**
      * 尝试修改的资产总和
      */
-    TotalSum: function() {
-      let data = 0;
-      for (var i = 0; i < this.balances.length; i++) {
-        //  data=data+this.balances[i].balance
-        // console.log(this.price);
-        for (var j = 0; j < this.price.length; j++) {
-        // for (var j = 0; j < this.price.length; j++) {
-          if (
-            this.price[j].code === this.balances[i].code &&
-            this.price[j].issuer === this.balances[i].issuer
-          ) {
-            data =
-              Number(this.price[j].price)*this.balances[i].balance + data;
-          }
-        }
-      }
-      return data;
+    TotalSum() {
+      let pricemap = this.prices
+      let data = this.balances.map(item=>{
+        let v = isNativeAsset(item) ? pricemap['XLM'] : pricemap[item.code + '-' + item.issuer]
+        return v ? new Decimal(v.price || 0).times(item.balance) : new Decimal(0)
+      })
+      if(data.length === 0)return 0
+      return data.reduce((t,i)=> t.add(i ? i : 0))
     },
     ...mapState({
       account: state => state.accounts.selectedAccount,
@@ -261,7 +256,7 @@ export default {
           let p = this.prices[key]
           if(p){
             item.price = p.price
-            item.total = new Decimal(p.price).times(item.balance).toNumber();
+            item.total = new Decimal(p.price || 0).times(item.balance).toNumber();
             if(item.total >0){
               item.total = item.total.toFixed(7)
             }
@@ -271,30 +266,46 @@ export default {
           item.total = 0
         }
       }) 
-      return data
+      return data.map(item=> {
+          item.balanceStr = item.balance > 0 ? item.origin_balance: 0
+          return item
+      })
     }
   },
   watch: {
     sort_flag(){
       this.selectedItem = null
+    },
+    balances(){
+      if(this._getPriceFn){
+        this._getPriceFn()
+      }
     }
   },
+  beforeMount () {
+    this.price = this.priceState
+  },
   mounted() {
-    // axios promise
-    getAssetPrice(this.balances.filter(item=> Number(item.balance)>0).map(item=> {
+    this._getPriceFn = throttle(()=>{
+      getAssetPrice(this.balances.filter(item=> Number(item.balance)>0).map(item=> {
         return {code: item.code, issuer:item.issuer }
       }))
       .then(response => {
         this.price = response.data;
-      })
-      .catch(err => {});
+        this.$store.commit(SET_PRICE_BY_API, response.data)
+      }).catch(err => {});
+    },60000)
+
     this.$nextTick(() => {
-      setTimeout(() => {
-        if (this.notfunding) {
-          this.noticeText = this.$t("Error.AccountNotFund");
-          this.notice = true;
-        }
-      }, 3000);
+      
+      // TODO 优化
+      // setTimeout(() => {
+      //   if (this.notfunding) {
+      //     this.noticeText = this.$t("Error.AccountNotFund");
+      //     this.notice = true;
+      //   }
+      // }, 3000);
+
     });
   },
   methods: {

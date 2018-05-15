@@ -40,7 +40,7 @@ import VTooltip from 'vuetify/es5/components/VTooltip'
 //   VSwitch,VSystemBar,VTabs,VTextField,VToolbar,VTooltip,
 //   transitions
 // } from 'vuetify'
-import { Ripple,Touch } from 'vuetify/es5/directives'
+import { Ripple,Touch, ClickOutside } from 'vuetify/es5/directives'
 
 Vue.use(Vuetify, {
   components: {
@@ -63,6 +63,7 @@ Vue.use(Vuetify, {
   directives: {
     Ripple,
     Touch,
+    ClickOutside,
   },
   theme: {
     primary: '#21ce90',

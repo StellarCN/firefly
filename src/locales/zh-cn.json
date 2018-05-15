@@ -20,7 +20,7 @@
   "FetchUpdateError":"获取更新内容失败",
   "All":"全部",
   "week":"周",
-  "day":"天",
+  "day":"日",
   "hour":"小时",
   "minute":"分钟",
   "high":"高",
@@ -112,6 +112,7 @@
   "To":"发往",
   "AddContact":"添加联系人",
   "AddAsset":"添加资产",
+  "AddAssetFail":"添加资产失败",
   "AddAssetSuccess":"资产类型已添加",
   "AddAssetNotFound": "未探测到资产信息",
   "FederationUrl":"联邦地址",
@@ -481,7 +482,19 @@
   "No":"无",
   "Dispatcher":"收发",
   "DetailedInformation":"详细信息",
-  "AllowTrust":"允许授信"
+  "AllowTrust":"允许授信",
+  "FundingInfo":"如果您正在进行充值/提现操作的资产为恒星系资产，只能通过接收和发送来达到充提目的。",
+  "FindNewVersion":"发现新版本 {0} ，是否更新？ ",
+  "Update":"更新",
+  "CustomDApp":"自定义应用",
+  "Sign":"签名授权",
+  "Error.NoTxToSign":"错误：没有事务需要签名",
+  "limit":"额度",
+  "changeTrust":"授信",
+  "allowTrust":"允许授信"
+
+ 
+ 
 
   
   

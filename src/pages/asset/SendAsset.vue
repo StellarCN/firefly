@@ -431,7 +431,7 @@ export default {
         this.$toasted.error(this.$t('Error.DestinationIsRequired'))
         return
       }
-      if(this.amount === null || this.amount === 0 || this.amount.length === 0 ){
+      if(this.amount === null || this.amount === 0 || this.amount === '' ){
         this.$toasted.error(this.$t('Error.AmountIsRequired'))
         return
       }
@@ -477,25 +477,36 @@ export default {
           this.sendsuccess = true
           this.realDestination = null
           this.loadingTitle = this.$t('SendAssetSuccess')
-          this.getAccountInfo(this.account.address)
+          try{
+            this.getAccountInfo(this.account.address)
+          }catch(err){
+            console.error(err)
+          }
           setTimeout(()=>{
             this.onsend=false
             this.sendsuccess = false //
-            this.$router.back()
+            //this.$router.back()
+            this.cleanData()
             },3000)
         })
         .catch(err=>{
           console.log(err)
           this.sending = false
           this.sendfail = true
-          this.realDestination = null
-          let msg = getXdrResultCode(err)
+          //this.realDestination = null
           this.loadingTitle = this.$t('Error.SendAssetFail')
-          if(msg){
-            this.loadingMsg = this.$t(msg)
-          }else{
-            this.loadingMsg = this.$t(err.message)
+          try{
+            let msg = getXdrResultCode(err)
+            if(msg){
+              this.loadingMsg = this.$t(msg)
+            }else{
+              this.loadingMsg = this.$t(err.message)
+            }
+          }catch(err){
+            console.error(err)
+            this.loadingMsg = err.message
           }
+
         })
 
     },
@@ -559,6 +570,18 @@ export default {
       this.sendfail = false
       this.loadingTitle = null
       this.loadingMsg = null
+    },
+    cleanData(){
+      this.memoswitch = false
+      this.memotype = null
+      this.memo = null
+      this.amount = null
+      this.num = 0
+      this.destination = null
+      this.realDestination = null
+      this.federationUrlResult = null
+      this.is_sendconfim = false
+    
     }
   },
   components: {

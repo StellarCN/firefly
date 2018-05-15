@@ -285,7 +285,6 @@
   import * as accountapi from '@/api/account'
   import {getAddressByAccountId} from '@/api/federation'
   import Scroll from '@/components/Scroll'
-  import {listenPaymentStream, closePaymentStream, getPaymentStream, convertRecords} from '@/api/payments'
   import { transactionsPage,transactionDetail,transactionOperations } from '@/api/transactions'
   export default {
     data() {
@@ -319,7 +318,6 @@
     },
 
     beforeDestroy() {
-      closePaymentStream()
     },
     methods: {
       ...mapActions([

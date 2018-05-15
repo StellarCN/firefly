@@ -2,6 +2,7 @@
 import { listenPaymentStream, closePaymentStream, getPaymentStream, convertRecords } from '@/api/payments'
 import { listenAccountStream, closeAccountStream, getStream } from '@/api/account'
 import { CLEAN_ACCOUNT_BYSTREAM,ACCOUNTINFO_BYSTREAM } from '@/store/modules/AccountStore'
+import debounce from 'lodash/debounce'
 
 let _data = {
     // 当前监听的账号地址
@@ -37,14 +38,15 @@ export function initPaymentStream(){
     if(paymentsdata && paymentsdata.length > 0 ){
         token = paymentsdata[0].paging_token
     }
-    listenAccountStream(_data.address, data => {
+    let address = _data.address
+    listenAccountStream(address, debounce(function(data){
         _data.store.commit(ACCOUNTINFO_BYSTREAM, data)
-    }, err => {
+    },500), err => {
         console.error(err)
     })
-    listenPaymentStream(_data.address, (data)=>{
+    listenPaymentStream(_data.address, debounce(function(data){
         _data.store.dispatch('paymentSteamData',[data])
-    },err => {
+    },500),err => {
         console.log(`----payments err -- `)
         console.log(err)
     }, { token })

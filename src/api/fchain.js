@@ -8,8 +8,7 @@ var parseString = require('xml2js').parseString
 import { CORS_PROXY } from './gateways'
 
 
-const host = 'http://40.125.213.185:8081'
-
+const host = 'https://api.fchain.io/v2'
 
 /**
  * 查询资产价格

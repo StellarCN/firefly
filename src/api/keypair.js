@@ -66,3 +66,19 @@ function base64ToHex(str) {
   }
   return hex.join("");
 }
+
+/**
+ * 根据提供的transaction进行签名
+ * @param {*} seed 
+ * @param {*} tx 
+ * @return tx xdr
+ */
+export function signDecoratedByTx(seed,tx){
+  if(tx){
+    //得到对象，有hint和sy
+    //return StellarSdk.Keypair.fromSecret(seed).signDecorated(tx.hash())
+    tx.sign(StellarSdk.Keypair.fromSecret(seed))
+    return tx.toEnvelope().toXDR().toString('base64')
+  }
+  throw new Error('no transaction to sign')
+}
