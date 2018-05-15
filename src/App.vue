@@ -52,6 +52,7 @@ import  TabBar from '@/components/TabBar'
 import { getFchainRss } from '@/api/fchain'
 import initCordovaPlugin from '@/libs/pkgs/initCordovaPlugin'
 import updateMixin from '@/mixins/update'
+import { PLATFORM_IS_IOS } from '@/store/modules/AppSettingStore'
 
 export default {
   data() {
@@ -128,6 +129,7 @@ export default {
 
       if ("ios" === cordova.platformId) {
         this.isios = true;
+        this.$store.commit(PLATFORM_IS_IOS, true);
       }
       navigator.splashscreen.hide();
       if (StatusBar && !StatusBar.isVisible) {

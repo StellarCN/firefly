@@ -2,6 +2,7 @@
 import { readAppSetting, saveAppSetting as save } from '../../api/storage'
 import { OFFICIAL_HORIZON, CHINA_HORIZON } from '../../api/horizon'
 
+
 // 状态字段
 const state = {
   // 默认语言
@@ -17,6 +18,7 @@ const state = {
   myaddresses:[],//常用地址信息
   myapps:[],//当前用户自定义的app
   price:[],//从自定义api查询到价格表
+  isIos: false,//是否为ios
 }
 
 const BLANK_USUAL = {name:null,address:null,memotype:null,memo:null}
@@ -153,6 +155,8 @@ const actions = {
 }
 
 export const SET_PRICE_BY_API = 'SET_PRICE_BY_API'
+export const PLATFORM_IS_IOS = 'PLATFORM_IS_IOS'
+
 
 const mutations = {
   CHANGE_APPSETTING_STATE(state, data){
@@ -160,6 +164,9 @@ const mutations = {
   },
   [SET_PRICE_BY_API](state,data){
     state.price = data
+  },
+  [PLATFORM_IS_IOS](state, isios){
+    state.isIos = isios
   }
   
 
