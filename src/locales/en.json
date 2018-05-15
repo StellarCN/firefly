@@ -120,6 +120,7 @@
   "FederationUrl":"Host",
   "Working":"working...",
   "Reset":"reset",
+  
 
 
   "Info.ChangeAccountSuccess":"success",
@@ -467,7 +468,29 @@
   "ReadAllMsg":"read all messages",
   "Recovery":"recovery",
   "Backup":"back up",
-  "lastUpdate":"last update"
+  "lastUpdate":"last update",
+
+  "NoMoreData":"There's no more data",
+  "SourceAccount":"SourceAccount",
+  "ChangeTrust":"Change TrustLine",
+  "AccountCredited":"Account Credited",
+  "Trade":"Trade",
+  "CreateTrustLine":"Create TrustLine",
+  "RemoveTrustLine":"Remove TrustLine",
+  "AccountDebited":"Account Debited",
+  "SignerUpdated":"Signer Updated",
+  "SignerCreated":"Signer Created",
+  "AccountHomeDomainUpdated":"Account HomeDomain Updated",
+  "AccountInflationDestinationUpdated":"Account Inflation Destination Updated",
+  "AccountCreated":"Account Created",
+  "OperationType":"Operation type:",
+  "MaxLimit":"Maximum limit",
+  "Inflation":"Inflation",
+  "No":"No",
+  "Dispatcher":"dispatcher",
+  "DetailedInformation":"Detail Info",
+  "AllowTrust":"Allow Trust"
+
  
 
 }
