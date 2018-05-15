@@ -12,5 +12,9 @@ function transactionDetail(transactionId) {
 }
 export {
   transactionsPage,
-  transactionDetail
+  transactionDetail,
+}
+
+export function transactionOperations(hash,limit=200){
+  return getServer().operations().forTransaction(hash).limit(limit).call();
 }
