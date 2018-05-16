@@ -5,8 +5,9 @@
 
 ## [English Document](README.md)
 
-## [帮助文档](https://wallet.fchain.io/manual/#0)
+## [DAPP API文档](https://firefly.gitbook.io/apidoc/)
 
+## [帮助文档](https://wallet.fchain.io/manual/#0)
 
 ## [路线图](docs/ROADMAP_CN.MD)
 
