@@ -43,10 +43,12 @@ export function queryDeposit(domain,asset,address){
 export function queryStandardDeposite(homedomain,asset_code,address){
   return StellarSdk.StellarTomlResolver.resolve(homedomain)
     .then(data => {
-      console.log('---query standard---')
-      console.log(data)
-      if(data.DEPOSIT_SERVER){
-        let url = `${data.DEPOSIT_SERVER}?asset_code=${asset_code}&account=${address}`
+      let uri = data.DEPOSIT_SERVER
+      if(uri){
+        if(!uri.endsWith('/deposit')){
+          uri += '/deposit'
+        }
+        let url = `${uri}?asset_code=${asset_code}&account=${address}`
         return axios.get(url)
       }
       throw new Error('DW.Error.NoDepositService')
