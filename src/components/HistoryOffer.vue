@@ -11,6 +11,16 @@
           <div class="flex-row">
             <div class="flex3">
               <div class="pair-show">
+                <div class="pair-to">
+                  <div class="code">{{offer.to.code}}</div>
+                  <div class="issuer" v-if="assethosts[offer.to.code]">{{assethosts[offer.to.code] | miniaddress}}</div>
+                  <div class="issuer" v-else-if="assethosts[offer.to.issuer]">{{assethosts[offer.to.issuer] | miniaddress}}
+                  </div>
+                  <div class="issuer" v-else>{{offer.to.issuer | miniaddress}}</div>
+                </div>
+                <div class="pair-icon">
+                  <i class="icons material-icons">&#xE8D4;</i>
+                </div>
                 <div class="pair-from">
                   <div class="code">{{offer.from.code}}</div>
                   <div class="issuer" v-if="assethosts[offer.from.code]">{{assethosts[offer.from.code] | miniaddress}}</div>
@@ -19,29 +29,20 @@
                   </div>
                   <div class="issuer" v-else>{{offer.from.issuer | miniaddress}}</div>
                 </div>
-                <div class="pair-icon">
-                  <i class="icons material-icons">&#xE8D4;</i>
-                </div>
-                <div class="pair-to">
-                  <div class="code">{{offer.to.code}}</div>
-                  <div class="issuer" v-if="assethosts[offer.to.code]">{{assethosts[offer.to.code] | miniaddress}}</div>
-                  <div class="issuer" v-else-if="assethosts[offer.to.issuer]">{{assethosts[offer.to.issuer] | miniaddress}}
-                  </div>
-                  <div class="issuer" v-else>{{offer.to.issuer | miniaddress}}</div>
-                </div>
+
               </div>
             </div>
             <div class="flex4 pl-1 textright">
               <div>
-                <span class="value">{{Number(offer.price)}}{{offer.to.code}}</span>
+                <span class="value">{{Number(offer.price)}}{{offer.from.code}}</span>
                 <span class="label">{{$t('UnitPriceAbbreviation')}}</span>
               </div>
               <div>
-                <span class="value up">+{{Number(offer.amount)}}{{offer.from.code}}</span>
+                <span class="value down">+{{Number(offer.total)}}{{offer.to.code}}</span>
                 <span class="label">{{$t('AmountAbbreviation')}}</span>
               </div>
               <div>
-                <span class="value down">-{{Number(offer.total)}}{{offer.to.code}}</span>
+                <span class="value up">-{{Number(offer.amount)}}{{offer.from.code}}</span>
                 <span class="label">{{$t('TotalAbbreviation')}}</span>
               </div>
             </div>
@@ -156,19 +157,19 @@ import { getXdrResultCode } from '@/api/xdr'
       convertOffer(offer){
         let data = {}
         if(offer.buying.asset_type === 'native'){
-          data.from = { code: 'XLM', issuer: 'stellar.org'}  
-        }else{
-          data.from = {code: offer.buying.asset_code, issuer: offer.buying.asset_issuer }
-        } 
-        if(offer.selling.asset_type === 'native'){
           data.to = { code: 'XLM', issuer: 'stellar.org'}  
         }else{
-          data.to =  {code: offer.selling.asset_code, issuer: offer.selling.asset_issuer }
+          data.to = {code: offer.buying.asset_code, issuer: offer.buying.asset_issuer }
+        } 
+        if(offer.selling.asset_type === 'native'){
+          data.from = { code: 'XLM', issuer: 'stellar.org'}  
+        }else{
+          data.from =  {code: offer.selling.asset_code, issuer: offer.selling.asset_issuer }
         }
 
         data.amount = offer.amount
         data.id = offer.id
-        data.price = Number(offer.price)
+        data.price = Number(new Decimal(offer.price_r.d).div(offer.price_r.n).toFixed(7))//Number(offer.price)
         data.price_r = offer.price_r
         data.seller = offer.seller
         data.total = new Decimal(offer.amount).times(offer.price_r.n).div(offer.price_r.d).toFixed(7)
