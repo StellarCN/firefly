@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-31 09:07:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-05-11 11:38:11
+ * @Last Modified time: 2018-05-22 11:40:49
  * @License MIT 
  */
 import { mapState,mapActions,mapGetters } from 'vuex'
@@ -45,7 +45,7 @@ export default {
           })
           .catch(err => {
             console.log("errorhere");
-            this.cleanAccount()
+            //this.cleanAccount()
             console.log(err.message)
             let msg = err.message
             if (msg && 'Network Error' === msg) {

@@ -101,7 +101,7 @@
           </v-layout>
           <div class="myassets-operate-box">
             <div class="del" @click.stop="del(item)">{{$t('Delete')}}</div>
-            <div class="send"@click.stop="send(item)">{{$t('Send')}}</div>
+            <div class="send" @click.stop="send(item)">{{$t('Send')}}</div>
             <div class="receive" @click.stop="receive(item)">{{$t('Receive')}}</div>
           </div>
           </div>
