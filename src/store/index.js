@@ -18,6 +18,8 @@ const state = {
   isImportAccount: false,
   isCreateAccount: false,
   seed: null,
+  mnemonic: null,
+  mIndex: null,
   seedExtData: null,
   accountname: null,
   accountpassword: null,

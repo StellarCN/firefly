@@ -14,6 +14,7 @@ export const FILENAME_LOCK = 'lock.firefly'
 export const FILENAME_APP_SETTING = 'appsetting.firefly'
 export const FILENAME_MESSAGE = 'msg.firefly'
 export const FILENAME_MESSAGE_READ = 'read_msg.firefly'
+export const FILENAME_TRADEPAIR = 'tradepair.firefly'
 
 const LOCK_KEY = 'ilovefirefly'
 
@@ -117,6 +118,14 @@ export function readAppSetting(){
         }
       })
     })
+}
+
+//交易对数据，单独保存
+export function saveTradePairData(value){
+  return saveByEncrypt(FILENAME_TRADEPAIR,value);
+}
+export function readTradePairData(){
+  return readByEncrypt(FILENAME_TRADEPAIR)
 }
 
 

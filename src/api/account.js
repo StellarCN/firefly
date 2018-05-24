@@ -7,11 +7,25 @@ import { importAccountFromData } from './qr'
 import { getAsset, isNativeAsset } from './assets'
 import { BASE_RESERVE } from './gateways'
 var Promise = require('es6-promise').Promise
+import StellarHDWallet from 'stellar-hd-wallet'
 
 // create random account
 export function random(){
   var keypair = StellarSdk.Keypair.random();
   return {address: keypair.publicKey(), seed:keypair.secret()};
+}
+/**
+ * 随机生成助记词
+ */
+export function randomByMnemonic(){
+  return StellarHDWallet.generateMnemonic({entropyBits: 128})//生成12个字符串
+}
+/**
+ * 根据mnemonic生成账户
+ * @param {String} mnemonic 
+ */
+export function fromMnemonic(mnemonic){
+  return StellarHDWallet.fromMnemonic(mnemonic);
 }
 
 // generate public address from secret key
