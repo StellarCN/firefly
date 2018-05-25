@@ -8,15 +8,27 @@
       <card padding="10px 10px" class="mycard">
         <div class="card-content" slot="card-content">
           <ul class="settings-ul">
+            
+            <li class="settings-li">
+              <span>{{$t('color')}}</span>
+              <v-switch class="pincodeswitch f-right"
+                  v-model="redUpGreenDown"
+                  color="primary"
+                  :label="redUpGreenDown ? $t('redUpGreenDown') : $t('greenUpGreenDown')"
+                  hide-details
+                  @change="switchColor"
+                  ></v-switch>
+
+            </li>
 
             <li class="settings-li">
               <span>{{$t('PinCode')}}</span>
               <v-switch class="pincodeswitch f-right"
-                        v-model="pinEnable"
-                        color="primary"
-                        hide-details
-                        @change="switchPinCode"
-                        ></v-switch>
+                  :value="pinEnable"
+                  color="primary"
+                  hide-details
+                  @change="switchPinCode"
+                  ></v-switch>
 
             </li>
             <li class="settings-li" @click="toChangeLanguage">
@@ -58,7 +70,8 @@ export default {
     ...mapState({
       account: state => state.accounts.selectedAccount,
       accountData: state => state.accounts.accountData,
-      app: state => state.app
+      app: state => state.app,
+      redUpGreenDown: state => state.app.redUpGreenDown,
     }),
 
   },
@@ -72,6 +85,7 @@ export default {
   },
   methods: {
     ...mapActions({
+      changeUpDownColor:'changeUpDownColor',
     }),
     back(){
       this.$router.back()
@@ -100,6 +114,9 @@ export default {
     toAbout(){
       this.$router.push({name: 'About'})
     },
+    switchColor(){
+      this.changeUpDownColor(!this.redUpGreenDown)
+    }
   },
   components: {
     Toolbar,

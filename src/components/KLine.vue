@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-26 15:59:49 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-05-15 12:01:47
+ * @Last Modified time: 2018-05-25 17:51:18
  * @License MIT 
  */
 
@@ -13,13 +13,13 @@
           <div class="linegraph" :id="id" v-bind:style="{height: height + 'px'}"></div>
       </div>
       <div class="flex1" v-if="titleData!=null && titleData.price!=null && typeof titleData.price!='undefined'">
-           <div :class="' price textright ' + ( titleData.change >=0 ? 'up':'down') ">{{titleData.price}}</div>
-           <div :class="' rate  textright ' + ( titleData.change >=0 ? 'up':'down')">
+           <div :class="' price textright ' + ((titleData.change >=0 && !redUpGreenDown)? 'up':'down') ">{{titleData.price}}</div>
+           <div :class="' rate  textright ' + (( titleData.change >=0 && !redUpGreenDown)? 'up':'down')">
               <span v-if="titleData.rate>0">+</span>
               {{titleData.rate}}%</div>
       </div>
       <div class="flex1 working" v-else>
-          <v-progress-circular indeterminate color="primary" v-if="!lineData"></v-progress-circular>
+          <v-progress-circular indeterminate :color="redUpGreenDown ? 'error': 'primary'" v-if="!lineData"></v-progress-circular>
           <span v-else></span>
       </div>
   </div>
@@ -116,7 +116,8 @@ export default {
     },
     computed: {
         ...mapState({
-            tradePairKLineData: state => state.accounts.tradePairKLineData
+            tradePairKLineData: state => state.accounts.tradePairKLineData,
+            redUpGreenDown: state => state.app.redUpGreenDown,
         }),
         // lineData(){
         //     return this.tradePairKLineData[this.tradepairIndex]

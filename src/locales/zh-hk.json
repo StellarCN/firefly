@@ -68,15 +68,15 @@
   "Account.CreateAccountSuccess":"賬戶創建成功!",
   "Account.CreateAccountError":"賬戶創建失敗！",
   "Account.InputSecretKey":"請輸入您以S開頭的賬戶密鑰",
-  "Account.ConfirmSkip":"您確認跳過密鑰驗證？",
-  "Account.SkipValidHint":"因密鑰遺失造成的資產損失，將由您個人承擔，您確定跳過該步驟？",
+  "Account.ConfirmSkip":"您確認跳過助記詞驗證？",
+  "Account.SkipValidHint":"因助記詞遺失造成的資產損失，將由您個人承擔，您確定跳過該步驟？",
   "Account.Later":"再想想",
-  "Account.SecretKeyValidHint":"密鑰驗證已經通過。請妥善保管您的備份密鑰，然後開始體驗。",
+  "Account.SecretKeyValidHint":"助記詞驗證已經通過。請妥善保管您的備份助記詞，然後開始體驗。",
   "Account.Start":"開始體驗",
-  "Account.SecretKeyUnValidHint":"密鑰輸入有誤！請重新驗證，或返回上一步重新備份。",
+  "Account.SecretKeyUnValidHint":"助記詞輸入有誤！請重新驗證，或返回上一步重新備份。",
   "Account.ReVerify":"重新驗證",
 
-  "Error.SeedWrong":"密鑰錯誤",
+  "Error.SeedWrong":"助記詞錯誤",
 
   "Account.AccountAddress":"賬戶地址",
 
@@ -491,7 +491,15 @@
   "Error.NoTxToSign":"錯誤：沒有事務需要簽名",
   "limit":"額度",
   "changeTrust":"授信",
-  "allowTrust":"允許授信"
+  "allowTrust":"允許授信",
+  "mnemonic":"助記詞",
+  "mnemonicIndex":"第{0}個助記詞",
+  "importBySeed":"導入密鑰",
+  "importByMnemonic":"導入助記詞",
+  "custom":"自定義",
+  "color":"顏色",
+  "redUpGreenDown":"紅漲綠跌",
+  "greenUpRedDown":"綠漲紅跌"
  
 
 

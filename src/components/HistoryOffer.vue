@@ -92,27 +92,9 @@ import { getXdrResultCode } from '@/api/xdr'
     computed: {
       ...mapState({
         my: state => state.accounts.selectedTradePair.my.records,
-        tradepairs: state => state.accounts.accountData.tradepairs,
         assethosts: state => state.asset.assethosts,
         accountData: state => state.accounts.accountData,
       }),
-      ...mapGetters([]),
-      offersData() {
-        let data = []
-        if (!this.my) return []
-        for (let i = 0; i < this.tradepairs.length; i++) {
-          let aPairData = myofferConvert(this.tradepairs[i].from, this.tradepairs[i].to, this.my)
-          // console.log(aPairData);
-          if (aPairData.length != 0) {
-            data.push({
-              records: aPairData,
-              pair: this.tradepairs[i],
-              pair_id: i
-            })
-          }
-        }
-        return data
-      },
     },
     watch:{
       my(){

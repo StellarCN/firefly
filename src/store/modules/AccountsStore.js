@@ -65,6 +65,7 @@ const state = {
   //当前选中的tradepair
   selectedTradePair:{
     index: -1,
+    custom: 'sys',
     tradepair:{},
     bids:[],//买单
     asks:[],//卖单
@@ -353,6 +354,7 @@ const mutations = {
       }
       state.selectedTradePair = {
         index: -1,
+        custom: false,
         tradepair:{},
         bids:[],//买单
         asks:[],//卖单
@@ -360,7 +362,7 @@ const mutations = {
       }
   },
   // custom 是否为自定义交易对
-  [SELECT_TRADE_PAIR](state, { custom, index, tradepair}){
+  [SELECT_TRADE_PAIR](state, { custom = false, index, tradepair}){
     state.selectedTradePair = {
       index,
       custom,

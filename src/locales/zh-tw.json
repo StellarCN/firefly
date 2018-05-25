@@ -491,7 +491,15 @@
   "Error.NoTxToSign":"錯誤：沒有事務需要簽名",
   "limit":"額度",
   "changeTrust":"授信",
-  "allowTrust":"允許授信"
+  "allowTrust":"允許授信",
+  "mnemonic":"助記詞",
+  "mnemonicIndex":"第{0}個助記詞",
+  "importBySeed":"導入密鑰",
+  "importByMnemonic":"導入助記詞",
+  "custom":"自定義",
+  "color":"顏色",
+  "redUpGreenDown":"紅漲綠跌",
+  "greenUpRedDown":"綠漲紅跌"
  
  
   

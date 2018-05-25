@@ -16,18 +16,23 @@ export function random(){
 }
 /**
  * 随机生成助记词
+ * @param {string} language 语言
  */
-export function randomByMnemonic(){
-  return StellarHDWallet.generateMnemonic({entropyBits: 128})//生成12个字符串
+export function randomByMnemonic(language = 'english'){
+  return StellarHDWallet.generateMnemonic({language, entropyBits: 128})//生成12个字符串
 }
 /**
  * 根据mnemonic生成账户
  * @param {String} mnemonic 
+ * @param { string } language 语言,默认值  english
  */
-export function fromMnemonic(mnemonic){
-  return StellarHDWallet.fromMnemonic(mnemonic);
+export function fromMnemonic(mnemonic,language = 'english'){
+  return StellarHDWallet.fromMnemonic(mnemonic, undefined, language);
 }
 
+export function validateMnemonic(mnemonic, language = 'english'){
+  return StellarHDWallet.validateMnemonic(mnemonic, language)
+}
 // generate public address from secret key
 export function address(seed) {
   var keypair = StellarSdk.Keypair.fromSecret(seed);
@@ -308,4 +313,24 @@ export function sendByPathPayment(seed, destination, record, memo_type,memo_valu
 
 
 
+}
+
+
+/**
+ * 判断是否为英文
+ * @param {String} mnemonic 
+ */
+let PATTERN_ENGLISH = new RegExp("[A-Za-z]+");
+
+export function isEnglishMnemonic(mnemonic){
+  return PATTERN_ENGLISH.test(mnemonic);
+}
+
+let PATTERN_CHINESE = new RegExp("[\u4E00-\u9FA5]+");
+/**
+ * 判断是否为中文
+ * @param {string} mnemonic 
+ */
+export function isChineseMnemonic(mnemonic){
+  return PATTERN_CHINESE.test(mnemonic);
 }

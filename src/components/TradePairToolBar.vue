@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-08 15:40:36 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-04-29 19:32:43
+ * @Last Modified time: 2018-05-25 16:07:43
  * @License MIT 
  */
 
@@ -80,7 +80,7 @@ export default {
   },
   computed:{
     ...mapState({
-      tradepairs: state => state.accounts.accountData.tradepairs,
+      alltradepairs: state => state.accounts.tradepairs,
       selectedTrade: state => state.accounts.selectedTradePair.tradepair,
       selectedTradeIndex: state => state.accounts.selectedTradePair.index,
       assethosts: state => state.asset.assethosts,
@@ -92,6 +92,16 @@ export default {
       'reserve',
       'base_reserve'
     ]),
+    tradepairs(){
+      let result = []
+      this.alltradepairs.sys.forEach((item,index)=>{
+        result.push(Object.assign({},item,{custom: false, index}))
+      })
+      this.alltradepairs.custom.forEach((item,index)=>{
+        result.push(Object.assign({},item,{custom: true, index}))
+      })
+      return result;
+    },
      BaseAsset(){
       return this.selectedTrade.from
     },
@@ -125,9 +135,10 @@ export default {
       return key === key2
     },
     choseTrade(index,tradepair){//选择交易对
-      this.selectTradePair({index, tradepair})
+      let data = {custom: tradepair.custom, index: tradepair.index, tradepair}
+      this.selectTradePair(data)
       this.showChoseTradeDlg = false
-      this.$emit('choseTradePair',{index,tradepair})
+      this.$emit('choseTradePair',data)
     },
     nativeBalance(){
       let d = _.defaultsDeep({}, this.balances.filter(item=>isNativeAsset(item))[0])

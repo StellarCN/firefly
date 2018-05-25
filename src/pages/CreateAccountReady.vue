@@ -17,8 +17,11 @@
       <div class="value">{{password}}</div>
       <div class="label">{{$t('Account.AccountAddress')}}</div>
       <div class="value" @click="copy(address)">{{address}}</div>
-      <div class="label">{{$t('SecretKey')}}</div>
-      <div class="value" @click="copy(seed)">{{seed}}</div>
+      <!-- <div class="label">{{$t('SecretKey')}}</div>
+      <div class="value" @click="copy(seed)">{{seed}}</div> -->
+      <div class="label">{{$t('mnemonic')}}</div>
+      <div class="value" @click="copy(mnemonic)">{{mnemonic}}</div>
+      
       <div class="qrcode">
         <qrcode :text="qrtext" :size="200" color="red"/>
       </div>
@@ -46,7 +49,7 @@
       </v-card>
     </v-dialog>
 
-    <!-- 密钥输入窗口 不再使用dialog-->
+    <!-- 密钥输入窗口 不再使用dialog  -->
     <div class="si-dlg" v-if="seedInputDlgShow">
       <toolbar :title="$t(title)" :showbackicon="showbackicon">
         <div class="si-text" slot="right-tool"  @click="showSkipDlg = true">
@@ -56,11 +59,51 @@
       
       <div class="si-bg">
         <div class="si-card">
-          <div class="headline">{{$t('Account.InputSecretKey')}}</div>
+          <div class="headline">{{$t('mnemonic')}}</div>
           <v-layout wrap>
             <v-flex xs12 sm6 md4>
-              <secret-key-input ref="secretkeyRef" disabled></secret-key-input>
+               <v-text-field 
+                required
+                :label="$t('mnemonicIndex',[randoms[0]])"
+                v-model="w0"
+                ></v-text-field>
             </v-flex>
+            <v-flex xs12 sm6 md4>
+              <v-text-field 
+                required
+                :label="$t('mnemonicIndex',[randoms[1]])"
+                v-model="w1"
+                ></v-text-field>
+            </v-flex>
+            <v-flex xs12 sm6 md4>
+               <v-text-field 
+                required
+                :label="$t('mnemonicIndex',[randoms[2]])"
+                v-model="w2"
+                ></v-text-field>
+            </v-flex>
+            <v-flex xs12 sm6 md4>
+              <v-text-field 
+                required
+                :label="$t('mnemonicIndex',[randoms[3]])"
+                v-model="w3"
+                ></v-text-field>
+            </v-flex>
+            <v-flex xs12 sm6 md4>
+              <v-text-field 
+                required
+                :label="$t('mnemonicIndex',[randoms[4]])"
+                v-model="w4"
+                ></v-text-field>
+            </v-flex>
+            <v-flex xs12 sm6 md4>
+              <v-text-field 
+                required
+                :label="$t('mnemonicIndex',[randoms[5]])"
+                v-model="w5"
+                ></v-text-field>
+            </v-flex>
+            
           </v-layout>
         </div>
 
@@ -71,6 +114,7 @@
       </div>
 
     </div>
+  
 
     <!-- 是否跳过验证窗口 -->
     <v-dialog v-model="showSkipDlg" max-width="95%" persistent>
@@ -139,7 +183,7 @@ import { mapState, mapActions} from 'vuex'
 import {address as genAddress} from '@/api/account'
 import QRCode from '@/components/QRCode'
 import Card from '@/components/Card'
-import { exportAccount } from '@/api/qr'
+import { exportAccount, exportMnemonic } from '@/api/qr'
 import Loading from '@/components/Loading'
 import SecretKeyInput from '@/components/SecretKeyInput'
 //import StellarHDWallet from 'stellar-hd-wallet'
@@ -172,6 +216,15 @@ export default {
       showSeedValidDlg: false,
       showSeedInValidDlg: false,
 
+      //校验助记词
+      randoms:[],//需要检查哪几个单词
+      w0: null,
+      w1: null,
+      w2: null,
+      w3: null,
+      w4: null,
+      w5: null,
+
 
     
     }
@@ -179,6 +232,8 @@ export default {
   computed:{
     ...mapState({
       seed: state => state.seed,
+      mnemonic: state => state.mnemonic,
+      mIndex: state => state.mIndex,
       name: state => state.accountname,
       password: state => state.accountpassword,
       extdata: state => state.seedExtData,
@@ -186,6 +241,9 @@ export default {
       isImportAccount: state => state.isImportAccount,
       isCreateAccount: state => state.isCreateAccount,
     }),
+    mnemonicItems(){
+        return this.mnemonic.split(' ');
+      },
     address(){
       if(this.seed){
         return genAddress(this.seed)
@@ -194,33 +252,21 @@ export default {
     },
     qrtext(){
       if(!this.seed)return ''
-      //类似于stargaza的格式
-      var data = {stellar:{name:this.name,key:this.seed}}
-      let account = defaultsDeep({
-        name: this.name,
-        address: genAddress(this.seed)
-      },this.extdata || {})
-      let accountData = {
-        seed: this.seed
-      }
-      return exportAccount(account,accountData)
+      return exportMnemonic(this.name,this.mnemonic)
       // return JSON.stringify(exportAccount(account,accountData))
     }
   
   },
   beforeMount () {
-    // const mnemonic = StellarHDWallet.generateMnemonic({
-    //   language: 'chinese_simplified',
-    // })
-    // console.log(mnemonic)
-    // console.log(typeof mnemonic)
-    // const wallet = StellarHDWallet.fromMnemonic(mnemonic)
-
-    // console.log(wallet.getPublicKey(0)) // => GDKYMXOAJ5MK4EVIHHNWRGAAOUZMNZYAETMHFCD6JCVBPZ77TUAZFPKT
-    //  console.log(wallet.getSecret(0)) // => SCVVKNLBHOWBNJYHD3CNROOA2P3K35I5GNTYUHLLMUHMHWQYNEI7LVED
-    //  console.log(wallet.getKeypair(0) )// => StellarBase.Keypair for account 0
     window.localStorage.setItem('login_flag','1')
     console.log(window.localStorage.getItem('login_flag'))
+
+    //生成6个助记词校验位
+    for(let i=0;i<6;i++){
+      this.genRadomInt();
+    }
+
+
   },
   mounted(){
     this.dialog = true;
@@ -228,6 +274,13 @@ export default {
   },
   methods: {
     ...mapActions(['createAccount','cleanGlobalState','coverAccount']),
+    genRadomInt(){
+      let n = parseInt(24 * Math.random())
+      if(this.randoms.indexOf(n) >= 0){
+          this.genRadomInt()
+      }
+      this.randoms.push(n)
+    },
     goback(){
       this.$router.back()
       //this.$router.push({name:'CreateAccount'})
@@ -247,17 +300,21 @@ export default {
       }
     },
     btnOKSeedInput(){
-      
-      this.seedInput = this.$refs.secretkeyRef.getSeed()
-      console.log(`------${this.seedInput}---`)
-      console.log(`---${this.seed}---`)
-      if(this.seed != this.seedInput){
-        //this.seedInputErr = 'Error.SeedWrong'
+      if(w0 && w0 === this.mnemonicItems[this.randoms[0]] &&
+           w1 && w1 === this.mnemonicItems[this.randoms[1]] &&
+           w2 && w2 === this.mnemonicItems[this.randoms[2]] &&
+           w4 && w3 === this.mnemonicItems[this.randoms[3]] &&
+           w4 && w4 === this.mnemonicItems[this.randoms[4]] &&
+           w5 && w5 === this.mnemonicItems[this.randoms[5]]    
+          ){
+        this.seedInputDlgShow = false
+        this.doSave();            
+      }else{
+
         this.showSeedInValidDlg = true
         return;
       }
-      this.seedInputDlgShow = false
-      this.doSave();
+
     },
     save(){
       //要求用户输入密钥，只有密钥输入正确才能继续进行
@@ -276,7 +333,14 @@ export default {
         this.coveringDlg = true
         return 
       }
-      let account = {name: this.name,address: this.address,seed: this.seed,password: this.password}
+      let account = {
+        name: this.name,
+        address: this.address,
+        seed: this.seed,
+        password: this.password,
+        mnemonic: this.mnemonic,
+        mIndex: this.mIndex,
+      }
       this.working = true
       this.dealok = false
       this.dealfail = false

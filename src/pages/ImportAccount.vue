@@ -22,8 +22,34 @@
       v-if="showScanner"></q-r-scan>
 
     <div class="content" v-if="!showScanner">
-      <div>
+      <div class="tabs pt-1 pb-1">
+        <span :class="'tab ma-1 pa-1 ' + ( importFlag===0 ? 'active':'' )" @click="changeImportFlag(0)">{{$t('importByMnemonic')}}</span>
+        <span :class="'tab ma-1 pa-1 ' + ( importFlag===1 ? 'active':'' )" @click="changeImportFlag(1)">{{$t('importBySeed')}}</span>
+      </div>
+      <div v-if="importFlag===1 ">
         <secret-key-input :enablePaste="true" :seed="scanSeed" ref="secretkeyRef"></secret-key-input>
+      </div>
+      <div v-if="importFlag === 0">
+        <v-text-field dark
+            :label="$t('mnemonic')"
+            v-model="mnemonic"
+            required
+            multi-line
+            clearable
+            class="seed-input"
+            @input="inputMnemonic"
+            rows=3
+            ></v-text-field>
+        <!--显示语言，用户可以选择-->
+        <div class="lang-tabs pt-1 pb-1">
+          <span :class="'tab pa-1 ma-1' + ( lang ==='english' ? ' active':'' )" @click="changeLang(english.lang)">{{english.label}}</span>
+          <span :class="'tab pa-1 ma-1' + ( lang ==='chinese_simplified' ? ' active':'' )" @click="changeLang(chinese_simplified.lang)">{{chinese_simplified.label}}</span>
+          <span :class="'tab pa-1 ma-1' + ( lang ==='chinese_traditional' ? ' active':'' )" @click="changeLang(chinese_traditional.lang)">{{chinese_traditional.label}}</span>
+        </div>
+        <!--根据mnemonic生成的密钥，用户可以点击确定用哪个-->、
+        <div class="seeds" v-if="genSeed">
+          <span class="mt-2 mb-2">{{genSeed}}</span>
+        </div>
       </div>
     </div>
     <div class="footer" v-if="!showScanner">
@@ -43,8 +69,11 @@
 import Toolbar from '@/components/Toolbar'
 import QRScan from '@/components/QRScan'
 import SecretKeyInput from '@/components/SecretKeyInput'
-import {importAccount,isValidSeed} from '@/api/account'
+import {importAccount,isValidSeed,fromMnemonic, validateMnemonic} from '@/api/account'
+import { getMnemonicFromData } from '@/api/qr' 
 import { mapState, mapActions} from 'vuex'
+import { EN, ZH_CN,ZH_HK } from '@/locales/index'
+import { isEnglishMnemonic, isChineseMnemonic } from '../api/account';
 export default {
   data(){
     return {
@@ -54,21 +83,43 @@ export default {
       scanSeed: null,
       scanSuccess: false,
       error:null,
+      mnemonic: null,
+      mIndex: 0,
+      lang: 'english',//助记词的语言版本
+      importFlag: 0,//0是助记词导入，1是密钥导入
+      english: {key: EN.key, label: EN.label, lang: 'english'},
+      chinese_simplified: {key: ZH_CN.key, label: ZH_CN.label, lang: 'chinese_simplified'},
+      chinese_traditional: {key: ZH_HK.key, label: ZH_HK.label, lang: 'chinese_traditional'},
     }
   },
   computed:{
     ...mapState({
-      seed: state => state.seed
+      seed: state => state.seed,
+      locale: state => state.app.locale,
     }),
     nextStepClass(){
       // if(this.seed === null || typeof this.seed === 'undefined'){
       //   return 'btn-unavailable'
       // }
       return 'btn-available'
+    },
+    genSeed(){
+      if(!this.mnemonic)return null;
+      if(!validateMnemonic(this.mnemonic, this.lang))return null;
+      return fromMnemonic(this.mnemonic, this.lang).getSecret(0);
     }
   },
   created(){
-    this.setNewSeed({seed: null,extdata:{}})
+    this.setNewSeed({seed: null,extdata:{}, mnemonic: null, mIndex: 0})
+    if(this.locale.key === EN.key){
+      this.lang = this.english.lang
+    }else if(this.locale.key === ZH_CN.key){
+      this.lang = this.chinese_simplified.lang
+    }else if(this.locale.key === ZH_CN.key){
+      this.lang = this.chinese_traditional.lang
+    }else{
+      this.lang = this.english.lang
+    }
   },
   mounted () {
   },
@@ -76,6 +127,15 @@ export default {
     ...mapActions({
       setNewSeed: 'setNewSeed'
     }),
+    changeImportFlag(flag){
+      this.importFlag = flag
+      if(flag === 0){
+        this.mnemonic = null
+        this.mIndex  = 0
+      }else{
+        this.$refs.secretkeyRef.reset()
+      }
+    },
     goback(){
       this.$router.back()
     },
@@ -98,6 +158,7 @@ export default {
       if(result.status){
         this.scanSeed = result.seed
         this.scanSuccess = true
+        this.importFlag = 1 //切换成密钥导入部分
         try{
           this.setNewSeed({seed:result.seed,extdata:result.data})
           // this.$refs.secretkeyRef.inputText(this.scanSeed)
@@ -105,6 +166,15 @@ export default {
         }catch(err){
           console.error(err)
         }
+        return true
+      }
+
+      result = getMnemonicFromData(text,this.lang)
+      if(result.status){
+        this.importFlag = 0
+        this.mnemonic = result.mnemonic
+        this.mIndex = 0
+        this.scanSeed = null
         return true
       }
       this.scanSuccess = false
@@ -115,7 +185,9 @@ export default {
       this.title = 'ImportAccount'
       try{
         this.$nextTick(()=>{
-          this.setSeedToInput()
+          if(this.importFlag === 1){
+            this.setSeedToInput()
+          }
         })
       }catch(err){
         console.error(err)
@@ -127,16 +199,40 @@ export default {
       this.title = 'ImportAccount'
     },
     nextStep(){
-      let seed = this.scanSuccess ? this.scanSeed : this.$refs.secretkeyRef.getSeed()
-      if(!isValidSeed(seed)){
-        this.$toasted.error(this.$t('Error.NotValidSeed'))
+      if(this.importFlag === 0){
+        if(validateMnemonic(this.mnemonic, this.lang)){
+          this.setNewSeed({seed: this.genSeed, mnemonic: this.mnemonic, mIndex: this.mIndex})
+          this.$router.push({name: 'CreateAccount'})
+          return
+        }
+        this.$toasted.error(this.$t('Error.SeedWrong'))
         return
+      }else if(this.importFlag === 1){
+        let seed = this.scanSuccess ? this.scanSeed : this.$refs.secretkeyRef.getSeed()
+        if(!isValidSeed(seed)){
+          this.$toasted.error(this.$t('Error.NotValidSeed'))
+          return
+        }
+        this.setNewSeed({seed})
+        this.$router.push({name: 'CreateAccount'})
       }
-      this.setNewSeed({seed})
-      this.$router.push({name: 'CreateAccount'})
+ 
     },
     setSeedToInput(){
       this.$refs.secretkeyRef.inputText(this.scanSeed)
+    },
+    changeLang(lang){
+      this.lang = lang
+    },
+    inputMnemonic(mnemonic){
+      if(isEnglishMnemonic(mnemonic)){
+        this.lang = 'english'
+        return;
+      }
+      if(isChineseMnemonic(mnemonic)){
+        this.lang = 'chinese_simplified'
+        return;
+      }
     }
 
   },
@@ -185,4 +281,13 @@ export default {
 .hidebackground
   background:none
   background-color: transparent
+.tabs
+  color: $primarycolor.font
+  .tab.active
+    color: $primarycolor.green
+.lang-tabs
+  color: $primarycolor.font
+  font-size: 14px
+  .tab.active
+    color: $primarycolor.green
 </style>

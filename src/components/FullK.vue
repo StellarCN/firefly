@@ -13,7 +13,7 @@
                 <i class="material-icons  k-icon">keyboard_arrow_left</i>
             </v-btn>
           </div>
-          <div :class="'flex3 textcenter ' + ( titleData.change >=0 ? 'up':'down') ">
+          <div :class="'flex3 textcenter ' + ( (titleData.change >=0 && redUpGreenDown ) ? 'down':'up') ">
               <div class="price textcenter">
                   <span class="price">{{titleData.price}}</span>
                   <span class="code">{{counter.code}}</span>
@@ -319,10 +319,10 @@ export default {
                     data: this.data,
                     itemStyle: {
                         normal: {
-                            color: '#14b143',
-                            color0: '#ef232a',
-                            borderColor: '#14b143',
-                            borderColor0: '#ef232a'
+                            color: this.upColor,
+                            color0: this.downColor,
+                            borderColor: this.upColor,
+                            borderColor0: this.downColor
                         },
                         emphasis: {
                             color: '#444',

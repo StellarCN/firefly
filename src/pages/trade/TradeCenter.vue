@@ -26,11 +26,12 @@
       ></picker>
       <card class="trade-card" margin="10px 0px" padding="2px 0px">
         <div class="flex-row textcenter" slot="card-content">
-          <div :class="'flex1 filter-tag ' + (filterTag==='All' ? 'active':'')" @click="doFilter('All')">{{$t('All')}}</div>
-          <div :class="'flex1 filter-tag ' + (filterTag==='XLM' ? 'active':'')" @click="doFilter('XLM')">XLM</div>
           <div :class="'flex1 filter-tag ' + (filterTag==='XCN' ? 'active':'')" @click="doFilter('XCN')">XCN</div>
+          <div :class="'flex1 filter-tag ' + (filterTag==='XFF' ? 'active':'')" @click="doFilter('XFF')">XFF</div>
+          <div :class="'flex1 filter-tag ' + (filterTag==='XLM' ? 'active':'')" @click="doFilter('XLM')">XLM</div>
           <div :class="'flex1 filter-tag ' + (filterTag==='BTC' ? 'active':'')" @click="doFilter('BTC')">BTC</div>
           <div :class="'flex1 filter-tag ' + (filterTag==='ETH' ? 'active':'')" @click="doFilter('ETH')">ETH</div>
+          <div :class="'flex1 filter-tag ' + (filterTag==='_CUSTOM' ? 'active':'')" @click="doFilter('_CUSTOM')">{{$t('custom')}}</div>
         </div>
       </card>
 
@@ -126,7 +127,7 @@ import {Decimal} from 'decimal.js'
 import Scroll from '@/components/Scroll'
 import { REMOVE_TRADEPAIR_KLINE_DATA } from '@/store/modules/AccountsStore' 
 
-const TAG_ALL = 'All', TAG_XCN = 'XCN', TAG_XLM = 'XLM', TAG_BTC = 'BTC', TAG_ETH = 'ETH'
+const TAG_ALL = 'All', TAG_XCN = 'XCN', TAG_XLM = 'XLM', TAG_BTC = 'BTC', TAG_ETH = 'ETH', TAG_CUSTOM = '_CUSTOM'
 
 
 export default {
@@ -180,16 +181,17 @@ export default {
     },
     pairs(){
       let result = []
-      for(let i=0,n=this.tradepairs.length;i<n;i++){
-        if(this.filterTag === TAG_ALL || this.tradepairs[i].to.code === this.filterTag){
-          result.push(Object.assign({tradepairIndex: i}, this.tradepairs[i]))
+      this.tradepairs.sys.forEach((item,index)=>{        
+        if(this.filterTag !== TAG_CUSTOM && (this.filterTag === TAG_ALL || item.to.code === this.filterTag)){
+          result.push(Object.assign({},item,{tradepairIndex: 'sys_'+i,index, custom: false}))
         }
-      }
+      })
+      this.tradepairs.custom.forEach((item,index)=>{
+        if(this.filterTag === TAG_CUSTOM || this.filterTag === TAG_ALL || item.to.code === this.filterTag){
+          result.push(Object.assign({}, item,{tradepairIndex: 'custom_'+i,index, custom: true}))
+        }
+      })
       return result
-      // return this.tradepairs.filter(item => {
-      //   if(this.filterTag === TAG_ALL) return true
-      //   return item.to.code === this.filterTag
-      // })
     },
     items(){
       if(!this.balances)return []
@@ -326,7 +328,7 @@ export default {
       if(this.delworking)return
       this.working = true
       this.delworking = true
-      this.deleteTradePair({index: index, tradepair: pair})
+      this.deleteTradePair({custom: pair.custom, index: pair.index, tradepair: pair})
           .then(data=>{
             this.$toasted.show(this.$t('Trade.DeleteTradePairSuccess'))
             this.working = false
@@ -344,7 +346,7 @@ export default {
       if(this.working)return
       this.working = true
       let tradepair = { from: pair.to, to: pair.from }
-      this.switchTradePair({index, tradepair})
+      this.switchTradePair({custom: pair.custom, index: pair.index, tradepair})
         .then(data=>{
             this.$toasted.show(this.$t('Trade.SwitchTradePairSuccess'))
             this.working = false
@@ -365,7 +367,7 @@ export default {
         })
     },
     trade(index,tradepair){
-      this.selectTradePair({index,tradepair})
+      this.selectTradePair({custom: tradepair.custom, index: tradepair.tradepairIndex, tradepair})
       this.$router.push({name: 'Trade'})
     },
     doFilter(tag){

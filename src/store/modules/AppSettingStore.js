@@ -19,6 +19,7 @@ const state = {
   myapps:[],//当前用户自定义的app
   price:[],//从自定义api查询到价格表
   isIos: false,//是否为ios
+  redUpGreenDown: true,//默认是否为红涨绿跌
 }
 
 const BLANK_USUAL = {name:null,address:null,memotype:null,memo:null}
@@ -49,6 +50,11 @@ const actions = {
   // 修改horizon配置
   async setHorizon({dispatch,commit},horizon){
     await dispatch('saveAppSetting', { horizon })
+  },
+
+  //=====修改红涨绿跌
+  async changeUpDownColor({dispatch ,commit }, redUpGreenDown){
+    await dispatch('saveAppSetting', {redUpGreenDown})
   },
 
   //=========联系人业务=================

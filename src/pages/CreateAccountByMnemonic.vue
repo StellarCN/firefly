@@ -18,7 +18,7 @@
               required
               append-icon='cached'
               :append-icon-cb="this.chooseName"
-            ></v-text-field>  
+            ></v-text-field>
       <v-text-field
               dark
               name="password"
@@ -57,8 +57,9 @@
 <script>
 import Toolbar from '../components/Toolbar'
 import { mapState, mapActions} from 'vuex'
-import { random,randomByMnemonic } from '../api/account'
+import { random,randomByMnemonic, fromMnemonic } from '../api/account'
 import { RandomPlanetsCount, RandomColorsCount } from '../locales/index'
+import { EN, ZH_CN,ZH_HK,ZH_TW } from '@/locales/index'
 const TITLE = 'CreateAccount'
 export default {
   data(){
@@ -77,6 +78,7 @@ export default {
       seed: state => state.seed,
       isImportAccount: state => state.isImportAccount,
       isCreateAccount: state => state.isCreateAccount,
+      locale: state => state.app.locale,
     }),
     nextStepClass(){
       if(this.name && this.password && this.repassword && this.password === this.repassword){
@@ -108,8 +110,20 @@ export default {
         this.setCreateAccountData({name:this.name,password:this.password})
         if(this.isCreateAccount){
           //创建账号
-          let seed = random()
-          this.setNewSeed(seed)
+          // let seed = random()
+          // this.setNewSeed(seed)
+          let key = this.locale.key || 'zh_cn'
+          let language = 'english'
+          if(ZH_CN.key === key){
+            language = 'chinese_simplified'
+          }else if(ZH_HK.key === key || ZH_TW.key === key){
+            language = 'chinese_traditional'
+          }
+          let mnemonic = randomByMnemonic(language)
+          let wallet = fromMnemonic(mnemonic, language)
+          let mIndex = 0
+          let seed = wallet.getSecret(mIndex);
+          this.setNewSeed({seed, mnemonic, mIndex})
         }
         this.$router.push({name:'CreateAccountReady'})
       }

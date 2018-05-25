@@ -179,7 +179,6 @@ export default {
       account: state => state.accounts.selectedAccount,
       accountData: state => state.accounts.accountData,
       assetAccounts: state => state.asset.assets,
-      tradepairs: state => state.accounts.accountData.tradepairs,
       selectedTrade: state => state.accounts.selectedTradePair.tradepair,
       selectedTradeIndex: state => state.accounts.selectedTradePair.index,
       assethosts: state => state.asset.assethosts,

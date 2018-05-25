@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-05-15 12:00:22
+ * @Last Modified time: 2018-05-25 17:55:07
  * @License: MIT 
  */
 <template>
@@ -15,7 +15,7 @@
                 <i class="material-icons  k-icon">keyboard_arrow_left</i>
             </v-btn>
           </div>
-          <div :class="'flex3 textcenter ' + ( titleData.change >=0 ? 'up':'down') ">
+          <div :class="'flex3 textcenter ' + ( (titleData.change >=0 && !redUpGreenDown) ? 'up':'down') ">
               <div class="price textcenter">
                   <span class="price">{{titleData.price}}</span>
                   <span class="code">{{counter.code}}</span>
@@ -165,6 +165,9 @@ export default {
         }
     },
     computed: {
+      ...mapState({
+          redUpGreenDown: state => state.app.redUpGreenDown,
+      }),
       titleData(){
           if(this.lastTradeAggregation){
             let price = new Decimal(this.lastTradeAggregation.close)//new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)

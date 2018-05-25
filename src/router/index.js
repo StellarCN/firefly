@@ -69,7 +69,7 @@ const router = new Router({
     {
       path: '/createaccount',
       name: 'CreateAccount',
-      component: resolve => require(['../pages/CreateAccount.vue'], resolve)
+      component: resolve => require(['../pages/CreateAccountByMnemonic.vue'], resolve)
     },
     {
       path: '/createaccountready',

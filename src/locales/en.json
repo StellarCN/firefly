@@ -70,14 +70,14 @@
   "Account.CreateAccountSuccess":"account creation successful",
   "Account.CreateAccountError":"error occured while creating account",
   "Account.InputSecretKey":"please input your secret key start with 'S'",
-  "Account.ConfirmSkip":"skip validate secret key ?",
-  "Account.SkipValidHint":"The loss due to the loss of secret key will be at your own risk. Are you sure to skip this step ?",
+  "Account.ConfirmSkip":"skip validate mnemonic ?",
+  "Account.SkipValidHint":"The loss due to the loss of mnemonic will be at your own risk. Are you sure to skip his step ?",
   "Account.Later":"Later",
-  "Account.SecretKeyValidHint":"secret key is valid.Please keep your secret key safe and start.",
+  "Account.SecretKeyValidHint":"mnemonic is valid. Please keep your mnemonic safely.  Start to use Firefly.",
   "Account.Start":"Start",
-  "Account.SecretKeyInValidHint":"secret key is wrong, please re-varify or back to last page to backup",
+  "Account.SecretKeyInValidHint":"mnemonic is wrong, please re-varify or back to last page to backup",
   "Account.ReVerify":"Re-Verify",
-  "Error.SeedWrong":"wrong secret key",
+  "Error.SeedWrong":"wrong mnemonic",
   "Account.AccountAddress":"address",
 
   "ManullayAddTrust":"Manully",
@@ -499,7 +499,15 @@
   "Error.NoTxToSign":"Error: no transaction to sign",
   "limit":"limit",
   "changeTrust":"change trust",
-  "allowTrust":"allow trust"
+  "allowTrust":"allow trust",
+  "mnemonic":"mnemonic",
+  "mnemonicIndex":"word {0}",
+  "importBySeed":"import by secret",
+  "importByMnemonic":"import by mnemonic",
+  "custom":"custom",
+  "color":"color",
+  "redUpGreenDown":"red up green down",
+  "greenUpRedDown":"green up red down"
 
  
 

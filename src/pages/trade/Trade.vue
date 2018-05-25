@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-05 10:51:54 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-04-26 16:37:58
+ * @Last Modified time: 2018-05-25 16:14:10
  * @License MIT 
  */
 <template>
@@ -74,7 +74,6 @@ export default {
       bids: state => state.accounts.selectedTradePair.bids,//买单
       asks: state => state.accounts.selectedTradePair.asks,//卖单
       my: state => state.accounts.selectedTradePair.my.records,
-      tradepairs: state => state.accounts.accountData.tradepairs,
       selectedTrade: state => state.accounts.selectedTradePair.tradepair,
       selectedTradeIndex: state => state.accounts.selectedTradePair.index,
       assethosts: state => state.asset.assethosts,

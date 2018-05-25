@@ -69,14 +69,14 @@
   "Account.CreateAccountError":"账户创建失败！",
   "Account.InputSecretKey":"请输入您以S开头的账户密钥",
   "Account.ConfirmSkip":"您确认跳过密钥验证？",
-  "Account.SkipValidHint":"因密钥遗失造成的资产损失，将由您个人承担，您确定跳过该步骤？",
+  "Account.SkipValidHint":"因助记词遗失造成的资产损失，将由您个人承担，您确定跳过该步骤？",
   "Account.Later":"再想想",
-  "Account.SecretKeyValidHint":"密钥验证已经通过。请妥善保管您的备份密钥，然后开始体验。",
+  "Account.SecretKeyValidHint":"助记词验证已经通过。请妥善保管您的备份助记词，然后开始体验。",
   "Account.Start":"开始体验",
-  "Account.SecretKeyUnValidHint":"密钥输入有误！请重新验证，或返回上一步重新备份。",
+  "Account.SecretKeyUnValidHint":"助记词输入有误！请重新验证，或返回上一步重新备份。",
   "Account.ReVerify":"重新验证",
 
-  "Error.SeedWrong":"密钥错误",
+  "Error.SeedWrong":"助记词错误",
 
   "Account.AccountAddress":"账户地址",
 
@@ -491,7 +491,15 @@
   "Error.NoTxToSign":"错误：没有事务需要签名",
   "limit":"额度",
   "changeTrust":"授信",
-  "allowTrust":"允许授信"
+  "allowTrust":"允许授信",
+  "mnemonic":"助记词",
+  "mnemonicIndex":"第{0}个助记词",
+  "importBySeed":"导入密钥",
+  "importByMnemonic":"导入助记词",
+  "custom":"自定义",
+  "color":"颜色",
+  "redUpGreenDown":"红涨绿跌",
+  "greenUpRedDown":"绿涨红跌"
 
  
  
