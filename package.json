@@ -77,7 +77,10 @@
     "vuedraggable": ">=2.16.0",
     "vuetify": "^1.0.16",
     "vuex": ">=2.4.0",
-    "xml2js": "^0.4.19"
+    "xml2js": "^0.4.19",
+    "bip39": "^2.4.0",
+    "create-hmac": "^1.1.6",
+    "js-nacl": "^1.2.2"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
