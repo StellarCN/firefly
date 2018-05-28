@@ -18,7 +18,7 @@ export const FFW_EVENT_TYPE_RECOVERY = 'recovery'
 export const FFW_EVENT_TYPE_TRUST = 'trust'
 export const FFW_EVENT_TYPE_SIGNXDR = 'signXDR'
 
-export function FFWScript(address, data = {}, isIos = false){
+export function FFWScript(address, data = {}, isIos = false, platform){
   // return [
   //   'if(!window.FFW){'
   //     ,'window.FFW = {};'
@@ -31,7 +31,6 @@ export function FFWScript(address, data = {}, isIos = false){
   let method = isIos ? 'window.webkit.messageHandlers.cordova_iab' : 'cordova_iab'
   let appdata = Object.assign({contacts:[], myaddresses:[]},data);
   let version = pkg.version
-  let platform = isios ? 'ios' : 'android'
   return `if(!window.FFW){
       window.FFW = {};
       FFW.version = "${version}";

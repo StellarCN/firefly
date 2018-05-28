@@ -254,7 +254,7 @@ export default {
         let contacts = this.allcontacts
         let myaddresses = this.myaddresses
         let isIos = "ios" === cordova.platformId
-        let script = FFWScript(this.account.address, {contacts,myaddresses} ,isIos)
+        let script = FFWScript(this.account.address, {contacts,myaddresses} ,isIos, cordova.platformId)
         // alert(script)
         this.appInstance.executeScript({ code: script },params => {
           //console.log(params)
@@ -282,7 +282,7 @@ export default {
           that.appEventData = e.data
           that.hideDapp()
         }
-      },300))
+      },3000))
     },
     hideDapp(e){
       this.appInstance.hide()
@@ -303,7 +303,7 @@ export default {
       //签名
       let data = e.data.data
       if(!isJson(data)){
-        this.doCallbackEvent(this.callbackData('fail','data is invalid'))
+        return this.doCallbackEvent(this.callbackData('fail','data is invalid'))
       }
       if(data){
         let cdata = signToBase64(this.accountData.seed, data)
