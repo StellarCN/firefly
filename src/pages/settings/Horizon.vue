@@ -20,6 +20,19 @@
 
             <v-container fluid grid-list-md>
             <v-layout row wrap>
+              <v-flex d-flex xs12 sm6 md3 @click="changeHorizon(fchain)">
+                  <v-flex d-flex xs11>
+                    <v-layout row wrap>
+                      <v-flex d-flex xs12 class='label'>{{$t('fchainHorizon')}}</v-flex>
+                      <v-flex d-flex xs12 class="value">{{fchain}}</v-flex>
+                    </v-layout>
+                  </v-flex>
+                  <v-flex xs1 class='select'>
+                    <i class="iconfont horizon icon-dot1" v-if="horizon === fchain"></i>
+                    <i class="iconfont horizon icon-dot" v-else></i>
+                  </v-flex>
+              </v-flex>
+
               <v-flex d-flex xs12 sm6 md3 @click="changeHorizon(stellar)">
                   <v-flex d-flex xs11>
                     <v-layout row wrap>
@@ -96,7 +109,7 @@
 import Toolbar from '@/components/Toolbar'
 import Card from '@/components/Card'
 import { mapState, mapActions} from 'vuex'
-import { OFFICIAL_HORIZON,CHINA_HORIZON,WANCLOUD_HORIZON } from '@/api/horizon'
+import { OFFICIAL_HORIZON,CHINA_HORIZON,WANCLOUD_HORIZON,FCHAIN_HORIZON } from '@/api/horizon'
 import { getAddressPinInfo } from '@/api/gateways'
 import * as accountapi from '@/api/account'
 export default {
@@ -130,6 +143,9 @@ export default {
     },
     wancloud(){
       return WANCLOUD_HORIZON
+    },
+    fchain(){
+      return FCHAIN_HORIZON
     }
   
   },

@@ -53,6 +53,7 @@ import { getFchainRss } from '@/api/fchain'
 import initCordovaPlugin from '@/libs/pkgs/initCordovaPlugin'
 import updateMixin from '@/mixins/update'
 import { PLATFORM_IS_IOS } from '@/store/modules/AppSettingStore'
+import { FCHAIN_HORIZON } from '@/api/horizon'
 
 export default {
   data() {
@@ -142,6 +143,11 @@ export default {
         .then(locale => {
           this.devicelang = locale;
           this.$i18n.locale = this.devicelang.key
+          //下次更新后直接使用默认的fchain，horizon
+          if(!localStorage.getItem('horizon')){
+            localStorage.setItem('horizon',1)
+            return this.loadAppSetting({horizon: FCHAIN_HORIZON})
+          }
           return this.loadAppSetting();
         })
         .then(data => {
