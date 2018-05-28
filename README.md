@@ -54,6 +54,8 @@ firefly is a mobile wallet for [Stellar](https://stellar.org) network. It suppor
 
 # firefly depend on cordova7.x
 npm i -g cordova@7.1.0
+npm install -g cordova-hot-code-push-cli
+
 
 git clone https://github.com/stellarcn/firelfy.git
 cd firefly

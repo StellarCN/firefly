@@ -53,6 +53,7 @@
 
 # 需要安装cordova7.x的版本
 npm i -g cordova@7.1.0
+npm install -g cordova-hot-code-push-cli
 git clone https://github.com/stellarcn/firelfy.git
 cd firefly
 npm i
