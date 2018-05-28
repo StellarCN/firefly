@@ -379,7 +379,8 @@ export default {
           this.hideLoading()
           //this.$toasted.show(this.$t('Trade.OfferSuccess'))
           this.loadingTitle = this.$t('Trade.OfferSuccess')
-          this.queryMyOffers()
+          this.queryMyOffers();
+
         })
         .catch(err=>{
           console.log(err)

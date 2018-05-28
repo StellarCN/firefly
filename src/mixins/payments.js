@@ -10,7 +10,7 @@ export default {
 
   computed: {
     ...mapState({
-      account: state => state.accounts.selectedAccount,
+      account: state => state.accounts.selectedAccount
     }),
     ...mapGetters([
       'balances',

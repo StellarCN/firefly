@@ -242,7 +242,7 @@ const actions = {
   },
 
   //保存默认交易对
-  saveDefaultTradePairs({commit,state}){
+  async saveDefaultTradePairs({commit,state}){
     let sys = await getDefaultTradePairs()
     let pairs = { sys, custom: []}
     await saveTradePairData(pairs)

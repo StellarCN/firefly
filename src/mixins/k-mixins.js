@@ -59,7 +59,7 @@ export default {
             lastTrade:null,
             tradeInterval: null,//查询最新一次交易数据的interval
             
-            showKgraph: true,
+            showKgraph: true
         }
     },
     props: {
@@ -91,7 +91,7 @@ export default {
     },
     computed: {
       ...mapState({
-        redUpGreenDown: state => state.app.redUpGreenDown,
+        redUpGreenDown: state => state.app.redUpGreenDown
       }),
       upColor(){
         return this.redUpGreenDown ? '#14b143' : '#ef232a'
@@ -138,7 +138,7 @@ export default {
     methods: {
 
         ...mapActions({
-            getAccountInfo: 'getAccountInfo',
+            getAccountInfo: 'getAccountInfo'
         }),
         reload(){
             this.cleanData()

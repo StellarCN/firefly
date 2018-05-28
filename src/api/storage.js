@@ -7,7 +7,7 @@ var Promise = require('es6-promise').Promise
 import * as localstorage from './localstorage'
 import * as sqlstorage from './sqlstorage'
 import { newServer } from './server'
-import { OFFICIAL_HORIZON } from './horizon'
+import { OFFICIAL_HORIZON,FCHAIN_HORIZON } from './horizon'
 
 export const FILENAME_ACCOUNTS = 'accounts.firefly'
 export const FILENAME_LOCK = 'lock.firefly'
@@ -95,7 +95,7 @@ export function saveAppSetting(setting){
         //重新设置server
         return new Promise((resolve,reject)=>{
           try{
-            newServer(setting.horizon || OFFICIAL_HORIZON)
+            newServer(setting.horizon || FCHAIN_HORIZON)
             resolve()
           }catch(err){
             reject(err)
@@ -111,7 +111,7 @@ export function readAppSetting(){
       //重新设置server
       return new Promise((resolve,reject)=>{
         try{
-          newServer(settings.horizon || OFFICIAL_HORIZON)
+          newServer(settings.horizon || FCHAIN_HORIZON)
           resolve(settings)
         }catch(err){
           reject(err)

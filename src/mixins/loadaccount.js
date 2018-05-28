@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-31 09:07:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-05-22 11:40:49
+ * @Last Modified time: 2018-05-28 14:21:13
  * @License MIT 
  */
 import { mapState,mapActions,mapGetters } from 'vuex'
@@ -14,7 +14,7 @@ export default {
 
   computed: {
     ...mapState({
-      account: state => state.accounts.selectedAccount,
+      account: state => state.accounts.selectedAccount
     }),
   },
   beforeMount () {
@@ -98,7 +98,7 @@ export default {
       // let process = [this.getAccountInfo(address),this.getPayments(address)]
       //console.log(process)
       return Promise.all([this.getAccountInfo(this.account.address)]) //,this.getPayments(this.account.address)])
-    },
+    }
   }
 
 

@@ -290,9 +290,15 @@ export default {
       cancelOffer(this.accountData.seed,item)
         .then(data=>{
           this.$toasted.show(this.$t('Trade.CancelOfferSuccess'))
-          this.queryMyOffers()
           this.working = false
           this.delindex = -1
+          //this.queryMyOffers()
+          //查询盘面
+          try{
+            this.load()
+          }catch(err){
+            console.error(err)
+          }
         })
         .catch(err=>{
           console.log('-----cancel----- error-----')
