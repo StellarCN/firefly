@@ -68,7 +68,7 @@
   "Account.CreateAccountSuccess":"账户创建成功!",
   "Account.CreateAccountError":"账户创建失败！",
   "Account.InputSecretKey":"请输入您以S开头的账户密钥",
-  "Account.ConfirmSkip":"您确认跳过密钥验证？",
+  "Account.ConfirmSkip":"您确认跳过助记词验证？",
   "Account.SkipValidHint":"因助记词遗失造成的资产损失，将由您个人承担，您确定跳过该步骤？",
   "Account.Later":"再想想",
   "Account.SecretKeyValidHint":"助记词验证已经通过。请妥善保管您的备份助记词，然后开始体验。",
@@ -501,7 +501,10 @@
   "redUpGreenDown":"红涨绿跌",
   "greenUpRedDown":"绿涨红跌",
   "viewMnemonic":"查看助记词",
-  "fchainHorizon":"萤火官方地址"
+  "fchainHorizon":"萤火官方地址",
+  "validateMnemonic":"请输入相应的助记词进行验证",
+  "Warning_mnemonic_msg":"账户助记词为重要信息，请做好备份并谨慎保存，勿与他人分享",
+  "no_mnemonic_msg":"没有助记词!"
 
  
  

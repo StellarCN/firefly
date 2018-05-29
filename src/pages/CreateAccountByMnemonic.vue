@@ -41,7 +41,12 @@
       <div class="hint">{{$t('Account.CreateAccountHint')}}</div>
     </div>
     <div class="footer">
-      <v-layout row wrap>
+      <v-layout row wrap v-if="working">
+        <v-flex xs12 class="text-center">
+          <v-progress-circular indeterminate color="primary"></v-progress-circular>
+        </v-flex>
+      </v-layout>
+      <v-layout row wrap v-else>
         <v-flex xs6 @click="goback">
           <span>{{$t('Return')}}</span>
         </v-flex>
@@ -71,6 +76,7 @@ export default {
       repassword: null,
       pwdvisible: false,
       repwdvisible: false,
+      working: false,
     }
   },
   computed:{
@@ -106,7 +112,9 @@ export default {
       this.$router.back()
     },
     nextStep(){
+      if(this.working)return
       if(this.name && this.password && this.repassword && this.password === this.repassword){
+        this.working = true
         this.setCreateAccountData({name:this.name,password:this.password})
         if(this.isCreateAccount){
           //创建账号
@@ -123,9 +131,11 @@ export default {
           let wallet = fromMnemonic(mnemonic, language)
           let mIndex = 0
           let seed = wallet.getSecret(mIndex);
+          console.log({seed, mnemonic, mIndex})
           this.setNewSeed({seed, mnemonic, mIndex})
         }
         this.$router.push({name:'CreateAccountReady'})
+        this.working = false
       }
     },
   },

@@ -106,6 +106,17 @@ const actions = {
     dispatch('cleanAccount')
     dispatch('getAccountInfo', address)
   },
+
+  /**
+   * 校验密码是否正确
+   */
+  async checkAccountPWD({dispatch, commit, state}, {index, address, password}){
+    let data = await readAccountData(address,password)
+    commit(CHANGE_ACCOUNT, { index, address, password, accountdata:data} )
+    dispatch('getAccountInfo', address)
+  },
+  
+
   /**
    * 无密码切换账户（只能查询）
    * @param {Object} param0  vuex参数
@@ -134,10 +145,10 @@ const actions = {
     dispatch('cleanAccount')
   },
   //使用助记词创建账户
-  async createAccountByMnemonic({dispatch, commit, state}, {name, address, seed, mnemonic, index, password, memo}){
+  async createAccountByMnemonic({dispatch, commit, state}, {name, address, seed, mnemonic, mIndex, password, memo}){
     let newaccount = {name,address,memo}
     // let tradepairs = getDefaultTradePairs()
-    let newaccountdata = Object.assign({},BLANK_ACCOUNT, {mnemonic, mIndex: index, seed })
+    let newaccountdata = Object.assign({},BLANK_ACCOUNT, {mnemonic, mIndex, seed })
     let data = [...state.data,newaccount]
     let accounts = {data: data, selected: (data.length-1) }
     console.log('---create account')
@@ -233,9 +244,10 @@ const actions = {
       pairs.sys[index] = tradepair
     }
     await saveTradePairData(pairs)
-    commit(LOAD_ACCOUNT_DATA,pairs)
+    commit(LOAD_TRADEPAIRS,pairs)
+    // commit(LOAD_ACCOUNT_DATA,pairs)
+    
   },
-
   // 选中某个交易对
   selectTradePair({commit,state},{custom, index,tradepair}){
     commit(SELECT_TRADE_PAIR,{custom, index, tradepair})
@@ -244,9 +256,11 @@ const actions = {
   //保存默认交易对
   async saveDefaultTradePairs({commit,state}){
     let sys = await getDefaultTradePairs()
-    let pairs = { sys, custom: []}
+    let custom = state.tradepairs.custom || []
+    let pairs = { sys, custom}
     await saveTradePairData(pairs)
-    commit(LOAD_ACCOUNT_DATA,pairs)
+    // pairs = readTradePairData()
+    commit(LOAD_TRADEPAIRS,pairs)
   },
 
 

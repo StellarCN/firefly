@@ -501,9 +501,10 @@
   "redUpGreenDown":"紅漲綠跌",
   "greenUpRedDown":"綠漲紅跌",
   "viewMnemonic":"查看助記詞",
-  "fchainHorizon":"螢火官方地址"
+  "fchainHorizon":"螢火官方地址",
+  "validateMnemonic":"請輸入相應的助記詞進行驗證",
+  "Warning_mnemonic_msg":"賬戶助記詞為重要信息，請做好備份並謹慎保存，勿與他人分享",
+  "no_mnemonic_msg":"没有助記詞!"
   
- 
-
 
 }

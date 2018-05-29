@@ -46,7 +46,7 @@
           <span :class="'tab pa-1 ma-1' + ( lang ==='chinese_simplified' ? ' active':'' )" @click="changeLang(chinese_simplified.lang)">{{chinese_simplified.label}}</span>
           <span :class="'tab pa-1 ma-1' + ( lang ==='chinese_traditional' ? ' active':'' )" @click="changeLang(chinese_traditional.lang)">{{chinese_traditional.label}}</span>
         </div>
-        <!--根据mnemonic生成的密钥，用户可以点击确定用哪个-->、
+        <!--根据mnemonic生成的密钥，用户可以点击确定用哪个-->
         <div class="seeds" v-if="genSeed">
           <span class="mt-2 mb-2">{{genSeed}}</span>
         </div>
@@ -133,7 +133,9 @@ export default {
         this.mnemonic = null
         this.mIndex  = 0
       }else{
-        this.$refs.secretkeyRef.reset()
+        this.$nextTick(()=>{
+          this.$refs.secretkeyRef.reset()
+        })
       }
     },
     goback(){

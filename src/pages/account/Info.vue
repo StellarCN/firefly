@@ -132,11 +132,15 @@
       <!-- 查看助记词 -->
        <div class="text-xs-center" v-if="showMnemonicSheet">
           <v-bottom-sheet v-model="showMnemonicSheet" dark>
-            <v-list >
-              <v-subheader class="info_warning_msg_style">{{$t("Warning_msg")}}</v-subheader>
+            <v-list v-if="mnemonic">
+              <v-subheader class="info_warning_msg_style">{{$t("Warning_mnemonic_msg")}}</v-subheader>
               <v-subheader class="info_account_miyao_style">{{$t("mnemonic")}}</v-subheader>
               <v-subheader @click="copy(mnemonic)"  class="info_showaccount_address_style">{{mnemonic}}</v-subheader>
               <qrcode class="info_qrcode_style" :text="qrmnemonictext" :callback="qrcodecallback" color="red"/>
+              <v-subheader class="info_account_close_style" @click="change_value0f_vk">{{$t("Close")}}</v-subheader>
+            </v-list>
+            <v-list v-else>
+              <v-subheader class="info_warning_msg_style">{{$t("no_mnemonic_msg")}}</v-subheader>
               <v-subheader class="info_account_close_style" @click="change_value0f_vk">{{$t("Close")}}</v-subheader>
             </v-list>
           </v-bottom-sheet>
@@ -233,6 +237,7 @@ const ACTION_VIEWSECRET = 'viewSecret'
 const ACTION_RESET_PASSWORD = 'resetpassword';
 const QUESTION_DELETE_ACCOUNT = 'Q.DeleteAccount';
 const QUESTION_RESET_PASSWORD = 'Q.ResetPassword';
+const ACTION_VIEW_MNEMONIC = 'mnemonic'
 
 export default {
   data(){
@@ -443,6 +448,11 @@ export default {
       this.isC=true;
     },
     toViewMnemonic(){
+      this.showPwdSheet = true
+      this.inpassword = null
+      this.action = ACTION_VIEW_MNEMONIC
+    },
+    showMnemonicDlg(){
       this.showMnemonicSheet = true;
       this.isB=false;
       this.isC=true;
@@ -508,6 +518,8 @@ export default {
               }else if(this.action === ACTION_VIEWSECRET){
                 this.showseed = true
                 this.viewkey()
+              }else if(this.action === ACTION_VIEW_MNEMONIC){
+                this.showMnemonicDlg()
               }
               
             }else{

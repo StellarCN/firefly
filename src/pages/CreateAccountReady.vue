@@ -59,47 +59,47 @@
       
       <div class="si-bg">
         <div class="si-card">
-          <div class="headline">{{$t('mnemonic')}}</div>
+          <div class="headline textcenter">{{$t('validateMnemonic')}}</div>
           <v-layout wrap>
             <v-flex xs12 sm6 md4>
                <v-text-field 
                 required
-                :label="$t('mnemonicIndex',[randoms[0]])"
+                :label="$t('mnemonicIndex',[randoms[0]+1])"
                 v-model="w0"
                 ></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md4>
               <v-text-field 
                 required
-                :label="$t('mnemonicIndex',[randoms[1]])"
+                :label="$t('mnemonicIndex',[randoms[1]+1])"
                 v-model="w1"
                 ></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md4>
                <v-text-field 
                 required
-                :label="$t('mnemonicIndex',[randoms[2]])"
+                :label="$t('mnemonicIndex',[randoms[2]+1])"
                 v-model="w2"
                 ></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md4>
               <v-text-field 
                 required
-                :label="$t('mnemonicIndex',[randoms[3]])"
+                :label="$t('mnemonicIndex',[randoms[3]+1])"
                 v-model="w3"
                 ></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md4>
               <v-text-field 
                 required
-                :label="$t('mnemonicIndex',[randoms[4]])"
+                :label="$t('mnemonicIndex',[randoms[4]+1])"
                 v-model="w4"
                 ></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md4>
               <v-text-field 
                 required
-                :label="$t('mnemonicIndex',[randoms[5]])"
+                :label="$t('mnemonicIndex',[randoms[5]+1])"
                 v-model="w5"
                 ></v-text-field>
             </v-flex>
@@ -265,7 +265,8 @@ export default {
     for(let i=0;i<6;i++){
       this.genRadomInt();
     }
-
+    //对助记词进知排序
+    this.randoms = this.randoms.sort((a,b)=> a-b)
 
   },
   mounted(){
@@ -273,7 +274,7 @@ export default {
     
   },
   methods: {
-    ...mapActions(['createAccount','cleanGlobalState','coverAccount']),
+    ...mapActions(['createAccount','createAccountByMnemonic','cleanGlobalState','coverAccount']),
     genRadomInt(){
       let n = parseInt(24 * Math.random())
       if(this.randoms.indexOf(n) >= 0){
@@ -300,12 +301,12 @@ export default {
       }
     },
     btnOKSeedInput(){
-      if(w0 && w0 === this.mnemonicItems[this.randoms[0]] &&
-           w1 && w1 === this.mnemonicItems[this.randoms[1]] &&
-           w2 && w2 === this.mnemonicItems[this.randoms[2]] &&
-           w4 && w3 === this.mnemonicItems[this.randoms[3]] &&
-           w4 && w4 === this.mnemonicItems[this.randoms[4]] &&
-           w5 && w5 === this.mnemonicItems[this.randoms[5]]    
+      if(this.w0 && this.w0 === this.mnemonicItems[this.randoms[0]] &&
+           this.w1 && this.w1 === this.mnemonicItems[this.randoms[1]] &&
+           this.w2 && this.w2 === this.mnemonicItems[this.randoms[2]] &&
+           this.w4 && this.w3 === this.mnemonicItems[this.randoms[3]] &&
+           this.w4 && this.w4 === this.mnemonicItems[this.randoms[4]] &&
+           this.w5 && this.w5 === this.mnemonicItems[this.randoms[5]]    
           ){
         this.seedInputDlgShow = false
         this.doSave();            
@@ -347,7 +348,7 @@ export default {
       this.showLoading = true
       this.loadingTitle = null
       this.loadingMsg = null
-      this.createAccount(account)
+      this.createAccountByMnemonic(account)
         .then(data=>{
          this.ok()
          //this.$toasted.show(this.$t('Account.CreateAccountSuccess'));

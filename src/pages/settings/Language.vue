@@ -63,7 +63,7 @@ export default {
       this.$router.back()
     },
     isChosed(item){
-      if(item.key === this.app.locale.key){
+      if(this.app.locale && item.key === this.app.locale.key){
         return true
       }
       return false
