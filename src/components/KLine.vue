@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-26 15:59:49 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-05-25 17:51:18
+ * @Last Modified time: 2018-05-29 14:27:27
  * @License MIT 
  */
 
@@ -110,7 +110,7 @@ export default {
         },
         //位于交易对中的索引值
         tradepairIndex: {
-            type: Number,
+            type: String,
             required: true
         }
     },

@@ -34,7 +34,7 @@
           <div :class="'flex1 filter-tag ' + (filterTag==='_CUSTOM' ? 'active':'')" @click="doFilter('_CUSTOM')">{{$t('custom')}}</div>
         </div>
       </card>
-
+     
       <card class="trade-card" padding="0px 0px">
         <div class="card-content trade-card-content" slot="card-content">
           <scroll :refresh="refresh" :readLabelTxt="readLabelTxt">
@@ -46,7 +46,8 @@
                     right: () => selectedItem = null
                   }"
               >
-              <v-layout class="pair-wrapper" row  v-swiper=1.5 @click="trade(index,pair)">
+
+              <v-layout class="pair-wrapper" row :swiper="pair.custom ? 1.5:0" @click="trade(index,pair)">
                 <v-flex xs4>
                   <div class="flex-row">
                     <div class="flex3 from-wrapper">
@@ -76,9 +77,8 @@
                     :ref="'kline'+pair.tradepairIndex"
                     ></k-line>
                 </v-flex>
-
               </v-layout>
-              <div class="operate-box">
+              <div class="operate-box" v-if="pair.custom">
                 <div class="del" @click="del(index,pair)">
                   <div class="refreshimg" v-if="delworking"></div>
                   <div v-else>{{$t('Delete')}}</div>
@@ -126,6 +126,7 @@ var moment = require('moment')
 import {Decimal} from 'decimal.js'
 import Scroll from '@/components/Scroll'
 import { REMOVE_TRADEPAIR_KLINE_DATA } from '@/store/modules/AccountsStore' 
+import { getDefaultTradePairs } from '@/api/gateways'
 
 const TAG_ALL = 'All', TAG_XCN = 'XCN', TAG_XLM = 'XLM', TAG_BTC = 'BTC', TAG_ETH = 'ETH', TAG_CUSTOM = '_CUSTOM'
 
@@ -143,7 +144,7 @@ export default {
       snackbarText: '',
       snackbar: false,
       snackbarColor: 'primary',
-      filterTag: TAG_ALL,
+      filterTag: TAG_XCN,
 
       showaccountsview: false,
 
@@ -155,7 +156,7 @@ export default {
     ...mapState({
       account: state => state.accounts.selectedAccount,
       accountData: state => state.accounts.accountData,
-      tradepairs: state => state.accounts.accountData.tradepairs,
+      tradepairs: state => state.accounts.tradepairs,
       islogin: state => state.accounts.accountData.seed ? true:false,
       assethosts: state => state.asset.assethosts,
       notfunding: state => state.account.account_not_funding,
@@ -181,14 +182,15 @@ export default {
     },
     pairs(){
       let result = []
+      if(this.filterTag === TAG_CUSTOM){
+        this.tradepairs.custom.forEach((item,index)=>{
+          result.push(Object.assign({}, item,{tradepairIndex: 'custom_'+index, custom: true}))
+        })
+        return result
+      }
       this.tradepairs.sys.forEach((item,index)=>{        
-        if(this.filterTag !== TAG_CUSTOM && (this.filterTag === TAG_ALL || item.to.code === this.filterTag)){
-          result.push(Object.assign({},item,{tradepairIndex: 'sys_'+i,index, custom: false}))
-        }
-      })
-      this.tradepairs.custom.forEach((item,index)=>{
-        if(this.filterTag === TAG_CUSTOM || this.filterTag === TAG_ALL || item.to.code === this.filterTag){
-          result.push(Object.assign({}, item,{tradepairIndex: 'custom_'+i,index, custom: true}))
+        if(this.filterTag === TAG_ALL || item.to.code === this.filterTag){
+          result.push(Object.assign({},item,{tradepairIndex: 'sys_'+index, custom: false}))
         }
       })
       return result
@@ -223,11 +225,15 @@ export default {
     },
 
   },
+  beforeMount(){
+    //保存默认的交易对
+    this.saveDefaultTradePairs()
+  },
   mounted(){
-    if(!this.islogin){
-      this.$refs.toolbar.showPasswordLogin()
-      return
-    }
+    // if(!this.islogin){
+    //   this.$refs.toolbar.showPasswordLogin()
+    //   return
+    // }
 
   },
   methods: {
@@ -236,7 +242,8 @@ export default {
       createNewTradePair: 'addTradePair',
       switchTradePair: 'switchTradePair',
       selectTradePair: 'selectTradePair',
-      getAssetsAccount: 'assetsAccount'
+      getAssetsAccount: 'assetsAccount',
+      saveDefaultTradePairs: 'saveDefaultTradePairs',
 
     }),
 
@@ -368,6 +375,7 @@ export default {
     },
     trade(index,tradepair){
       this.selectTradePair({custom: tradepair.custom, index: tradepair.tradepairIndex, tradepair})
+      console.log('-------111-----22---')
       this.$router.push({name: 'Trade'})
     },
     doFilter(tag){

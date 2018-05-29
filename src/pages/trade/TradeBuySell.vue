@@ -9,13 +9,21 @@
     <loading :show="working" :loading="sending" :success="sendsuccess" :fail='sendfail' 
       :color="isSell?'red':'green'" :title="loadingTitle" :msg="loadingError" :closeable="sendfail" @close="hiddenLoading"/>
 
+      <!--盘面
+      <order-book ref="orderbook"  @choose="choose"/>
+      -->
+      <div class="maintent orderbook-content">
+        <order-book-lite ref="orderbook"  @choose="choose"/>
+      </div>
+      
+
     <!--买卖切换-->
-    <div class="flex-row full-width tmenu">
+    <div class="flex-row full-width tmenu input-menu">
       <div :class="'flex1 textcenter' + ( isBuy ? ' active':'' )" @click="switchBuy">{{$t('Trade.Buy')}}</div>
       <div :class="'flex1 textcenter' + ( isSell ? ' active':'' )" @click="switchSell">{{$t('Trade.Sell')}}</div>
     </div>
 
-    <div class="content">
+    <div class="content input-content">
       <card class="mytrade" padding="10px 10px">
         <div class="card-content" slot="card-content">
           
@@ -74,13 +82,7 @@
         </div>
       </card>
 
-      <!--盘面
-      <order-book ref="orderbook"  @choose="choose"/>
-      -->
-      <div class="maintent">
-        <order-book-lite ref="orderbook"  @choose="choose"/>
-      </div>
-      
+    
 
        <!-- 买卖按钮 -->
       <div class="flex-row full-width footer-btns">
@@ -131,7 +133,7 @@
       </v-bottom-sheet>
       </div>
     </div>
-
+    <password-sheet v-if="needpwd" @cancel="cancelpwd" @ok="rightPwd" />
   </div>
 </template>
 
@@ -142,6 +144,7 @@ import OrderBook from '@/components/OrderBook'
 import OrderBookLite from '@/components/OrderBookLite'
 import Loading from '@/components/Loading'
 import TradePairToolBar from '@/components/TradePairToolBar'
+import PasswordSheet from '@/components/PasswordSheet'
 import { offer as doOffer } from '@/api/offer'
 import { mapState, mapActions, mapGetters} from 'vuex'
 import { getAsset, isNativeAsset } from '@/api/assets'
@@ -171,6 +174,7 @@ export default {
       showConfirmSheet: false,
       loadingTitle: null,
       loadingError: null,
+      needpwd: false,
 
     }
   },
@@ -182,6 +186,7 @@ export default {
       selectedTrade: state => state.accounts.selectedTradePair.tradepair,
       selectedTradeIndex: state => state.accounts.selectedTradePair.index,
       assethosts: state => state.asset.assethosts,
+      islogin: state => state.accounts.accountData.seed ? true:false,
     }),
     ...mapGetters([
       'balances',
@@ -246,6 +251,9 @@ export default {
   },
   beforeMount () {
     this.flag = this.$route.params.flag
+    if(!this.islogin){
+      this.needpwd = true
+    }
   },
   methods: {
     ...mapActions({
@@ -561,10 +569,15 @@ export default {
         }
         
       }
+    },
+    cancelpwd(){
+      this.$router.back()
+    },
+    rightPwd(){
+      this.needpwd = false
     }
 
 
-   
   },
   components: {
     Toolbar,
@@ -573,6 +586,7 @@ export default {
     Loading,
     TradePairToolBar,
     OrderBookLite,
+    PasswordSheet,
   }
 }
 </script>
@@ -660,6 +674,23 @@ export default {
   height: 42px
   line-height: 42px
 
+.input-content
+  position: absolute!important
+  bottom: 0
+  left:0
+  right:0
+  background: $primarycolor.gray
+
+.input-menu
+  position: absolute!important
+  bottom: 298px
+  left:0
+  right:0
+  background: $primarycolor.gray
+
+.orderbook-content
+  overflow-y: auto
+  height: calc(100vh - 360px)
 
 </style>
 
