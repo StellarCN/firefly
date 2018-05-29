@@ -47,7 +47,7 @@ import PinCode from "@/components/PinCode";
 import { defaultTradePairsAPI } from "@/api/gateways";
 //import { closeStreams, initStreams } from "@/streams";
 import { initStorage, checkPlatform } from "@/api/storage";
-import { getDeviceLanguage } from "@/locales";
+import { getDeviceLanguage, ZH_CN } from "@/locales";
 import  TabBar from '@/components/TabBar'
 import { getFchainRss } from '@/api/fchain'
 import initCordovaPlugin from '@/libs/pkgs/initCordovaPlugin'
@@ -144,10 +144,10 @@ export default {
           this.devicelang = locale;
           this.$i18n.locale = this.devicelang.key
           //下次更新后直接使用默认的fchain，horizon
-          if(!localStorage.getItem('horizon')){
-            localStorage.setItem('horizon',1)
-            return this.loadAppSetting({horizon: FCHAIN_HORIZON})
-          }
+          // if(!localStorage.getItem('horizon')){
+          //   localStorage.setItem('horizon',1)
+          //   return this.loadAppSetting({horizon: FCHAIN_HORIZON})
+          // }
           return this.loadAppSetting();
         })
         .then(data => {
@@ -197,12 +197,12 @@ export default {
           initStorage()
             .then(() => {
               console.log("---init storage ok---");
-              this.saveAppSetting({ locale: this.devicelang });
+              this.saveAppSetting({ locale: this.devicelang||ZH_CN });
             })
             .catch(err => {
               console.error("---init storage error---");
               console.error(err);
-              this.saveAppSetting({ locale: this.devicelang });
+              this.saveAppSetting({ locale: this.devicelang||ZH_CN });
             });
           //保存默认的设置数据
           // this.$router.push({name: 'Wallet'})

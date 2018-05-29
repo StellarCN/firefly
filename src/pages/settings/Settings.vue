@@ -10,11 +10,10 @@
           <ul class="settings-ul">
             
             <li class="settings-li">
-              <span>{{$t('color')}}</span>
+              <span>{{redUpGreenDown ? $t('redUpGreenDown') : $t('greenUpRedDown')}}</span>
               <v-switch class="pincodeswitch f-right"
-                  v-model="redUpGreenDown"
+                  v-model="colorSwitch"
                   color="primary"
-                  :label="redUpGreenDown ? $t('redUpGreenDown') : $t('greenUpGreenDown')"
                   hide-details
                   @change="switchColor"
                   ></v-switch>
@@ -64,6 +63,7 @@ export default {
     return {
       title: 'Menu.Settings',
       pinEnable: false,
+      colorSwitch: false,
     }
   },
   computed:{
@@ -77,9 +77,11 @@ export default {
   },
   beforeMount(){
     this.pinEnable = this.app.enablePin || false
+    this.colorSwitch = this.redUpGreenDown
   },
   beforeUpdate(){
     this.pinEnable = this.app.enablePin || false
+    this.colorSwitch = this.redUpGreenDown
   },
   mounted(){
   },

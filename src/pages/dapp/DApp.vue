@@ -114,7 +114,7 @@
 </template>
 
 <script>
-const thridAppConfig = `https://raw.githubusercontent.com/StellarCN/firefly/docs/third.json`
+const thridAppConfig = `https://update.fchain.io/config/dapp.json`
 import axios from 'axios'
 import { mapState, mapActions} from 'vuex'
 import Toolbar from '@/components/Toolbar'
