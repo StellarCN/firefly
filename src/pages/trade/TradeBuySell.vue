@@ -85,7 +85,7 @@
     
 
        <!-- 买卖按钮 -->
-      <div class="flex-row full-width footer-btns">
+      <div class="flex-row full-width footer-btns" v-if="needTrust.length ===0 ">
         <div class="flex1 btn-flex">
           <v-btn :class="'full-width btn-reset ' + ( isBuy ? 'btn-green' : 'btn-red' )"  @click="clean">{{$t('Reset')}}</v-btn>
         </div>
@@ -98,6 +98,14 @@
             v-if="isSell" @click="showConfirmSheet = true">{{$t('Trade.Sell')}} {{BaseAsset.code}}</v-btn>
         </div>
       </div>
+
+      <!--授信操作，如果当前用户没有当前的资产-->
+      <div class="flex-row full-width footer-btns" v-else>
+        <div class="flex1 btn-flex">
+          <v-btn color="error" class="full-width btn-reset"  @click.stop="doTrust">{{$t('ChangeTrust')}}{{needTrustCodes}}</v-btn>
+        </div>
+      </div>
+
 
     </div>
 
@@ -148,6 +156,8 @@ import PasswordSheet from '@/components/PasswordSheet'
 import { offer as doOffer } from '@/api/offer'
 import { mapState, mapActions, mapGetters} from 'vuex'
 import { getAsset, isNativeAsset } from '@/api/assets'
+import { trustAll } from '@/api/operations'
+import { getXdrResultCode } from '@/api/xdr'
 import { Decimal } from 'decimal.js'
 import debounce from 'lodash/debounce'
 
@@ -194,6 +204,36 @@ export default {
       'reserve',
       'base_reserve'
     ]),
+    needTrust(){//返回当前需要授信的资产
+      let result = []
+      let basset = this.BaseAsset
+      let casset = this.CounterAsset
+      let hasBaseAsset = isNativeAsset(basset) || false
+      let hasCounterAsset = isNativeAsset(casset)  || false
+      this.balances.forEach(item=>{
+        if(item.code === basset.code && item.issuer === basset.issuer){
+          hasBaseAsset = true
+        }else if(item.code === casset.code && item.issuer === casset.issuer){
+          hasCounterAsset = true
+        }
+      })
+      if(!hasBaseAsset){
+        result.push(basset)
+      }
+      if(!hasCounterAsset){
+        result.push(casset)
+      }
+      return result
+    },
+    needTrustCodes(){
+      if(this.needTrust.length > 0){
+        let result = '(';
+        this.needTrust.forEach(item=> {
+          result+=item.code+','
+        })
+        return result.substring(0, result.length-1)+')'
+      }
+    },
     BaseAsset(){
       return this.selectedTrade.from
     },
@@ -265,7 +305,8 @@ export default {
       queryOrderBook: 'queryOrderBook',
       switchSelectedTradePair: 'switchSelectedTradePair',
       queryMyOffers: 'queryMyOffers',
-      orderBookStreamHandler: 'orderBookStreamHandler'
+      orderBookStreamHandler: 'orderBookStreamHandler',
+      getAccountInfo:'getAccountInfo'
 
     }),
     back(){
@@ -621,6 +662,39 @@ export default {
     },
     rightPwd(){
       this.needpwd = false
+    },
+    doTrust(){
+      //   <loading :show="working" :loading="sending" :success="sendsuccess" :fail='sendfail' 
+      // :color="isSell?'red':'green'" :title="loadingTitle" :msg="loadingError" :closeable="sendfail" @close="hiddenLoading"/>
+      if(this.working)return
+      // this.isSell = true
+      this.working = true
+      this.sending = true
+      trustAll(this.accountData.seed, this.needTrust)
+        .then(response=>{
+          this.sending = false
+          this.sendsuccess = true
+          this.loadingTitle = this.$t('AddAssetSuccess')
+          try{
+            this.getAccountInfo(this.account.address).then(response=>{}).catch(err=>{})
+          }catch(err){
+            console.error(err)
+          }
+          setTimout(()=>{
+            this.working = false
+            this.sendsuccess = false
+            this.loadingTitle = null
+          },3000)
+        })
+        .catch(err=>{
+          this.sending = false
+          this.sendfail = true
+          let msg = getXdrResultCode(err)
+          this.loadingTitle = this.$t('AddAssetFail')
+          if(msg){
+           this.loadingError = this.$t(msg)
+          }     
+        })
     }
 
 

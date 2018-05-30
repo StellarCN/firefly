@@ -14,7 +14,7 @@ export function changeTrust(seed,code, issuer, limit=ASSET_TRUST_LIMIT) {
   console.debug('Turst asset', asset, limit);
   return getServer().loadAccount(address).then((account)=>{
     //account.incrementSequenceNumber();
-    StellarSdk.Network.usePublicNetwork();
+   // StellarSdk.Network.usePublicNetwork();
     var op = StellarSdk.Operation.changeTrust({
       asset: asset,
       limit: limit.toString()
@@ -45,7 +45,7 @@ export function  trustAll(seed, assets = [], limit=ASSET_TRUST_LIMIT){
 
 export function trustOption(code,issuer, limit = ASSET_TRUST_LIMIT){
   var asset = new StellarSdk.Asset(code, issuer);
-  StellarSdk.Network.usePublicNetwork();
+  //StellarSdk.Network.usePublicNetwork();
   var op = StellarSdk.Operation.changeTrust({
     asset: asset,
     limit: limit.toString()
