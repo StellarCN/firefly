@@ -76,6 +76,7 @@ export default {
           this.$i18n.locale = item.key
         })
         .catch(err=>{
+          console.log(err)
           this.$toasted.error(this.$t('SaveFailed'))
         })
     }

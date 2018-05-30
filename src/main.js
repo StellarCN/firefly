@@ -74,7 +74,7 @@ axios.defaults.timeout = AXIOS_DEFAULT_TIMEOUT
 // setVuexStore(store)
 
 /* eslint-disable no-new */
-new Vue({
+export const app =new Vue({
   el: '#app',
   router,
   store,

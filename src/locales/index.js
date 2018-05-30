@@ -67,10 +67,10 @@ export function getDeviceLanguage(){
 export const i18n = new VueI18n({
   locale: ZH_CN.key,
   messages: {
-    [EN.key]: endata,
+    // [EN.key]: endata,
     [ZH_CN.key]: zhcndata,
-    [ZH_HK.key]: hkdata,
-    [ZH_TW.key]: twdata
+    // [ZH_HK.key]: hkdata,
+    // [ZH_TW.key]: twdata
   }
 })
 
