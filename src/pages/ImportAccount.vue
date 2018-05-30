@@ -48,7 +48,7 @@
         </div>
         <!--根据mnemonic生成的密钥，用户可以点击确定用哪个-->
         <div class="seeds" v-if="genSeed">
-          <span class="mt-2 mb-2">{{genSeed}}</span>
+          <span class="mt-2 mb-2 seed-span">{{genSeed}}</span>
         </div>
       </div>
     </div>
@@ -292,4 +292,7 @@ export default {
   font-size: 14px
   .tab.active
     color: $primarycolor.green
+.seed-span
+  word-wrap:break-word
+  color: $secondarycolor.font
 </style>

@@ -73,7 +73,7 @@
   "Account.ConfirmSkip":"skip validate mnemonic ?",
   "Account.SkipValidHint":"The loss due to the loss of mnemonic will be at your own risk. Are you sure to skip his step ?",
   "Account.Later":"Later",
-  "Account.SecretKeyValidHint":"mnemonic is valid. Please keep your mnemonic safely.  Start to use Firefly.",
+  "Account.SecretKeyValidHint":"Please keep your mnemonic or secrety key safely.  Start to use Firefly Wallet.",
   "Account.Start":"Start",
   "Account.SecretKeyInValidHint":"mnemonic is wrong, please re-varify or back to last page to backup",
   "Account.ReVerify":"Re-Verify",

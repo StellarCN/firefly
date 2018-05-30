@@ -19,8 +19,8 @@
       <div class="value" @click="copy(address)">{{address}}</div>
       <!-- <div class="label">{{$t('SecretKey')}}</div>
       <div class="value" @click="copy(seed)">{{seed}}</div> -->
-      <div class="label">{{$t('mnemonic')}}</div>
-      <div class="value" @click="copy(mnemonic)">{{mnemonic}}</div>
+      <div class="label" v-if="mnemonic">{{$t('mnemonic')}}</div>
+      <div class="value" v-if="mnemonic" @click="copy(mnemonic)">{{mnemonic}}</div>
       
       <div class="qrcode">
         <qrcode :text="qrtext" :size="200" color="red"/>

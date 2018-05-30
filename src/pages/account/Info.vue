@@ -59,24 +59,12 @@
       
       
       <div :class="'footer' + (canModify ? ' active':' unactive') ">
-        <v-layout row wrap>
-          <!-- <v-flex xs4 @click="del">
-            <span>{{$t('Delete')}}</span>
-          </v-flex> -->
-          <v-flex xs3 @click="modify">
-            <span class="Info_menu_color">{{$t('Modify')}}</span>
-          </v-flex>
-          <v-flex xs3 @click="resetpwd">
-            <span class="Info_menu_color">{{$t('ResetPassword')}}</span>
-          </v-flex>
-          <v-flex xs3 @click="toViewKey">
-            <span class="Info_menu_color">{{$t('ViewKey')}}</span>
-          </v-flex>
-          <v-flex xs3 @click="toViewMnemonic">
-            <span class="Info_menu_color">{{$t('viewMnemonic')}}</span>
-          </v-flex>
-          
-        </v-layout>  
+        <v-tabs class="tabs-bg-dark" grow centered hide-slider color="primary">
+          <v-tab class="tab2" @click.stop="modify">{{$t('Modify')}}</v-tab>
+          <v-tab class="tab2" @click.stop="resetpwd">{{$t('ResetPassword')}}</v-tab>
+          <v-tab class="tab2" @click.stop="toViewKey">{{$t('ViewKey')}}</v-tab>
+          <v-tab class="tab2" @click.stop="toViewMnemonic">{{$t('viewMnemonic')}}</v-tab>
+        </v-tabs>
       </div>
 
 
