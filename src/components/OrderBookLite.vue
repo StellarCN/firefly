@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-28 11:19:05 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-05-25 14:42:00
+ * @Last Modified time: 2018-05-30 12:18:51
  * @License MIT 
  */
 
@@ -109,8 +109,8 @@ export default {
           origin: obj,
           num: amount.toFixed(4),
           price: new Decimal(obj.price).toFixed(this.decimal),
-          amount: amount.times(obj.price_r.d).dividedBy(obj.price_r.n).toFixed(2),
-          depth: Number(dep.toFixed(2)),
+          amount: amount.times(obj.price_r.d).dividedBy(obj.price_r.n).toFixed(4),
+          depth: Number(dep.toFixed(4)),
         })
       })
       newdata.forEach(ele=>{
@@ -126,10 +126,10 @@ export default {
         let num = amount.times(obj.price)
         dep = dep.add(num);
         return Object.assign({}, obj, {
-          amount: amount.toFixed(2),
+          amount: amount.toFixed(4),
           price: new Decimal(obj.price).toFixed(this.decimal),
           num: num.toFixed(4),
-          depth: dep.toFixed(2),
+          depth: dep.toFixed(4),
           origin: obj,
         });
       })

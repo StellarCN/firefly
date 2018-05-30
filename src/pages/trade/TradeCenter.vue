@@ -24,17 +24,16 @@
               :cancelTxt="$t('Cancel')"
               :confirmTxt="$t('Confirm')"
       ></picker>
-      <card class="trade-card" margin="10px 0px" padding="2px 0px">
-        <div class="flex-row textcenter" slot="card-content">
-          <div :class="'flex1 filter-tag ' + (filterTag==='XCN' ? 'active':'')" @click="doFilter('XCN')">XCN</div>
-          <div :class="'flex1 filter-tag ' + (filterTag==='XFF' ? 'active':'')" @click="doFilter('XFF')">XFF</div>
-          <div :class="'flex1 filter-tag ' + (filterTag==='XLM' ? 'active':'')" @click="doFilter('XLM')">XLM</div>
-          <div :class="'flex1 filter-tag ' + (filterTag==='BTC' ? 'active':'')" @click="doFilter('BTC')">BTC</div>
-          <div :class="'flex1 filter-tag ' + (filterTag==='ETH' ? 'active':'')" @click="doFilter('ETH')">ETH</div>
-          <div :class="'flex1 filter-tag ' + (filterTag==='_CUSTOM' ? 'active':'')" @click="doFilter('_CUSTOM')">{{$t('custom')}}</div>
-        </div>
-      </card>
-     
+      
+      <v-tabs class="tabs-bg-dark" hide-slider grow color="transparent">
+        <v-tab class="tab1" @click="doFilter('XCN')">XCN</v-tab>
+        <v-tab class="tab1" @click="doFilter('XFF')">XFF</v-tab>
+        <v-tab class="tab1" @click="doFilter('XLM')">XLM</v-tab>
+        <v-tab class="tab1" @click="doFilter('BTC')">BTC</v-tab>
+        <v-tab class="tab1" @click="doFilter('ETH')">ETH</v-tab>
+        <v-tab class="tab1" @click="doFilter('_CUSTOM')">{{$t('custom')}}</v-tab>
+      </v-tabs>
+
       <card class="trade-card" padding="0px 0px">
         <div class="card-content trade-card-content" slot="card-content">
           <scroll :refresh="refresh" :readLabelTxt="readLabelTxt">
@@ -280,7 +279,7 @@ export default {
       let pair =  { from: {code:from_code,issuer:from_issuer}, 
               to: { code: to_code, issuer: to_issuer}  }
       let key = from_code + (from_issuer||'stellar.org') + to_code + (to_issuer||'stellar.org')
-      for (let tp of this.tradepairs){
+      for (let tp of this.tradepairs.custom){
         let key1 = tp.from.code + (tp.from.issuer||'stellar.org')+tp.to.code + (tp.to.issuer||'stellar.org')
         let key2 = tp.to.code + (tp.to.issuer||'stellar.org')+tp.from.code + (tp.from.issuer||'stellar.org')
         if(key === key1 || key === key2){

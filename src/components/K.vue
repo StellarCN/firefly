@@ -18,7 +18,7 @@
           <div :class="'flex3 textcenter ' + ( (titleData.change >=0 && !redUpGreenDown) ? 'up':'down') ">
               <div class="price textcenter">
                   <span class="price">{{titleData.price}}</span>
-                  <span class="code">{{counter.code}}</span>
+                  <!-- <span class="code">{{counter.code}}</span> -->
               </div>
               <div class="flex-row">
                   <div class="flex1 textright">
@@ -50,13 +50,21 @@
       </v-btn>
       
       <div v-show="showKgraph" class="kgraph" :id="id" v-bind:style="{height: height}"></div>
-      <div class="flex-row textcenter chgresolution"  v-show="showKgraph">
+      <!-- <div class="flex-row textcenter chgresolution"  v-show="showKgraph">
           <div :class="'flex1 ' + (resolution_key === 'week' ? 'active' : '')" @click="chgResolution('week')">{{$t('week')}}</div>
           <div :class="'flex1 ' + (resolution_key === 'day' ? 'active' : '')" @click="chgResolution('day')">{{$t('day')}}</div>
           <div :class="'flex1 ' + (resolution_key === 'hour' ? 'active' : '')" @click="chgResolution('hour')">{{$t('hour')}}</div>
           <div :class="'flex1 ' + (resolution_key === '15min' ? 'active' : '')" @click="chgResolution('15min')">15{{$t('minute')}}</div>
           <div :class="'flex1 ' + (resolution_key === '1min' ? 'active' : '')" @click="chgResolution('1min')">1{{$t('minute')}}</div>
-      </div>
+      </div> -->
+
+      <v-tabs class="tabs-bg-dark" grow hide-slider color="transparent" v-show="showKgraph">
+        <v-tab @click="chgResolution('week')">{{$t('week')}}</v-tab>
+        <v-tab @click="chgResolution('day')">{{$t('day')}}</v-tab>
+        <v-tab @click="chgResolution('hour')">{{$t('hour')}}</v-tab>
+        <v-tab @click="chgResolution('15min')">15{{$t('minute')}}</v-tab>
+        <v-tab @click="chgResolution('1min')">1{{$t('minute')}}</v-tab>
+      </v-tabs>
   </div>
 </card>
 </template>

@@ -28,5 +28,5 @@ Vue.filter('I18NNumberFormat', function(values){
             return (val / 1000).toFixed(0) + 'K';
         }
     }
-      return value
+    return value
 });

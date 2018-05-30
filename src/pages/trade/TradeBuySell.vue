@@ -434,17 +434,63 @@ export default {
       if(this.justify) return
       this.justify = true
       let origin = data.origin
+      console.log('-------11222233')
+      console.log(origin)
+      console.log(type)
+      console.log(data)
       this.price = Number(origin.price)
       if(this.isBuy){
-        console.log(this.tradeBalance)
-        this.total = Number(data.depth) <= this.tradeBalance? Number(data.depth):this.tradeBalance
-        this.setNum()
-        this.setAmount()
+        if(type === 'buy'){
+          let tempTotal = Number(origin.amount)
+          this.total = tempTotal <= this.tradeBalance? tempTotal:this.tradeBalance
+          this.setNum()
+          this.setAmount()
+        }else{
+          let tempAmount = new Decimal(origin.amount)
+          let tempTotal = tempAmount.times(origin.price_r.n).div(origin.price_r.d)
+          if(tempTotal.toNumber() <= this.tradeBalance){
+            this.amount = Number(tempAmount.toFixed(7))
+            this.setTotal()
+            this.setNum()
+          }else{
+            this.total = this.tradeBalance
+            this.setNum()
+            this.setAmount()
+          }
+        }
+        // console.log(this.tradeBalance)
+        // this.total = Number(data.depth) <= this.tradeBalance? Number(data.depth):this.tradeBalance
+        // this.setNum()
+        // this.setAmount()
       }else if(this.isSell){
-        let total_max = Number((this.price * this.tradeBalance).toFixed(7))
-        this.total = Number(data.depth) <= total_max ? Number(data.depth):total_max
-        this.setAmount()
-        this.setNum()
+        if(type === 'buy'){
+          let tempAmount = new Decimal(origin.amount).times(origin.price_r.d).div(origin.price_r.n)
+          if(tempAmount.toNumber() <= this.tradeBalance){
+            this.amount = Number(tempAmount.toFixed(7))
+            this.setTotal()
+            this.setNum()
+          }else{
+            this.amount = this.tradeBalance
+            this.setTotal()
+            this.setNum()
+          }
+        }else{
+          let tempAmount = Number(origin.amount)
+          if(tempAmount <= this.tradeBalance){
+            this.amount = tempAmount
+            this.setTotal()
+            this.setNum()
+          }else{
+            this.amount = this.tradeBalance
+            this.setTotal()
+            this.setNum()
+          }
+
+        }
+        // let total_max = Number((this.price * this.tradeBalance).toFixed(7))
+        // this.total = Number(data.depth) <= total_max ? Number(data.depth):total_max
+        // this.setAmount()
+        // this.setNum()
       }
       this.resetJustify()
     },

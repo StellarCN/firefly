@@ -49,13 +49,21 @@
       </div>
              
       <div class="kgraph" :id="id" v-bind:style="{height: height+'px', width: width+'px'}"></div>
-      <div class="flex-row textcenter chgresolution">
+      <!-- <div class="flex-row textcenter chgresolution">
           <div :class="'flex1 ' + (resolution_key === 'week' ? 'active' : '')" @click="chgResolutionKey('week')">{{$t('week')}}</div>
           <div :class="'flex1 ' + (resolution_key === 'day' ? 'active' : '')" @click="chgResolutionKey('day')">{{$t('day')}}</div>
           <div :class="'flex1 ' + (resolution_key === 'hour' ? 'active' : '')" @click="chgResolutionKey('hour')">{{$t('hour')}}</div>
           <div :class="'flex1 ' + (resolution_key === '15min' ? 'active' : '')" @click="chgResolutionKey('15min')">15{{$t('minute')}}</div>
           <div :class="'flex1 ' + (resolution_key === '1min' ? 'active' : '')" @click="chgResolutionKey('1min')">1{{$t('minute')}}</div>
-      </div>
+      </div> -->
+      <v-tabs class="tabs-bg-dark" grow hide-slider color="transparent">
+        <v-tab @click="chgResolutionKey('week')">{{$t('week')}}</v-tab>
+        <v-tab @click="chgResolutionKey('day')">{{$t('day')}}</v-tab>
+        <v-tab @click="chgResolutionKey('hour')">{{$t('hour')}}</v-tab>
+        <v-tab @click="chgResolutionKey('15min')">15{{$t('minute')}}</v-tab>
+        <v-tab @click="chgResolutionKey('1min')">1{{$t('minute')}}</v-tab>
+      </v-tabs>
+
   </div>
 </card>
 </template>

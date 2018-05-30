@@ -6,7 +6,7 @@
 <template>
   <scroll :refresh="load">
     <!--菜单-->
-    <div class="ordermenu">
+    <!-- <div class="ordermenu">
       <div :class="'buyoffer offermenu' + (active==='buy'?' active':'')" 
           @click.stop="active='buy'">{{$t('Trade.BuyOffer')}}</div>
       <div :class="'selloffer offermenu' + (active==='sell'?' active':'')" 
@@ -15,7 +15,14 @@
           @click.stop="active='myoffer'">{{$t('Trade.MyOffer')}}({{myofferlen}})</div>
       <div :class="'myoffer offermenu' + (active==='myTradeHistory'?' active':'')" 
           @click.stop="active='myTradeHistory'">{{$t('History.Trade')}}</div>
-    </div>
+    </div> -->
+
+    <v-tabs class="tabs-bg-dark" grow slider-color="primary" color="transparent">
+        <v-tab @click.stop="active='buy'">{{$t('Trade.BuyOffer')}}</v-tab>
+        <v-tab @click.stop="active='sell'">{{$t('Trade.SellOffer')}}</v-tab>
+        <v-tab @click.stop="active='myoffer'">{{$t('Trade.MyOffer')}}({{myofferlen}})</v-tab>
+        <v-tab @click.stop="active='myTradeHistory'">{{$t('History.Trade')}}</v-tab>
+      </v-tabs>
 
     <card class="offer-card" padding="10px 10px">
       <div class="buyoffer-table offer-table" v-if="active === 'buy'" slot="card-content">
@@ -177,8 +184,8 @@ export default {
           origin: obj,
           num: amount.toFixed(4),
           price: new Decimal(obj.price).toFixed(this.decimal),
-          amount: amount.times(obj.price_r.d).dividedBy(obj.price_r.n).toFixed(2),
-          depth: Number(dep.toFixed(2)),
+          amount: amount.times(obj.price_r.d).dividedBy(obj.price_r.n).toFixed(4),
+          depth: Number(dep.toFixed(4)),
         })
       })
       newdata.forEach(ele=>{
@@ -194,10 +201,10 @@ export default {
         let num = amount.times(obj.price)
         dep = dep.add(num);
         return Object.assign({}, obj, {
-          amount: amount.toFixed(2),
+          amount: amount.toFixed(4),
           price: new Decimal(obj.price).toFixed(this.decimal),
           num: num.toFixed(4),
-          depth: dep.toFixed(2),
+          depth: dep.toFixed(4),
           origin: obj,
         });
       })
