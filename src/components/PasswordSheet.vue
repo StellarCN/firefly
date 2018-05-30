@@ -102,15 +102,17 @@ export default {
                     address: this._address,
                     password: this.inpassword
                 }).then(account=>{
-                    this.getAccountInfo(this.account.address).then(data=>{
-                        this.$toasted.show(this.$t('Info.ChangeAccountSuccess'));
-                        this.working = false
-                        //  this.$emit('ok')
-                    }).catch(err=>{
-                        // this.$toasted.error(this.$t('Error.PasswordWrong'))
-                        this.working = false
-                         this.$emit('ok')
-                    })
+                    //this.$toasted.show(this.$t('Info.ChangeAccountSuccess'));
+                    this.working = false
+                     this.$emit('ok')
+                    // this.getAccountInfo(this.account.address).then(data=>{
+                        
+                    //     //  this.$emit('ok')
+                    // }).catch(err=>{
+                    //     // this.$toasted.error(this.$t('Error.PasswordWrong'))
+                    //     this.working = false
+                    //      this.$emit('ok')
+                    // })
                 }).catch(err=>{
                     console.error('change account error')
                     console.error(err)

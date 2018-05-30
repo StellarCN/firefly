@@ -113,7 +113,7 @@ const actions = {
   async checkAccountPWD({dispatch, commit, state}, {index, address, password}){
     let data = await readAccountData(address,password)
     commit(CHANGE_ACCOUNT, { index, address, password, accountdata:data} )
-    dispatch('getAccountInfo', address)
+    //dispatch('getAccountInfo', address)
   },
   
 
