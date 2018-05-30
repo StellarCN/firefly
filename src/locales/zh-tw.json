@@ -504,7 +504,9 @@
   "fchainHorizon":"螢火官方地址",
   "validateMnemonic":"請輸入相應的助記詞進行驗證",
   "Warning_mnemonic_msg":"賬戶助記詞為重要信息，請做好備份並謹慎保存，勿與他人分享",
-  "no_mnemonic_msg":"没有助記詞!"
+  "no_mnemonic_msg":"没有助記詞!",
+  "bids_max_price":"買單最高價",
+  "asks_min_price":"賣單最低價"
 
  
  

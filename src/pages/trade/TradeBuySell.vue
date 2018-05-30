@@ -117,21 +117,33 @@
         <div class="confirm-title" v-if="flag === 'buy'">{{$t('Trade.Confirm')}}{{$t('Trade.Buy')}}</div>
         <div class="confirm-title" v-else>{{$t('Trade.Confirm')}}{{$t('Trade.Sell')}}</div>
         <div class="confirm-content">
-          <div class="confirm-row">
-            <span class="label">{{$t('Trade.Price')}}</span>
-            <span class="value"> {{price}}</span>
-            <span class="code">{{CounterAsset.code}}</span>
+
+          <div class="confirm-row flex-row" v-if="bids_max_price!=null">
+            <span class="label flex2">{{$t('bids_max_price')}}</span>
+            <span class="value flex2 textright pr-1"> {{bids_max_price}}</span>
+            <span class="code flex1">{{CounterAsset.code}}</span>
           </div>
-          <div class="confirm-row">
-            <span class="label"  v-if="flag === 'buy'">{{$t('Trade.Buy')}}</span>
-            <span class="label"  v-else>{{$t('Trade.Sell')}}</span>
-            <span class="value"> {{amount}}</span>
-            <span class="code">{{BaseAsset.code}}</span>
+          <div class="confirm-row flex-row" v-if="bids_max_price!=null">
+            <span class="label flex2">{{$t('asks_min_price')}}</span>
+            <span class="value flex2 textright pr-1"> {{asks_min_price}}</span>
+            <span class="code flex1">{{CounterAsset.code}}</span>
           </div>
-          <div class="confirm-row">
-            <span class="label">{{$t('Trade.Total')}}</span>
-            <span class="value"> {{total}}</span>
-            <span class="code"> {{CounterAsset.code}}</span>
+
+          <div class="confirm-row flex-row">
+            <span class="label flex2">{{$t('Trade.Price')}}</span>
+            <span class="value flex2 textright pr-1"> {{price}}</span>
+            <span class="code flex1">{{CounterAsset.code}}</span>
+          </div>
+          <div class="confirm-row flex-row">
+            <span class="label flex2"  v-if="flag === 'buy'">{{$t('Trade.Buy')}}</span>
+            <span class="label flex2"  v-else>{{$t('Trade.Sell')}}</span>
+            <span class="value flex2 textright pr-1"> {{amount}}</span>
+            <span class="code flex1">{{BaseAsset.code}}</span>
+          </div>
+          <div class="confirm-row flex-row">
+            <span class="label flex2">{{$t('Trade.Total')}}</span>
+            <span class="value flex2 textright pr-1"> {{total}}</span>
+            <span class="code flex1"> {{CounterAsset.code}}</span>
           </div>
         </div>
         <div class="confirm-btns flex-row textcenter">
@@ -197,6 +209,8 @@ export default {
       selectedTradeIndex: state => state.accounts.selectedTradePair.index,
       assethosts: state => state.asset.assethosts,
       islogin: state => state.accounts.accountData.seed ? true:false,
+      bids: state => state.accounts.selectedTradePair.bids,//买单
+      asks: state => state.accounts.selectedTradePair.asks,//卖单
     }),
     ...mapGetters([
       'balances',
@@ -282,6 +296,18 @@ export default {
     tradeBalanceInt(){
       return new Decimal(this.tradeBalance).floor().toNumber()
 //      return this.tradeBalance - this.tradeBalance % (10 ** (String(parseInt(this.tradeBalance * 10**7)).length -1 )  /10**7)
+    },
+    bids_max_price(){
+      if(this.bids && this.bids.length > 0){
+        return this.bids[0].price
+      }
+      return null
+    },
+    asks_min_price(){
+      if(this.asks && this.asks.length > 0){
+        return this.asks[0].price
+      }
+      return null
     },
 
     
@@ -757,14 +783,14 @@ export default {
   background: $primarycolor.gray
   opacity: .8
   position: fixed
-  bottom: 260px
+  bottom: 300px
   right: 0
   left: 0
   top: 0
   z-index: 9
 .confirm-dlg
   background: $secondarycolor.gray
-  height: 260px
+  height: 300px
   position: fixed
   bottom: 0
   right: 0
@@ -777,8 +803,8 @@ export default {
   color: $primarycolor.green
   text-align: center
 .confirm-content
-  padding-top: 24px
-  padding-bottom: 24px
+  padding-top: 8px
+  padding-bottom: 8px
   font-size: 16px
   .confirm-row
     padding: 8px 8px
@@ -800,6 +826,7 @@ export default {
   left:0
   right:0
   background: $primarycolor.gray
+  padding-bottom: 40px
 
 .input-menu
   position: absolute!important

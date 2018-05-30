@@ -504,7 +504,9 @@
   "fchainHorizon":"萤火官方地址",
   "validateMnemonic":"请输入相应的助记词进行验证",
   "Warning_mnemonic_msg":"账户助记词为重要信息，请做好备份并谨慎保存，勿与他人分享",
-  "no_mnemonic_msg":"没有助记词!"
+  "no_mnemonic_msg":"没有助记词!",
+  "bids_max_price":"买单最高价",
+  "asks_min_price":"卖单最低价"
 
  
  
