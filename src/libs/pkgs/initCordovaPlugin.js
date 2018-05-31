@@ -9,7 +9,7 @@ export default () => {
     }
     if (status.authorized) {
       console.log(' qrscanner authorized')
-      QRScanner.destroy(function(dstatus){
+      QRScanner.destroy((dstatus)=>{
         console.log(status);
       });
     } else if (status.denied) {
