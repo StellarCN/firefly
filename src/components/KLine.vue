@@ -3,18 +3,18 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-26 15:59:49 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-05-31 11:06:43
+ * @Last Modified time: 2018-05-31 11:27:09
  * @License MIT 
  */
 
 <template>
-  <div class="line flex-row" v-if="titleData!=null && titleData.price!=null && typeof titleData.price!='undefined'">
+  <div class="line flex-row" v-if="lineData!=null || !loading">
       <div class="flex1">
         <div :class="' price textright ' + ((titleData.change >=0 || !redUpGreenDown)? 'up':'down') ">{{titleData.price}}</div>
       </div>
       <div class="flex1">
         <div class="rate">
-            <div :class="'rate-btn textcenter ' + (( titleData.change >=0 || !redUpGreenDown)? 'up':'down')">
+            <div v-if="titleData.rate!==null && typeof titleData.rate!=='undefined'" :class="'rate-btn textcenter ' + (( titleData.change >=0 || !redUpGreenDown)? 'up':'down')">
                 <span v-if="titleData.rate>0">+</span>{{titleData.rate}}%    
             </div>    
         </div>
@@ -62,6 +62,7 @@ export default {
             working: true,
 
             lineData: null,
+            loading: false,
         }
     },
     props: {
@@ -307,10 +308,12 @@ export default {
         
         // 查询24小时的统计数据
         fetchLastTradeAggregation(){
+          this.loading = true
           let start_time = 0, end_time = new Date().getTime()
           getTradeAggregation(getAsset(this.base), getAsset(this.counter), 
                 start_time, end_time, RESOLUTION_1DAY, 1, 'desc')
             .then(data => {
+                this.loading = false
                 let records = data.records
                 if(records && records.length > 0){
                     //this.lastTradeAggregation = records[0]
@@ -318,15 +321,16 @@ export default {
                         index: this.tradepairIndex,
                         date: end_time,
                         data: records[0]
-                    })
-                    this.$nextTick(()=>{
-                        this.lineData = this.tradePairKLineData[this.tradepairIndex]
-                    })
+                    })   
                 }
+                this.$nextTick(()=>{
+                    this.lineData = this.tradePairKLineData[this.tradepairIndex]
+                })
             })
             .catch(err=>{
                 console.error(`-----err on get trade aggregation -- `)
                 console.error(err)
+                this.loading = false
             })
         },
 
