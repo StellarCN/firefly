@@ -56,7 +56,7 @@ export default {
           this.closeQRScanner()
         }else{
           // 成功
-          QRScanner.destroy(()=>{
+          QRScanner.destroy(function(){
             console.log('destory qrscanner')
           })
           this.$emit('finish',result)
@@ -88,7 +88,9 @@ export default {
     this.removeClass(page,HIDE_CLASSNAME)
     //var loading = window.document.querySelector('.loading')
     //this.removeClass(loading,'hide')
-    QRScanner.destroy()
+    QRScanner.destroy(function(status){
+      console.log(status)
+    })
   },
   methods:{
     prepareQRScanner(){
