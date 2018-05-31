@@ -262,9 +262,12 @@ export default {
     console.log(window.localStorage.getItem('login_flag'))
 
     //生成6个助记词校验位
-    for(let i=0;i<6;i++){
-      this.genRadomInt();
-    }
+    this.genRadomInt();
+    this.genRadomInt();
+    this.genRadomInt();
+    this.genRadomInt();
+    this.genRadomInt();
+    this.genRadomInt();
     //对助记词进知排序
     this.randoms = this.randoms.sort((a,b)=> a-b)
 
@@ -278,9 +281,10 @@ export default {
     genRadomInt(){
       let n = parseInt(24 * Math.random())
       if(this.randoms.indexOf(n) >= 0){
-          this.genRadomInt()
+        this.genRadomInt()
+      }else{
+        this.randoms.push(n)
       }
-      this.randoms.push(n)
     },
     goback(){
       this.$router.back()
