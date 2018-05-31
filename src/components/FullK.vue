@@ -13,7 +13,7 @@
                 <i class="material-icons  k-icon">keyboard_arrow_left</i>
             </v-btn>
           </div>
-          <div :class="'flex3 textcenter ' + ( (titleData.change >=0 && redUpGreenDown ) ? 'down':'up') ">
+          <div :class="'flex3 textcenter ' + ( (titleData.change >=0 || redUpGreenDown ) ? 'down':'up') ">
               <div class="price textcenter">
                   <span class="price">{{titleData.price}}</span>
                   <span class="code">{{counter.code}}</span>

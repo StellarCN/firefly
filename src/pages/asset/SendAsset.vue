@@ -460,7 +460,7 @@ export default {
       let params = {
         seed,
         address: this.account.address,
-        target: this.realDestination ? this.realDestination : this.destination,
+        target: dest,
         asset: {code: this.selectedasset.code, issuer: this.selectedasset.issuer},
         amount: this.amount,
         memo_type:  this.memoswitch ? this.memotype : null,

@@ -3,26 +3,25 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-26 15:59:49 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-05-31 11:06:43
+ * @Last Modified time: 2018-05-29 14:27:27
  * @License MIT 
  */
 
 <template>
-  <div class="line flex-row" v-if="titleData!=null && titleData.price!=null && typeof titleData.price!='undefined'">
+  <div class="line flex-row">
       <div class="flex1">
-        <div :class="' price textright ' + ((titleData.change >=0 || !redUpGreenDown)? 'up':'down') ">{{titleData.price}}</div>
+          <div class="linegraph" :id="id" v-bind:style="{height: height + 'px'}"></div>
       </div>
-      <div class="flex1">
-        <div class="rate">
-            <div :class="'rate-btn textcenter ' + (( titleData.change >=0 || !redUpGreenDown)? 'up':'down')">
-                <span v-if="titleData.rate>0">+</span>{{titleData.rate}}%    
-            </div>    
-        </div>
+      <div class="flex1" v-if="titleData!=null && titleData.price!=null && typeof titleData.price!='undefined'">
+           <div :class="' price textright ' + ((titleData.change >=0 && !redUpGreenDown)? 'up':'down') ">{{titleData.price}}</div>
+           <div :class="' rate  textright ' + (( titleData.change >=0 && !redUpGreenDown)? 'up':'down')">
+              <span v-if="titleData.rate>0">+</span>
+              {{titleData.rate}}%</div>
       </div>
-  </div>
-  <div class="line working" v-else>
-    <v-progress-circular indeterminate :color="redUpGreenDown ? 'error': 'primary'" v-if="!lineData"></v-progress-circular>
-    <span v-else></span>
+      <div class="flex1 working" v-else>
+          <v-progress-circular indeterminate :color="redUpGreenDown ? 'error': 'primary'" v-if="!lineData"></v-progress-circular>
+          <span v-else></span>
+      </div>
   </div>
 </template>
 
@@ -130,15 +129,15 @@ export default {
             return this.lineData ? this.lineData.tradeAggregation : null
         },
         //7天的聚合数据
-        // sevenDayTradeAggregation(){
-        //     return this.lineData ? this.lineData.sevenDayTradeAggregation : null
-        // },
-        // sevenData(){
-        //     return this.sevenDayTradeAggregation ? this.sevenDayTradeAggregation.data || [] : []
-        // },
-        // sevenDates(){
-        //     return this.sevenDayTradeAggregation ? this.sevenDayTradeAggregation.dates||[] : []
-        // },
+        sevenDayTradeAggregation(){
+            return this.lineData ? this.lineData.sevenDayTradeAggregation : null
+        },
+        sevenData(){
+            return this.sevenDayTradeAggregation ? this.sevenDayTradeAggregation.data || [] : []
+        },
+        sevenDates(){
+            return this.sevenDayTradeAggregation ? this.sevenDayTradeAggregation.dates||[] : []
+        },
         titleData(){
           if(this.lastTradeAggregation){
             let price = new Decimal(this.lastTradeAggregation.close)//new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
@@ -146,8 +145,8 @@ export default {
             let change = price.minus(open)
             let rate = change.times(100).dividedBy(open)
             return  defaultsDeep({}, this.lastTradeAggregation, {
-                price: price.toFixed(4),
-                change: Number(change.toFixed(7)),
+                price: new Decimal(price.toFixed(7)).toNumber(),
+                change: new Decimal(change.toFixed(7)).toNumber(),
                 rate: new Decimal(rate.toFixed(4)).toNumber() })
           }
           return {}
@@ -195,20 +194,22 @@ export default {
         },
         clearAll(){
             //关闭定时器
-            // if(this.tinterval){
-            //     clearInterval(this.tinterval)
-            //     this.tinterval = null
-            // }
+            if(this.tinterval){
+                clearInterval(this.tinterval)
+                this.tinterval = null
+            }
             this.deleteTradeInterval()
         },
         init() {
             this.$nextTick(()=>{
                 setTimeout(()=>{
                     //开启定时器
-                    // this.tinterval = setInterval(this.fetch, this.interval)
+                    this.tinterval = setInterval(this.fetch, this.interval)
+                   // this.setupTradeInterval()
                     this.fetchLastTradeAggregation()
-                    // this.initView()
-                    // this.fetch();
+                    this.initView()
+                    this.fetch();
+                    // this.fetchLastTrade();
                 }, this.timeout)
             })    
         },
@@ -319,9 +320,6 @@ export default {
                         date: end_time,
                         data: records[0]
                     })
-                    this.$nextTick(()=>{
-                        this.lineData = this.tradePairKLineData[this.tradepairIndex]
-                    })
                 }
             })
             .catch(err=>{
@@ -382,34 +380,12 @@ export default {
   &.down
     color: $primarycolor.red
 .price
-    line-height: 50px
-    height: 50px
-    font-size: 18px
-    overflow: hidden
-    width:100%
-    display:block
-    text-overflow:none
-    white-space:nowrap
+    line-height: 30px
+    vertical-align: bottom
 .change
 .rate
-    line-height: 50px
-    height: 50px
-    font-size: 16px
-.rate
-    padding-top: 12px
-    padding-bottom: 12px
-    padding-left: 10px
-    padding-right: 10px
-    .rate-btn
-        line-height: 26px
-        height: 26px
-        font-size: 14px
-        color: $primarycolor.font
-        &.up
-            background: $primarycolor.green
-        &.down
-            background: $primarycolor.red
-
+    line-height: 16px
+    font-size: 14px
 .working
     padding-top: 8px
     text-align: center

@@ -38,7 +38,6 @@
         <div class="card-content trade-card-content" slot="card-content">
           <scroll :refresh="refresh" :readLabelTxt="readLabelTxt">
           <ul class="tradepairs-ul">
-            <transition-group>
             <li class="tradepair-li" v-for="(pair,index) in pairs" :key="index"
               v-touch="{
                     left: () => selectedItem = index,
@@ -85,8 +84,7 @@
                 <div class="trade" @click="trade(index,pair)">{{$t('Trade.Trade')}}</div>
               </div>
               </li>
-            </transition-group>
-          </ul>
+            </ul>
           </scroll>
         </div>
       </card>
