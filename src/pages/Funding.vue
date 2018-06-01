@@ -126,6 +126,7 @@ import WithdrawInput from '@/components/WithdrawInput'
 import WithdrawStandard from '@/components/WithdrawStandard'
 import TabBar from '@/components/TabBar'
 import  defaultsDeep  from 'lodash/defaultsDeep'
+import { NO_FUNDINS } from '@/api/gateways'
 
 export default {
   data(){
@@ -167,8 +168,12 @@ export default {
        if(!this.balances)return []
        let data = []
        this.balances.forEach((element) => {
-        if( !isNativeAsset(element)){
-          data.push(defaultsDeep({id: element.code+"-"+element.issuer}, element))
+        let id = element.code+"-"+element.issuer
+        console.log(NO_FUNDINS)
+        console.log(id)
+        console.log(NO_FUNDINS.indexOf(id) < 0)
+        if( !isNativeAsset(element) && NO_FUNDINS.indexOf(id) < 0 ){
+          data.push(defaultsDeep({id}, element))
         }
       })
       return data
