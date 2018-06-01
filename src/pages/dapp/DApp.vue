@@ -21,13 +21,13 @@
       </card>
       <v-layout class="server-apps-layout" row wrap  v-if="!working && apps && apps.length > 0">
         <v-flex
-          xs3
+          xs4
           v-for="(app,index) in apps"
           :key="index"
           @click="choose(app)"
         >
           <v-card flat tile class="pa-2 textcenter app-card" >
-             <v-avatar class="grey darken-4 app-avatar" :size="`48px`">
+             <v-avatar class="grey darken-4 app-avatar" :size="`92%`">
                <img :src="app.image">
              </v-avatar>
              <v-card-title primary-title class="app-title">
@@ -42,7 +42,7 @@
 
       <v-layout class="apps-layout" row wrap  v-if="myapps.length > 0">
         <v-flex
-          xs3
+          xs4
           v-for="(app,index) in myapps"
           :key="index"
           @click="choose(app)"
@@ -441,6 +441,7 @@ export default {
   padding: .1rem .1rem
   overflow: hidden
   white-space: nowrap
+  font-size: 14px
 .card-content
   padding: 20px 10px
 .t2
