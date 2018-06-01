@@ -20,7 +20,7 @@ export function random(){
  * @param {string} language 语言
  */
 export function randomByMnemonic(language = 'english'){
-  return StellarHDWallet.generateMnemonic({language, entropyBits: 256})//生成24个字符串
+  return StellarHDWallet.generateMnemonic({language, entropyBits: 128})//生成24个字符串
 }
 /**
  * 根据mnemonic生成账户
@@ -34,6 +34,7 @@ export function fromMnemonic(mnemonic,language = 'english'){
 export function validateMnemonic(mnemonic, language = 'english'){
   return StellarHDWallet.validateMnemonic(mnemonic, language)
 }
+
 // generate public address from secret key
 export function address(seed) {
   var keypair = StellarSdk.Keypair.fromSecret(seed);
