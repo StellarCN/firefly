@@ -25,66 +25,64 @@
               :confirmTxt="$t('Confirm')"
       ></picker>
       
-      <v-tabs class="tabs-bg-dark" hide-slider grow color="transparent">
-        <v-tab class="tab1" @click="doFilter('XCN')">XCN</v-tab>
-        <v-tab class="tab1" @click="doFilter('XFF')">XFF</v-tab>
-        <v-tab class="tab1" @click="doFilter('XLM')">XLM</v-tab>
-        <v-tab class="tab1" @click="doFilter('BTC')">BTC</v-tab>
-        <v-tab class="tab1" @click="doFilter('ETH')">ETH</v-tab>
-        <v-tab class="tab1" @click="doFilter('_CUSTOM')">{{$t('custom')}}</v-tab>
-      </v-tabs>
+
 
       <card class="trade-card" padding="0px 0px">
         <div class="card-content trade-card-content" slot="card-content">
           <scroll :refresh="refresh" :readLabelTxt="readLabelTxt">
-          <ul class="tradepairs-ul">
-            <li class="tradepair-li" v-for="(pair,index) in pairs" :key="index"
-              v-touch="{
-                    left: () => selectedItem = index,
-                    right: () => selectedItem = null
-                  }"
-              >
 
-              <v-layout class="pair-wrapper" row :swiper="pair.custom ? 1.5:0" @click="trade(index,pair)">
-                <v-flex xs4>
-                  <div class="flex-row">
-                    <div class="flex3 from-wrapper">
-                      <div class="code">{{pair.from.code}}</div>
-                      <div class="issuer" v-if="assethosts[pair.from.code]">{{assethosts[pair.from.code]}}</div>
-                      <div class="issuer" v-else-if="assethosts[pair.from.issuer]">{{assethosts[pair.from.issuer]}}</div>
-                      <div class="issuer" v-else>{{pair.from.issuer | miniaddress}}</div>
-                    </div>
-                    <div class="flex1 exchange-wrapper">
-                      <div class="exchange">
-                        <i class="icons material-icons">&#xE8D4;</i>
+            <v-tabs  v-model="tagIndex" class="tabs-bg-dark" hide-slider grow color="transparent">
+              <v-tab class="tab1" @click="doFilter(item)" 
+                v-for="(item,index) in allTags" :key="index">
+                  {{allTagsLabel[index]}}
+              </v-tab>
+            <v-tab-item v-for="(item,index) in allTags" :key="index">
+              <ul class="tradepairs-ul">
+                <li class="tradepair-li" v-for="(pair,index) in pairItems[item]" :key="index">
+                  <v-layout class="pair-wrapper" row v-swiper="pair.custom ? 1.5:0" @click="trade(index,pair)">
+                    <v-flex xs4>
+                      <div class="flex-row">
+                        <div class="flex3 from-wrapper">
+                          <div class="code">{{pair.from.code}}</div>
+                          <div class="issuer" v-if="assethosts[pair.from.code]">{{assethosts[pair.from.code]}}</div>
+                          <div class="issuer" v-else-if="assethosts[pair.from.issuer]">{{assethosts[pair.from.issuer]}}</div>
+                          <div class="issuer" v-else>{{pair.from.issuer | miniaddress}}</div>
+                        </div>
+                        <div class="flex1 exchange-wrapper">
+                          <div class="exchange">
+                            <i class="icons material-icons">&#xE8D4;</i>
+                          </div>
+                        </div>
+                        <div class="flex3 to-wrapper">
+                          <div class="code">{{pair.to.code}}</div>
+                          <div class="issuer" v-if="assethosts[pair.to.code]">{{assethosts[pair.to.code]}}</div>
+                          <div class="issuer" v-else-if="assethosts[pair.to.issuer]">{{assethosts[pair.to.issuer]}}</div>
+                          <div class="issuer" v-else>{{pair.to.issuer | miniaddress}}</div>
+                        </div>
                       </div>
+                    </v-flex>
+                    <v-flex xs8>
+                      <k-line 
+                        :base="pair.from" :counter="pair.to" 
+                        :height="56" :timeout="10*index"
+                        :tradepairIndex="pair.tradepairIndex"
+                        :ref="'kline'+pair.tradepairIndex"
+                        ></k-line>
+                    </v-flex>
+                  </v-layout>
+                  <div class="operate-box" v-if="pair.custom">
+                    <div class="del" @click="del(index,pair)">
+                      <div class="refreshimg" v-if="delworking"></div>
+                      <div v-else>{{$t('Delete')}}</div>
                     </div>
-                    <div class="flex3 to-wrapper">
-                      <div class="code">{{pair.to.code}}</div>
-                      <div class="issuer" v-if="assethosts[pair.to.code]">{{assethosts[pair.to.code]}}</div>
-                      <div class="issuer" v-else-if="assethosts[pair.to.issuer]">{{assethosts[pair.to.issuer]}}</div>
-                      <div class="issuer" v-else>{{pair.to.issuer | miniaddress}}</div>
-                    </div>
+                    <div class="trade" @click="trade(index,pair)">{{$t('Trade.Trade')}}</div>
                   </div>
-                </v-flex>
-                <v-flex xs8>
-                  <k-line 
-                    :base="pair.from" :counter="pair.to" 
-                    :height="56" :timeout="10*index"
-                    :tradepairIndex="pair.tradepairIndex"
-                    :ref="'kline'+pair.tradepairIndex"
-                    ></k-line>
-                </v-flex>
-              </v-layout>
-              <div class="operate-box" v-if="pair.custom">
-                <div class="del" @click="del(index,pair)">
-                  <div class="refreshimg" v-if="delworking"></div>
-                  <div v-else>{{$t('Delete')}}</div>
-                </div>
-                <div class="trade" @click="trade(index,pair)">{{$t('Trade.Trade')}}</div>
-              </div>
-              </li>
-            </ul>
+                </li>
+              </ul>
+            </v-tab-item>
+            
+            </v-tabs>
+
           </scroll>
         </div>
       </card>
@@ -125,8 +123,9 @@ import Scroll from '@/components/Scroll'
 import { REMOVE_TRADEPAIR_KLINE_DATA } from '@/store/modules/AccountsStore' 
 import { getDefaultTradePairs } from '@/api/gateways'
 
-const TAG_ALL = 'All', TAG_XCN = 'XCN', TAG_XLM = 'XLM', TAG_BTC = 'BTC', TAG_ETH = 'ETH', TAG_CUSTOM = '_CUSTOM'
+const TAG_ALL = 'All', TAG_XCN = 'XCN', TAG_XLM = 'XLM', TAG_BTC = 'BTC', TAG_ETH = 'ETH', TAG_CUSTOM = '_CUSTOM', TAG_XFF = 'XFF'
 
+const TAGS = [TAG_XCN, TAG_BTC, TAG_XLM, TAG_ETH, TAG_XFF, TAG_CUSTOM]
 
 export default {
   data(){
@@ -142,10 +141,12 @@ export default {
       snackbar: false,
       snackbarColor: 'primary',
       filterTag: TAG_XCN,
+      tagIndex: 0,
 
       showaccountsview: false,
-
       selectedItem: null,
+      allTags: TAGS,
+      allTagsLabel: []
 
     }
   },
@@ -176,6 +177,35 @@ export default {
         console.error(err)
       }
       return 'ReleaseToRefresh'
+    },
+    pairItems(){
+      let xcn = [], btc = [], xlm=[],eth=[],xff=[],custom=[];
+      this.tradepairs.custom.forEach((item,index)=>{
+          custom.push(Object.assign({}, item,{tradepairIndex: 'custom_'+index, custom: true}))
+      })
+      this.tradepairs.sys.forEach((item,index)=>{        
+        let d = Object.assign({},item,{tradepairIndex: 'sys_'+index, custom: false})
+        if(item.to.code === TAG_XCN){
+          xcn.push(d)
+        }else if(item.to.code === TAG_BTC){
+          btc.push(d)
+        }else if(item.to.code === TAG_XLM ) {
+          xlm.push(d)
+        }else if(item.to.code === TAG_ETH){
+          eth.push(d)
+        }else if(item.to.code === TAG_XFF){
+          xff.push(d)
+        }
+      })
+      
+      let result = []
+      result[TAG_XCN] = xcn
+      result[TAG_BTC] = btc
+      result[TAG_XLM] = xlm
+      result[TAG_ETH] = eth
+      result[TAG_XFF] = xff
+      result[TAG_CUSTOM] = custom
+      return result
     },
     pairs(){
       let result = []
@@ -222,9 +252,17 @@ export default {
     },
 
   },
+  watch:{
+  },
   beforeMount(){
     //保存默认的交易对
     this.saveDefaultTradePairs()
+    let custom = this.tradepairs.custom
+    if( custom && custom.length > 0){
+      this.filterTag = TAG_CUSTOM
+      this.tagIndex = TAGS.indexOf(TAG_CUSTOM).toString()
+    }
+    this.allTagsLabel = [TAG_XCN, TAG_BTC, TAG_XLM, TAG_ETH, TAG_XFF, this.$t('custom')]
   },
   mounted(){
     // if(!this.islogin){
@@ -387,6 +425,12 @@ export default {
       console.log('-----')
       console.log(funcs)
       return Promise.all(funcs)
+    },
+    toLeft(){
+      console.log('---------------------------toLeft---------------')
+    },
+    toRight(){
+      console.log('---------------------------toRight---------------')
     }
    
   },
