@@ -39,21 +39,26 @@
             <v-tab-item v-for="(item,index) in allTags" :key="index">
               <ul class="tradepairs-ul">
                 <li class="tradepair-li" v-for="(pair,index) in pairItems[item]" :key="index">
-                  <v-layout class="pair-wrapper" row v-swiper="pair.custom ? 1.5:0" @click="trade(index,pair)">
+                  <v-layout class="pair-wrapper" row v-swiper="pair.custom ? 1.5:0.1" >
                     <v-flex xs4>
                       <div class="flex-row">
-                        <div class="flex3 from-wrapper">
+                        <div class="flex1 choose-icon-wrapper" v-if="!pair.custom">
+                          <v-icon color="primary" v-if="pair.isChoosed">star</v-icon>
+                          <v-icon color="primary" @click="choosePairToCustom(pair)" v-else>star_border</v-icon>
+                        </div>
+                        <div class="flex3 from-wrapper" @click="trade(index,pair)">
                           <div class="code">{{pair.from.code}}</div>
                           <div class="issuer" v-if="assethosts[pair.from.code]">{{assethosts[pair.from.code]}}</div>
                           <div class="issuer" v-else-if="assethosts[pair.from.issuer]">{{assethosts[pair.from.issuer]}}</div>
                           <div class="issuer" v-else>{{pair.from.issuer | miniaddress}}</div>
                         </div>
-                        <div class="flex1 exchange-wrapper">
+                        
+                        <div class="flex1 exchange-wrapper" v-if="pair.custom" @click="trade(index,pair)">
                           <div class="exchange">
                             <i class="icons material-icons">&#xE8D4;</i>
                           </div>
                         </div>
-                        <div class="flex3 to-wrapper">
+                        <div class="flex3 to-wrapper" v-if="pair.custom" @click="trade(index,pair)">
                           <div class="code">{{pair.to.code}}</div>
                           <div class="issuer" v-if="assethosts[pair.to.code]">{{assethosts[pair.to.code]}}</div>
                           <div class="issuer" v-else-if="assethosts[pair.to.issuer]">{{assethosts[pair.to.issuer]}}</div>
@@ -61,7 +66,7 @@
                         </div>
                       </div>
                     </v-flex>
-                    <v-flex xs8>
+                    <v-flex xs8 @click="trade(index,pair)">
                       <k-line 
                         :base="pair.from" :counter="pair.to" 
                         :height="56" :timeout="10*index"
@@ -180,11 +185,24 @@ export default {
     },
     pairItems(){
       let xcn = [], btc = [], xlm=[],eth=[],xff=[],custom=[];
+      let custom_ids = []
       this.tradepairs.custom.forEach((item,index)=>{
           custom.push(Object.assign({}, item,{tradepairIndex: 'custom_'+index, custom: true}))
+          let idf = isNativeAsset(item.from) ? 'XLM' : item.from.code+'-'+item.from.issuer
+          let idt = isNativeAsset(item.to) ? 'XLM' : item.to.code +'-'+item.to.issuer
+          custom_ids.push(idf+'_'+idt)
+          custom_ids.push(idt+'_'+idf)
       })
       this.tradepairs.sys.forEach((item,index)=>{        
-        let d = Object.assign({},item,{tradepairIndex: 'sys_'+index, custom: false})
+        let idf = isNativeAsset(item.from) ? 'XLM' : item.from.code+'-'+item.from.issuer
+        let idt = isNativeAsset(item.to) ? 'XLM' : item.to.code +'-'+item.to.issuer
+        let isChoosed = false
+        let ida = idf +'_'+idt
+        let idb = idt +'_'+idf
+        if(custom_ids.indexOf(ida) >= 0 || custom_ids.indexOf(idb) >= 0){
+          isChoosed = true
+        }
+        let d = Object.assign({},item,{tradepairIndex: 'sys_'+index, custom: false, isChoosed})
         if(item.to.code === TAG_XCN){
           xcn.push(d)
         }else if(item.to.code === TAG_BTC){
@@ -257,11 +275,11 @@ export default {
   beforeMount(){
     //保存默认的交易对
     this.saveDefaultTradePairs()
-    let custom = this.tradepairs.custom
-    if( custom && custom.length > 0){
-      this.filterTag = TAG_CUSTOM
-      this.tagIndex = TAGS.indexOf(TAG_CUSTOM).toString()
-    }
+    // let custom = this.tradepairs.custom
+    // if( custom && custom.length > 0){
+    //   this.filterTag = TAG_CUSTOM
+    //   this.tagIndex = TAGS.indexOf(TAG_CUSTOM).toString()
+    // }
     this.allTagsLabel = [TAG_XCN, TAG_BTC, TAG_XLM, TAG_ETH, TAG_XFF, this.$t('custom')]
   },
   mounted(){
@@ -426,11 +444,12 @@ export default {
       console.log(funcs)
       return Promise.all(funcs)
     },
-    toLeft(){
-      console.log('---------------------------toLeft---------------')
-    },
-    toRight(){
-      console.log('---------------------------toRight---------------')
+    choosePairToCustom(pair){
+      this.addOK({from: pair.from, to: pair.to})
+      this.working = true
+      setTimeout(()=>{
+        this.working = false
+      },1000)
     }
    
   },
@@ -503,7 +522,9 @@ export default {
           font-size: 20px
           color: $secondarycolor.font
           padding-top: 10px
-
+    .choose-icon-wrapper
+      margin: 0px auto
+      padding: 8px 5px
 
 .tradepair-li
   border-bottom: 1px solid $secondarycolor.font
