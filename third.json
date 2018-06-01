@@ -2,12 +2,17 @@
   "apps": [
       {
       "title": "萤火投票",
-      "image": "https://update.fchain.io/images/vote-logo.png",
+      "image": "https://jn279.gitee.io/firefly_assets/vote.png",
       "site": "https://update.fchain.io/vote"
       },{
         "title":"冠军之路",
-        "image":"https://update.fchain.io/images/nba_vote.png",
+        "image":"https://jn279.gitee.io/firefly_assets/nba_vote.png",
         "site":"https://update.fchain.io/nba"
-      } 
+      },
+      {
+        "title":"WICC充值",
+        "image":"https://jn279.gitee.io/firefly_assets/wicc_logo.png",
+         "site":"https://update.fchain.io/wicc"
+      }
     ]
 }
