@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-26 15:59:49 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-05-31 11:27:09
+ * @Last Modified time: 2018-06-01 17:43:25
  * @License MIT 
  */
 
@@ -149,7 +149,7 @@ export default {
             return  defaultsDeep({}, this.lastTradeAggregation, {
                 price: price.toFixed(4),
                 change: Number(change.toFixed(7)),
-                rate: new Decimal(rate.toFixed(4)).toNumber() })
+                rate: new Decimal(rate.toFixed(2)).toNumber() })
           }
           return {}
       },  
