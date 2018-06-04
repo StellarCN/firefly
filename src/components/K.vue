@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-05-31 11:00:15
+ * @Last Modified time: 2018-06-04 18:18:11
  * @License: MIT 
  */
 <template>
@@ -21,19 +21,19 @@
                   <!-- <span class="code">{{counter.code}}</span> -->
               </div>
               <div class="flex-row">
-                  <div class="flex1 textright">
+                  <div class="flex3 textright lchange">
                         <span v-if="titleData.change>0">+</span>
-                        <span>{{titleData.change}}&nbsp;&nbsp;</span>
+                        <span>{{titleData.change}}&nbsp;</span>
                   </div>
-                  <div class="flex1 textleft">
+                  <div class="flex2 textleft lchange">
                         <span v-if="titleData.rate>0"> +</span>
                         <span>{{titleData.rate}}%</span>
                   </div>
               </div>
           </div>
           <div class="flex3 values">
-              <div class=""><span class="label">24H {{$t('high')}} </span><span>{{Number(lastTradeAggregation.high).toFixed(4)}}</span></div>
-              <div class=""><span class="label">24H {{$t('low')}} </span><span>{{Number(lastTradeAggregation.low).toFixed(4)}}</span></div>
+              <div class=""><span class="label">24H {{$t('high')}} </span><span>{{Number(lastTradeAggregation.high).toFixed(7)}}</span></div>
+              <div class=""><span class="label">24H {{$t('low')}} </span><span>{{Number(lastTradeAggregation.low).toFixed(7)}}</span></div>
               <div class=""><span class="label">24H {{$t('volume')}} </span><span>{{Number(lastTradeAggregation.base_volume).toFixed(4)}}</span></div>
           </div>
           <div class="flex1 title-btn-div">
@@ -183,8 +183,8 @@ export default {
             let change = price.minus(open)
             let rate = change.times(100).dividedBy(open)
             return  defaultsDeep({}, this.lastTradeAggregation, {
-                price: new Decimal(price.toFixed(6)).toNumber(),
-                change: new Decimal(change.toFixed(4)).toNumber(),
+                price: price.toFixed(7),
+                change: change.toFixed(7),
                 rate: new Decimal(rate.toFixed(2)).toNumber() })
           }
           return {}

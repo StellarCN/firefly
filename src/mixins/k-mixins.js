@@ -106,8 +106,8 @@ export default {
             let change = price.minus(open)
             let rate = change.times(100).dividedBy(open)
             return  defaultsDeep({}, this.lastTradeAggregation, {
-                price: new Decimal(price.toFixed(6)).toNumber(),
-                change: new Decimal(change.toFixed(4)).toNumber(),
+                price: price.toFixed(7),
+                change: change.toFixed(7),
                 rate: new Decimal(rate.toFixed(2)).toNumber() })
           }
           return {}

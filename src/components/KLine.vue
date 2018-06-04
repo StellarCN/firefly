@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-26 15:59:49 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-06-01 17:43:25
+ * @Last Modified time: 2018-06-04 17:46:27
  * @License MIT 
  */
 
@@ -121,6 +121,12 @@ export default {
             tradePairKLineData: state => state.accounts.tradePairKLineData,
             redUpGreenDown: state => state.app.redUpGreenDown,
         }),
+        decimal(){
+            if(this.counter.code === 'BTC'){
+                return 7
+            }
+            return 4
+        },
         // lineData(){
         //     return this.tradePairKLineData[this.tradepairIndex]
         // },
@@ -147,7 +153,7 @@ export default {
             let change = price.minus(open)
             let rate = change.times(100).dividedBy(open)
             return  defaultsDeep({}, this.lastTradeAggregation, {
-                price: price.toFixed(4),
+                price: price.toFixed(this.decimal),
                 change: Number(change.toFixed(7)),
                 rate: new Decimal(rate.toFixed(2)).toNumber() })
           }

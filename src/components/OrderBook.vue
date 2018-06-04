@@ -26,13 +26,13 @@
 
     <card class="offer-card" padding="10px 10px">
       <div class="buyoffer-table offer-table" v-if="active === 'buy'" slot="card-content">
-        <div class="table-head body-2">
+        <div class="table-head font-13">
           <div class="headcol">{{$t('Trade.Price')}}</div>
           <div class="headcol">{{BaseAsset.code}}</div>
           <div class="headcol">{{CounterAsset.code}}</div>
           <div class="headcol">{{$t('Trade.Depth')}}</div>
         </div>
-        <div class="table-row body-2" 
+        <div class="table-row font-13" 
           v-for="(item,index) in bidsdata" :key="index"
           :style="'background: linear-gradient(to right,#303034 0%,#303034 '
             +item.blank+'%,#216549 0%,#216549 ' + item.percent +'%);'"
@@ -45,13 +45,13 @@
         </div>
       </div>
       <div class="selloffer-table offer-table" v-if="active === 'sell'" slot="card-content">
-        <div class="table-head body-2">
+        <div class="table-head font-13">
           <div class="headcol price">{{$t('Trade.Price')}}</div>
           <div class="headcol">{{BaseAsset.code}}</div>
           <div class="headcol">{{CounterAsset.code}}</div>
           <div class="headcol depth">{{$t('Trade.Depth')}}</div>
         </div>
-        <div class="table-row body-2" 
+        <div class="table-row font-13" 
           v-for="(item,index) in asksdata" :key="index"
           :style="'background: linear-gradient(to left,#303034 0%,#303034 '
             +item.blank+'%,#733520 0%,#733520 ' + item.percent +'%);'"
@@ -64,19 +64,19 @@
         </div>
       </div>
       <div class="myoffer-table offer-table" v-if="active === 'myoffer'" slot="card-content">
-        <div class="table-head body-2">
+        <div class="table-head font-13">
           <div class="headcol">{{$t('Trade.Price')}}</div>
           <div class="headcol">{{BaseAsset.code}}</div>
           <div class="headcol">{{CounterAsset.code}}</div>
           <div class="headcol"></div>
         </div>
-        <div class="table-row body-2" 
+        <div class="table-row font-13" 
           v-for="(item,index) in myoffers" :key="index" :class='item.type'>
-          <div class="b-row price" >{{Number(item.price.toFixed(4))}}</div>
-          <div class="b-row" v-if="item.type==='buy'">+{{[locale.key,Number(item.base.toFixed(4))] | I18NNumberFormat}}</div>
-          <div class="b-row" v-else>-{{[locale.key,Number(item.amount.toFixed(4))] | I18NNumberFormat}}</div>
-          <div class="b-row" v-if="item.type==='buy'">-{{[locale.key,Number(item.amount.toFixed(4))] | I18NNumberFormat}}</div>
-          <div class="b-row" v-else>+{{[locale.key,Number(item.base.toFixed(4))] | I18NNumberFormat}}</div>
+          <div class="b-row price" >{{item.price}}</div>
+          <div class="b-row" v-if="item.type==='buy'">+{{[locale.key,Number(item.base)] | I18NNumberFormat}}</div>
+          <div class="b-row" v-else>-{{[locale.key,Number(item.amount)] | I18NNumberFormat}}</div>
+          <div class="b-row" v-if="item.type==='buy'">-{{[locale.key,Number(item.amount)] | I18NNumberFormat}}</div>
+          <div class="b-row" v-else>+{{[locale.key,Number(item.base)] | I18NNumberFormat}}</div>
           <div class="b-row depth">
             <span class="working" v-if="working && delindex===index"></span>
             <a v-else href="javascript:void(0)"   @click.stop="cancelMyOffer(item,index)">{{$t('Trade.Cancel')}}</a>
@@ -85,19 +85,19 @@
       </div>
       
       <div class="myoffer-table offer-table" v-if="active === 'myTradeHistory'" slot="card-content">
-        <div class="table-head body-2">
+        <div class="table-head font-13">
           <div class="headcol">{{$t('Trade.Price')}}</div>
           <div class="headcol">{{BaseAsset.code}}</div>
           <div class="headcol">{{CounterAsset.code}}</div>    
           <div class="headcol">{{$t('status')}}</div>      
         </div>
-        <div class="table-row body-2" 
+        <div class="table-row font-13" 
           v-for="(item,index) in deals" :key="index" :class='item.type'>
-          <div class="b-row price" >{{Number(item.price.toFixed(7))}}</div>
-          <div class="b-row" v-if="item.base_asset === BaseAsset.code && item.base_issuer === BaseAsset.issuer">+{{Number(item.amount).toFixed(4)}}</div>
-          <div class="b-row" v-else>-{{Number(item.total).toFixed(7)}}</div>
-          <div class="b-row" v-if="item.base_asset === CounterAsset.code && item.base_issuer === CounterAsset.issuer">+{{Number(item.amount).toFixed(4)}}</div>
-          <div class="b-row" v-else>-{{Number(item.total).toFixed(7)}}</div>
+          <div class="b-row price" >{{item.price}}</div>
+          <div class="b-row" v-if="item.base_asset === BaseAsset.code && item.base_issuer === BaseAsset.issuer">+{{item.amount}}</div>
+          <div class="b-row" v-else>-{{item.total}}</div>
+          <div class="b-row" v-if="item.base_asset === CounterAsset.code && item.base_issuer === CounterAsset.issuer">+{{item.amount}}</div>
+          <div class="b-row" v-else>-{{item.total}}</div>
           <div class="b-row">{{$t(item.type)}}</div>
         </div>
       </div>
@@ -117,6 +117,7 @@ import Scroll from '@/components/Scroll'
 import { myofferConvert } from '@/api/offer'
 import {Decimal} from 'decimal.js'
 import { getAllEffectOffers } from '@/api/fchain'
+import { getXdrResultCode } from '@/api/xdr'
 var moment = require('moment')
 
 export default {
@@ -156,7 +157,13 @@ export default {
     ]),
     decimal(){
       if(this.selectedTrade.to.code === 'BTC'){
-        return 8
+        return 7
+      }
+      return 4
+    },
+    baseDecimal(){
+      if(this.selectedTrade.from.code === 'BTC'){
+        return 7
       }
       return 4
     },
@@ -171,7 +178,13 @@ export default {
     },
     myoffers(){
       if(this.my){
-        return myofferConvert(this.BaseAsset,this.CounterAsset,this.my)
+        let data = myofferConvert(this.BaseAsset,this.CounterAsset,this.my)
+        data.forEach(item=>{
+          item.price = Number(item.price).toFixed(7)
+          item.base = Number(item.base).toFixed(7)
+          item.amount = Number(item.base).toFixed(7)
+        })
+        return data
       }
       return []
     },
@@ -182,10 +195,10 @@ export default {
         dep = dep.add(amount)
         return Object.assign({}, obj, {
           origin: obj,
-          num: amount.toFixed(4),
+          num: amount.toFixed(this.decimal),
           price: new Decimal(obj.price).toFixed(this.decimal),
-          amount: amount.times(obj.price_r.d).dividedBy(obj.price_r.n).toFixed(4),
-          depth: Number(dep.toFixed(4)),
+          amount: amount.times(obj.price_r.d).dividedBy(obj.price_r.n).toFixed(this.baseDecimal),
+          depth: Number(dep.toFixed(this.decimal)),
         })
       })
       newdata.forEach(ele=>{
@@ -201,10 +214,10 @@ export default {
         let num = amount.times(obj.price)
         dep = dep.add(num);
         return Object.assign({}, obj, {
-          amount: amount.toFixed(4),
+          amount: amount.toFixed(this.baseDecimal),
           price: new Decimal(obj.price).toFixed(this.decimal),
-          num: num.toFixed(4),
-          depth: dep.toFixed(4),
+          num: num.toFixed(this.decimal),
+          depth: dep.toFixed(this.decimal),
           origin: obj,
         });
       })
@@ -311,6 +324,11 @@ export default {
           console.log('-----cancel----- error-----')
           console.log(err)
           this.$toasted.show(this.$t('Error.CancelOfferFailed'))
+          let errcode = getXdrResultCode(err);
+          if(errcode){
+            //this.$toasted.error(this.$t(errcode));
+            this.$toasted.show( this.$t(errorcode))
+          }
           this.working = false
           this.delindex = -1
         })
@@ -358,6 +376,13 @@ export default {
               return false
             }
           })
+
+          this.deals.forEach(item=>{
+            item.price = Number(item.price).toFixed(7)
+            item.total = Number(item.total).toFixed(7)
+            item.amount = Number(item.amount).toFixed(7)
+          })
+
         })
         .catch(err=>{
           console.error(err)

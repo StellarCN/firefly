@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-28 11:19:05 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-05-30 12:18:51
+ * @Last Modified time: 2018-06-04 18:09:25
  * @License MIT 
  */
 
@@ -14,7 +14,7 @@
     <card class="offer-card" padding="10px 10px" margin="0px 2px 0px 0px">
       <div class="buyoffer-table offer-table" slot="card-content">
         <div class="buyoffer offermenu">{{$t('Trade.BuyOffer')}}</div>
-        <div class="table-row body-2" 
+        <div class="table-row font-13" 
           v-for="(item,index) in bidsdata" :key="index"
           :style="'background: linear-gradient(to right,#303034 0%,#303034 '
             +item.blank+'%,#216549 0%,#216549 ' + item.percent +'%);'"
@@ -33,7 +33,7 @@
       <div class="selloffer-table offer-table"  slot="card-content">
         <div class="selloffer offermenu">{{$t('Trade.SellOffer')}}</div>
 
-        <div class="table-row body-2" 
+        <div class="table-row font-13" 
           v-for="(item,index) in asksdata" :key="index"
           :style="'background: linear-gradient(to left,#303034 0%,#303034 '
             +item.blank+'%,#733520 0%,#733520 ' + item.percent +'%);'"
