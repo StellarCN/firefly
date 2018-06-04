@@ -82,6 +82,7 @@
         <v-text-field  name="amount" 
           v-model="amount"
           @input="chgAmount"
+          type="number"
           dark
           :suffix="asset.code"
           ></v-text-field>
@@ -91,6 +92,7 @@
           max=100 step=10 ticks
           append-icon='keyboard_tab'  v-bind:style="'width: 100% !important'"
           :append-icon-cb = 'toMax'
+          @input="changeNum"
           ></v-slider>
       </div>
 
@@ -235,11 +237,10 @@ export default {
     }),
     ...mapGetters(['balances']),
     balance(){
-      // let data = this.balances.filter(ele => {
-      //   return ele.code === this.asset.code && ele.issuer === this.asset.issuer
-      // })
-      // return data.length>0 ? Number(data[0].balance):0;
-      return 100
+      let data = this.balances.filter(ele => {
+        return ele.code === this.asset.code && ele.issuer === this.asset.issuer
+      })
+      return data.length>0 ? Number(data[0].balance):0;
     },
     //费用
     fee(){
@@ -387,21 +388,37 @@ export default {
     },
     //修改数量时
     chgAmount(val){
+      if(val === null || val === '')val = 0
       //1. 数量不能大于最大值
       let nval = Number(val)
       if(nval >= this.balance){
-        this.amount = ''+this.balance
-        if(this.amount === 0){
-          this.num = 0
-        }else{
-          this.num = 100
-        }
+        this.$nextTick(()=>{
+          this.amount = this.balance
+          if(Number(this.amount) === 0){
+            this.num = 0
+          }else{
+            this.num = 100
+          }
+        });
       }else{
   //      this.amount = nval
         //计算
-        this.num = new Decimal(this.amount).times(100).div(this.balance).round().toNumber()
+        this.$nextTick(()=>{
+          this.num = new Decimal(this.amount||0).times(100).div(this.balance).round().toNumber()
+        });
       }
 
+    },
+    changeNum(val){
+      if(this.balance<=0){
+        this.$nextTick(()=>{
+          this.num = 0
+        })
+      }else{
+        this.$nextTick(()=>{
+          this.amount = new Decimal(this.balance).times(val).div(100).toNumber();
+        })
+      }
     },
     toMax(){
       if(this.amount === null || this.amount <= 0){
