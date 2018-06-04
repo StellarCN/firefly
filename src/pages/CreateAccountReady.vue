@@ -89,21 +89,6 @@
                 v-model="w3"
                 ></v-text-field>
             </v-flex>
-            <v-flex xs12 sm6 md4>
-              <v-text-field 
-                required
-                :label="$t('mnemonicIndex',[randoms[4]+1])"
-                v-model="w4"
-                ></v-text-field>
-            </v-flex>
-            <v-flex xs12 sm6 md4>
-              <v-text-field 
-                required
-                :label="$t('mnemonicIndex',[randoms[5]+1])"
-                v-model="w5"
-                ></v-text-field>
-            </v-flex>
-            
           </v-layout>
         </div>
 
@@ -222,9 +207,6 @@ export default {
       w1: null,
       w2: null,
       w3: null,
-      w4: null,
-      w5: null,
-
 
     
     }
@@ -262,8 +244,6 @@ export default {
     console.log(window.localStorage.getItem('login_flag'))
 
     //生成6个助记词校验位
-    this.genRadomInt();
-    this.genRadomInt();
     this.genRadomInt();
     this.genRadomInt();
     this.genRadomInt();
@@ -308,9 +288,7 @@ export default {
       if(this.w0 && this.w0 === this.mnemonicItems[this.randoms[0]] &&
            this.w1 && this.w1 === this.mnemonicItems[this.randoms[1]] &&
            this.w2 && this.w2 === this.mnemonicItems[this.randoms[2]] &&
-           this.w4 && this.w3 === this.mnemonicItems[this.randoms[3]] &&
-           this.w4 && this.w4 === this.mnemonicItems[this.randoms[4]] &&
-           this.w5 && this.w5 === this.mnemonicItems[this.randoms[5]]    
+           this.w3 && this.w3 === this.mnemonicItems[this.randoms[3]]
           ){
         this.seedInputDlgShow = false
         this.doSave();            
