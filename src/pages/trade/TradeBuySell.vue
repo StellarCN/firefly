@@ -29,7 +29,7 @@
           
           <v-text-field  dark required  clearable hide-details v-bind:style="'width: 100% !important'"
             :prefix="$t('Trade.UnitPrice')" 
-            :value='price'
+            v-model='price'
             type="number"
             @input="inputPrice"
             :suffix="CounterAsset.code"
@@ -39,7 +39,7 @@
           <!--数量-->
           <v-text-field  dark required hide-details clearable  v-bind:style="'width: 100% !important'"
             :prefix="$t('Amount')"
-            :value="amount"  
+            v-model="amount"  
             @input="inputAmount"
             type="number" name="amount" 
             :tabindex = '1'
@@ -50,7 +50,7 @@
             class="buy-amount-slider"
             dark
             max=100 step=10 ticks
-            :value="num"
+            v-model="num"
             @input="inputNum"
             append-icon='keyboard_tab'  v-bind:style="'width: 100% !important'"
             :append-icon-cb = 'toMaxNum'
@@ -60,7 +60,7 @@
           <v-text-field   name="total" dark
             :prefix="$t('Trade.Total')"
             :suffix="CounterBalance.code"
-            :value="total"
+            v-model="total"
             @input="inputTotal"
             type="number" hide-details  v-bind:style="'width: 100% !important'"
             :tabindex = '2'
@@ -581,21 +581,25 @@ export default {
     inputPrice(val){ // 价格变化，自动计算新的total
       let decvalue = new Decimal(val||0)
       if(decvalue.isNaN() || !decvalue.isFinite()){
-          this.price = 0
-          this.total = 0
+          this.$nextTick(()=>{
+            this.price = 0
+            this.total = 0
+          })
       }else{
-        this.price = Number(decvalue.toFixed(7))
-        if(this.isBuy){
-          let t = decvalue.times(this.amount || 0)
-          if(t.lessThan(this.tradeBalance)){
-            this.total = Number(t.toFixed(7))
+        this.$nextTick(()=>{
+          this.price = Number(decvalue.toFixed(7))
+          if(this.isBuy){
+            let t = decvalue.times(this.amount || 0)
+            if(t.lessThan(this.tradeBalance)){
+              this.total = Number(t.toFixed(7))
+            }else{
+              this.total = this.tradeBalance
+              this.amount = Number(new Decimal(this.tradeBalance).div(this.price||0).toFixed(7))
+            }
           }else{
-            this.total = this.tradeBalance
-            this.amount = Number(new Decimal(this.tradeBalance).div(this.price||0).toFixed(7))
-          }
-        }else{
-          this.setTotal()
-        }
+            this.setTotal()
+          }  
+        })
          
       }
       // this.total = Number(new Decimal(this.price).times(this.amount || 0).toFixed(7))
@@ -614,73 +618,95 @@ export default {
         // if(this.price ===null || this.price === 0)return
         let t = decvalue.times(this.price||0)
         if(t.lessThan(this.tradeBalance)){
-          this.amount = Number(decvalue.toFixed(7))
-          this.setNum()
-          this.setTotal()
+          this.$nextTick(()=>{
+            this.amount = Number(decvalue.toFixed(7))
+            this.setNum()
+            this.setTotal()
+          })
         }else{
-          this.total = this.tradeBalance
-          if(this.price === null || this.price === 0){
-            this.$nextTick(()=>{
+          this.$nextTick(()=>{
+            this.total = this.tradeBalance
+            if(this.price === null || this.price === 0){
               this.amount = this.amount
-            })
-            return
-          }
-          this.amount = Number(new Decimal(this.tradeBalance).div(this.price).toFixed(7))
-          this.setNum()
+              return
+            }
+            this.amount = Number(new Decimal(this.tradeBalance).div(this.price).toFixed(7))
+            this.setNum()
+          })
         }
       }else{
-        if(decvalue.lessThan(this.tradeBalance)){
-          this.amount = Number(decvalue.toFixed(7))
-        }else{
-          this.amount = this.tradeBalance
-        }
-        this.setNum()
-        this.setTotal()
+        this.$nextTick(()=>{
+          if(decvalue.lessThan(this.tradeBalance)){
+            this.amount = Number(decvalue.toFixed(7))
+          }else{
+            this.amount = this.tradeBalance
+          }
+          this.setNum()
+          this.setTotal()
+        })
       }
       console.log(this.amount)
     },
     inputNum(val){//修改amount和total
+      if(this.tradeBalance <= 0){
+        this.$nextTick(()=>{
+          this.num = 0
+        })
+        return;
+      }
       this.num = Number(val)
       //卖则表示把所有的资产都=amount,买则表示把total=最大值
       if(this.isBuy){
-        this.total = Number(new Decimal(this.num).times(this.tradeBalance).div(100).toFixed(7))
-        //计算amount
-        if(this.price === null || this.price <= 0){
-          this.amount = null
-        }else{
-          this.amount = Number(new Decimal(this.total).div(this.price).toFixed(7))
-        }
+        this.$nextTick(()=>{
+          this.total = Number(new Decimal(this.num).times(this.tradeBalance).div(100).toFixed(7))
+          //计算amount
+          if(this.price === null || this.price <= 0){
+            this.amount = null
+          }else{
+            this.amount = Number(new Decimal(this.total).div(this.price).toFixed(7))
+          }
+        })
       }else{
-        this.amount = Number(new Decimal(this.num).times(this.tradeBalance).div(100).toFixed(7))
-        //计算total
-        this.setTotal()
+        this.$nextTick(()=>{
+          this.amount = Number(new Decimal(this.num).times(this.tradeBalance).div(100).toFixed(7))
+          //计算total
+          this.setTotal()
+        });
       }
-
     },
     toMaxNum(){
       this.inputNum(100)
     },
     inputTotal(val){
       console.log('input total ---val: ' + val)
+      if(this.tradeBalance<=0){
+        this.$nextTick(()=>{
+          this.total = 0;
+        })
+        return;
+      }
       let decvalue = new Decimal(val || 0)
       if(decvalue.isNaN() || !decvalue.isFinite()){
         return 
       }
       if(this.isBuy){
-        this.tatal = decvalue.toNumber() > this.tradeBalance ? this.tradeBalance : Number(decvalue.toFixed(7))
-        if(this.price === null || this.price === 0)return
-        this.amount = Number(new Decimal(this.total).div(this.price).toFixed(7))
+        this.$nextTick(()=>{
+          this.tatal = decvalue.toNumber() > this.tradeBalance ? this.tradeBalance : Number(decvalue.toFixed(7))
+          if(this.price === null || this.price === 0)return
+          this.amount = Number(new Decimal(this.total).div(this.price).toFixed(7))
+        })
       }else{
         if(this.price === null || this.price === 0)return
-        let am = decvalue.div(this.price)
-        if(am.lessThan(this.tradeBalance)){
-          this.amount = Number(am.toFixed(7))
-          this.total = Number(decvalue.toFixed(7))
-        }else{
-          this.amount = this.tradeBalance
-          this.setTotal()
-        }
-        
+        this.$nextTick(()=>{
+          let am = decvalue.div(this.price)
+          if(am.lessThan(this.tradeBalance)){
+            this.amount = Number(am.toFixed(7))
+            this.total = Number(decvalue.toFixed(7))
+          }else{
+            this.amount = this.tradeBalance
+            this.setTotal()
+          }
+        });
       }
     },
     cancelpwd(){

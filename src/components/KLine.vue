@@ -3,14 +3,15 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-26 15:59:49 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-06-04 17:46:27
+ * @Last Modified time: 2018-06-04 22:16:33
  * @License MIT 
  */
 
 <template>
   <div class="line flex-row" v-if="lineData!=null || !loading">
       <div class="flex1">
-        <div :class="' price textright ' + ((titleData.change >=0 || !redUpGreenDown)? 'up':'down') ">{{titleData.price}}</div>
+        <div :class="' price textright ' + ((titleData.change >=0 || !redUpGreenDown)? 'up':'down') ">
+            {{titleData.price >= 0 ? (titleData.price>=0.000001 ? Number(titleData.price): titleData.price):''}}</div>
       </div>
       <div class="flex1">
         <div class="rate">
@@ -37,6 +38,7 @@ import { getTradeAggregation, getTradeAggregation1min,
     RESOLUTION_1MIN,RESOLUTION_1HOUR,RESOLUTION_1DAY } from '@/api/tradeAggregation'
 import { getAsset } from '@/api/assets'
 import { getTrades } from '@/api/trade'
+import { getOrderbook } from '@/api/orderbook'
 import  defaultsDeep  from 'lodash/defaultsDeep'
 import {Decimal} from 'decimal.js'
 
@@ -157,8 +159,15 @@ export default {
                 change: Number(change.toFixed(7)),
                 rate: new Decimal(rate.toFixed(2)).toNumber() })
           }
+          let p = this.orderbook_price
+          if(p!==null&& p!==undefined){
+              return {price: p.toFixed(this.decimal), change: 0, rate: 0}
+          }
           return {}
       },  
+      orderbook_price(){
+        return this.lineData ? this.lineData['orderbook_price']: null
+      },
       cid(){
           return `${this.base.code}-${this.base.issuer}-${this.counter.code}-${this.counter.issuer}`
       }
@@ -328,10 +337,41 @@ export default {
                         date: end_time,
                         data: records[0]
                     })   
+                    this.$nextTick(()=>{
+                        this.lineData = this.tradePairKLineData[this.tradepairIndex]
+                    })
+                    
+                }else{
+                    //查询orderbook，构造数据
+                    getOrderbook(getAsset(this.base), getAsset(this.counter))
+                        .then(data=>{
+                            let bids = data.bids;
+                            let asks = data.asks;
+                            let price = null;
+                            let index = 0
+                            if(bids && bids.length>0){
+                                price = new Decimal(bids[0].price)
+                                index++
+                            }
+                            if(asks && asks.length>0){
+                                price.add(asks[0].price)
+                                index++
+                            }
+                            if(index>0){
+                                price = price.div(index).toNumber();
+                            }
+                            this.$nextTick(()=>{
+                                this.lineData = {orderbook_price:  price}
+                            })
+                            
+                        })
+                        .catch(err=>{
+
+                        })
+
+
                 }
-                this.$nextTick(()=>{
-                    this.lineData = this.tradePairKLineData[this.tradepairIndex]
-                })
+
             })
             .catch(err=>{
                 console.error(`-----err on get trade aggregation -- `)
