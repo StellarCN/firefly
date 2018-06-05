@@ -259,7 +259,7 @@ export default {
   methods: {
     ...mapActions(['createAccount','createAccountByMnemonic','cleanGlobalState','coverAccount']),
     genRadomInt(){
-      let n = parseInt(24 * Math.random())
+      let n = parseInt(12 * Math.random())
       if(this.randoms.indexOf(n) >= 0){
         this.genRadomInt()
       }else{
