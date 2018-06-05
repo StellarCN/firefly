@@ -29,8 +29,7 @@ export const ZH_TW = {
 export const LANGUAGES = [
   EN,
   ZH_CN,
-  ZH_HK,
-  ZH_TW
+  ZH_HK
 ]
 
 export const MOMENT_LANGUAGES = {
