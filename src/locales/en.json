@@ -461,7 +461,7 @@
   "Pin":"Pin",
   "HorizonVersion":"HorizonVersion",
   "LoadMore":"Load More",
-  "Title.ThirdApp":"apps",
+  "Title.ThirdApp":"dapps",
   "Error.AjaxTimeout":"connection server timed out, please try again later",
   "Third.OpenAppHint":"will open DApp {0}",
   "Third.SendTo":"pay to {0}",
@@ -514,7 +514,8 @@
   "Warning_mnemonic_msg":"WARNING! The mnemonic is very important. Please save it safely and do not share it with anyone.",
   "no_mnemonic_msg":"There is no mnemonic!",
   "bids_max_price":"Highest bid price",
-  "asks_min_price":"Lowest ask price"
+  "asks_min_price":"Lowest ask price",
+  "hot_dapp":"hot dapps"
   
 
  
