@@ -59,7 +59,7 @@ export default {
             lastTrade:null,
             tradeInterval: null,//查询最新一次交易数据的interval
             
-            showKgraph: true,
+            showKgraph: true
         }
     },
     props: {
@@ -90,15 +90,24 @@ export default {
         }
     },
     computed: {
+      ...mapState({
+        redUpGreenDown: state => state.app.redUpGreenDown
+      }),
+      upColor(){
+        return this.redUpGreenDown ? '#14b143' : '#ef232a'
+      },
+      downColor(){
+        return this.redUpGreenDown ? '#ef232a' : '#14b143'
+      },
       titleData(){
-          if(this.lastTradeAggregation && this.lastTrade){
-            let price = new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
+          if(this.lastTradeAggregation){
+            let price = new Decimal(this.lastTradeAggregation.close)//new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
             let open = new Decimal(this.lastTradeAggregation.open)
             let change = price.minus(open)
             let rate = change.times(100).dividedBy(open)
             return  defaultsDeep({}, this.lastTradeAggregation, {
-                price: new Decimal(price.toFixed(6)).toNumber(),
-                change: new Decimal(change.toFixed(4)).toNumber(),
+                price: price.toFixed(7),
+                change: change.toFixed(7),
                 rate: new Decimal(rate.toFixed(2)).toNumber() })
           }
           return {}
@@ -129,12 +138,12 @@ export default {
     methods: {
 
         ...mapActions({
-            getAccountInfo: 'getAccountInfo',
+            getAccountInfo: 'getAccountInfo'
         }),
         reload(){
             this.cleanData()
             this.fetch();
-            this.fetchLastTrade()
+           // this.fetchLastTrade()
             
         },
         cleanData(){

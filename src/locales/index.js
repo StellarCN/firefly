@@ -1,9 +1,8 @@
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
-let endata = require('./en.json')
+// let endata = require('./en.json')
 let zhcndata = require('./zh-cn.json')
-let hkdata = require('./zh-hk')
-let twdata = require('./zh-tw')
+// let hkdata = require('./zh-hk')
 
 Vue.use(VueI18n)
 
@@ -38,7 +37,7 @@ export const MOMENT_LANGUAGES = {
   'zh_cn': 'zh-cn',
   'en': 'en',
   'zh_hk': 'zh-hk',
-  'zh_tw': 'zh-tw'
+  // 'zh_tw': 'zh-tw'
   
 }
 
@@ -51,7 +50,7 @@ export function getDeviceLanguage(){
         }else if('zh-HK' === val){
           resolve(ZH_HK)
         }else if('zh-TW' === val){
-          resolve(ZH_TW)
+          resolve(ZH_HK)
         } else {
           resolve(EN)
         }
@@ -65,12 +64,12 @@ export function getDeviceLanguage(){
 
 
 export const i18n = new VueI18n({
-  locale: EN.key,
+  locale: ZH_CN.key,
   messages: {
-    [EN.key]: endata,
+    // [EN.key]: endata,
     [ZH_CN.key]: zhcndata,
-    [ZH_HK.key]: hkdata,
-    [ZH_TW.key]: twdata
+    // [ZH_HK.key]: hkdata,
+    // [ZH_TW.key]: twdata
   }
 })
 

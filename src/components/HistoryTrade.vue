@@ -94,7 +94,6 @@ import  defaultsDeep  from 'lodash/defaultsDeep'
     computed: {
       ...mapState({
         account: state => state.accounts.selectedAccount,
-        tradepairs: state => state.accounts.accountData.tradepairs,
         assethosts: state => state.asset.assethosts,
         accountData: state => state.accounts.accountData,
       }),

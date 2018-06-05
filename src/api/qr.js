@@ -3,6 +3,9 @@
 // 生成名片信息（用于生成二维码）
 // json数据格式
 import StellarSdk from 'stellar-sdk'
+import StellarHDWallet from '../libs/stellar-hd-wallet/src/stellar-hd-wallet'
+
+
 export function exportNameCard(account){
  /*
   let data = {
@@ -38,6 +41,45 @@ export function exportAccount(account,accountData){
   let firefly = JSON.stringify(data)
   console.log(firefly)
   return firefly
+}
+
+export function exportMnemonic(name,mnemonic){
+  let data = {
+    "stellar": {
+      "account": {
+        "name": name
+      },
+      "mnemonic": mnemonic //助记词
+    }
+  }
+  let firefly = JSON.stringify(data)
+  console.log(firefly)
+  return firefly
+}
+
+/**
+ * 从exportMnemonic的数据结构中查看mnemonic
+ * @param {String} data 
+ */
+export function getMnemonicFromData(data, language){
+  if(data === null)return {status: false}
+  if(typeof data === 'undefined')return {status: false}
+  if(StellarHDWallet.validateMnemonic(data, language)){
+    return {
+      status: true,
+      mnemonic: data
+    }
+  }
+  try{
+    data = JSON.parse(data)
+    if(data && data.stellar && data.stellar.mnemonic){
+      return { status: true, mnemonic: data.stellar.mnemonic}
+    }
+    return { status: false }
+  }catch(err){
+    return {status: false}
+  }
+
 }
 
 export function exportPayment(account,amount,asset_code,asset_issuer,memo_type,memo){

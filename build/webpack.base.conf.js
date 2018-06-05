@@ -45,6 +45,11 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
+        // include: [
+        //   path.resolve(__dirname, "src"),
+        //   path.resolve(__dirname, "node_modules/ed25519-hd-key")
+        // ]
+       // exclude: /node_modules\/(?!(ed25519-hd-key)\/).*/
         exclude: /node_modules/,
         //include: [ path.resolve(__dirname, "node_modules", "ed25519-hd-key")],
         //exclude: [ path.resolve(__dirname, "node_modules")],

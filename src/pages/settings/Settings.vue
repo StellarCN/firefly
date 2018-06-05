@@ -8,15 +8,26 @@
       <card padding="10px 10px" class="mycard">
         <div class="card-content" slot="card-content">
           <ul class="settings-ul">
+            
+            <li class="settings-li">
+              <span>{{redUpGreenDown ? $t('redUpGreenDown') : $t('greenUpRedDown')}}</span>
+              <v-switch class="pincodeswitch f-right"
+                  v-model="colorSwitch"
+                  color="primary"
+                  hide-details
+                  @change="switchColor"
+                  ></v-switch>
+
+            </li>
 
             <li class="settings-li">
               <span>{{$t('PinCode')}}</span>
               <v-switch class="pincodeswitch f-right"
-                        v-model="pinEnable"
-                        color="primary"
-                        hide-details
-                        @change="switchPinCode"
-                        ></v-switch>
+                  :value="pinEnable"
+                  color="primary"
+                  hide-details
+                  @change="switchPinCode"
+                  ></v-switch>
 
             </li>
             <li class="settings-li" @click="toChangeLanguage">
@@ -52,26 +63,31 @@ export default {
     return {
       title: 'Menu.Settings',
       pinEnable: false,
+      colorSwitch: false,
     }
   },
   computed:{
     ...mapState({
       account: state => state.accounts.selectedAccount,
       accountData: state => state.accounts.accountData,
-      app: state => state.app
+      app: state => state.app,
+      redUpGreenDown: state => state.app.redUpGreenDown,
     }),
 
   },
   beforeMount(){
     this.pinEnable = this.app.enablePin || false
+    this.colorSwitch = this.redUpGreenDown
   },
   beforeUpdate(){
     this.pinEnable = this.app.enablePin || false
+    this.colorSwitch = this.redUpGreenDown
   },
   mounted(){
   },
   methods: {
     ...mapActions({
+      changeUpDownColor:'changeUpDownColor',
     }),
     back(){
       this.$router.back()
@@ -100,6 +116,9 @@ export default {
     toAbout(){
       this.$router.push({name: 'About'})
     },
+    switchColor(){
+      this.changeUpDownColor(!this.redUpGreenDown)
+    }
   },
   components: {
     Toolbar,

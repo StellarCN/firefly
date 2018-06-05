@@ -6,6 +6,8 @@ firefly is a mobile wallet for [Stellar](https://stellar.org) network. It suppor
 
 ## [中文文档](README-CN.md)
 
+## [DAPP API文档](https://firefly.gitbook.io/apidoc/)
+
 ## [Help Document](https://wallet.fchain.io/manual/#0)
 
 ## [RoadMap](docs/ROADMAP.MD)
@@ -52,6 +54,8 @@ firefly is a mobile wallet for [Stellar](https://stellar.org) network. It suppor
 
 # firefly depend on cordova7.x
 npm i -g cordova@7.1.0
+npm install -g cordova-hot-code-push-cli
+
 
 git clone https://github.com/stellarcn/firelfy.git
 cd firefly

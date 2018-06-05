@@ -460,7 +460,7 @@ export default {
       let params = {
         seed,
         address: this.account.address,
-        target: this.realDestination ? this.realDestination : this.destination,
+        target: dest,
         asset: {code: this.selectedasset.code, issuer: this.selectedasset.issuer},
         amount: this.amount,
         memo_type:  this.memoswitch ? this.memotype : null,
@@ -494,13 +494,19 @@ export default {
           this.sending = false
           this.sendfail = true
           //this.realDestination = null
-          let msg = getXdrResultCode(err)
           this.loadingTitle = this.$t('Error.SendAssetFail')
-          if(msg){
-            this.loadingMsg = this.$t(msg)
-          }else{
-            this.loadingMsg = this.$t(err.message)
+          try{
+            let msg = getXdrResultCode(err)
+            if(msg){
+              this.loadingMsg = this.$t(msg)
+            }else{
+              this.loadingMsg = this.$t(err.message)
+            }
+          }catch(err){
+            console.error(err)
+            this.loadingMsg = err.message
           }
+
         })
 
     },

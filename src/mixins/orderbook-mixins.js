@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-03-08 16:04:43 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-03-08 17:14:31
+ * @Last Modified time: 2018-05-28 14:21:25
  * @License MIT 
  */
 
@@ -21,7 +21,7 @@ export default {
       distance: null,
       maxdistance: null,
       working: false,
-      timeInterval: null,
+      timeInterval: null
     }
   },
   computed:{
@@ -29,18 +29,17 @@ export default {
       account: state => state.accounts.selectedAccount,
       accountData: state => state.accounts.accountData,
       assetAccounts: state => state.asset.assets,
-      tradepairs: state => state.accounts.accountData.tradepairs,
       selectedTrade: state => state.accounts.selectedTradePair.tradepair,
       selectedTradeIndex: state => state.accounts.selectedTradePair.index,
       bids: state => state.accounts.selectedTradePair.bids,//买单
       asks: state => state.accounts.selectedTradePair.asks,//卖单
       my: state => state.accounts.selectedTradePair.my.records,
       onpause: state => state.onpause,
-      locale: state => state.app.locale,
+      locale: state => state.app.locale
 
     }),
     ...mapGetters([
-      'balances',
+      'balances'
     ]),
     decimal(){
       if(this.selectedTrade.to.code === 'BTC'){
@@ -130,7 +129,7 @@ export default {
       switchTradePair: 'switchTradePair',
       selectTradePair: 'selectTradePair',
       queryOrderBook: 'queryOrderBook',
-      switchSelectedTradePair: 'switchSelectedTradePair',
+      switchSelectedTradePair: 'switchSelectedTradePair'
 
     }),
     setup(){
@@ -147,7 +146,7 @@ export default {
     },
     load(){
       return Promise.all([this.queryOrderBook()])
-    },
+    }
     
   }
 }

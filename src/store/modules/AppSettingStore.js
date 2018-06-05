@@ -1,6 +1,9 @@
 // appsetting store encrypt by default key @see ../../api/storage.js LOCK_KEY
 import { readAppSetting, saveAppSetting as save } from '../../api/storage'
 import { OFFICIAL_HORIZON, CHINA_HORIZON } from '../../api/horizon'
+import { app } from '@/main'
+import { MOMENT_LANGUAGES } from '@/locales/index'
+
 
 // 状态字段
 const state = {
@@ -17,6 +20,8 @@ const state = {
   myaddresses:[],//常用地址信息
   myapps:[],//当前用户自定义的app
   price:[],//从自定义api查询到价格表
+  isIos: false,//是否为ios
+  redUpGreenDown: true,//默认是否为红涨绿跌
 }
 
 const BLANK_USUAL = {name:null,address:null,memotype:null,memo:null}
@@ -25,10 +30,24 @@ const actions = {
   // 加载钱包设置
   async loadAppSetting ({ commit }) {
     let data = await readAppSetting()
+    let messages = app.$i18n.messages
+    if(!messages[data.locale.key]){
+      let filename = MOMENT_LANGUAGES[data.locale.key]
+      const res = await import(`../../locales/${filename}.json`)
+      app.$i18n.setLocaleMessage(data.locale.key, res)
+    }
     commit(CHANGE_APPSETTING_STATE, data)
   },
   // 保存钱包设置
   async saveAppSetting( { commit, state }, data ) {
+    if(data.locale){
+      let messages = app.$i18n.messages
+      if(!messages[data.locale.key]){
+        let filename = MOMENT_LANGUAGES[data.locale.key]
+        const res = await import(`../../locales/${filename}.json`)
+        app.$i18n.setLocaleMessage(data.locale.key, res)
+      }
+    }
     await save(Object.assign({}, state, data))
     commit(CHANGE_APPSETTING_STATE, data)
   },
@@ -42,11 +61,22 @@ const actions = {
   },
   // 修改语言
   async setLocale({dispatch,commit}, locale){
+    let messages = app.$i18n.messages
+    if(!messages[locale.key]){
+      let filename = MOMENT_LANGUAGES[locale.key]
+      const res = await import(`../../locales/${filename}.json`)
+      app.$i18n.setLocaleMessage(locale.key, res)
+    }
     await dispatch('saveAppSetting', {locale})
   },
   // 修改horizon配置
   async setHorizon({dispatch,commit},horizon){
     await dispatch('saveAppSetting', { horizon })
+  },
+
+  //=====修改红涨绿跌
+  async changeUpDownColor({dispatch ,commit }, redUpGreenDown){
+    await dispatch('saveAppSetting', {redUpGreenDown})
   },
 
   //=========联系人业务=================
@@ -153,6 +183,8 @@ const actions = {
 }
 
 export const SET_PRICE_BY_API = 'SET_PRICE_BY_API'
+export const PLATFORM_IS_IOS = 'PLATFORM_IS_IOS'
+
 
 const mutations = {
   CHANGE_APPSETTING_STATE(state, data){
@@ -160,6 +192,9 @@ const mutations = {
   },
   [SET_PRICE_BY_API](state,data){
     state.price = data
+  },
+  [PLATFORM_IS_IOS](state, isios){
+    state.isIos = isios
   }
   
 

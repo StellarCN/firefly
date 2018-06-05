@@ -23,6 +23,10 @@
             </v-layout>
           </div>
         </card>
+        <div class="loadmore textcenter" v-if="history.length > 0">
+          <v-progress-circular indeterminate color="primary" v-if="loadmore"></v-progress-circular>
+          <span v-if="!loadmore && hasmore " @click="loadmoreData">{{$t('LoadMore')}}</span>
+        </div>
       </div>
     </scroll>
   </div>
@@ -35,12 +39,17 @@
   import * as accountapi from '@/api/account'
   import {getAddressByAccountId} from '@/api/federation'
   import Scroll from '@/components/Scroll'
-  import {listenPaymentStream, closePaymentStream, getPaymentStream, convertRecords} from '@/api/payments'
+  import paymentsMixin from '@/mixins/payments'
+  import debounce from 'lodash/debounce'
 
   export default {
     data() {
-      return {}
+      return {
+        loadmore: false,
+        hasmore: true,
+      }
     },
+    mixins: [paymentsMixin],
     computed: {
       ...mapState({
         account: state => state.accounts.selectedAccount,
@@ -73,14 +82,6 @@
       }
 
     },
-    mounted() {
-      if (this.account.address) {
-        this.fetchData()
-      }
-    },
-    beforeDestroy() {
-      closePaymentStream()
-    },
     methods: {
       ...mapActions([
         'getAccountInfo',
@@ -88,46 +89,29 @@
         'selectPayment',
         'cleanAccount'
       ]),
+      onRefresh(){
+        return this.getPayments(this.account.address)
+      },
 
-      fetchData() {
-        if (this.account.address) {
-          this.load()
-            .then()
-            .catch(err => {
-              console.log("errorhere");
-              // this.cleanAccount()
-              console.log(err.message)
-              let msg = err.message
-              if (msg && 'Network Error' === msg) {
-                this.$toasted.error(this.$t('Account.NetworkError'))
-                return
-              }
-              console.error(err)
-              if (err.data && err.data.status === 404) {
-                this.noticeText = this.$t('Error.AccountNotFund')
-                this.notice = true
-              }
-              // this.snackbarText = this.$t('Error.AccountNotFund')
-              // this.snackbarColor = 'primary'
-              // this.snackbar = true
-              // this.$toasted.error(this.$t('Error.AccountNotFund'))
-              // this.$toasted.error(this.$t('Error.GetAccountInfoError'))
-            })
-          // 处理stream
-          // listenPaymentStream(this.account.address, this.onPaymentStream)
-        }
-      },
-      load() {
-        //this.cleanAccount()
-        let address = this.account.address
-        // let process = [this.getAccountInfo(address),this.getPayments(address)]
-        //console.log(process)
-        return Promise.all([this.getAccountInfo(this.account.address)])//,this.getPayments(this.account.address)])
-      },
-      onRefresh: function () {
-        console.log('-----on refresh---------')
-        return this.load()
-      },
+      loadmoreData:debounce(function(){
+        this.loadmore = true
+        let startLen = this.paymentsRecords.length
+        console.log('------------moremore----')
+        this.loadmorePayments(this.account.address)
+          .then(data=>{
+            this.loadmore = false
+            let endLen = this.paymentsRecords.length
+            if(startLen === endLen){
+              this.hasmore = false
+            }
+          })
+          .catch(err=>{
+            console.error(err)
+            this.loadmore = false
+          })
+          
+      },300),
+
       toTranscation(item) {
         this.selectPayment(item)
         this.$router.push({name: 'Transaction'})
@@ -161,4 +145,6 @@
 
   .history-amount.minus
     color: $primarycolor.red
+  .loadmore
+    padding-top: .3rem
 </style>

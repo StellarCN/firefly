@@ -8,7 +8,9 @@
         <i class="material-icons">extension</i>
       </v-btn>
     </toolbar>
+    
     <v-container fluid v-bind="{ [`grid-list-md`]: true }">
+      <div class="dapp-subtitle subheading pl-2">{{$t('hot_dapp')}}</div>
       <card padding="8px 0" margin="0 0" v-if="working">
         <div class="mt-5 textcenter">
           <v-progress-circular indeterminate color="primary"></v-progress-circular>
@@ -21,15 +23,18 @@
       </card>
       <v-layout class="server-apps-layout" row wrap  v-if="!working && apps && apps.length > 0">
         <v-flex
-          xs3
+          xs4
           v-for="(app,index) in apps"
           :key="index"
           @click="choose(app)"
+          class="app-card-wrapper"
         >
           <v-card flat tile class="pa-2 textcenter app-card" >
-             <v-avatar class="grey darken-4 app-avatar" :size="`48px`">
-               <img :src="app.image">
-             </v-avatar>
+             <div class="pa-3">
+                <v-avatar class="grey darken-4 app-avatar" :size="`100%`">
+                 <img :src="app.image">
+                </v-avatar>
+             </div>
              <v-card-title primary-title class="app-title">
                <div class="textcenter" style="width: 100%;">{{app.title}}</div>
              </v-card-title>
@@ -38,22 +43,38 @@
       </v-layout>
 
 
-      <div class="primary--text subheading pa-2" v-if="myapps.length > 0">{{$t('CustomDApp')}}</div>
+      <div class="dapp-subtitle subheading  pl-2" v-if="myapps.length > 0">{{$t('CustomDApp')}}</div>
 
       <v-layout class="apps-layout" row wrap  v-if="myapps.length > 0">
         <v-flex
-          xs3
+          xs4
           v-for="(app,index) in myapps"
           :key="index"
           @click="choose(app)"
+          class="app-card-wrapper"
         >
-          <v-card flat tile class="pa-2 textcenter app-card" >
-             <v-avatar class="grey darken-4 app-avatar">
+          <v-card dark flat tile class="pa-2 textcenter app-card" >
+            <div class="pa-3">
+              <v-avatar class="grey darken-4 app-avatar" :size="`62px`">
                <span class="white--text headline">{{app.title.substring(0,1)}}</span> 
              </v-avatar>
+            </div>
              <v-card-title primary-title class="app-title">
                <div class="textcenter" style="width: 100%;">{{app.title}}</div>
              </v-card-title>
+          </v-card>
+        </v-flex>
+        <v-flex
+          xs4
+          @click="addDapp"
+          class="app-card-wrapper"
+        >
+          <v-card dark flat tile class="pa-2 textcenter app-card mt-3" >
+            <div class="pa-3">
+              <v-avatar class="grey darken-4 app-avatar add-app-avatar" :size="`62px`">
+               <v-icon :size="`38px`" color="primary">add</v-icon>
+             </v-avatar>
+            </div>
           </v-card>
         </v-flex>
       </v-layout>
@@ -74,6 +95,32 @@
         </div>
       </div>
     </v-dialog>
+
+    <!--新增弹窗-->
+    <v-dialog v-model="showAddDlg" persistent max-width="90%">
+      <v-card>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+              
+              <v-flex xs12 sm6 md4>
+                <v-text-field :label="$t('ContactAdd.name')" clearable required v-model="apptitle"></v-text-field>
+              </v-flex>
+              <v-flex xs12 sm6 md4>
+                <v-text-field :label="$t('ContactAdd.address')" clearable required v-model="appsite"></v-text-field>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary darken-1" :loading="addingApp" flat @click.stop="cancelAddApp">{{$t('Button.Cancel')}}</v-btn>
+          <v-btn color="error darken-1" :loading="addingApp" flat @click.stop="doAddApp">{{$t('Save')}}</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+
     </v-container>
 
     <send-asset v-if="showSendAsset" 
@@ -114,7 +161,7 @@
 </template>
 
 <script>
-const thridAppConfig = `https://raw.githubusercontent.com/StellarCN/firefly/docs/third.json`
+const thridAppConfig = `https://update.fchain.io/config/dapp.json`
 import axios from 'axios'
 import { mapState, mapActions} from 'vuex'
 import Toolbar from '@/components/Toolbar'
@@ -154,6 +201,11 @@ export default {
 
       appEventType: null,//接收到的appevent事件
       appEventData: null,//接收的appevent的data
+
+      showAddDlg: false,
+      apptitle: null,
+      appsite: null,
+      addingApp: false,
     }
   },
    computed:{
@@ -188,6 +240,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['addMyApp']),
     back(){
       this.$router.back()
     },
@@ -254,7 +307,7 @@ export default {
         let contacts = this.allcontacts
         let myaddresses = this.myaddresses
         let isIos = "ios" === cordova.platformId
-        let script = FFWScript(this.account.address, {contacts,myaddresses} ,isIos)
+        let script = FFWScript(this.account.address, {contacts,myaddresses} ,isIos, cordova.platformId)
         // alert(script)
         this.appInstance.executeScript({ code: script },params => {
           //console.log(params)
@@ -282,7 +335,7 @@ export default {
           that.appEventData = e.data
           that.hideDapp()
         }
-      },300))
+      },3000))
     },
     hideDapp(e){
       this.appInstance.hide()
@@ -303,7 +356,7 @@ export default {
       //签名
       let data = e.data.data
       if(!isJson(data)){
-        this.doCallbackEvent(this.callbackData('fail','data is invalid'))
+        return this.doCallbackEvent(this.callbackData('fail','data is invalid'))
       }
       if(data){
         let cdata = signToBase64(this.accountData.seed, data)
@@ -415,7 +468,34 @@ export default {
     },
     toSetting(){
       this.$router.push({name: 'DAppSetting'})
+    },
+    addDapp(){
+      this.showAddDlg = true
+      this.apptitle = null
+      this.appsite = null
+    },
+    cancelAddApp(){
+      this.showAddDlg = false
+      this.apptitle = null
+      this.appsite = null
+    },
+    doAddApp(){
+      if(this.addingApp)return
+      if(!this.apptitle)return
+      if(!this.appsite)return
+      this.addingApp = true
+      this.addMyApp({title: this.apptitle, site: this.appsite})
+        .then(response=>{
+            this.cancelAddApp()
+            this.addingApp = false
+          })
+          .catch(err=>{
+            this.$toasted.error(this.$t('SaveFailed') +":" + (err.message ? err.message:''))
+          })
+
+
     }
+    
 
 
   },
@@ -441,6 +521,7 @@ export default {
   padding: .1rem .1rem
   overflow: hidden
   white-space: nowrap
+  font-size: 14px
 .card-content
   padding: 20px 10px
 .t2
@@ -464,6 +545,12 @@ export default {
   border-radius: 5px
 .app-card
   background: $secondarycolor.gray!important
+.app-card-wrapper
+  border: 1px solid $primarycolor.gray!important
 .app-avatar
   border-radius: 50%!important
+.dapp-subtitle
+  color: $secondarycolor.font
+.add-app-avatar
+  background: $secondarycolor.gray!important
 </style>

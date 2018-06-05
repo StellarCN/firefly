@@ -45,13 +45,15 @@ import Vue from "vue";
 import { mapActions, mapState } from "vuex";
 import PinCode from "@/components/PinCode";
 import { defaultTradePairsAPI } from "@/api/gateways";
-import { closeStreams, initStreams } from "@/streams";
+//import { closeStreams, initStreams } from "@/streams";
 import { initStorage, checkPlatform } from "@/api/storage";
-import { getDeviceLanguage } from "@/locales";
+import { getDeviceLanguage, ZH_CN } from "@/locales";
 import  TabBar from '@/components/TabBar'
 import { getFchainRss } from '@/api/fchain'
 import initCordovaPlugin from '@/libs/pkgs/initCordovaPlugin'
 import updateMixin from '@/mixins/update'
+import { PLATFORM_IS_IOS } from '@/store/modules/AppSettingStore'
+import { FCHAIN_HORIZON } from '@/api/horizon'
 
 export default {
   data() {
@@ -128,6 +130,7 @@ export default {
 
       if ("ios" === cordova.platformId) {
         this.isios = true;
+        this.$store.commit(PLATFORM_IS_IOS, true);
       }
       navigator.splashscreen.hide();
       if (StatusBar && !StatusBar.isVisible) {
@@ -140,6 +143,11 @@ export default {
         .then(locale => {
           this.devicelang = locale;
           this.$i18n.locale = this.devicelang.key
+          //下次更新后直接使用默认的fchain，horizon
+          // if(!localStorage.getItem('horizon')){
+          //   localStorage.setItem('horizon',1)
+          //   return this.loadAppSetting({horizon: FCHAIN_HORIZON})
+          // }
           return this.loadAppSetting();
         })
         .then(data => {
@@ -157,8 +165,8 @@ export default {
           try {
             if (this.address) {
               //this.getAccountInfo(this.address)
-              closeStreams();
-              initStreams(this.address);
+              //closeStreams();
+              //initStreams(this.address);
               this.getAllAssetHosts();
             }
           } catch (err) {
@@ -189,12 +197,12 @@ export default {
           initStorage()
             .then(() => {
               console.log("---init storage ok---");
-              this.saveAppSetting({ locale: this.devicelang });
+              this.saveAppSetting({ locale: this.devicelang||ZH_CN });
             })
             .catch(err => {
               console.error("---init storage error---");
               console.error(err);
-              this.saveAppSetting({ locale: this.devicelang });
+              this.saveAppSetting({ locale: this.devicelang||ZH_CN });
             });
           //保存默认的设置数据
           // this.$router.push({name: 'Wallet'})

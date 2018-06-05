@@ -108,6 +108,7 @@ import { mapState, mapActions, mapGetters} from 'vuex'
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import Loading from '@/components/Loading'
 import { isNativeAsset } from '@/api/assets'
+import paymentsMixin from '@/mixins/payments'
 
 export default {
   data(){
@@ -130,7 +131,8 @@ export default {
       }
     }
   },
-   computed:{
+  mixins: [paymentsMixin],
+  computed:{
     ...mapState({
       account: state => state.accounts.selectedAccount,
       accountData: state => state.accounts.accountData,
@@ -142,6 +144,17 @@ export default {
       'paymentsRecords',
       'reserve',
     ]),
+    balanceMap(){
+      let m = []
+      this.balances.forEach(item=>{
+        if(isNativeAsset(item)){
+          m.push(item.code)
+        }else{
+          m.push(item.code+'_'+item.issuer)
+        }
+      })
+      return m
+    },
     swiperTop() {
       return this.$refs.swiperTop.swiper
     },
@@ -149,15 +162,10 @@ export default {
       return this.$refs.swiperContent.swiper
     },
     swiperIndex(){
-      for (let basset of this.balances){
-        if (basset.code == this.selectedAsset.code 
-            && basset.isssuer == this.selectedAsset.isssuer){
-          return this.balances.indexOf(basset)
-        }
-      }
-      return 0
+      let key = isNativeAsset(this.selectedAsset) ? this.selectedAsset.code : (this.selectedAsset.code + '_' + this.selectedAsset.issuer)
+      let index = this.balanceMap.indexOf(key)
+      return index < 0 ? 0 : index
     },
-
     history(){
       console.log('--------payments records')
       console.log(this.paymentsRecords)
@@ -165,25 +173,18 @@ export default {
       if(!this.paymentsRecords){
         return data;
       }
-      this.paymentsRecords.forEach((ele) => {
-        let asset = ele.asset
-        let sasset = this.selectedAsset.code ? this.selectedAsset : this.balances[this.swiperIndex]
-        if((isNativeAsset(asset) && isNativeAsset(sasset))||
-          (asset.code === sasset.code && asset.issuer === sasset.issuer)){
-            if(ele.type==='payment' || ele.type==='path_payment'){
-              if(ele.isInbound){
-                ele.flag = 'Receive'
-              }else{
-                ele.flag = 'Send'
-              }
-            }else{
-              ele.flag = ele.type
-            }
-            data.push(ele)
-        }
-       
-      });
-      return data
+      return this.paymentsRecords.filter(item=>{
+        return (isNativeAsset(this.selectedAsset) && isNativeAsset(item.asset)
+          || (item.asset.code === this.selectedAsset.code &&  item.asset.issuer === this.selectedAsset.issuer))
+      }).map(item=>{
+        let ele = Object.assign({}, item)
+        if(ele.type==='payment' || ele.type==='path_payment'){
+            ele.flag = ele.isInbound ? 'Receive' : 'Send'
+          }else{
+            ele.flag = ele.type
+          }
+        return ele
+      })
     },
   
   },

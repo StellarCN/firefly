@@ -77,7 +77,7 @@
                 right: () => selectedItem = null
               }"
             >
-            <v-layout class="myassets-li third-li" row wrap v-swiper=2 @click.stop="toAsset(item)">
+            <v-layout class="myassets-li third-li" row wrap v-swiper=2.2 @click.stop="toAsset(item)">
               <v-flex xs2 class="myassets-wrapper">
                 <div class="icon-wrapper">
                   <i :class="'iconfont ' + assetIcon(item.code,item.issuer)"></i>
@@ -101,7 +101,7 @@
           </v-layout>
           <div class="myassets-operate-box">
             <div class="del" @click.stop="del(item)">{{$t('Delete')}}</div>
-            <div class="send"@click.stop="send(item)">{{$t('Send')}}</div>
+            <div class="send" @click.stop="send(item)">{{$t('Send')}}</div>
             <div class="receive" @click.stop="receive(item)">{{$t('Receive')}}</div>
           </div>
           </div>

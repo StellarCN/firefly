@@ -9,19 +9,27 @@
     <loading :show="working" :loading="sending" :success="sendsuccess" :fail='sendfail' 
       :color="isSell?'red':'green'" :title="loadingTitle" :msg="loadingError" :closeable="sendfail" @close="hiddenLoading"/>
 
+      <!--盘面
+      <order-book ref="orderbook"  @choose="choose"/>
+      -->
+      <div class="maintent orderbook-content">
+        <order-book-lite ref="orderbook"  @choose="choose"/>
+      </div>
+      
+
     <!--买卖切换-->
-    <div class="flex-row full-width tmenu">
+    <div class="flex-row full-width tmenu input-menu">
       <div :class="'flex1 textcenter' + ( isBuy ? ' active':'' )" @click="switchBuy">{{$t('Trade.Buy')}}</div>
       <div :class="'flex1 textcenter' + ( isSell ? ' active':'' )" @click="switchSell">{{$t('Trade.Sell')}}</div>
     </div>
 
-    <div class="content">
+    <div class="content input-content">
       <card class="mytrade" padding="10px 10px">
         <div class="card-content" slot="card-content">
           
           <v-text-field  dark required  clearable hide-details v-bind:style="'width: 100% !important'"
             :prefix="$t('Trade.UnitPrice')" 
-            :value='price'
+            v-model='price'
             type="number"
             @input="inputPrice"
             :suffix="CounterAsset.code"
@@ -31,7 +39,7 @@
           <!--数量-->
           <v-text-field  dark required hide-details clearable  v-bind:style="'width: 100% !important'"
             :prefix="$t('Amount')"
-            :value="amount"  
+            v-model="amount"  
             @input="inputAmount"
             type="number" name="amount" 
             :tabindex = '1'
@@ -42,7 +50,7 @@
             class="buy-amount-slider"
             dark
             max=100 step=10 ticks
-            :value="num"
+            v-model="num"
             @input="inputNum"
             append-icon='keyboard_tab'  v-bind:style="'width: 100% !important'"
             :append-icon-cb = 'toMaxNum'
@@ -52,7 +60,7 @@
           <v-text-field   name="total" dark
             :prefix="$t('Trade.Total')"
             :suffix="CounterBalance.code"
-            :value="total"
+            v-model="total"
             @input="inputTotal"
             type="number" hide-details  v-bind:style="'width: 100% !important'"
             :tabindex = '2'
@@ -74,16 +82,10 @@
         </div>
       </card>
 
-      <!--盘面
-      <order-book ref="orderbook"  @choose="choose"/>
-      -->
-      <div class="maintent">
-        <order-book-lite ref="orderbook"  @choose="choose"/>
-      </div>
-      
+    
 
        <!-- 买卖按钮 -->
-      <div class="flex-row full-width footer-btns">
+      <div class="flex-row full-width footer-btns" v-if="needTrust.length ===0 ">
         <div class="flex1 btn-flex">
           <v-btn :class="'full-width btn-reset ' + ( isBuy ? 'btn-green' : 'btn-red' )"  @click="clean">{{$t('Reset')}}</v-btn>
         </div>
@@ -97,6 +99,14 @@
         </div>
       </div>
 
+      <!--授信操作，如果当前用户没有当前的资产-->
+      <div class="flex-row full-width footer-btns" v-else>
+        <div class="flex1 btn-flex">
+          <v-btn color="error" class="full-width btn-reset"  @click.stop="doTrust">{{$t('ChangeTrust')}}{{needTrustCodes}}</v-btn>
+        </div>
+      </div>
+
+
     </div>
 
     <!-- 确认内容 -->
@@ -107,21 +117,33 @@
         <div class="confirm-title" v-if="flag === 'buy'">{{$t('Trade.Confirm')}}{{$t('Trade.Buy')}}</div>
         <div class="confirm-title" v-else>{{$t('Trade.Confirm')}}{{$t('Trade.Sell')}}</div>
         <div class="confirm-content">
-          <div class="confirm-row">
-            <span class="label">{{$t('Trade.Price')}}</span>
-            <span class="value"> {{price}}</span>
-            <span class="code">{{CounterAsset.code}}</span>
+
+          <div class="confirm-row flex-row" v-if="bids_max_price!=null">
+            <span class="label flex2">{{$t('bids_max_price')}}</span>
+            <span class="value flex2 textright pr-1"> {{bids_max_price}}</span>
+            <span class="code flex1">{{CounterAsset.code}}</span>
           </div>
-          <div class="confirm-row">
-            <span class="label"  v-if="flag === 'buy'">{{$t('Trade.Buy')}}</span>
-            <span class="label"  v-else>{{$t('Trade.Sell')}}</span>
-            <span class="value"> {{amount}}</span>
-            <span class="code">{{BaseAsset.code}}</span>
+          <div class="confirm-row flex-row" v-if="bids_max_price!=null">
+            <span class="label flex2">{{$t('asks_min_price')}}</span>
+            <span class="value flex2 textright pr-1"> {{asks_min_price}}</span>
+            <span class="code flex1">{{CounterAsset.code}}</span>
           </div>
-          <div class="confirm-row">
-            <span class="label">{{$t('Trade.Total')}}</span>
-            <span class="value"> {{total}}</span>
-            <span class="code"> {{CounterAsset.code}}</span>
+
+          <div class="confirm-row flex-row">
+            <span class="label flex2">{{$t('Trade.Price')}}</span>
+            <span class="value flex2 textright pr-1"> {{price}}</span>
+            <span class="code flex1">{{CounterAsset.code}}</span>
+          </div>
+          <div class="confirm-row flex-row">
+            <span class="label flex2"  v-if="flag === 'buy'">{{$t('Trade.Buy')}}</span>
+            <span class="label flex2"  v-else>{{$t('Trade.Sell')}}</span>
+            <span class="value flex2 textright pr-1"> {{amount}}</span>
+            <span class="code flex1">{{BaseAsset.code}}</span>
+          </div>
+          <div class="confirm-row flex-row">
+            <span class="label flex2">{{$t('Trade.Total')}}</span>
+            <span class="value flex2 textright pr-1"> {{total}}</span>
+            <span class="code flex1"> {{CounterAsset.code}}</span>
           </div>
         </div>
         <div class="confirm-btns flex-row textcenter">
@@ -131,7 +153,7 @@
       </v-bottom-sheet>
       </div>
     </div>
-
+    <password-sheet v-if="needpwd" @cancel="cancelpwd" @ok="rightPwd" />
   </div>
 </template>
 
@@ -142,9 +164,12 @@ import OrderBook from '@/components/OrderBook'
 import OrderBookLite from '@/components/OrderBookLite'
 import Loading from '@/components/Loading'
 import TradePairToolBar from '@/components/TradePairToolBar'
+import PasswordSheet from '@/components/PasswordSheet'
 import { offer as doOffer } from '@/api/offer'
 import { mapState, mapActions, mapGetters} from 'vuex'
 import { getAsset, isNativeAsset } from '@/api/assets'
+import { trustAll } from '@/api/operations'
+import { getXdrResultCode } from '@/api/xdr'
 import { Decimal } from 'decimal.js'
 import debounce from 'lodash/debounce'
 
@@ -171,6 +196,7 @@ export default {
       showConfirmSheet: false,
       loadingTitle: null,
       loadingError: null,
+      needpwd: false,
 
     }
   },
@@ -179,10 +205,12 @@ export default {
       account: state => state.accounts.selectedAccount,
       accountData: state => state.accounts.accountData,
       assetAccounts: state => state.asset.assets,
-      tradepairs: state => state.accounts.accountData.tradepairs,
       selectedTrade: state => state.accounts.selectedTradePair.tradepair,
       selectedTradeIndex: state => state.accounts.selectedTradePair.index,
       assethosts: state => state.asset.assethosts,
+      islogin: state => state.accounts.accountData.seed ? true:false,
+      bids: state => state.accounts.selectedTradePair.bids,//买单
+      asks: state => state.accounts.selectedTradePair.asks,//卖单
     }),
     ...mapGetters([
       'balances',
@@ -190,6 +218,36 @@ export default {
       'reserve',
       'base_reserve'
     ]),
+    needTrust(){//返回当前需要授信的资产
+      let result = []
+      let basset = this.BaseAsset
+      let casset = this.CounterAsset
+      let hasBaseAsset = isNativeAsset(basset) || false
+      let hasCounterAsset = isNativeAsset(casset)  || false
+      this.balances.forEach(item=>{
+        if(item.code === basset.code && item.issuer === basset.issuer){
+          hasBaseAsset = true
+        }else if(item.code === casset.code && item.issuer === casset.issuer){
+          hasCounterAsset = true
+        }
+      })
+      if(!hasBaseAsset){
+        result.push(basset)
+      }
+      if(!hasCounterAsset){
+        result.push(casset)
+      }
+      return result
+    },
+    needTrustCodes(){
+      if(this.needTrust.length > 0){
+        let result = '(';
+        this.needTrust.forEach(item=> {
+          result+=item.code+','
+        })
+        return result.substring(0, result.length-1)+')'
+      }
+    },
     BaseAsset(){
       return this.selectedTrade.from
     },
@@ -239,6 +297,18 @@ export default {
       return new Decimal(this.tradeBalance).floor().toNumber()
 //      return this.tradeBalance - this.tradeBalance % (10 ** (String(parseInt(this.tradeBalance * 10**7)).length -1 )  /10**7)
     },
+    bids_max_price(){
+      if(this.bids && this.bids.length > 0){
+        return this.bids[0].price
+      }
+      return null
+    },
+    asks_min_price(){
+      if(this.asks && this.asks.length > 0){
+        return this.asks[0].price
+      }
+      return null
+    },
 
     
   },
@@ -247,6 +317,9 @@ export default {
   },
   beforeMount () {
     this.flag = this.$route.params.flag
+    if(!this.islogin){
+      this.needpwd = true
+    }
   },
   methods: {
     ...mapActions({
@@ -258,7 +331,8 @@ export default {
       queryOrderBook: 'queryOrderBook',
       switchSelectedTradePair: 'switchSelectedTradePair',
       queryMyOffers: 'queryMyOffers',
-      orderBookStreamHandler: 'orderBookStreamHandler'
+      orderBookStreamHandler: 'orderBookStreamHandler',
+      getAccountInfo:'getAccountInfo'
 
     }),
     back(){
@@ -380,7 +454,8 @@ export default {
           this.hideLoading()
           //this.$toasted.show(this.$t('Trade.OfferSuccess'))
           this.loadingTitle = this.$t('Trade.OfferSuccess')
-          this.queryMyOffers()
+          this.queryMyOffers();
+
         })
         .catch(err=>{
           console.log(err)
@@ -426,17 +501,63 @@ export default {
       if(this.justify) return
       this.justify = true
       let origin = data.origin
+      console.log('-------11222233')
+      console.log(origin)
+      console.log(type)
+      console.log(data)
       this.price = Number(origin.price)
       if(this.isBuy){
-        console.log(this.tradeBalance)
-        this.total = Number(data.depth) <= this.tradeBalance? Number(data.depth):this.tradeBalance
-        this.setNum()
-        this.setAmount()
+        if(type === 'buy'){
+          let tempTotal = Number(origin.amount)
+          this.total = tempTotal <= this.tradeBalance? tempTotal:this.tradeBalance
+          this.setNum()
+          this.setAmount()
+        }else{
+          let tempAmount = new Decimal(origin.amount)
+          let tempTotal = tempAmount.times(origin.price_r.n).div(origin.price_r.d)
+          if(tempTotal.toNumber() <= this.tradeBalance){
+            this.amount = Number(tempAmount.toFixed(7))
+            this.setTotal()
+            this.setNum()
+          }else{
+            this.total = this.tradeBalance
+            this.setNum()
+            this.setAmount()
+          }
+        }
+        // console.log(this.tradeBalance)
+        // this.total = Number(data.depth) <= this.tradeBalance? Number(data.depth):this.tradeBalance
+        // this.setNum()
+        // this.setAmount()
       }else if(this.isSell){
-        let total_max = Number((this.price * this.tradeBalance).toFixed(7))
-        this.total = Number(data.depth) <= total_max ? Number(data.depth):total_max
-        this.setAmount()
-        this.setNum()
+        if(type === 'buy'){
+          let tempAmount = new Decimal(origin.amount).times(origin.price_r.d).div(origin.price_r.n)
+          if(tempAmount.toNumber() <= this.tradeBalance){
+            this.amount = Number(tempAmount.toFixed(7))
+            this.setTotal()
+            this.setNum()
+          }else{
+            this.amount = this.tradeBalance
+            this.setTotal()
+            this.setNum()
+          }
+        }else{
+          let tempAmount = Number(origin.amount)
+          if(tempAmount <= this.tradeBalance){
+            this.amount = tempAmount
+            this.setTotal()
+            this.setNum()
+          }else{
+            this.amount = this.tradeBalance
+            this.setTotal()
+            this.setNum()
+          }
+
+        }
+        // let total_max = Number((this.price * this.tradeBalance).toFixed(7))
+        // this.total = Number(data.depth) <= total_max ? Number(data.depth):total_max
+        // this.setAmount()
+        // this.setNum()
       }
       this.resetJustify()
     },
@@ -460,21 +581,25 @@ export default {
     inputPrice(val){ // 价格变化，自动计算新的total
       let decvalue = new Decimal(val||0)
       if(decvalue.isNaN() || !decvalue.isFinite()){
-          this.price = 0
-          this.total = 0
+          this.$nextTick(()=>{
+            this.price = 0
+            this.total = 0
+          })
       }else{
-        this.price = Number(decvalue.toFixed(7))
-        if(this.isBuy){
-          let t = decvalue.times(this.amount || 0)
-          if(t.lessThan(this.tradeBalance)){
-            this.total = Number(t.toFixed(7))
+        this.$nextTick(()=>{
+          this.price = Number(decvalue.toFixed(7))
+          if(this.isBuy){
+            let t = decvalue.times(this.amount || 0)
+            if(t.lessThan(this.tradeBalance)){
+              this.total = Number(t.toFixed(7))
+            }else{
+              this.total = this.tradeBalance
+              this.amount = Number(new Decimal(this.tradeBalance).div(this.price||0).toFixed(7))
+            }
           }else{
-            this.total = this.tradeBalance
-            this.amount = Number(new Decimal(this.tradeBalance).div(this.price||0).toFixed(7))
-          }
-        }else{
-          this.setTotal()
-        }
+            this.setTotal()
+          }  
+        })
          
       }
       // this.total = Number(new Decimal(this.price).times(this.amount || 0).toFixed(7))
@@ -493,78 +618,138 @@ export default {
         // if(this.price ===null || this.price === 0)return
         let t = decvalue.times(this.price||0)
         if(t.lessThan(this.tradeBalance)){
-          this.amount = Number(decvalue.toFixed(7))
-          this.setNum()
-          this.setTotal()
+          this.$nextTick(()=>{
+            this.amount = Number(decvalue.toFixed(7))
+            this.setNum()
+            this.setTotal()
+          })
         }else{
-          this.total = this.tradeBalance
-          if(this.price === null || this.price === 0){
-            this.$nextTick(()=>{
+          this.$nextTick(()=>{
+            this.total = this.tradeBalance
+            if(this.price === null || this.price === 0){
               this.amount = this.amount
-            })
-            return
-          }
-          this.amount = Number(new Decimal(this.tradeBalance).div(this.price).toFixed(7))
-          this.setNum()
+              return
+            }
+            this.amount = Number(new Decimal(this.tradeBalance).div(this.price).toFixed(7))
+            this.setNum()
+          })
         }
       }else{
-        if(decvalue.lessThan(this.tradeBalance)){
-          this.amount = Number(decvalue.toFixed(7))
-        }else{
-          this.amount = this.tradeBalance
-        }
-        this.setNum()
-        this.setTotal()
+        this.$nextTick(()=>{
+          if(decvalue.lessThan(this.tradeBalance)){
+            this.amount = Number(decvalue.toFixed(7))
+          }else{
+            this.amount = this.tradeBalance
+          }
+          this.setNum()
+          this.setTotal()
+        })
       }
       console.log(this.amount)
     },
     inputNum(val){//修改amount和total
+      if(this.tradeBalance <= 0){
+        this.$nextTick(()=>{
+          this.num = 0
+        })
+        return;
+      }
       this.num = Number(val)
       //卖则表示把所有的资产都=amount,买则表示把total=最大值
       if(this.isBuy){
-        this.total = Number(new Decimal(this.num).times(this.tradeBalance).div(100).toFixed(7))
-        //计算amount
-        if(this.price === null || this.price <= 0){
-          this.amount = null
-        }else{
-          this.amount = Number(new Decimal(this.total).div(this.price).toFixed(7))
-        }
+        this.$nextTick(()=>{
+          this.total = Number(new Decimal(this.num).times(this.tradeBalance).div(100).toFixed(7))
+          //计算amount
+          if(this.price === null || this.price <= 0){
+            this.amount = null
+          }else{
+            this.amount = Number(new Decimal(this.total).div(this.price).toFixed(7))
+          }
+        })
       }else{
-        this.amount = Number(new Decimal(this.num).times(this.tradeBalance).div(100).toFixed(7))
-        //计算total
-        this.setTotal()
+        this.$nextTick(()=>{
+          this.amount = Number(new Decimal(this.num).times(this.tradeBalance).div(100).toFixed(7))
+          //计算total
+          this.setTotal()
+        });
       }
-
     },
     toMaxNum(){
       this.inputNum(100)
     },
     inputTotal(val){
       console.log('input total ---val: ' + val)
+      if(this.tradeBalance<=0){
+        this.$nextTick(()=>{
+          this.total = 0;
+        })
+        return;
+      }
       let decvalue = new Decimal(val || 0)
       if(decvalue.isNaN() || !decvalue.isFinite()){
         return 
       }
       if(this.isBuy){
-        this.tatal = decvalue.toNumber() > this.tradeBalance ? this.tradeBalance : Number(decvalue.toFixed(7))
-        if(this.price === null || this.price === 0)return
-        this.amount = Number(new Decimal(this.total).div(this.price).toFixed(7))
+        this.$nextTick(()=>{
+          this.total = decvalue.toNumber() > this.tradeBalance ? this.tradeBalance : Number(decvalue.toFixed(7))
+          if(this.price === null || this.price === 0)return
+          this.amount = Number(new Decimal(this.total).div(this.price).toFixed(7))
+        })
       }else{
         if(this.price === null || this.price === 0)return
-        let am = decvalue.div(this.price)
-        if(am.lessThan(this.tradeBalance)){
-          this.amount = Number(am.toFixed(7))
-          this.total = Number(decvalue.toFixed(7))
-        }else{
-          this.amount = this.tradeBalance
-          this.setTotal()
-        }
-        
+        this.$nextTick(()=>{
+          let am = decvalue.div(this.price)
+          if(am.lessThan(this.tradeBalance)){
+            this.amount = Number(am.toFixed(7))
+            this.total = Number(decvalue.toFixed(7))
+          }else{
+            this.amount = this.tradeBalance
+            this.setTotal()
+          }
+        });
       }
+    },
+    cancelpwd(){
+      this.$router.back()
+    },
+    rightPwd(){
+      this.needpwd = false
+    },
+    doTrust(){
+      //   <loading :show="working" :loading="sending" :success="sendsuccess" :fail='sendfail' 
+      // :color="isSell?'red':'green'" :title="loadingTitle" :msg="loadingError" :closeable="sendfail" @close="hiddenLoading"/>
+      if(this.working)return
+      // this.isSell = true
+      this.working = true
+      this.sending = true
+      trustAll(this.accountData.seed, this.needTrust)
+        .then(response=>{
+          this.sending = false
+          this.sendsuccess = true
+          this.loadingTitle = this.$t('AddAssetSuccess')
+          try{
+            this.getAccountInfo(this.account.address).then(response=>{}).catch(err=>{})
+          }catch(err){
+            console.error(err)
+          }
+          setTimout(()=>{
+            this.working = false
+            this.sendsuccess = false
+            this.loadingTitle = null
+          },3000)
+        })
+        .catch(err=>{
+          this.sending = false
+          this.sendfail = true
+          let msg = getXdrResultCode(err)
+          this.loadingTitle = this.$t('AddAssetFail')
+          if(msg){
+           this.loadingError = this.$t(msg)
+          }     
+        })
     }
 
 
-   
   },
   components: {
     Toolbar,
@@ -573,6 +758,7 @@ export default {
     Loading,
     TradePairToolBar,
     OrderBookLite,
+    PasswordSheet,
   }
 }
 </script>
@@ -623,14 +809,14 @@ export default {
   background: $primarycolor.gray
   opacity: .8
   position: fixed
-  bottom: 260px
+  bottom: 300px
   right: 0
   left: 0
   top: 0
   z-index: 9
 .confirm-dlg
   background: $secondarycolor.gray
-  height: 260px
+  height: 300px
   position: fixed
   bottom: 0
   right: 0
@@ -643,8 +829,8 @@ export default {
   color: $primarycolor.green
   text-align: center
 .confirm-content
-  padding-top: 24px
-  padding-bottom: 24px
+  padding-top: 8px
+  padding-bottom: 8px
   font-size: 16px
   .confirm-row
     padding: 8px 8px
@@ -660,6 +846,24 @@ export default {
   height: 42px
   line-height: 42px
 
+.input-content
+  position: absolute!important
+  bottom: 0
+  left:0
+  right:0
+  background: $primarycolor.gray
+  padding-bottom: 40px
+
+.input-menu
+  position: absolute!important
+  bottom: 298px
+  left:0
+  right:0
+  background: $primarycolor.gray
+
+.orderbook-content
+  overflow-y: auto
+  height: calc(100vh - 360px)
 
 </style>
 

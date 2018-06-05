@@ -8,7 +8,7 @@ plugins/
 hooks/
 !src/libs/vue-cordova/plugins
 !src/store/plugins
-
+!src/libs/ed25519-hd-key/dist
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

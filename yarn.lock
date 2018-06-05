@@ -2169,9 +2169,9 @@ cordova-plugin-inappbrowser@^1.7.2:
   version "1.7.2"
   resolved "https://registry.yarnpkg.com/cordova-plugin-inappbrowser/-/cordova-plugin-inappbrowser-1.7.2.tgz#64763495be87eb2e7adb1a08f0209b96ea5ceee0"
 
-cordova-plugin-qrscanner@^2.5.0:
+"cordova-plugin-qrscanner@git+https://github.com/imloama/cordova-plugin-qrscanner.git":
   version "2.5.0"
-  resolved "https://registry.yarnpkg.com/cordova-plugin-qrscanner/-/cordova-plugin-qrscanner-2.5.0.tgz#6d6ba13d0bb49e370daa4958d77c8aa76d8ca356"
+  resolved "git+https://github.com/imloama/cordova-plugin-qrscanner.git#2da189bf86adf057e0f0088ce80225c8e54aead2"
   dependencies:
     qrcode-reader "^0.2.2"
     webrtc-adapter "^3.1.4"

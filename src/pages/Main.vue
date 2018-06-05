@@ -89,7 +89,6 @@ import BottomNotice from '@/components/BottomNotice'
 import * as accountapi from '../api/account'
 import { getAddressByAccountId } from '../api/federation'
 import Scroll from '../components/Scroll'
-import { listenPaymentStream, closePaymentStream, getPaymentStream, convertRecords } from '@/api/payments'
 import { ACCOUNT_IS_FUNDING,ACCOUNT_NOT_FUNDING } from '@/store/modules/AccountStore'
 
 export default {
@@ -150,7 +149,6 @@ export default {
     })
   },
   beforeDestroy(){
-    closePaymentStream()
     window.clearInterval(this.intervalID);
     document.removeEventListener("backbutton", this.onBackKeyDown, false);
     document.removeEventListener("backbutton", this.exitApp, false); 

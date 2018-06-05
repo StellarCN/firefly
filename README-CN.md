@@ -5,8 +5,9 @@
 
 ## [English Document](README.md)
 
-## [帮助文档](https://wallet.fchain.io/manual/#0)
+## [DAPP API文档](https://firefly.gitbook.io/apidoc/)
 
+## [帮助文档](https://wallet.fchain.io/manual/#0)
 
 ## [路线图](docs/ROADMAP_CN.MD)
 
@@ -52,6 +53,7 @@
 
 # 需要安装cordova7.x的版本
 npm i -g cordova@7.1.0
+npm install -g cordova-hot-code-push-cli
 git clone https://github.com/stellarcn/firelfy.git
 cd firefly
 npm i

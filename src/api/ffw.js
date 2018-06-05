@@ -6,6 +6,9 @@
 // 5. 备份非敏感数据
 // 6. 恢复非敏感数据
 // 7. 授信
+import pkg from '../../package'
+
+
 
 export const FFW_EVENT_TYPE_PAY = 'pay'
 export const FFW_EVENT_TYPE_PATHPAYMENT = 'pathPayment'
@@ -15,7 +18,7 @@ export const FFW_EVENT_TYPE_RECOVERY = 'recovery'
 export const FFW_EVENT_TYPE_TRUST = 'trust'
 export const FFW_EVENT_TYPE_SIGNXDR = 'signXDR'
 
-export function FFWScript(address, data = {}, isIos = false){
+export function FFWScript(address, data = {}, isIos = false, platform){
   // return [
   //   'if(!window.FFW){'
   //     ,'window.FFW = {};'
@@ -27,8 +30,11 @@ export function FFWScript(address, data = {}, isIos = false){
   // ].join('')
   let method = isIos ? 'window.webkit.messageHandlers.cordova_iab' : 'cordova_iab'
   let appdata = Object.assign({contacts:[], myaddresses:[]},data);
+  let version = pkg.version
   return `if(!window.FFW){
       window.FFW = {};
+      FFW.version = "${version}";
+      FFW.platform = "${platform}";
       FFW.address = "${address}";
       FFW.contacts = "${appdata.contacts}";
       FFW.myaddresses = "${data.myaddresses}";

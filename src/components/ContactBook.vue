@@ -6,6 +6,7 @@
  */
 <template>
   <div class="contact-book">
+    <div v-if="isIos" class="ios-status ios-status-red">&nbsp;</div>
     <!--标题栏-->
     <div class="bookbar" >
       <div class="bar-blank">&nbsp;</div>
@@ -113,7 +114,8 @@ export default {
     ...mapState({
       accounts: state => state.accounts.data || [],
       contacts: state => state.app.contacts || [],
-      myaddresses: state => state.app.myaddresses || []
+      myaddresses: state => state.app.myaddresses || [],
+      isIos: state => state.app.isIos,
     }),
     showaccount() {
       return this.data.indexOf("account") >= 0;
@@ -165,6 +167,9 @@ export default {
 
 <style lang="stylus" scoped>
 @require '~@/stylus/color.styl';
+
+.ios-status-red
+  background: $primarycolor.red!important
 
 .contact-book {
   color: $primarycolor.font

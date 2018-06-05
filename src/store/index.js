@@ -18,6 +18,8 @@ const state = {
   isImportAccount: false,
   isCreateAccount: false,
   seed: null,
+  mnemonic: null,
+  mIndex: null,
   seedExtData: null,
   accountname: null,
   accountpassword: null,
@@ -41,8 +43,8 @@ const actions = {
   backToAccount({commit}){
     commit(BACK_TO_ACCOUNT)
   },
-  setNewSeed({commit},{seed,extdata}){
-    commit(SET_NEW_SEED,{seed,extdata})
+  setNewSeed({commit},{seed,extdata,mnemonic,mIndex}){
+    commit(SET_NEW_SEED,{seed,extdata, mnemonic, mIndex})
   },
   setCreateAccountData({commit}, {name,password,memo}){
     commit(SET_CREATE_ACCOUNT_DATA, {name,password, memo})
@@ -82,9 +84,11 @@ const mutations = {
   GLOBAL_ERROR(state,err){
     state.error = err
   },
-  SET_NEW_SEED(state,{seed,extdata}){
+  SET_NEW_SEED(state,{seed,extdata, mnemonic, mIndex}){
     state.seed = seed
     state.seedExtData = extdata
+    state.mnemonic = mnemonic
+    state.mIndex = mIndex
   },
   SET_CREATE_ACCOUNT_DATA(state,{name,password,memo}){
     state.accountname = name
@@ -119,6 +123,8 @@ const blocks = [
   'error',
   'seed',
   'seedExtData',
+  'mnemonic',
+  'mIndex',
   'accountname',
   'accountpassword',
   'password',

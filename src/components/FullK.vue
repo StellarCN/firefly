@@ -13,26 +13,26 @@
                 <i class="material-icons  k-icon">keyboard_arrow_left</i>
             </v-btn>
           </div>
-          <div :class="'flex3 textcenter ' + ( titleData.change >=0 ? 'up':'down') ">
+          <div :class="'flex3 textcenter ' + ( (titleData.change >=0 ^ redUpGreenDown ) ? 'down':'up') ">
               <div class="price textcenter">
                   <span class="price">{{titleData.price}}</span>
                   <span class="code">{{counter.code}}</span>
               </div>
               <div class="flex-row">
-                  <div class="flex1 textright">
+                  <div class="flex3 textright">
                         <span v-if="titleData.change>0">+</span>
                         <span>{{titleData.change}}&nbsp;&nbsp;</span>
                   </div>
-                  <div class="flex1 textleft">
+                  <div class="flex2 textleft">
                         <span v-if="titleData.rate>0"> +</span>
                         <span>{{titleData.rate}}%</span>
                   </div>
               </div>
           </div>
           <div class="flex3 values">
-              <div class=""><span class="label">24H {{$t('high')}} </span><span>{{Number(lastTradeAggregation.high).toFixed(4)}}</span></div>
-              <div class=""><span class="label">24H {{$t('low')}} </span><span>{{Number(lastTradeAggregation.low).toFixed(4)}}</span></div>
-              <div class=""><span class="label">24H {{$t('volume')}} </span><span>{{Number(lastTradeAggregation.base_volume).toFixed(4)}}</span></div>
+              <div class=""><span class="label">24H {{$t('high')}} </span><span>{{lastTradeAggregation.high}}</span></div>
+              <div class=""><span class="label">24H {{$t('low')}} </span><span>{{lastTradeAggregation.low}}</span></div>
+              <div class=""><span class="label">24H {{$t('volume')}} </span><span>{{lastTradeAggregation.base_volume}}</span></div>
           </div>
           <div class="flex1 title-btn-div">
              
@@ -40,7 +40,7 @@
          
       </div>
 
-      <div class="flex-row atitle" else>
+      <div class="flex-row atitle" v-else>
           <div class="flex1 title-btn-div">
               <v-btn class="btn-back k-icon" icon @click="back">
                 <i class="material-icons  k-icon">keyboard_arrow_left</i>
@@ -49,13 +49,21 @@
       </div>
              
       <div class="kgraph" :id="id" v-bind:style="{height: height+'px', width: width+'px'}"></div>
-      <div class="flex-row textcenter chgresolution">
+      <!-- <div class="flex-row textcenter chgresolution">
           <div :class="'flex1 ' + (resolution_key === 'week' ? 'active' : '')" @click="chgResolutionKey('week')">{{$t('week')}}</div>
           <div :class="'flex1 ' + (resolution_key === 'day' ? 'active' : '')" @click="chgResolutionKey('day')">{{$t('day')}}</div>
           <div :class="'flex1 ' + (resolution_key === 'hour' ? 'active' : '')" @click="chgResolutionKey('hour')">{{$t('hour')}}</div>
           <div :class="'flex1 ' + (resolution_key === '15min' ? 'active' : '')" @click="chgResolutionKey('15min')">15{{$t('minute')}}</div>
           <div :class="'flex1 ' + (resolution_key === '1min' ? 'active' : '')" @click="chgResolutionKey('1min')">1{{$t('minute')}}</div>
-      </div>
+      </div> -->
+      <v-tabs class="tabs-bg-dark" grow hide-slider color="transparent">
+        <v-tab @click="chgResolutionKey('week')">{{$t('week')}}</v-tab>
+        <v-tab @click="chgResolutionKey('day')">{{$t('day')}}</v-tab>
+        <v-tab @click="chgResolutionKey('hour')">{{$t('hour')}}</v-tab>
+        <v-tab @click="chgResolutionKey('15min')">15{{$t('minute')}}</v-tab>
+        <v-tab @click="chgResolutionKey('1min')">1{{$t('minute')}}</v-tab>
+      </v-tabs>
+
   </div>
 </card>
 </template>
@@ -319,10 +327,10 @@ export default {
                     data: this.data,
                     itemStyle: {
                         normal: {
-                            color: '#14b143',
-                            color0: '#ef232a',
-                            borderColor: '#14b143',
-                            borderColor0: '#ef232a'
+                            color: this.upColor,
+                            color0: this.downColor,
+                            borderColor: this.upColor,
+                            borderColor0: this.downColor
                         },
                         emphasis: {
                             color: '#444',

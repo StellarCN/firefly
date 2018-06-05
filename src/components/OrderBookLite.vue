@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-28 11:19:05 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-04-27 11:23:46
+ * @Last Modified time: 2018-06-04 18:09:25
  * @License MIT 
  */
 
@@ -14,7 +14,7 @@
     <card class="offer-card" padding="10px 10px" margin="0px 2px 0px 0px">
       <div class="buyoffer-table offer-table" slot="card-content">
         <div class="buyoffer offermenu">{{$t('Trade.BuyOffer')}}</div>
-        <div class="table-row body-2" 
+        <div class="table-row font-13" 
           v-for="(item,index) in bidsdata" :key="index"
           :style="'background: linear-gradient(to right,#303034 0%,#303034 '
             +item.blank+'%,#216549 0%,#216549 ' + item.percent +'%);'"
@@ -33,7 +33,7 @@
       <div class="selloffer-table offer-table"  slot="card-content">
         <div class="selloffer offermenu">{{$t('Trade.SellOffer')}}</div>
 
-        <div class="table-row body-2" 
+        <div class="table-row font-13" 
           v-for="(item,index) in asksdata" :key="index"
           :style="'background: linear-gradient(to left,#303034 0%,#303034 '
             +item.blank+'%,#733520 0%,#733520 ' + item.percent +'%);'"
@@ -76,7 +76,6 @@ export default {
       account: state => state.accounts.selectedAccount,
       accountData: state => state.accounts.accountData,
       assetAccounts: state => state.asset.assets,
-      tradepairs: state => state.accounts.accountData.tradepairs,
       selectedTrade: state => state.accounts.selectedTradePair.tradepair,
       selectedTradeIndex: state => state.accounts.selectedTradePair.index,
       bids: state => state.accounts.selectedTradePair.bids,//买单
@@ -110,8 +109,8 @@ export default {
           origin: obj,
           num: amount.toFixed(4),
           price: new Decimal(obj.price).toFixed(this.decimal),
-          amount: amount.times(obj.price_r.d).dividedBy(obj.price_r.n).toFixed(2),
-          depth: Number(dep.toFixed(2)),
+          amount: amount.times(obj.price_r.d).dividedBy(obj.price_r.n).toFixed(4),
+          depth: Number(dep.toFixed(4)),
         })
       })
       newdata.forEach(ele=>{
@@ -127,10 +126,10 @@ export default {
         let num = amount.times(obj.price)
         dep = dep.add(num);
         return Object.assign({}, obj, {
-          amount: amount.toFixed(2),
+          amount: amount.toFixed(4),
           price: new Decimal(obj.price).toFixed(this.decimal),
           num: num.toFixed(4),
-          depth: dep.toFixed(2),
+          depth: dep.toFixed(4),
           origin: obj,
         });
       })

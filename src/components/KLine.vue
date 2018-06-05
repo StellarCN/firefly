@@ -3,25 +3,27 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-26 15:59:49 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-05-09 16:08:10
+ * @Last Modified time: 2018-06-04 22:16:33
  * @License MIT 
  */
 
 <template>
-  <div class="line flex-row">
+  <div class="line flex-row" v-if="lineData!=null || !loading">
       <div class="flex1">
-          <div class="linegraph" :id="id" v-bind:style="{height: height + 'px'}"></div>
+        <div :class="' price textright ' + ((titleData.change >=0 ^ redUpGreenDown)? 'down':'up') ">
+            {{titleData.price >= 0 ? (titleData.price>=0.000001 ? Number(titleData.price): titleData.price):''}}</div>
       </div>
-      <div class="flex1" v-if="titleData!=null && titleData.price!=null && typeof titleData.price!='undefined'">
-           <div :class="' price textright ' + ( titleData.change >=0 ? 'up':'down') ">{{titleData.price}}</div>
-           <div :class="' rate  textright ' + ( titleData.change >=0 ? 'up':'down')">
-              <span v-if="titleData.rate>0">+</span>
-              {{titleData.rate}}%</div>
+      <div class="flex1">
+        <div class="rate">
+            <div v-if="titleData.rate!==null && typeof titleData.rate!=='undefined'" :class="'rate-btn textcenter ' + (( titleData.change >=0 ^ redUpGreenDown)? 'down':'up')">
+                <span v-if="titleData.rate>0">+</span>{{titleData.rate}}%    
+            </div>    
+        </div>
       </div>
-      <div class="flex1 working" v-else>
-          <v-progress-circular indeterminate color="primary" v-if="!lineData"></v-progress-circular>
-          <span v-else></span>
-      </div>
+  </div>
+  <div class="line working" v-else>
+    <v-progress-circular indeterminate :color="redUpGreenDown ? 'error': 'primary'" v-if="!lineData"></v-progress-circular>
+    <span v-else></span>
   </div>
 </template>
 
@@ -36,6 +38,7 @@ import { getTradeAggregation, getTradeAggregation1min,
     RESOLUTION_1MIN,RESOLUTION_1HOUR,RESOLUTION_1DAY } from '@/api/tradeAggregation'
 import { getAsset } from '@/api/assets'
 import { getTrades } from '@/api/trade'
+import { getOrderbook } from '@/api/orderbook'
 import  defaultsDeep  from 'lodash/defaultsDeep'
 import {Decimal} from 'decimal.js'
 
@@ -61,6 +64,7 @@ export default {
             working: true,
 
             lineData: null,
+            loading: false,
         }
     },
     props: {
@@ -110,14 +114,21 @@ export default {
         },
         //位于交易对中的索引值
         tradepairIndex: {
-            type: Number,
+            type: String,
             required: true
         }
     },
     computed: {
         ...mapState({
-            tradePairKLineData: state => state.accounts.tradePairKLineData
+            tradePairKLineData: state => state.accounts.tradePairKLineData,
+            redUpGreenDown: state => state.app.redUpGreenDown,
         }),
+        decimal(){
+            if(this.counter.code === 'BTC'){
+                return 7
+            }
+            return 4
+        },
         // lineData(){
         //     return this.tradePairKLineData[this.tradepairIndex]
         // },
@@ -128,28 +139,35 @@ export default {
             return this.lineData ? this.lineData.tradeAggregation : null
         },
         //7天的聚合数据
-        sevenDayTradeAggregation(){
-            return this.lineData ? this.lineData.sevenDayTradeAggregation : null
-        },
-        sevenData(){
-            return this.sevenDayTradeAggregation ? this.sevenDayTradeAggregation.data || [] : []
-        },
-        sevenDates(){
-            return this.sevenDayTradeAggregation ? this.sevenDayTradeAggregation.dates||[] : []
-        },
+        // sevenDayTradeAggregation(){
+        //     return this.lineData ? this.lineData.sevenDayTradeAggregation : null
+        // },
+        // sevenData(){
+        //     return this.sevenDayTradeAggregation ? this.sevenDayTradeAggregation.data || [] : []
+        // },
+        // sevenDates(){
+        //     return this.sevenDayTradeAggregation ? this.sevenDayTradeAggregation.dates||[] : []
+        // },
         titleData(){
-          if(this.lastTradeAggregation && this.lastTrade){
-            let price = new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
+          if(this.lastTradeAggregation){
+            let price = new Decimal(this.lastTradeAggregation.close)//new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
             let open = new Decimal(this.lastTradeAggregation.open)
             let change = price.minus(open)
             let rate = change.times(100).dividedBy(open)
             return  defaultsDeep({}, this.lastTradeAggregation, {
-                price: new Decimal(price.toFixed(7)).toNumber(),
-                change: new Decimal(change.toFixed(7)).toNumber(),
-                rate: new Decimal(rate.toFixed(4)).toNumber() })
+                price: price.toFixed(this.decimal),
+                change: Number(change.toFixed(7)),
+                rate: new Decimal(rate.toFixed(2)).toNumber() })
+          }
+          let p = this.orderbook_price
+          if(p!==null&& p!==undefined){
+              return {price: p.toFixed(this.decimal), change: 0, rate: 0}
           }
           return {}
       },  
+      orderbook_price(){
+        return this.lineData ? this.lineData['orderbook_price']: null
+      },
       cid(){
           return `${this.base.code}-${this.base.issuer}-${this.counter.code}-${this.counter.issuer}`
       }
@@ -193,22 +211,20 @@ export default {
         },
         clearAll(){
             //关闭定时器
-            if(this.tinterval){
-                clearInterval(this.tinterval)
-                this.tinterval = null
-            }
+            // if(this.tinterval){
+            //     clearInterval(this.tinterval)
+            //     this.tinterval = null
+            // }
             this.deleteTradeInterval()
         },
         init() {
             this.$nextTick(()=>{
                 setTimeout(()=>{
                     //开启定时器
-                    this.tinterval = setInterval(this.fetch, this.interval)
-                    this.setupTradeInterval()
+                    // this.tinterval = setInterval(this.fetch, this.interval)
                     this.fetchLastTradeAggregation()
-                    this.initView()
-                    this.fetch();
-                    this.fetchLastTrade();
+                    // this.initView()
+                    // this.fetch();
                 }, this.timeout)
             })    
         },
@@ -307,10 +323,12 @@ export default {
         
         // 查询24小时的统计数据
         fetchLastTradeAggregation(){
+          this.loading = true
           let start_time = 0, end_time = new Date().getTime()
           getTradeAggregation(getAsset(this.base), getAsset(this.counter), 
                 start_time, end_time, RESOLUTION_1DAY, 1, 'desc')
             .then(data => {
+                this.loading = false
                 let records = data.records
                 if(records && records.length > 0){
                     //this.lastTradeAggregation = records[0]
@@ -318,12 +336,47 @@ export default {
                         index: this.tradepairIndex,
                         date: end_time,
                         data: records[0]
+                    })   
+                    this.$nextTick(()=>{
+                        this.lineData = this.tradePairKLineData[this.tradepairIndex]
                     })
+                    
+                }else{
+                    //查询orderbook，构造数据
+                    getOrderbook(getAsset(this.base), getAsset(this.counter))
+                        .then(data=>{
+                            let bids = data.bids;
+                            let asks = data.asks;
+                            let price = null;
+                            let index = 0
+                            if(bids && bids.length>0){
+                                price = new Decimal(bids[0].price)
+                                index++
+                            }
+                            if(asks && asks.length>0){
+                                price.add(asks[0].price)
+                                index++
+                            }
+                            if(index>0){
+                                price = price.div(index).toNumber();
+                            }
+                            this.$nextTick(()=>{
+                                this.lineData = {orderbook_price:  price}
+                            })
+                            
+                        })
+                        .catch(err=>{
+
+                        })
+
+
                 }
+
             })
             .catch(err=>{
                 console.error(`-----err on get trade aggregation -- `)
                 console.error(err)
+                this.loading = false
             })
         },
 
@@ -379,12 +432,34 @@ export default {
   &.down
     color: $primarycolor.red
 .price
-    line-height: 30px
-    vertical-align: bottom
+    line-height: 50px
+    height: 50px
+    font-size: 18px
+    overflow: hidden
+    width:100%
+    display:block
+    text-overflow:none
+    white-space:nowrap
 .change
 .rate
-    line-height: 16px
-    font-size: 14px
+    line-height: 50px
+    height: 50px
+    font-size: 16px
+.rate
+    padding-top: 12px
+    padding-bottom: 12px
+    padding-left: 10px
+    padding-right: 10px
+    .rate-btn
+        line-height: 26px
+        height: 26px
+        font-size: 14px
+        color: $primarycolor.font
+        &.up
+            background: $primarycolor.green
+        &.down
+            background: $primarycolor.red
+
 .working
     padding-top: 8px
     text-align: center

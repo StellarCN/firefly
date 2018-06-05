@@ -7,7 +7,7 @@
         </div>
         <div class="sheet-title">
           <div class="label">{{$t('Account.AccountName')}}</div>
-          <div class="value">{{accountname}}</div>
+          <div class="value">{{account_name}}</div>
         </div>
         <div class="sheet-input">
            <v-text-field
@@ -30,13 +30,16 @@
 
 <script>
 import { readAccountData } from '@/api/storage'
+import { mapState, mapActions } from 'vuex'
 export default {
     data(){
         return {
             showPwdSheet: true,
             inpassword: null,
+            pwdvisible: false,
             working: false,
-
+            account_name: null,
+            _address: null,
         }
     },
     props: {
@@ -52,12 +55,27 @@ export default {
         },
         address: {
             type: String,
-            required: true
         }
-
-
+    },
+    computed:{
+        ...mapState({
+            accounts: state => state.accounts.data,
+            account: state => state.accounts.selectedAccount,
+            selectedAccountIndex: state => state.accounts.selected,
+            accountData: state => state.accounts.accountData,
+        })
+    },
+    beforeMount(){
+        this.account_name = this.accountname || this.account.name
+        this._address = this.address || this.account.address
     },
     methods:{
+        ...mapActions({
+            checkAccountPWD: 'checkAccountPWD',
+            choseAccount: 'changeAccount',
+            choseAccountNoPwd: 'changeAccountNoPassword',
+            getAccountInfo: 'getAccountInfo'
+        }),
         canclePwdInput(){
             this.inpassword = null
             this.$emit('cancel')
@@ -66,9 +84,9 @@ export default {
             if(this.inpassword === null || this.inpassword.length === 0)return
             if(this.working)return
             this.working = true
-
-            //校验密码是否正确
-            readAccountData(this.address, this.inpassword)
+            if(this.address){
+                //校验密码是否正确
+                readAccountData(this.address, this.inpassword)
                 .then(data=>{
                     this.working = false
                     this.$emit('ok',data)
@@ -78,6 +96,30 @@ export default {
                     console.error(err)
                     this.$toasted.error(this.$t('Error.PasswordWrong'))
                 })
+            }else{
+                this.checkAccountPWD({
+                    index: this.selectedAccountIndex,
+                    address: this._address,
+                    password: this.inpassword
+                }).then(account=>{
+                    //this.$toasted.show(this.$t('Info.ChangeAccountSuccess'));
+                    this.working = false
+                     this.$emit('ok')
+                    // this.getAccountInfo(this.account.address).then(data=>{
+                        
+                    //     //  this.$emit('ok')
+                    // }).catch(err=>{
+                    //     // this.$toasted.error(this.$t('Error.PasswordWrong'))
+                    //     this.working = false
+                    //      this.$emit('ok')
+                    // })
+                }).catch(err=>{
+                    console.error('change account error')
+                    console.error(err)
+                    this.$toasted.error(this.$t('Error.PasswordWrong'))
+                    this.working = false
+                })
+            }
         }
 
     }

@@ -33,8 +33,8 @@ export default {
     }  ,
     exitApp(){  
         navigator.app.exitApp();  
-    },  
+    }
    
 
-  },
+  }
 }

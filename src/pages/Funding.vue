@@ -54,10 +54,10 @@
                 <div class="label">{{$t('DW.DepositInfo')}}</div>
                 <div class="deposit_info" @click="copy(standardDepositData.how)">{{standardDepositData.how}}</div>
                 <div class="extra_info" v-if="standardDepositData.eta!= undefined">{{$t('DW.DepositInfo.eta',[standardDepositData.eta])}}</div>
-                <div class="extra_info" v-if="standardDepositData.min_amount!=undefined">{{$t('DW.DepositInfo.min', [standardDepositData.min_amount])}}</div>
-                <div class="extra_info" v-if="standardDepositData.max_amount!=undefined">{{$t('DW.DepositInfo.max', [standardDepositData.max_amount])}}</div>
-                <div class="extra_info" v-if="standardDepositData.fee_fixed!=undefined">{{$t('DW.DepositInfo.feefixed', [standardDepositData.fee_fixed])}}</div>
-                <div class="extra_info" v-if="standardDepositData.fee_percent!=undefined">{{$t('DW.DepositInfo.feepercent', [standardDepositData.fee_percent * 100])}}</div>
+                <div class="extra_info" v-if="standardDepositData.min_amount!=undefined">{{$t('DW.DepositInfo.min', [standardDepositData.min_amount])}}{{selectedasset.code}}</div>
+                <div class="extra_info" v-if="standardDepositData.max_amount!=undefined">{{$t('DW.DepositInfo.max', [standardDepositData.max_amount])}}{{selectedasset.code}}</div>
+                <div class="extra_info" v-if="standardDepositData.fee_fixed!=undefined">{{$t('DW.DepositInfo.feefixed', [standardDepositData.fee_fixed])}}{{selectedasset.code}}</div>
+                <div class="extra_info" v-if="standardDepositData.fee_percent!=undefined">{{$t('DW.DepositInfo.feepercent', [standardDepositData.fee_percent])}}</div>
                 <div v-if="Array.isArray(standardDepositData.extra_info)">
                   <div class="extra_info" v-for="(value,index) in standardDepositData.extra_info" :key="index" :id="index">{{value}}</div>
                 </div>
@@ -126,6 +126,7 @@ import WithdrawInput from '@/components/WithdrawInput'
 import WithdrawStandard from '@/components/WithdrawStandard'
 import TabBar from '@/components/TabBar'
 import  defaultsDeep  from 'lodash/defaultsDeep'
+import { NO_FUNDINS } from '@/api/gateways'
 
 export default {
   data(){
@@ -167,8 +168,12 @@ export default {
        if(!this.balances)return []
        let data = []
        this.balances.forEach((element) => {
-        if( !isNativeAsset(element)){
-          data.push(defaultsDeep({id: element.code+"-"+element.issuer}, element))
+        let id = element.code+"-"+element.issuer
+        console.log(NO_FUNDINS)
+        console.log(id)
+        console.log(NO_FUNDINS.indexOf(id) < 0)
+        if( !isNativeAsset(element) && NO_FUNDINS.indexOf(id) < 0 ){
+          data.push(defaultsDeep({id}, element))
         }
       })
       return data

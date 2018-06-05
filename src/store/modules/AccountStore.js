@@ -54,6 +54,7 @@ const actions = {
       return ele.asset_issuer
     })
     await dispatch('getAssetsAccounts',assets)
+    await dispatch('getPayments', address)
     
     commit(ACCOUNT_INFO_SUCCESS, info)
     let ledger = await ledgerapi.getLedger()
@@ -71,6 +72,18 @@ const actions = {
   async getLedger({commit,state}){
     let ledger = await ledgerapi.getLedger()
     commit(GET_LEDGER_INFO, ledger)
+  },
+  async loadmorePayments({state, commit}, address){
+    if(typeof state.payments.next === 'function'){
+      let data = await state.payments.next()
+      let records = state.payments.records
+      let newrecords = [...records, ...data.records]
+      data.records = newrecords
+      commit(GET_PAYMENTS_SUCCESS, data)
+    }else{
+      let data = await paymentsapi.fetchPayments(address)
+      commit(GET_PAYMENTS_SUCCESS, data)
+    }
   },
   paymentSteamData({commit,state},rows){
     commit(GET_PAYMENT_STREAM, rows)

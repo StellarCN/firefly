@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-04-28 16:50:33
+ * @Last Modified time: 2018-06-04 18:18:11
  * @License: MIT 
  */
 <template>
@@ -15,25 +15,25 @@
                 <i class="material-icons  k-icon">keyboard_arrow_left</i>
             </v-btn>
           </div>
-          <div :class="'flex3 textcenter ' + ( titleData.change >=0 ? 'up':'down') ">
+          <div :class="'flex3 textcenter ' + ( (titleData.change >=0 ^ redUpGreenDown) ? 'down':'up') ">
               <div class="price textcenter">
                   <span class="price">{{titleData.price}}</span>
-                  <span class="code">{{counter.code}}</span>
+                  <!-- <span class="code">{{counter.code}}</span> -->
               </div>
               <div class="flex-row">
-                  <div class="flex1 textright">
+                  <div class="flex3 textright lchange">
                         <span v-if="titleData.change>0">+</span>
-                        <span>{{titleData.change}}&nbsp;&nbsp;</span>
+                        <span>{{titleData.change}}&nbsp;</span>
                   </div>
-                  <div class="flex1 textleft">
+                  <div class="flex2 textleft lchange">
                         <span v-if="titleData.rate>0"> +</span>
                         <span>{{titleData.rate}}%</span>
                   </div>
               </div>
           </div>
           <div class="flex3 values">
-              <div class=""><span class="label">24H {{$t('high')}} </span><span>{{Number(lastTradeAggregation.high).toFixed(4)}}</span></div>
-              <div class=""><span class="label">24H {{$t('low')}} </span><span>{{Number(lastTradeAggregation.low).toFixed(4)}}</span></div>
+              <div class=""><span class="label">24H {{$t('high')}} </span><span>{{lastTradeAggregation.high}}</span></div>
+              <div class=""><span class="label">24H {{$t('low')}} </span><span>{{lastTradeAggregation.low}}</span></div>
               <div class=""><span class="label">24H {{$t('volume')}} </span><span>{{Number(lastTradeAggregation.base_volume).toFixed(4)}}</span></div>
           </div>
           <div class="flex1 title-btn-div">
@@ -50,13 +50,21 @@
       </v-btn>
       
       <div v-show="showKgraph" class="kgraph" :id="id" v-bind:style="{height: height}"></div>
-      <div class="flex-row textcenter chgresolution"  v-show="showKgraph">
+      <!-- <div class="flex-row textcenter chgresolution"  v-show="showKgraph">
           <div :class="'flex1 ' + (resolution_key === 'week' ? 'active' : '')" @click="chgResolution('week')">{{$t('week')}}</div>
           <div :class="'flex1 ' + (resolution_key === 'day' ? 'active' : '')" @click="chgResolution('day')">{{$t('day')}}</div>
           <div :class="'flex1 ' + (resolution_key === 'hour' ? 'active' : '')" @click="chgResolution('hour')">{{$t('hour')}}</div>
           <div :class="'flex1 ' + (resolution_key === '15min' ? 'active' : '')" @click="chgResolution('15min')">15{{$t('minute')}}</div>
           <div :class="'flex1 ' + (resolution_key === '1min' ? 'active' : '')" @click="chgResolution('1min')">1{{$t('minute')}}</div>
-      </div>
+      </div> -->
+
+      <v-tabs class="tabs-bg-dark" grow hide-slider color="transparent" v-show="showKgraph">
+        <v-tab @click="chgResolution('week')">{{$t('week')}}</v-tab>
+        <v-tab @click="chgResolution('day')">{{$t('day')}}</v-tab>
+        <v-tab @click="chgResolution('hour')">{{$t('hour')}}</v-tab>
+        <v-tab @click="chgResolution('15min')">15{{$t('minute')}}</v-tab>
+        <v-tab @click="chgResolution('1min')">1{{$t('minute')}}</v-tab>
+      </v-tabs>
   </div>
 </card>
 </template>
@@ -165,15 +173,18 @@ export default {
         }
     },
     computed: {
+      ...mapState({
+          redUpGreenDown: state => state.app.redUpGreenDown,
+      }),
       titleData(){
-          if(this.lastTradeAggregation && this.lastTrade){
-            let price = new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
+          if(this.lastTradeAggregation){
+            let price = new Decimal(this.lastTradeAggregation.close)//new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
             let open = new Decimal(this.lastTradeAggregation.open)
             let change = price.minus(open)
             let rate = change.times(100).dividedBy(open)
             return  defaultsDeep({}, this.lastTradeAggregation, {
-                price: new Decimal(price.toFixed(6)).toNumber(),
-                change: new Decimal(change.toFixed(4)).toNumber(),
+                price: this.lastTradeAggregation.close,
+                change: change.toFixed(7),
                 rate: new Decimal(rate.toFixed(2)).toNumber() })
           }
           return {}
@@ -223,7 +234,7 @@ export default {
             this.init();
             this.fetch();
             this.fetchLastTradeAggregation()
-            this.fetchLastTrade()
+            // this.fetchLastTrade()
         },
         cleanData(){
             this.ele = null

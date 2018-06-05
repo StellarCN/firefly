@@ -59,20 +59,12 @@
       
       
       <div :class="'footer' + (canModify ? ' active':' unactive') ">
-        <v-layout row wrap>
-          <!-- <v-flex xs4 @click="del">
-            <span>{{$t('Delete')}}</span>
-          </v-flex> -->
-          <v-flex xs4 @click="modify">
-            <span class="Info_menu_color">{{$t('Modify')}}</span>
-          </v-flex>
-          <v-flex xs4 @click="resetpwd">
-            <span class="Info_menu_color">{{$t('ResetPassword')}}</span>
-          </v-flex>
-           <v-flex xs4 @click="toViewKey">
-            <span class="Info_menu_color">{{$t('ViewKey')}}</span>
-          </v-flex>
-        </v-layout>  
+        <v-tabs class="tabs-bg-dark" grow centered hide-slider color="primary">
+          <v-tab class="tab2" @click.stop="modify">{{$t('Modify')}}</v-tab>
+          <v-tab class="tab2" @click.stop="resetpwd">{{$t('ResetPassword')}}</v-tab>
+          <v-tab class="tab2" @click.stop="toViewKey">{{$t('ViewKey')}}</v-tab>
+          <v-tab class="tab2" @click.stop="toViewMnemonic">{{$t('viewMnemonic')}}</v-tab>
+        </v-tabs>
       </div>
 
 
@@ -120,6 +112,23 @@
               <v-subheader @click="copy(seed)"  class="info_showaccount_address_style">{{seed}}</v-subheader>
               <v-subheader class="info_showaccount_barcode_style">{{$t("Account_secretkeycode")}}</v-subheader>
               <qrcode class="info_qrcode_style" :text="qrtext" :callback="qrcodecallback" color="red"/>
+              <v-subheader class="info_account_close_style" @click="change_value0f_vk">{{$t("Close")}}</v-subheader>
+            </v-list>
+          </v-bottom-sheet>
+      </div>
+
+      <!-- 查看助记词 -->
+       <div class="text-xs-center" v-if="showMnemonicSheet">
+          <v-bottom-sheet v-model="showMnemonicSheet" dark>
+            <v-list v-if="mnemonic">
+              <v-subheader class="info_warning_msg_style">{{$t("Warning_mnemonic_msg")}}</v-subheader>
+              <v-subheader class="info_account_miyao_style">{{$t("mnemonic")}}</v-subheader>
+              <v-subheader @click="copy(mnemonic)"  class="info_showaccount_address_style">{{mnemonic}}</v-subheader>
+              <qrcode class="info_qrcode_style" :text="qrmnemonictext" :callback="qrcodecallback" color="red"/>
+              <v-subheader class="info_account_close_style" @click="change_value0f_vk">{{$t("Close")}}</v-subheader>
+            </v-list>
+            <v-list v-else>
+              <v-subheader class="info_warning_msg_style">{{$t("no_mnemonic_msg")}}</v-subheader>
               <v-subheader class="info_account_close_style" @click="change_value0f_vk">{{$t("Close")}}</v-subheader>
             </v-list>
           </v-bottom-sheet>
@@ -206,7 +215,7 @@ import Toolbar from '@/components/Toolbar'
 import QRCode from '@/components/QRCode'
 import Card from '@/components/Card'
 import PasswordSheet from '@/components/PasswordSheet'
-import { exportNameCard,exportAccount } from '@/api/qr'
+import { exportNameCard,exportAccount, exportMnemonic } from '@/api/qr'
 import {readAccountData} from '@/api/storage'
 import { INFLATION_POOL } from '@/api/gateways'
 
@@ -216,6 +225,7 @@ const ACTION_VIEWSECRET = 'viewSecret'
 const ACTION_RESET_PASSWORD = 'resetpassword';
 const QUESTION_DELETE_ACCOUNT = 'Q.DeleteAccount';
 const QUESTION_RESET_PASSWORD = 'Q.ResetPassword';
+const ACTION_VIEW_MNEMONIC = 'mnemonic'
 
 export default {
   data(){
@@ -234,7 +244,7 @@ export default {
       inpassword:null,
       pwdvisible:false,
       seed:null,
-
+      mnemonic: null,
 
       action: null,
       dlgshow: false,
@@ -250,6 +260,8 @@ export default {
 
       isB:true,
       isC:false,
+
+      showMnemonicSheet: false,
 
     }
   },
@@ -269,6 +281,12 @@ export default {
       }
 //      var data = {stellar:{name:this.showaccount.name, address: this.showaccount.address}}
       return data;//JSON.stringify(data)
+    },
+    qrmnemonictext(){
+      if(this.showMnemonicSheet){
+        return exportMnemonic(this.mnemonic)
+      }
+      return null
     },
     canModify(){
       //let selected = this.showaccount.address === this.account.address
@@ -417,11 +435,22 @@ export default {
       this.isB=false;
       this.isC=true;
     },
+    toViewMnemonic(){
+      this.showPwdSheet = true
+      this.inpassword = null
+      this.action = ACTION_VIEW_MNEMONIC
+    },
+    showMnemonicDlg(){
+      this.showMnemonicSheet = true;
+      this.isB=false;
+      this.isC=true;
+    },
     change_value0f_vk(){
-      if(this.showViewkeySheet == true)
+      //if(this.showViewkeySheet == true)
       this.showViewkeySheet = false;
+      this.showMnemonicSheet = false;
       this.isB=true;
-        this.isC=false;
+      this.isC=false;
       // console.log(this.showaccount);
     },
     resetpwd(){
@@ -470,12 +499,15 @@ export default {
             this.inpassword = false
             if(data.seed){
               this.seed = data.seed
+              this.mnemonic = data.mnemonic
               this.showPwdSheet = false
               if(this.action === ACTION_MODIFY){
-                this.$router.push({name: 'ModifyAccount', query: {address: this.showaccount.address, seed: this.seed}});
+                this.$router.push({name: 'ModifyAccount', query: {address: this.showaccount.address, seed: this.seed, mnemonic: this.mnemonic}});
               }else if(this.action === ACTION_VIEWSECRET){
                 this.showseed = true
                 this.viewkey()
+              }else if(this.action === ACTION_VIEW_MNEMONIC){
+                this.showMnemonicDlg()
               }
               
             }else{

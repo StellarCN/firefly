@@ -31,7 +31,7 @@ var webpackConfig = merge(baseWebpackConfig, {
     }),
     //new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     //new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /zh-cn|en/),
-    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /zh-cn|zh-hk|zh-tw/),
+    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /zh-cn|zh-hk/),
     new webpack.LoaderOptionsPlugin({
       minimize: true,
       debug: false

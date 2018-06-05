@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-03-05 17:30:09 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-05-03 12:29:33
+ * @Last Modified time: 2018-05-25 11:21:44
  * @License MIT 
  */
  <template>
@@ -155,6 +155,9 @@
       if(!this.hideKeyboard){
         document.activeElement.blur()
       }
+    },
+    reset(){
+      this.seedInput = ''
     }
     
 

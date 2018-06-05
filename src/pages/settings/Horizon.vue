@@ -20,6 +20,23 @@
 
             <v-container fluid grid-list-md>
             <v-layout row wrap>
+              <v-flex d-flex xs12 sm6 md3 @click="changeHorizon(fchain)">
+                  <v-flex d-flex xs11>
+                    <v-layout row wrap>
+                      <v-flex d-flex xs12 class='label'>{{$t('fchainHorizon')}}</v-flex>
+                      <v-flex d-flex xs12 class="value">{{fchain}}</v-flex>
+                    </v-layout>
+                  </v-flex>
+                  <v-flex xs1 class='select'>
+                    <i class="iconfont horizon icon-dot1" v-if="horizon === fchain"></i>
+                    <i class="iconfont horizon icon-dot" v-else></i>
+                  </v-flex>
+              </v-flex>
+               <v-flex class="tag-wrapper" xs12 v-if="horizon_version_fchain!=null">
+                <span :class="{horizon_timeusestyle:true, horizon_timeusebgcone:timeUse_fchain<=50,horizon_timeusebgctwo:timeUse_fchain<=100&&timeUse_fchain>50,horizon_timeusebgcthree:timeUse_fchain<=150&&timeUse_fchain>100,horizon_timeusebgcfour:timeUse_fchain<=200&&timeUse_fchain>150,horizon_timeusebgcfive:timeUse_fchain>=200}">{{timeUse_fchain}}ms</span>
+                <span class="horizon_msgstyle">{{$t('HorizonVersion')}}:{{horizon_version_fchain}}</span>
+              </v-flex>
+
               <v-flex d-flex xs12 sm6 md3 @click="changeHorizon(stellar)">
                   <v-flex d-flex xs11>
                     <v-layout row wrap>
@@ -96,8 +113,8 @@
 import Toolbar from '@/components/Toolbar'
 import Card from '@/components/Card'
 import { mapState, mapActions} from 'vuex'
-import { OFFICIAL_HORIZON,CHINA_HORIZON,WANCLOUD_HORIZON } from '@/api/horizon'
-import { initStreams } from '@/streams'
+import { OFFICIAL_HORIZON,CHINA_HORIZON,WANCLOUD_HORIZON,FCHAIN_HORIZON } from '@/api/horizon'
+ 
 import { getAddressPinInfo } from '@/api/gateways'
 import * as accountapi from '@/api/account'
 export default {
@@ -112,6 +129,8 @@ export default {
       horizon_version_stellar:null,
       horizon_version_chinapublic:null,
       horizon_version_wancloud:null,
+      horizon_version_fchain: null,
+      timeUse_fchain: null,
       timeUse_stellar:null,
       timeUse_chinapublic:null,
       timeUse_wancloud:null,
@@ -131,6 +150,9 @@ export default {
     },
     wancloud(){
       return WANCLOUD_HORIZON
+    },
+    fchain(){
+      return FCHAIN_HORIZON
     }
   
   },
@@ -153,7 +175,8 @@ export default {
       console.log(startTime)
       const promise_stellar = getAddressPinInfo(this.stellar);
       const promise_chinapublic = getAddressPinInfo(this.chinapublic);
-      const promise_wancloud = getAddressPinInfo(this.wancloud);
+      // const promise_wancloud = getAddressPinInfo(this.wancloud);
+      const promise_fchain = getAddressPinInfo(this.fchain)
       promise_stellar.then(response=>{
         this.horizon_version_stellar=(response.data.horizon_version)
         let endTime = new Date().getTime()
@@ -170,14 +193,22 @@ export default {
         startTime = new Date().getTime()
         console.log(startTime+"--2")
       })
-      promise_wancloud.then(response=>{
-        this.horizon_version_wancloud = (response.data.horizon_version)
+      promise_fchain.then(response=>{
+        this.horizon_version_fchain=(response.data.horizon_version)
         let endTime = new Date().getTime()
-        console.log(endTime+"==3")
-        this.timeUse_wancloud =((Number(endTime)-Number(startTime)))
+        console.log(endTime+"==2")
+        this.timeUse_fchain =((Number(endTime)-Number(startTime)))
         startTime = new Date().getTime()
-        console.log(startTime+"--3")
+        console.log(startTime+"--2")
       })
+      // promise_wancloud.then(response=>{
+      //   this.horizon_version_wancloud = (response.data.horizon_version)
+      //   let endTime = new Date().getTime()
+      //   console.log(endTime+"==3")
+      //   this.timeUse_wancloud =((Number(endTime)-Number(startTime)))
+      //   startTime = new Date().getTime()
+      //   console.log(startTime+"--3")
+      // })
     },
     changeHorizon(url){
       this.horizon = url
@@ -188,7 +219,6 @@ export default {
       this.setHorizon(this.horizon)
         .then(()=>{
           this.$toasted.show(this.$t('SaveHorizonSuccess'))
-          initStreams(this.account.address)
           setTimeout(()=>{
             this.working = false
             this.$router.back()

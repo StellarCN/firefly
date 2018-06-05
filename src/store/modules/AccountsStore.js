@@ -1,6 +1,7 @@
 // 钱包账户地址
 import { createAccount as createAccountApi, readAccounts,
-    saveAccounts, readAccountData, saveAccountData,deleteAccountData } from '../../api/storage'
+    saveAccounts, readAccountData, saveAccountData,deleteAccountData,
+    saveTradePairData,readTradePairData } from '../../api/storage'
 import { getDefaultTradePairs } from '../../api/gateways'
 import { getOrderbook } from '../../api/orderbook'
 import { getAsset } from '../../api/assets'
@@ -26,9 +27,13 @@ export const CLEAN_MY_EFFECTS = 'CLEAN_MY_EFFECTS'
 export const CHANGE_CURRENT_HISTORY_COMPONENT = 'CHANGE_CURRENT_HISTORY_COMPONENT'
 export const SORT_TRADEPAIRS = 'SORT_TRADEPAIRS'
 
+export const REMOVE_TRADEPAIR_KLINE_DATA = 'REMOVE_TRADEPAIR_KLINE_DATA'
 export const SET_TRADEPAIR_KLINE_LASTTRADE = 'SET_TRADEPAIR_KLINE_LASTTRADE'
 export const SET_TRADEPAIR_KLINE_TRADEAGGREGATION = 'SET_TRADEPAIR_KLINE_TRADEAGGREGATION'
 export const SET_TRADEPAIR_KLINE_7DAY_TRADEAGGREGATION = 'SET_TRADEPAIR_KLINE_7DAY_TRADEAGGREGATION'
+
+export const LOAD_TRADEPAIRS = 'LOAD_TRADEPAIRS'
+
 // 状态字段
 const state = {
   error:undefined,
@@ -47,13 +52,20 @@ const state = {
   password: null,
   //当前选中账户的数据信息（需要个人密码才能解密查看）,需要持久化
   accountData: {
+    mnemonic:null,//可能是采用助记词生成的
+    mIndex: 0,//默认的助记词哪个索引生成的
     // 私钥地址
     seed: null,
-    tradepairs:[]//交易对，新建账户时将给赋默认值（gateways.js）
+    //tradepairs:[]//交易对，新建账户时将给赋默认值（gateways.js）
+  },
+  tradepairs: {
+    sys: [], // 系统默认交易对
+    custom: [],//自定义交易对
   },
   //当前选中的tradepair
   selectedTradePair:{
     index: -1,
+    custom: 'sys',
     tradepair:{},
     bids:[],//买单
     asks:[],//卖单
@@ -68,7 +80,7 @@ const state = {
   currentHistoryComponent: 'offer' // 记住用户的历史页面 not perfect but works
 }
 
-const BLANK_ACCOUNT = {seed: null, tradepairs: []}
+const BLANK_ACCOUNT = {seed: null}
 
 const actions = {
   cleanAccountData({commit}){
@@ -87,18 +99,24 @@ const actions = {
   // @param address 地址
   // @param password 密码
   async changeAccount({dispatch, commit, state}, {index, address, password}){
-    console.log('ready to change account')
-    console.log(address)
-    console.log(password)
     commit(CLEAN_ACCOUNT_DATA)
     let data = await readAccountData(address,password)
-    console.log('change account ok ')
-    console.log(data)
     commit(CHANGE_ACCOUNT, { index, address, password, accountdata:data} )
     dispatch('saveAccountsAction')
     dispatch('cleanAccount')
     dispatch('getAccountInfo', address)
   },
+
+  /**
+   * 校验密码是否正确
+   */
+  async checkAccountPWD({dispatch, commit, state}, {index, address, password}){
+    let data = await readAccountData(address,password)
+    commit(CHANGE_ACCOUNT, { index, address, password, accountdata:data} )
+    //dispatch('getAccountInfo', address)
+  },
+  
+
   /**
    * 无密码切换账户（只能查询）
    * @param {Object} param0  vuex参数
@@ -114,8 +132,23 @@ const actions = {
   // 创建账户
   async createAccount({dispatch,commit,state}, {name,address,seed, password, memo}){
     let newaccount = {name,address,memo}
-    let tradepairs = getDefaultTradePairs()
-    let newaccountdata = Object.assign({},BLANK_ACCOUNT, {seed:seed,tradepairs })
+    // let tradepairs = getDefaultTradePairs()
+    let newaccountdata = Object.assign({},BLANK_ACCOUNT, {seed:seed })
+    let data = [...state.data,newaccount]
+    let accounts = {data: data, selected: (data.length-1) }
+    console.log('---create account')
+    console.log(data)
+    console.log(accounts)
+    console.log(newaccountdata)
+    await createAccountApi(accounts,address,newaccountdata, password)
+    commit(CREATE_ACCOUNT, { accounts, password, newaccountdata} )
+    dispatch('cleanAccount')
+  },
+  //使用助记词创建账户
+  async createAccountByMnemonic({dispatch, commit, state}, {name, address, seed, mnemonic, mIndex, password, memo}){
+    let newaccount = {name,address,memo}
+    // let tradepairs = getDefaultTradePairs()
+    let newaccountdata = Object.assign({},BLANK_ACCOUNT, {mnemonic, mIndex, seed })
     let data = [...state.data,newaccount]
     let accounts = {data: data, selected: (data.length-1) }
     console.log('---create account')
@@ -127,9 +160,9 @@ const actions = {
     dispatch('cleanAccount')
   },
   //覆盖账户
-  async coverAccount({dispatch,commit,state},{name,address,seed, password, memo}){
-    let tradepairs = getDefaultTradePairs()
-    let newaccountdata = Object.assign({},BLANK_ACCOUNT, {seed:seed,tradepairs })
+  async coverAccount({dispatch,commit,state},{name,address,seed,mnemonic,mIndex, password, memo}){
+    // let tradepairs = getDefaultTradePairs()
+    let newaccountdata = Object.assign({},BLANK_ACCOUNT, {seed, mnemonic, mIndex})
     await saveAccountData(address,newaccountdata,password)
     let index = -1
     let account = null
@@ -181,38 +214,56 @@ const actions = {
     //dispatch('cleanAccount')
   },
 
-  //删除交易对
-  async deleteTradePair({dispatch,commit,state},{index,tradepair}){
-    let pairs = [...state.accountData.tradepairs]
-    let delpair = pairs.splice(index,1)
-    let data = Object.assign({}, state.accountData, { tradepairs: pairs})
-    await saveAccountData(state.selectedAccount.address, data, state.password)
-    commit(LOAD_ACCOUNT_DATA,data)
-
+  //删除交易对,custom是否为自定义的交易对
+  async deleteTradePair({dispatch,commit,state},{custom, index, tradepair}){
+    let data = Object.assign({}, state.tradepairs )
+    if(custom){//自定义数据
+      data.custom.splice(index,1)
+    }else{//非自定义数据
+      data.sys.splice(index,1)
+    }
+    await saveTradePairData(data)
+    commit(LOAD_TRADEPAIRS,data)
   },
 
-  //添加交易对
+  //添加交易对,必然是自定义
   async addTradePair({dispatch,commit,state},tradepair){
-    let pairs = [...state.accountData.tradepairs]
+    let pairs = [...state.tradepairs.custom]
     pairs.push(tradepair)
-    let data = Object.assign({}, state.accountData, { tradepairs: pairs})
-    await saveAccountData(state.selectedAccount.address, data, state.password)
-    commit(LOAD_ACCOUNT_DATA,data)
+    let data = Object.assign({}, state.tradepairs, { custom: pairs})
+    await saveTradePairData(data)
+    commit(LOAD_TRADEPAIRS,data)
   },
 
   //交换交易对
-  async switchTradePair({dispatch,commit,state},{index,tradepair}){
-    let pairs = [...state.accountData.tradepairs]
-    pairs[index] = tradepair
-    let data = Object.assign({}, state.accountData, { tradepairs: pairs})
-    await saveAccountData(state.selectedAccount.address, data, state.password)
-    commit(LOAD_ACCOUNT_DATA,data)
+  async switchTradePair({dispatch,commit,state},{custom, index,tradepair}){
+    let pairs = Object.assign({}, state.tradepairs)
+    if(custom){
+      pairs.custom[index] = tradepair
+    }else{
+      pairs.sys[index] = tradepair
+    }
+    await saveTradePairData(pairs)
+    commit(LOAD_TRADEPAIRS,pairs)
+    // commit(LOAD_ACCOUNT_DATA,pairs)
+    
+  },
+  // 选中某个交易对
+  selectTradePair({commit,state},{custom, index,tradepair}){
+    commit(SELECT_TRADE_PAIR,{custom, index, tradepair})
   },
 
-  // 选中某个交易对
-  selectTradePair({commit,state},{index,tradepair}){
-    commit(SELECT_TRADE_PAIR,{index, tradepair})
+  //保存默认交易对
+  async saveDefaultTradePairs({commit,state}){
+    let sys = await getDefaultTradePairs()
+    let custom = state.tradepairs.custom || []
+    let pairs = { sys, custom}
+    await saveTradePairData(pairs)
+    // pairs = readTradePairData()
+    commit(LOAD_TRADEPAIRS,pairs)
   },
+
+
   //查询当前的盘面
   async queryOrderBook({commit,state}){
     let buyAsset = getAsset(state.selectedTradePair.tradepair.to.code,
@@ -228,7 +279,8 @@ const actions = {
   async switchSelectedTradePair({dispatch,commit,state}){
     let tradepair = {from: state.selectedTradePair.tradepair.to, to: state.selectedTradePair.tradepair.from}
     let index = state.selectedTradePair.index
-    commit(SELECT_TRADE_PAIR,{index, tradepair})
+    let custom = state.selectedTradePair.custom
+    commit(SELECT_TRADE_PAIR,{custom, index, tradepair})
     await dispatch('queryOrderBook')
     await dispatch('queryMyOffers')
   },
@@ -316,16 +368,18 @@ const mutations = {
       }
       state.selectedTradePair = {
         index: -1,
+        custom: false,
         tradepair:{},
         bids:[],//买单
         asks:[],//卖单
         my: []//我的委单
       }
   },
-
-  [SELECT_TRADE_PAIR](state, { index, tradepair}){
+  // custom 是否为自定义交易对
+  [SELECT_TRADE_PAIR](state, { custom = false, index, tradepair}){
     state.selectedTradePair = {
       index,
+      custom,
       tradepair,
       bids:[],
       asks:[],
@@ -389,6 +443,14 @@ const mutations = {
       _data = {date, sevenDayTradeAggregation: data}
     }
     state.tradePairKLineData[index] = _data
+  },
+  [REMOVE_TRADEPAIR_KLINE_DATA](state, index){
+    let obj = Object.assign({}, state.tradePairKLineData)
+    delete obj[index]
+    state.tradePairKLineData = obj
+  },
+  [LOAD_TRADEPAIRS](state, data){
+    state.tradepairs = data;
   }
 }
 
