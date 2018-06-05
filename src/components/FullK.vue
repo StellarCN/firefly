@@ -13,7 +13,7 @@
                 <i class="material-icons  k-icon">keyboard_arrow_left</i>
             </v-btn>
           </div>
-          <div :class="'flex3 textcenter ' + ( (titleData.change >=0 || redUpGreenDown ) ? 'down':'up') ">
+          <div :class="'flex3 textcenter ' + ( (titleData.change >=0 ^ redUpGreenDown ) ? 'down':'up') ">
               <div class="price textcenter">
                   <span class="price">{{titleData.price}}</span>
                   <span class="code">{{counter.code}}</span>
@@ -30,9 +30,9 @@
               </div>
           </div>
           <div class="flex3 values">
-              <div class=""><span class="label">24H {{$t('high')}} </span><span>{{Number(lastTradeAggregation.high).toFixed(7)}}</span></div>
-              <div class=""><span class="label">24H {{$t('low')}} </span><span>{{Number(lastTradeAggregation.low).toFixed(7)}}</span></div>
-              <div class=""><span class="label">24H {{$t('volume')}} </span><span>{{Number(lastTradeAggregation.base_volume).toFixed(7)}}</span></div>
+              <div class=""><span class="label">24H {{$t('high')}} </span><span>{{lastTradeAggregation.high}}</span></div>
+              <div class=""><span class="label">24H {{$t('low')}} </span><span>{{lastTradeAggregation.low}}</span></div>
+              <div class=""><span class="label">24H {{$t('volume')}} </span><span>{{lastTradeAggregation.base_volume}}</span></div>
           </div>
           <div class="flex1 title-btn-div">
              

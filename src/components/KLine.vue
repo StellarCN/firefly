@@ -10,12 +10,12 @@
 <template>
   <div class="line flex-row" v-if="lineData!=null || !loading">
       <div class="flex1">
-        <div :class="' price textright ' + ((titleData.change >=0 || !redUpGreenDown)? 'up':'down') ">
+        <div :class="' price textright ' + ((titleData.change >=0 ^ redUpGreenDown)? 'down':'up') ">
             {{titleData.price >= 0 ? (titleData.price>=0.000001 ? Number(titleData.price): titleData.price):''}}</div>
       </div>
       <div class="flex1">
         <div class="rate">
-            <div v-if="titleData.rate!==null && typeof titleData.rate!=='undefined'" :class="'rate-btn textcenter ' + (( titleData.change >=0 || !redUpGreenDown)? 'up':'down')">
+            <div v-if="titleData.rate!==null && typeof titleData.rate!=='undefined'" :class="'rate-btn textcenter ' + (( titleData.change >=0 ^ redUpGreenDown)? 'down':'up')">
                 <span v-if="titleData.rate>0">+</span>{{titleData.rate}}%    
             </div>    
         </div>

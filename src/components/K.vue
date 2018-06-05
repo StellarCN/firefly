@@ -15,7 +15,7 @@
                 <i class="material-icons  k-icon">keyboard_arrow_left</i>
             </v-btn>
           </div>
-          <div :class="'flex3 textcenter ' + ( (titleData.change >=0 || !redUpGreenDown) ? 'up':'down') ">
+          <div :class="'flex3 textcenter ' + ( (titleData.change >=0 ^ redUpGreenDown) ? 'down':'up') ">
               <div class="price textcenter">
                   <span class="price">{{titleData.price}}</span>
                   <!-- <span class="code">{{counter.code}}</span> -->
@@ -32,8 +32,8 @@
               </div>
           </div>
           <div class="flex3 values">
-              <div class=""><span class="label">24H {{$t('high')}} </span><span>{{Number(lastTradeAggregation.high).toFixed(7)}}</span></div>
-              <div class=""><span class="label">24H {{$t('low')}} </span><span>{{Number(lastTradeAggregation.low).toFixed(7)}}</span></div>
+              <div class=""><span class="label">24H {{$t('high')}} </span><span>{{lastTradeAggregation.high}}</span></div>
+              <div class=""><span class="label">24H {{$t('low')}} </span><span>{{lastTradeAggregation.low}}</span></div>
               <div class=""><span class="label">24H {{$t('volume')}} </span><span>{{Number(lastTradeAggregation.base_volume).toFixed(4)}}</span></div>
           </div>
           <div class="flex1 title-btn-div">
@@ -183,7 +183,7 @@ export default {
             let change = price.minus(open)
             let rate = change.times(100).dividedBy(open)
             return  defaultsDeep({}, this.lastTradeAggregation, {
-                price: price.toFixed(7),
+                price: this.lastTradeAggregation.close,
                 change: change.toFixed(7),
                 rate: new Decimal(rate.toFixed(2)).toNumber() })
           }
