@@ -3,19 +3,19 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-26 15:59:49 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-06-04 22:16:33
+ * @Last Modified time: 2018-06-05 16:54:52
  * @License MIT 
  */
 
 <template>
   <div class="line flex-row" v-if="lineData!=null || !loading">
       <div class="flex1">
-        <div :class="' price textright ' + ((titleData.change >=0 ^ redUpGreenDown)? 'down':'up') ">
+        <div :class="' price textright ' + ((titleData.change >=0 ^ redUpGreenDown)? 'up':'down') ">
             {{titleData.price >= 0 ? (titleData.price>=0.000001 ? Number(titleData.price): titleData.price):''}}</div>
       </div>
       <div class="flex1">
         <div class="rate">
-            <div v-if="titleData.rate!==null && typeof titleData.rate!=='undefined'" :class="'rate-btn textcenter ' + (( titleData.change >=0 ^ redUpGreenDown)? 'down':'up')">
+            <div v-if="titleData.rate!==null && typeof titleData.rate!=='undefined'" :class="'rate-btn textcenter ' + (( titleData.change >=0 ^ redUpGreenDown)? 'up':'down')">
                 <span v-if="titleData.rate>0">+</span>{{titleData.rate}}%    
             </div>    
         </div>
