@@ -691,7 +691,7 @@ export default {
       }
       if(this.isBuy){
         this.$nextTick(()=>{
-          this.tatal = decvalue.toNumber() > this.tradeBalance ? this.tradeBalance : Number(decvalue.toFixed(7))
+          this.total = decvalue.toNumber() > this.tradeBalance ? this.tradeBalance : Number(decvalue.toFixed(7))
           if(this.price === null || this.price === 0)return
           this.amount = Number(new Decimal(this.total).div(this.price).toFixed(7))
         })
