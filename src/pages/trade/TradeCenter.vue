@@ -130,7 +130,7 @@ import { getDefaultTradePairs } from '@/api/gateways'
 
 const TAG_ALL = 'All', TAG_XCN = 'XCN', TAG_XLM = 'XLM', TAG_BTC = 'BTC', TAG_ETH = 'ETH', TAG_CUSTOM = '_CUSTOM', TAG_XFF = 'XFF'
 
-const TAGS = [TAG_XCN, TAG_BTC, TAG_XLM, TAG_ETH, TAG_XFF, TAG_CUSTOM]
+const TAGS = [TAG_XCN, TAG_BTC, TAG_XLM, TAG_CUSTOM]
 
 export default {
   data(){
@@ -280,7 +280,7 @@ export default {
     //   this.filterTag = TAG_CUSTOM
     //   this.tagIndex = TAGS.indexOf(TAG_CUSTOM).toString()
     // }
-    this.allTagsLabel = [TAG_XCN, TAG_BTC, TAG_XLM, TAG_ETH, TAG_XFF, this.$t('custom')]
+    this.allTagsLabel = [TAG_XCN, TAG_BTC, TAG_XLM, this.$t('custom')]
   },
   mounted(){
     // if(!this.islogin){
