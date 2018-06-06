@@ -454,7 +454,13 @@ export default {
           this.hideLoading()
           //this.$toasted.show(this.$t('Trade.OfferSuccess'))
           this.loadingTitle = this.$t('Trade.OfferSuccess')
-          this.queryMyOffers();
+          this.queryMyOffers().then(()=>{}).catch(err=>{console.error(err)});
+          //查询账户数据
+          this.getAccountInfo(this.account.address).then(()=>{}).catch(err=>{console.error(err)})
+          //隔10秒再查询一次
+          setTimeout(()=>{
+            this.getAccountInfo(this.account.address).then(()=>{}).catch(err=>{console.error(err)})
+          },10000)
 
         })
         .catch(err=>{
@@ -501,10 +507,6 @@ export default {
       if(this.justify) return
       this.justify = true
       let origin = data.origin
-      console.log('-------11222233')
-      console.log(origin)
-      console.log(type)
-      console.log(data)
       this.price = Number(origin.price)
       if(this.isBuy){
         if(type === 'buy'){

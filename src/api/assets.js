@@ -43,3 +43,16 @@ export function allHosts(){
 export function assetHost(issuer){
   return axios.get(ALL_HOSTS_URL+'?issuer='+issuer)
 }
+
+
+export function assetKey(base,counter){
+  let result = `${base.code}`
+  if(base.issuer && 'stellar.org'!== base.issuer){
+    result += '-' + base.issuer
+  }
+  result += '_' + counter.code
+  if(counter.issuer && 'stellar.org'!== counter.issuer){
+    result += '-' + counter.issuer
+  }
+  return result;
+}

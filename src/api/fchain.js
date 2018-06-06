@@ -15,7 +15,9 @@ const host = 'https://api.fchain.io/v2'
  * @param {Array} assets 资产数组
  */
 export function getAssetPrice(assets){
-  let uri = `${host}/api/price?data=`+encodeURIComponent(JSON.stringify(assets))
+  if(assets === null || assets.length ===0)throw new Error('no assets')
+  let t = new Date().getTime()
+  let uri = `${host}/api/price?r=${t}&data=`+encodeURIComponent(JSON.stringify(assets))
   return axios.get(uri)
 }
 
@@ -29,7 +31,8 @@ export function getAssetPrice(assets){
  */
 export function getDepositAndWithdrawRecords(account, asset_code, asset_issuer){
   if(account === null || asset_code  === null || asset_issuer === null)throw new Error('params invalid')
-  let uri = `${host}/api/dwrecords/?account=${account}&asset_code=${asset_code}&asset_issuer=${asset_issuer}`
+  let t = new Date().getTime()
+  let uri = `${host}/api/dwrecords/?r=${t}&account=${account}&asset_code=${asset_code}&asset_issuer=${asset_issuer}`
   return axios.get(uri)
 }
 
@@ -76,7 +79,8 @@ export function getFchainRss(){
       reject('error')
       return
     }
-    let url = FCHAIN_FEED_URL
+    let t = new Date().getTime()
+    let url = FCHAIN_FEED_URL +'?r='+t
     if(cordova.platformId === 'browser'){
       url = CORS_PROXY+FCHAIN_FEED_URL
     }

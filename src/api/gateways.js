@@ -109,7 +109,8 @@ let _default_trade_pair = undefined
 // 默认交易对从fchain获取
 const API_TRADE_PAIR = `https://api.fchain.io/tradepairs`
 export function defaultTradePairsAPI(){
-  axios.get(API_TRADE_PAIR,{
+  let t = new Date().getTime()
+  axios.get(API_TRADE_PAIR+'?r='+t,{
     timeout: AXIOS_DEFAULT_TIMEOUT
   })
     .then(response=>{
@@ -129,15 +130,17 @@ export function getDefaultTradePairs(){
 }
 
 export function getPackageJson(){
-  return axios.get(CHECK_UPDATE)
+  let t = new Date().getTime()
+  return axios.get(CHECK_UPDATE+'?r='+t)
 }
 
 //获取资产的说明信息
 export function getAssetInfo(asset_code,asset_issuer){
+  let t = new Date().getTime()
   if(isNativeAsset(asset_code, asset_issuer)){
-    return axios.get(`${ASSET_INFO_BASE_URL}${asset_code}.json`)
+    return axios.get(`${ASSET_INFO_BASE_URL}${asset_code}.json?r=${t}`)
   }else{
-    return axios.get(`${ASSET_INFO_BASE_URL}${asset_code}-${asset_issuer}.json`)
+    return axios.get(`${ASSET_INFO_BASE_URL}${asset_code}-${asset_issuer}.json?r=${t}`)
   }
 }
 
@@ -219,4 +222,28 @@ export function getVersionInfo(){
 //获取节点地址的pin值信息
 export function getAddressPinInfo(url){
   return axios.get(url)
+}
+
+
+export const DEFAULT_TRADEPAIR_API = 'https://api.fchain.io/v2/api/trade_aggregations'
+
+// 查询默认的交易对和行情
+export function getDefaultSysTradePairAndStat(){
+  let t = new Date().getTime()
+  return axios.get(DEFAULT_TRADEPAIR_API+'?r='+t)
+}
+
+//查询某个交易对的行情
+export function getTradePairStat(base, counter){
+  let params = `?base_asset_code=${base.code}&counter_asset_code=${counter.code}`
+  if(base.issuer){
+    params += `&base_asset_issuer=${base.issuer}`
+  }
+  if(counter.issuer){
+    params += `&counter_asset_issuer=${counter.issuer}`
+  }
+  let t = new Date().getTime()
+  let uri = DEFAULT_TRADEPAIR_API+params+'&r='+t
+  // console.log('----uri:' + uri)
+  return axios.get(uri)
 }

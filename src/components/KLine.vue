@@ -8,7 +8,7 @@
  */
 
 <template>
-  <div class="line flex-row" v-if="lineData!=null || !loading">
+  <div class="line flex-row">
       <div class="flex1">
         <div :class="' price textright ' + ((titleData.change >=0 ^ redUpGreenDown)? 'up':'down') ">
             {{titleData.price >= 0 ? (titleData.price>=0.000001 ? Number(titleData.price): titleData.price):''}}</div>
@@ -21,10 +21,6 @@
         </div>
       </div>
   </div>
-  <div class="line working" v-else>
-    <v-progress-circular indeterminate :color="redUpGreenDown ? 'error': 'primary'" v-if="!lineData"></v-progress-circular>
-    <span v-else></span>
-  </div>
 </template>
 
 <script>
@@ -36,7 +32,7 @@ import { getTradeAggregation, getTradeAggregation1min,
     getTradeAggregation15min, getTradeAggregation1hour, 
     getTradeAggregation1day, getTradeAggregation1week,
     RESOLUTION_1MIN,RESOLUTION_1HOUR,RESOLUTION_1DAY } from '@/api/tradeAggregation'
-import { getAsset } from '@/api/assets'
+import { getAsset,isNativeAsset } from '@/api/assets'
 import { getTrades } from '@/api/trade'
 import { getOrderbook } from '@/api/orderbook'
 import  defaultsDeep  from 'lodash/defaultsDeep'
@@ -122,6 +118,8 @@ export default {
         ...mapState({
             tradePairKLineData: state => state.accounts.tradePairKLineData,
             redUpGreenDown: state => state.app.redUpGreenDown,
+            tradePairsStat: state => state.accounts.tradePairsStat,
+
         }),
         decimal(){
             if(this.counter.code === 'BTC'){
@@ -132,12 +130,7 @@ export default {
         // lineData(){
         //     return this.tradePairKLineData[this.tradepairIndex]
         // },
-        lastTrade(){
-            return this.lineData ? this.lineData.lastTrade : null
-        },
-        lastTradeAggregation(){
-            return this.lineData ? this.lineData.tradeAggregation : null
-        },
+    
         //7天的聚合数据
         // sevenDayTradeAggregation(){
         //     return this.lineData ? this.lineData.sevenDayTradeAggregation : null
@@ -149,54 +142,50 @@ export default {
         //     return this.sevenDayTradeAggregation ? this.sevenDayTradeAggregation.dates||[] : []
         // },
         titleData(){
-          if(this.lastTradeAggregation){
-            let price = new Decimal(this.lastTradeAggregation.close)//new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
-            let open = new Decimal(this.lastTradeAggregation.open)
-            let change = price.minus(open)
-            let rate = change.times(100).dividedBy(open)
-            return  defaultsDeep({}, this.lastTradeAggregation, {
-                price: price.toFixed(this.decimal),
-                change: Number(change.toFixed(7)),
-                rate: new Decimal(rate.toFixed(2)).toNumber() })
-          }
-          let p = this.orderbook_price
-          if(p!==null&& p!==undefined){
-              return {price: p.toFixed(this.decimal), change: 0, rate: 0}
+          let idf = isNativeAsset(this.base) ? 'XLM' : this.base.code+'-'+this.base.issuer
+          let idt = isNativeAsset(this.counter) ? 'XLM' : this.counter.code +'-'+this.counter.issuer
+          let key = idf + '_' + idt;
+          let d = this.tradePairsStat[key]
+          if(d){
+            let price = new Decimal(d.latest_price||d.order_book_avg)//new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
+            let rate = new Decimal(0)
+            let change = new Decimal(0)
+            if(d.open){
+                let open = new Decimal(d.open)
+                change = price.minus(open)
+                rate = change.toNumber() === 0 ? new Decimal(0) : change.times(100).dividedBy(open)
+            }
+            if(price.toNumber() === 0){
+                price = null
+            }else{
+                price = price.toFixed(this.decimal)
+            }
+            return Object.assign({},d,{
+                    price,
+                    rate: Number(rate.toFixed(2)),
+                    change: change.toNumber()
+                    })
           }
           return {}
       },  
-      orderbook_price(){
-        return this.lineData ? this.lineData['orderbook_price']: null
-      },
       cid(){
           return `${this.base.code}-${this.base.issuer}-${this.counter.code}-${this.counter.issuer}`
       }
     },
     watch: {
-      cid(val){
-        //关闭定时器
-        if(this.tinterval){
-            clearInterval(this.tinterval)
-            this.tinterval = null
-        }
-        this.deleteTradeInterval()
-        this.init()
-      }  ,
-      tradePairKLineData(){
-          this.lineData = this.tradePairKLineData[this.tradepairIndex]
-      }
+      
     },
     beforeMount () {
         //生成随机的id
-        this.id = 'k_'+ new Date().getTime()
+        // this.id = 'k_'+ new Date().getTime()
        //先从缓存中取值
-        this.lineData = this.tradePairKLineData[this.tradepairIndex]
+        // this.lineData = this.tradePairKLineData[this.tradepairIndex]
     },
     beforeDestroy () {
-        this.clearAll()
+        // this.clearAll()
     },
     mounted () {
-        this.init()
+        // this.init()
     },
     methods: {
         reload(){

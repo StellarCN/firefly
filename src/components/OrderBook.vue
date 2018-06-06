@@ -315,7 +315,7 @@ export default {
           //this.queryMyOffers()
           //查询盘面
           try{
-            this.load()
+            this.load().then(()=>{}).catch(err=>{console.error(err)});
           }catch(err){
             console.error(err)
           }
