@@ -176,6 +176,12 @@ export default {
       ...mapState({
           redUpGreenDown: state => state.app.redUpGreenDown,
       }),
+      upColor(){
+        return this.redUpGreenDown ? '#14b143' : '#ef232a'
+      },
+      downColor(){
+        return this.redUpGreenDown ? '#ef232a' : '#14b143'
+      },
       titleData(){
           if(this.lastTradeAggregation){
             let price = new Decimal(this.lastTradeAggregation.close)//new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
@@ -464,10 +470,10 @@ export default {
                     data: this.data,
                     itemStyle: {
                         normal: {
-                            color: '#14b143',
-                            color0: '#ef232a',
-                            borderColor: '#14b143',
-                            borderColor0: '#ef232a'
+                            color: this.upColor,
+                            color0: this.downColor,
+                            borderColor: this.upColor,
+                            borderColor0: this.downColor
                         },
                         emphasis: {
                             color: '#444',

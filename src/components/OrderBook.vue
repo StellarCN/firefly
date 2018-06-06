@@ -182,7 +182,7 @@ export default {
         data.forEach(item=>{
           item.price = Number(item.price).toFixed(7)
           item.base = Number(item.base).toFixed(7)
-          item.amount = Number(item.base).toFixed(7)
+          item.amount = Number(item.amount).toFixed(7)
         })
         return data
       }
