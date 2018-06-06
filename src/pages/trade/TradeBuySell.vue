@@ -131,7 +131,7 @@
 
           <div class="confirm-row flex-row">
             <span class="label flex2">{{$t('Trade.Price')}}</span>
-            <span class="value flex2 textright pr-1"> {{price}}</span>
+            <span class="value flex2 textright pr-1"> {{Number(Number(price).toFixed(7))}}</span>
             <span class="code flex1">{{CounterAsset.code}}</span>
           </div>
           <div class="confirm-row flex-row">
@@ -587,7 +587,11 @@ export default {
           })
       }else{
         this.$nextTick(()=>{
-          this.price = Number(decvalue.toFixed(7))
+          let str = decvalue.toFixed(7)
+          if(!str.endsWith("0")){
+            this.price = Number(str)
+          }
+          // this.price = Number()
           if(this.isBuy){
             let t = decvalue.times(this.amount || 0)
             if(t.lessThan(this.tradeBalance)){
@@ -619,25 +623,40 @@ export default {
         let t = decvalue.times(this.price||0)
         if(t.lessThan(this.tradeBalance)){
           this.$nextTick(()=>{
-            this.amount = Number(decvalue.toFixed(7))
+            let str = decvalue.toFixed(7)
+            if(str.endsWith("0")){
+              //TODO 不处理
+            }else{
+              if(str>=0.000001){
+                this.amount = Number(str)
+              }else{
+                this.amount = str
+              }
+            }
             this.setNum()
             this.setTotal()
           })
-        }else{
+        }else{//计算出的总值大于最大值 
           this.$nextTick(()=>{
             this.total = this.tradeBalance
             if(this.price === null || this.price === 0){
               this.amount = this.amount
               return
             }
-            this.amount = Number(new Decimal(this.tradeBalance).div(this.price).toFixed(7))
+            let str = new Decimal(this.tradeBalance).div(this.price).toFixed(7)
+            if(str>=0.000001){
+              this.amount = Number(str)
+            }else{
+              this.amount = str
+            }
             this.setNum()
           })
         }
-      }else{
+      }else{// 卖的操作
         this.$nextTick(()=>{
           if(decvalue.lessThan(this.tradeBalance)){
-            this.amount = Number(decvalue.toFixed(7))
+            // this.amount = Number(decvalue.toFixed(7))
+            //TODO 不处理
           }else{
             this.amount = this.tradeBalance
           }
@@ -658,17 +677,32 @@ export default {
       //卖则表示把所有的资产都=amount,买则表示把total=最大值
       if(this.isBuy){
         this.$nextTick(()=>{
-          this.total = Number(new Decimal(this.num).times(this.tradeBalance).div(100).toFixed(7))
+          let str = new Decimal(this.num).times(this.tradeBalance).div(100).toFixed(7)
+          if(str>=0.000001){
+            this.total = Number(str)
+          }else{
+            this.total = str
+          }
           //计算amount
           if(this.price === null || this.price <= 0){
             this.amount = null
           }else{
-            this.amount = Number(new Decimal(this.total).div(this.price).toFixed(7))
+            let str2 = new Decimal(this.total).div(this.price).toFixed(7)
+            if(str2 > 0.000001){
+              this.amount = Number(str2)
+            }else{
+              this.amount = str2
+            }
           }
         })
       }else{
         this.$nextTick(()=>{
-          this.amount = Number(new Decimal(this.num).times(this.tradeBalance).div(100).toFixed(7))
+          let str = new Decimal(this.num).times(this.tradeBalance).div(100).toFixed(7)
+          if(str >= 0.000001){
+            this.amount = Number(str)
+          }else{
+            this.amount = str
+          }
           //计算total
           this.setTotal()
         });
@@ -691,17 +725,24 @@ export default {
       }
       if(this.isBuy){
         this.$nextTick(()=>{
-          this.total = decvalue.toNumber() > this.tradeBalance ? this.tradeBalance : Number(decvalue.toFixed(7))
+          if(decvalue.toNumber() > this.tradeBalance){
+            this.total = this.tradeBalance
+          }
           if(this.price === null || this.price === 0)return
-          this.amount = Number(new Decimal(this.total).div(this.price).toFixed(7))
+          let str = new Decimal(this.total).div(this.price).toFixed(7)
+          if(str >= 0.000001){
+            this.amount = Number(str)
+          }else{
+            this.amount = str
+          }
         })
-      }else{
+      }else{// 卖操作
         if(this.price === null || this.price === 0)return
         this.$nextTick(()=>{
           let am = decvalue.div(this.price)
           if(am.lessThan(this.tradeBalance)){
             this.amount = Number(am.toFixed(7))
-            this.total = Number(decvalue.toFixed(7))
+            //this.total = Number(decvalue.toFixed(7))
           }else{
             this.amount = this.tradeBalance
             this.setTotal()
