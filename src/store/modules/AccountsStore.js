@@ -2,9 +2,9 @@
 import { createAccount as createAccountApi, readAccounts,
     saveAccounts, readAccountData, saveAccountData,deleteAccountData,
     saveTradePairData,readTradePairData } from '../../api/storage'
-import { getDefaultTradePairs } from '../../api/gateways'
+import { getDefaultTradePairs,getDefaultSysTradePairAndStat, getTradePairStat } from '../../api/gateways'
 import { getOrderbook } from '../../api/orderbook'
-import { getAsset } from '../../api/assets'
+import { getAsset, assetKey } from '../../api/assets'
 import { fetchEffects } from '../../api/effects'
 import { queryOffer } from '../../api/offer'
 
@@ -31,6 +31,12 @@ export const REMOVE_TRADEPAIR_KLINE_DATA = 'REMOVE_TRADEPAIR_KLINE_DATA'
 export const SET_TRADEPAIR_KLINE_LASTTRADE = 'SET_TRADEPAIR_KLINE_LASTTRADE'
 export const SET_TRADEPAIR_KLINE_TRADEAGGREGATION = 'SET_TRADEPAIR_KLINE_TRADEAGGREGATION'
 export const SET_TRADEPAIR_KLINE_7DAY_TRADEAGGREGATION = 'SET_TRADEPAIR_KLINE_7DAY_TRADEAGGREGATION'
+
+//查询默认交易对以及交易数据
+export const SET_DEFAULT_TRADEPAIR_AND_STAT = 'SET_DEFAULT_TRADEPAIR_AND_STAT'
+//根据条件查询某个交易对的数据
+export const SET_TRADEPAIR_AND_STAT = 'SET_TRADEPAIR_AND_STAT'
+export const SET_TRADEPAIR_UPDATETIME  = 'SET_TRADEPAIR_UPDATETIME'
 
 export const LOAD_TRADEPAIRS = 'LOAD_TRADEPAIRS'
 
@@ -62,6 +68,9 @@ const state = {
     sys: [], // 系统默认交易对
     custom: [],//自定义交易对
   },
+  lastUpdateTradePairStatTime: null,
+  // defaultTradePairs:{},//默认的交易对
+  tradePairsStat:{},//所有交易对的统计数据
   //当前选中的tradepair
   selectedTradePair:{
     index: -1,
@@ -263,6 +272,18 @@ const actions = {
     commit(LOAD_TRADEPAIRS,pairs)
   },
 
+  //查询默认交易对和统计数据
+  async saveDefaultTradePairsStat({commit, state}){
+    let response = await getDefaultSysTradePairAndStat()
+    //分离交易对和数据
+    commit(SET_DEFAULT_TRADEPAIR_AND_STAT, response.data || {})
+  },
+
+  async saveTradePairStat({commit, state}, {base, counter}){
+    let response = await getTradePairStat(base,counter)
+    commit(SET_TRADEPAIR_AND_STAT, response.data||{})
+  },
+
 
   //查询当前的盘面
   async queryOrderBook({commit,state}){
@@ -451,8 +472,50 @@ const mutations = {
   },
   [LOAD_TRADEPAIRS](state, data){
     state.tradepairs = data;
+  },
+  [SET_DEFAULT_TRADEPAIR_AND_STAT](state, data){
+    //更新分组
+    //更新统计数据
+    let group = {}
+    let allpairs = []
+    let stats = {}
+    for(let key in data){
+      console.log(key + ',' + data[key])
+      let arr = data[key]
+      let pairs = []
+      for(let i=0,n=arr.length;i<n;i++){
+        let item = arr[i]
+        let k = assetKey(item.base_asset, item.counter_asset)
+        let d = {from: item.base_asset, to: item.counter_asset}
+        pairs.push(d)
+        allpairs.push(d)
+        stats[k] = item.stat
+      }
+      group[key] = pairs
+    }
+    state.defaultTradePairs = group
+    state.tradepairs.sys = allpairs
+    state.tradePairsStat = Object.assign({}, state.tradePairsStat, stats)
+  },
+
+  [SET_TRADEPAIR_AND_STAT](state, data){
+    let stats = {}
+    for(let key in data){
+      let arr = data[key]
+      for(let i=0,n=arr.length;i<n;i++){
+        let item = arr[i]
+        let k = assetKey(item.base_asset, item.counter_asset)
+        stats[k] = item.stat
+      }
+    }
+    state.tradePairsStat = Object.assign({}, state.tradePairsStat, stats)
+  },
+  [SET_TRADEPAIR_UPDATETIME](state, date){
+    state.lastUpdateTradePairStatTime = date
   }
+
 }
+
 
 export default {
   state,

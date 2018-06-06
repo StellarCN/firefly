@@ -17,13 +17,12 @@
                   hide-details
                   @change="switchColor"
                   ></v-switch>
-
             </li>
 
             <li class="settings-li">
               <span>{{$t('PinCode')}}</span>
               <v-switch class="pincodeswitch f-right"
-                  :value="pinEnable"
+                  v-model="pinEnable"
                   color="primary"
                   hide-details
                   @change="switchPinCode"

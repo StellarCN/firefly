@@ -36,17 +36,17 @@
                 </div>
               </div>
             </div>
-            <div class="flex4 textright">
+            <div class="flex5 textright">
               <div>
                 <span class="value">{{Number(item.price)}}{{item.base_asset}}</span>
                 <span class="label">{{$t('UnitPriceAbbreviation')}}</span>
               </div>
               <div>
-                <span class="value up">+{{Number(item.amount)}}{{item.counter_asset}}</span>
+                <span class="value down">-{{Number(item.amount)}}{{item.counter_asset}}</span>
                 <span class="label">{{$t('AmountAbbreviation')}}</span>
               </div>
               <div>
-                <span class="value down">-{{Number(item.total)}}{{item.base_asset}}</span>
+                <span class="value up">+{{Number(item.total)}}{{item.base_asset}}</span>
                 <span class="label">{{$t('TotalAbbreviation')}}</span>
               </div>
             </div>

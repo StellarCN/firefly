@@ -182,7 +182,7 @@ export default {
         data.forEach(item=>{
           item.price = Number(item.price).toFixed(7)
           item.base = Number(item.base).toFixed(7)
-          item.amount = Number(item.base).toFixed(7)
+          item.amount = Number(item.amount).toFixed(7)
         })
         return data
       }
@@ -315,7 +315,7 @@ export default {
           //this.queryMyOffers()
           //查询盘面
           try{
-            this.load()
+            this.load().then(()=>{}).catch(err=>{console.error(err)});
           }catch(err){
             console.error(err)
           }

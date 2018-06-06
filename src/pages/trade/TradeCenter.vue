@@ -8,7 +8,7 @@
           <i class="material-icons">repeat</i>
       </v-btn>
     
-       <v-btn icon slot='right-tool' @click="pickershow()" v-if="islogin">
+       <v-btn icon slot='right-tool' @click="pickershow()">
         <i class="material-icons">&#xE145;</i>
       </v-btn>
       <span slot="switch_password">{{$t('Account.Password')}}</span>
@@ -29,7 +29,7 @@
 
       <card class="trade-card" padding="0px 0px">
         <div class="card-content trade-card-content" slot="card-content">
-          <scroll :refresh="refresh" :readLabelTxt="readLabelTxt">
+          <scroll :refresh="reloadTradePairs" :readLabelTxt="readLabelTxt">
 
             <v-tabs  v-model="tagIndex" class="tabs-bg-dark" hide-slider grow color="transparent">
               <v-tab class="tab1" @click="doFilter(item)" 
@@ -43,8 +43,8 @@
                     <v-flex xs4>
                       <div class="flex-row">
                         <div class="flex1 choose-icon-wrapper" v-if="!pair.custom">
-                          <v-icon color="primary" v-if="pair.isChoosed">star</v-icon>
-                          <v-icon color="primary" @click="choosePairToCustom(pair)" v-else>star_border</v-icon>
+                          <v-icon color="primary" @click.stop="delPairFromCustom(pair)" v-if="pair.isChoosed">star</v-icon>
+                          <v-icon color="primary" @click.stop="choosePairToCustom(pair)" v-else>star_border</v-icon>
                         </div>
                         <div class="flex3 from-wrapper" @click="trade(index,pair)">
                           <div class="code">{{pair.from.code}}</div>
@@ -150,8 +150,8 @@ export default {
 
       showaccountsview: false,
       selectedItem: null,
-      allTags: TAGS,
-      allTagsLabel: []
+      // allTags: TAGS,
+      // allTagsLabel: []
 
     }
   },
@@ -163,67 +163,69 @@ export default {
       islogin: state => state.accounts.accountData.seed ? true:false,
       assethosts: state => state.asset.assethosts,
       notfunding: state => state.account.account_not_funding,
-      tradePairKLineData: state => state.accounts.tradePairKLineData
+      tradePairKLineData: state => state.accounts.tradePairKLineData,
+      sysTradePairs: state => state.accounts.defaultTradePairs,
+      tradePairsStat: state => state.accounts.tradePairsStat,
+      lastUpdateTradePairStatTime: state => state.accounts.lastUpdateTradePairStatTime,
+
     }),
     ...mapGetters([
       'balances',
     ]),
-    readLabelTxt(){
-      try{
-        if(this.tradePairKLineData){
-          let result = this.$t('lastUpdate')+':'
-          for(let key in this.tradePairKLineData){
-            result += new moment(this.tradePairKLineData[key].date).format('YYYY-MM-DD HH:mm:ss')
-            break
-          }
-          return result
-        }
-      }catch(err){
-        console.error(err)
+    allTags(){
+      let result = []
+      for(let key in this.sysTradePairs){
+        result.push(key)
       }
-      return 'ReleaseToRefresh'
+      result.push(TAG_CUSTOM)
+      return result;
     },
+    allTagsLabel(){
+      let n = this.allTags.length
+      if(n>=1)n--
+      let result = []
+      for(let i=0;i<n;i++){
+        result.push(this.allTags[i])
+      }
+      result.push(this.$t('custom'))
+      return result
+    },
+    readLabelTxt(){
+      if(this.lastUpdateTradePairStatTime){
+        return this.$t('lastUpdate')+':' + new moment(this.lastUpdateTradePairStatTime).format('YYYY-MM-DD HH:mm:ss')
+      }else{
+        return 'ReleaseToRefresh'  
+      }
+    },
+    
     pairItems(){
-      let xcn = [], btc = [], xlm=[],eth=[],xff=[],custom=[];
+      let custom=[];
       let custom_ids = []
-      this.tradepairs.custom.forEach((item,index)=>{
+      this.tradepairs.custom.forEach((item,index) => {
           custom.push(Object.assign({}, item,{tradepairIndex: 'custom_'+index, custom: true}))
           let idf = isNativeAsset(item.from) ? 'XLM' : item.from.code+'-'+item.from.issuer
           let idt = isNativeAsset(item.to) ? 'XLM' : item.to.code +'-'+item.to.issuer
           custom_ids.push(idf+'_'+idt)
           custom_ids.push(idt+'_'+idf)
       })
-      this.tradepairs.sys.forEach((item,index)=>{        
-        let idf = isNativeAsset(item.from) ? 'XLM' : item.from.code+'-'+item.from.issuer
-        let idt = isNativeAsset(item.to) ? 'XLM' : item.to.code +'-'+item.to.issuer
-        let isChoosed = false
-        let ida = idf +'_'+idt
-        let idb = idt +'_'+idf
-        if(custom_ids.indexOf(ida) >= 0 || custom_ids.indexOf(idb) >= 0){
-          isChoosed = true
-        }
-        let d = Object.assign({},item,{tradepairIndex: 'sys_'+index, custom: false, isChoosed})
-        if(item.to.code === TAG_XCN){
-          xcn.push(d)
-        }else if(item.to.code === TAG_BTC){
-          btc.push(d)
-        }else if(item.to.code === TAG_XLM ) {
-          xlm.push(d)
-        }else if(item.to.code === TAG_ETH){
-          eth.push(d)
-        }else if(item.to.code === TAG_XFF){
-          xff.push(d)
-        }
-      })
+
+      let syspairs = Object.assign({}, this.sysTradePairs)
       
-      let result = []
-      result[TAG_XCN] = xcn
-      result[TAG_BTC] = btc
-      result[TAG_XLM] = xlm
-      result[TAG_ETH] = eth
-      result[TAG_XFF] = xff
-      result[TAG_CUSTOM] = custom
-      return result
+      for(let key  in syspairs){
+        syspairs[key] = syspairs[key].map((item,index)=>{
+          let idf = isNativeAsset(item.from) ? 'XLM' : item.from.code+'-'+item.from.issuer
+          let idt = isNativeAsset(item.to) ? 'XLM' : item.to.code +'-'+item.to.issuer
+          let isChoosed = false
+          let ida = idf +'_'+idt
+          let idb = idt +'_'+idf
+          if(custom_ids.indexOf(ida) >= 0 || custom_ids.indexOf(idb) >= 0){
+            isChoosed = true
+          }
+          return Object.assign({},item,{tradepairIndex: 'sys_'+index, custom: false, isChoosed}) 
+        });
+      }
+      syspairs[TAG_CUSTOM] = custom
+      return syspairs;
     },
     pairs(){
       let result = []
@@ -274,13 +276,14 @@ export default {
   },
   beforeMount(){
     //保存默认的交易对
-    this.saveDefaultTradePairs()
+    // this.saveDefaultTradePairs()
     // let custom = this.tradepairs.custom
     // if( custom && custom.length > 0){
     //   this.filterTag = TAG_CUSTOM
     //   this.tagIndex = TAGS.indexOf(TAG_CUSTOM).toString()
     // }
-    this.allTagsLabel = [TAG_XCN, TAG_BTC, TAG_XLM, this.$t('custom')]
+    // this.allTagsLabel = [TAG_XCN, TAG_BTC, TAG_XLM, this.$t('custom')]
+    this.reloadTradePairs().then(data=>{}).catch(err=>{});
   },
   mounted(){
     // if(!this.islogin){
@@ -297,9 +300,45 @@ export default {
       selectTradePair: 'selectTradePair',
       getAssetsAccount: 'assetsAccount',
       saveDefaultTradePairs: 'saveDefaultTradePairs',
+      saveDefaultTradePairsStat: 'saveDefaultTradePairsStat',
+      saveTradePairStat: 'saveTradePairStat',
 
     }),
-
+    reloadTradePairs(){
+      let promises = [this.saveDefaultTradePairsStat()]
+      let custom = this.tradepairs.custom
+      let ids = this.getSysPairIds()
+      for(let i=0,n=custom.length;i<n;i++){
+        let item = custom[i]
+        let idf = isNativeAsset(item.from) ? 'XLM' : item.from.code+'-'+item.from.issuer
+        let idt = isNativeAsset(item.to) ? 'XLM' : item.to.code +'-'+item.to.issuer
+        if(ids.indexOf(idf+'_'+idt) >=0)continue;
+        promises.push(this.saveTradePairStat({base: getAsset(custom[i].from), counter: getAsset(custom[i].to)}))
+      }
+      return new Promise((resolve,reject)=>{
+        Promise.all(promises).then(()=>{
+          this.$store.commit('SET_TRADEPAIR_UPDATETIME', new Date().getTime())
+          resolve()
+        }).catch(err=>{
+          this.$store.commit('SET_TRADEPAIR_UPDATETIME', new Date().getTime())
+          resolve()
+        })
+      })
+    },
+    getSysPairIds(){
+      let ids = []
+      for(let key  in this.sysTradePairs){
+        let arr = this.sysTradePairs[key]
+        for(let i=0,n=arr.length;i<n;i++){
+          let item = arr[i]
+          let idf = isNativeAsset(item.from) ? 'XLM' : item.from.code+'-'+item.from.issuer
+          let idt = isNativeAsset(item.to) ? 'XLM' : item.to.code +'-'+item.to.issuer
+          let ida = idf +'_'+idt
+          ids.push(ida)
+        }
+      }
+      return ids;
+    },
     showAccounts(){
         this.showaccountsview = true
     },
@@ -394,7 +433,7 @@ export default {
             this.working = false
             this.delworking = false
             this.selectedItem = null
-            this.$store.commit('REMOVE_TRADEPAIR_KLINE_DATA', index)
+            // this.$store.commit('REMOVE_TRADEPAIR_KLINE_DATA', pair.index)
           })
           .catch(err=>{
             this.working = false
@@ -450,7 +489,32 @@ export default {
       setTimeout(()=>{
         this.working = false
       },1000)
+    },
+    delPairFromCustom(pair){
+      let idf1 = isNativeAsset(pair.from) ? 'XLM' : pair.from.code+'-'+pair.from.issuer
+      let idt1 = isNativeAsset(pair.to) ? 'XLM' : pair.to.code +'-'+pair.to.issuer 
+      let key1 = idf1 + "_" + idt1;
+      let key2 = idt1 + "_" + idf1;
+      let index = -1
+      let data = this.tradepairs.custom
+      let tradepair = null
+      for(let i=0,n=data.length;i<n;i++){
+        let item = data[i]
+        let idf2 = isNativeAsset(item.from) ? 'XLM' : item.from.code+'-'+item.from.issuer
+        let idt2 = isNativeAsset(item.to) ? 'XLM' : item.to.code +'-'+item.to.issuer
+        let key = idf2 + '_' + idt2
+        if(key === key1 || key === key2){
+          index = i;
+          tradepair = item
+          break;
+        }
+      }
+      if(index>-1){
+        tradepair = Object.assign({}, tradepair, {index, custom: true})
+        this.del(index,tradepair);
+      }
     }
+
    
   },
   components: {
