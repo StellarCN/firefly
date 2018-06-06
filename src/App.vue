@@ -169,6 +169,7 @@ export default {
               //initStreams(this.address);
               this.getAllAssetHosts();
             }
+            this.saveDefaultTradePairsStat().then(()=>{}).catch(err=>{console.error(err)});
           } catch (err) {
             console.log(err);
           }
@@ -249,7 +250,8 @@ export default {
       "getAllAssetHosts",
       "onPause",
       "onResume",
-      "getMessages"
+      "getMessages",
+      "saveDefaultTradePairsStat"
     ]),
     onAppPause() {
       this.showFuzzyView = true

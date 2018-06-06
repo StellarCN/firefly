@@ -454,9 +454,15 @@ export default {
           this.hideLoading()
           //this.$toasted.show(this.$t('Trade.OfferSuccess'))
           this.loadingTitle = this.$t('Trade.OfferSuccess')
+
           this.queryMyOffers().then(()=>{}).catch(err=>{console.error(err)});
           //查询账户数据
           this.getAccountInfo(this.account.address).then(()=>{}).catch(err=>{console.error(err)})
+          try{
+            this.$refs.orderbook.reload()
+          }catch(err){
+            console.error(err)
+          }
           //隔10秒再查询一次
           setTimeout(()=>{
             this.getAccountInfo(this.account.address).then(()=>{}).catch(err=>{console.error(err)})
