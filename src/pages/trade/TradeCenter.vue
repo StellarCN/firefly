@@ -43,8 +43,8 @@
                     <v-flex xs4>
                       <div class="flex-row">
                         <div class="flex1 choose-icon-wrapper" v-if="!pair.custom">
-                          <v-icon color="primary" v-if="pair.isChoosed">star</v-icon>
-                          <v-icon color="primary" @click="choosePairToCustom(pair)" v-else>star_border</v-icon>
+                          <v-icon color="primary" @click.stop="delPairFromCustom(pair)" v-if="pair.isChoosed">star</v-icon>
+                          <v-icon color="primary" @click.stop="choosePairToCustom(pair)" v-else>star_border</v-icon>
                         </div>
                         <div class="flex3 from-wrapper" @click="trade(index,pair)">
                           <div class="code">{{pair.from.code}}</div>
@@ -394,7 +394,7 @@ export default {
             this.working = false
             this.delworking = false
             this.selectedItem = null
-            this.$store.commit('REMOVE_TRADEPAIR_KLINE_DATA', index)
+            // this.$store.commit('REMOVE_TRADEPAIR_KLINE_DATA', pair.index)
           })
           .catch(err=>{
             this.working = false
@@ -450,7 +450,32 @@ export default {
       setTimeout(()=>{
         this.working = false
       },1000)
+    },
+    delPairFromCustom(pair){
+      let idf1 = isNativeAsset(pair.from) ? 'XLM' : pair.from.code+'-'+pair.from.issuer
+      let idt1 = isNativeAsset(pair.to) ? 'XLM' : pair.to.code +'-'+pair.to.issuer 
+      let key1 = idf1 + "_" + idt1;
+      let key2 = idt1 + "_" + idf1;
+      let index = -1
+      let data = this.tradepairs.custom
+      let tradepair = null
+      for(let i=0,n=data.length;i<n;i++){
+        let item = data[i]
+        let idf2 = isNativeAsset(item.from) ? 'XLM' : item.from.code+'-'+item.from.issuer
+        let idt2 = isNativeAsset(item.to) ? 'XLM' : item.to.code +'-'+item.to.issuer
+        let key = idf2 + '_' + idt2
+        if(key === key1 || key === key2){
+          index = i;
+          tradepair = item
+          break;
+        }
+      }
+      if(index>-1){
+        tradepair = Object.assign({}, tradepair, {index, custom: true})
+        this.del(index,tradepair);
+      }
     }
+
    
   },
   components: {
