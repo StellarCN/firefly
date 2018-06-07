@@ -66,9 +66,6 @@
     <scroll :refresh="refresh">
    
    <div class="content"> 
-   
-      
-
       <card padding="0px 0px" margin="0px 0px" class="myassets_infocard_thirdassets full-width">
         <div class="assets full-width" slot="card-content">
           <div class="assets-row" v-for="(item,index) in assets" :key="item.issuer+item.code" 
@@ -95,7 +92,7 @@
                  <span class="balance">{{item.balanceStr}}</span>
                  <span class="label">{{$t('Total')}}</span> 
                  <br/>
-                  <span v-if="item.total >=0">≈{{item.total > 0 ? item.total : 0}}&nbsp;&nbsp;XCN</span>
+                  <span v-if="item.total >=0">≈{{item.total > 0 ? item.total : 0}}&nbsp;XCN</span>
               </div>
             </v-flex>
           </v-layout>
@@ -108,14 +105,19 @@
         </div>
       </card>
     </div>
-  
-    </scroll>
+  </scroll>
 
 <!--   
   <tab-bar />
    -->
   
-   <bottom-notice :show.sync="notice" :text="noticeText">    </bottom-notice>
+   <bottom-notice :show.sync="notice" :text="noticeText"></bottom-notice>
+  <bottom-notice :show.sync="accountNotFundDlg" @update:show="closeAccountNotFoundDlg">
+    <div slot @click="toActiveAccount">
+      <span>{{$t('Error.AccountNotFund')}}</span><v-icon color="primary">help</v-icon>
+    </div>
+  </bottom-notice> 
+  
    <loading :show="working" :loading="working" :success="delok" :fail='delerror' />
    <password-sheet v-if="needpwd" @cancel="cancelpwd" @ok="checkpwd" />
   </div>
@@ -256,12 +258,8 @@ export default {
           let p = this.prices[key]
           if(p){
             item.price = p.price
-            item.total = new Decimal(p.price || 0).times(item.balance).toNumber();
-            if(item.total >0){
-              item.total = item.total.toFixed(7)
-            }
+            item.total = new Decimal(p.price || 0).times(Number(item.balance)).toFixed(7);
           }
-
         }else{
           item.total = 0
         }
@@ -451,6 +449,10 @@ export default {
     },
     toThirdApps(){
       this.$router.push({name: 'Apps'})
+    },
+    toActiveAccount(){
+      let t = new Date().getTime()
+      this.$router.push({name: 'Help', params: { uri: 'https://wallet.fchain.io/manual/#1?q='+t}})
     }
    
   },
