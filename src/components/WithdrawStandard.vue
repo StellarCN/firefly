@@ -212,6 +212,8 @@ export default {
 
       confirmSheetView: false,
 
+      rejustify: false,
+
 
     }
   },
@@ -241,6 +243,7 @@ export default {
         return ele.code === this.asset.code && ele.issuer === this.asset.issuer
       })
       return data.length>0 ? Number(data[0].balance):0;
+      // return 3.4764716
     },
     //费用
     fee(){
@@ -388,10 +391,24 @@ export default {
     },
     //修改数量时
     chgAmount(val){
+      if(this.rejustify)return
+      this.rejustify = true
       if(val === null || val === '')val = 0
       //1. 数量不能大于最大值
-      let nval = Number(val)
-      if(nval >= this.balance){
+      let nval = new Decimal(val)
+      if(nval.lessThan(this.balance)){
+        this.$nextTick(()=>{
+          let str = nval.toFixed(7)
+          if(!str.endsWith("0")){
+            this.amount = str
+          }
+          this.num = new Decimal(this.amount||0).times(100).div(this.balance).toNumber()
+          // console.log(`amount:${this.amount},num:${this.num}`)
+          this.$nextTick(()=>{
+            this.rejustify = false
+          })
+        });
+      }else{
         this.$nextTick(()=>{
           this.amount = this.balance
           if(Number(this.amount) === 0){
@@ -399,34 +416,45 @@ export default {
           }else{
             this.num = 100
           }
+          this.$nextTick(()=>{
+            this.rejustify = false
+          })
         });
-      }else{
-  //      this.amount = nval
-        //计算
-        this.$nextTick(()=>{
-          this.num = new Decimal(this.amount||0).times(100).div(this.balance).round().toNumber()
-        });
-      }
 
+      }
     },
     changeNum(val){
+      if(this.rejustify)return;
+      this.rejustify = true;
+      console.log('--------change value------' + val)
       if(this.balance<=0){
         this.$nextTick(()=>{
           this.num = 0
+          this.$nextTick(()=>{
+            this.rejustify = false
+          })
         })
       }else{
         this.$nextTick(()=>{
-          this.amount = new Decimal(this.balance).times(val).div(100).toNumber();
+          this.amount = Number(new Decimal(this.balance).times(val).div(100).toFixed(7));
+          this.$nextTick(()=>{
+            this.rejustify = false
+          })
         })
       }
     },
     toMax(){
-      if(this.amount === null || this.amount <= 0){
-        this.num = 0
-        return
-      }
+      // if(this.amount === null || this.amount <= 0){
+      //   this.num = 0
+      //   return
+      // }
+      if(this.rejustify)return;
+      this.rejustify = true;
       this.num = 100
       this.amount = this.balance
+      this.$nextTick(()=>{
+        this.rejustify = false
+      })
     },
     submitStep2(){
       if(this.amount === null || typeof this.amount === 'undefined' || this.amount <= 0){
