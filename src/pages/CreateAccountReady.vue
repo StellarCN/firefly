@@ -58,7 +58,7 @@
       </toolbar>
       
       <div class="si-bg">
-        <div class="si-card">
+        <div class="si-card mnemonic-validat-card">
           <div class="headline textcenter">{{$t('validateMnemonic')}}</div>
           <v-layout wrap>
             <v-flex xs12 sm6 md4>
@@ -66,6 +66,7 @@
                 required
                 :label="$t('mnemonicIndex',[randoms[0]+1])"
                 v-model="w0"
+                @focus="focusInput($event)"
                 ></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md4>
@@ -73,6 +74,7 @@
                 required
                 :label="$t('mnemonicIndex',[randoms[1]+1])"
                 v-model="w1"
+                @focus="focusInput($event)"
                 ></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md4>
@@ -80,6 +82,7 @@
                 required
                 :label="$t('mnemonicIndex',[randoms[2]+1])"
                 v-model="w2"
+                @focus="focusInput($event)"
                 ></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md4>
@@ -87,6 +90,7 @@
                 required
                 :label="$t('mnemonicIndex',[randoms[3]+1])"
                 v-model="w3"
+                @focus="focusInput($event)"
                 ></v-text-field>
             </v-flex>
           </v-layout>
@@ -402,6 +406,12 @@ export default {
     skipValidSecretKey(){
       this.showSkipDlg  = false
       this.doSave()
+    },
+    focusInput(event){
+      let dom = event.target
+      setTimeout(()=>{
+        dom.scrollIntoView()
+      },200)
     }
 
   },
@@ -498,10 +508,12 @@ export default {
   background: $primarycolor.gray
   padding: 10px 10px
   padding-bottom: 0px
+  overflow-y: auto
 .si-card
   background: $secondarycolor.gray
   border-radius: 5px
   padding: 1rem 5px
+  overflow-y: auto
 
   // height: 30%
 .btn-group
