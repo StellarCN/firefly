@@ -102,6 +102,8 @@
         </div>
       </div>
 
+      <password-sheet v-if="needpwd" @cancel="cancelpwd" @ok="rightPwd" />
+
     </card>
   </scroll>
 </template>
@@ -118,6 +120,7 @@ import { myofferConvert } from '@/api/offer'
 import {Decimal} from 'decimal.js'
 import { getAllEffectOffers } from '@/api/fchain'
 import { getXdrResultCode } from '@/api/xdr'
+import PasswordSheet from './PasswordSheet'
 var moment = require('moment')
 
 export default {
@@ -130,6 +133,7 @@ export default {
       delindex: -1,
       timeInterval: null,
       deals:[],
+      needpwd: false,
     }
   },
   props:{
@@ -150,6 +154,7 @@ export default {
       my: state => state.accounts.selectedTradePair.my.records,
       onpause: state => state.onpause,
       locale: state => state.app.locale,
+      islogin: state => state.accounts.accountData.seed ? true:false,
 
     }),
     ...mapGetters([
@@ -303,6 +308,10 @@ export default {
     },
     //撤消委单
     cancelMyOffer(item,index){
+      if(!this.islogin){
+        this.needpwd = true;
+        return;
+      }
       if(this.working ) return
       if(!this.accountData.seed)return
       this.working = true
@@ -390,12 +399,20 @@ export default {
             this.$toasted.error(err.message)
           }
         })
-    }
+    },
+    cancelpwd(){
+      // this.$router.back()
+      this.needpwd = false
+    },
+    rightPwd(){
+      this.needpwd = false
+    },
    
   },
   components: {
     Card,
-    Scroll
+    Scroll,
+    PasswordSheet,
   }
 }
 </script>
