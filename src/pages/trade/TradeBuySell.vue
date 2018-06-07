@@ -16,6 +16,7 @@
         <order-book-lite ref="orderbook"  @choose="choose"/>
       </div>
       
+    <div class="trade-content">
 
     <!--买卖切换-->
     <div class="flex-row full-width tmenu input-menu">
@@ -109,6 +110,8 @@
 
     </div>
 
+    </div>
+
     <!-- 确认内容 -->
     <div class="confirm-wrapper"  v-if="showConfirmSheet">
       <div class="confirm-blank"></div>
@@ -153,7 +156,6 @@
       </v-bottom-sheet>
       </div>
     </div>
-    <password-sheet v-if="needpwd" @cancel="cancelpwd" @ok="rightPwd" />
   </div>
 </template>
 
@@ -196,7 +198,6 @@ export default {
       showConfirmSheet: false,
       loadingTitle: null,
       loadingError: null,
-      needpwd: false,
 
     }
   },
@@ -587,11 +588,16 @@ export default {
 
     // ==== 新的计算功能
     inputPrice(val){ // 价格变化，自动计算新的total
+      if(this.justify)return;
+      this.justify = true
       let decvalue = new Decimal(val||0)
       if(decvalue.isNaN() || !decvalue.isFinite()){
           this.$nextTick(()=>{
             this.price = 0
             this.total = 0
+            this.$nextTick(()=>{
+              this.justify = false
+            })
           })
       }else{
         this.$nextTick(()=>{
@@ -611,6 +617,9 @@ export default {
           }else{
             this.setTotal()
           }  
+          this.$nextTick(()=>{
+            this.justify = false
+          })
         })
          
       }
@@ -618,11 +627,16 @@ export default {
      
     },
     inputAmount(val){//数量变化，则num和total变化
+      if(this.justify)return
+      this.justify = true
        let decvalue = new Decimal(val||0)
        //非数字等类型，则还原数字
       if(decvalue.isNaN() || !decvalue.isFinite()){
         this.$nextTick(()=>{
           this.amount = this.amount
+          this.$nextTick(()=>{
+            this.justify = false
+          });
         })
         return 
       }
@@ -643,6 +657,9 @@ export default {
             }
             this.setNum()
             this.setTotal()
+            this.$nextTick(()=>{
+              this.justify = false
+            })
           })
         }else{//计算出的总值大于最大值 
           this.$nextTick(()=>{
@@ -658,6 +675,9 @@ export default {
               this.amount = str
             }
             this.setNum()
+            this.$nextTick(()=>{
+              this.justify = false
+            })
           })
         }
       }else{// 卖的操作
@@ -670,14 +690,22 @@ export default {
           }
           this.setNum()
           this.setTotal()
+          this.$nextTick(()=>{
+            this.justify = false
+          })
         })
       }
       console.log(this.amount)
     },
     inputNum(val){//修改amount和total
+      if(this.justify)return;
+      this.justify = true
       if(this.tradeBalance <= 0){
         this.$nextTick(()=>{
           this.num = 0
+          this.$nextTick(()=>{
+            this.justify = false
+          })
         })
         return;
       }
@@ -695,13 +723,16 @@ export default {
           if(this.price === null || this.price <= 0){
             this.amount = null
           }else{
-            let str2 = new Decimal(this.total).div(this.price).toFixed(7)
+            let str2 = new Decimal(this.total).div(this.price||0).toFixed(7)
             if(str2 > 0.000001){
               this.amount = Number(str2)
             }else{
               this.amount = str2
             }
           }
+          this.$nextTick(()=>{
+            this.justify = false
+          })
         })
       }else{
         this.$nextTick(()=>{
@@ -713,6 +744,9 @@ export default {
           }
           //计算total
           this.setTotal()
+          this.$nextTick(() => {
+            this.justify = false
+          })
         });
       }
     },
@@ -720,15 +754,23 @@ export default {
       this.inputNum(100)
     },
     inputTotal(val){
+      if(this.justify)return;
+      this.justify = true
       console.log('input total ---val: ' + val)
       if(this.tradeBalance<=0){
         this.$nextTick(()=>{
           this.total = 0;
+          this.$nextTick(()=>{
+            this.justify = false
+          })
         })
         return;
       }
       let decvalue = new Decimal(val || 0)
       if(decvalue.isNaN() || !decvalue.isFinite()){
+        this.$nextTick(()=>{
+          this.justify = false
+        })
         return 
       }
       if(this.isBuy){
@@ -736,16 +778,23 @@ export default {
           if(decvalue.toNumber() > this.tradeBalance){
             this.total = this.tradeBalance
           }
-          if(this.price === null || this.price === 0)return
-          let str = new Decimal(this.total).div(this.price).toFixed(7)
+          if(this.price === null || this.price === 0){
+            this.$nextTick(()=>{this.justify = false})
+            return
+          }
+          let str = new Decimal(this.total).div(this.price||1).toFixed(7)
           if(str >= 0.000001){
             this.amount = Number(str)
           }else{
             this.amount = str
           }
+          this.$nextTick(()=>{this.justify = false})
         })
       }else{// 卖操作
-        if(this.price === null || this.price === 0)return
+        if(this.price === null || this.price === 0){
+          this.$nextTick(()=>{this.justify = false})
+          return;
+        }
         this.$nextTick(()=>{
           let am = decvalue.div(this.price)
           if(am.lessThan(this.tradeBalance)){
@@ -755,15 +804,11 @@ export default {
             this.amount = this.tradeBalance
             this.setTotal()
           }
+          this.$nextTick(()=>{this.justify = false})
         });
       }
     },
-    cancelpwd(){
-      this.$router.back()
-    },
-    rightPwd(){
-      this.needpwd = false
-    },
+    
     doTrust(){
       //   <loading :show="working" :loading="sending" :success="sendsuccess" :fail='sendfail' 
       // :color="isSell?'red':'green'" :title="loadingTitle" :msg="loadingError" :closeable="sendfail" @close="hiddenLoading"/>
@@ -807,7 +852,6 @@ export default {
     Loading,
     TradePairToolBar,
     OrderBookLite,
-    PasswordSheet,
   }
 }
 </script>
@@ -895,24 +939,33 @@ export default {
   height: 42px
   line-height: 42px
 
-.input-content
-  position: absolute!important
-  bottom: 0
-  left:0
-  right:0
-  background: $primarycolor.gray
-  padding-bottom: 40px
+// .input-content
+//   position: absolute!important
+//   bottom: 0
+//   left:0
+//   right:0
+//   background: $primarycolor.gray
+//   padding-bottom: 40px
 
-.input-menu
-  position: absolute!important
-  bottom: 298px
-  left:0
-  right:0
+// .input-menu
+//   position: absolute!important
+//   bottom: 298px
+//   left:0
+//   right:0
+//   background: $primarycolor.gray
+
+.trade-content
+  position: absolute
+  bottom: 0
+  left: 0
+  right: 0
   background: $primarycolor.gray
+  .input-content
+    padding-top: 0px
 
 .orderbook-content
   overflow-y: auto
-  height: calc(100vh - 360px)
+  height: calc(100vh - 340px)
 
 </style>
 
