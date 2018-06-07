@@ -13,13 +13,12 @@
         <div class="contactdetails_card">
             <card  class="mycard ">
               <div class="card-content contactDetails_contactName_position" slot="card-content">
-                    <span class="contactdetails_contactname">{{$t("ContactAdd.name")}}</span></br><!--名称  -->
-                    <span class="contactdetails_contactnamevalue">{{contact.name}}</span><!--名称value  -->
+                    <span class="contactdetails_contactname">{{$t("ContactAdd.name")}}</span><!--名称  -->
+                    <p class="contactdetails_contactnamevalue">{{contact.name}}</p><!--名称value  -->
               </div>
             <!-- </card> -->
             <!-- <card padding="0px" class="mycard"> -->
               <div class="card-content contact-info grey--text text--lighten-1" slot="card-content">
-                  <!-- <v-subheader dark class="grey--text text--lighten-1 "> -->
                     <span class="contactdetails_addresslabel">{{$t(addressLabel)}}</span>
                     <!-- </v-subheader> -->
                     <!-- 地址 -->
@@ -52,43 +51,7 @@
             </v-footer>
         </div> 
       </div>
-    <!-- <div class="content">
-      <div class="contactdetails_card">
-      <card padding="10px 10px" class="mycard">
-        <div class="card-content  contact-name grey--text text--lighten-1" slot="card-content"> {{$t("ContactAdd.name")}}</div>
-        <div>{{contact.name}}</div>
-      </card>
-      <card padding="10px" class="mycard">
-        <div class="card-content contact-info grey--text text--lighten-1" slot="card-content">
-          <v-subheader dark class='grey--text text--lighten-1'>{{$t(addressLabel)}}</v-subheader>
-           <p>   {{contact.address}}</p>
-          <div v-if='contact.memo'>
-          <v-subheader dark class="grey--text text--lighten-1">
-            {{$t(memoLabel)}} ({{contact.memotype}})           </v-subheader>
-              {{contact.memo}}
-        <div>{{$t("StellarAddressBarCode")}}</div>
-        <div><qrcode :text="qrtext" :callback="qrcodecallback"/></div>
-          </div>
-        </div>
-      </card>
-      </div>
-      <div style="flex: 1;"></div>
-      <v-footer>        
-        <v-layout row  wrap>
-          <!-- <v-flex xs12>
-            <v-btn class='send'  block dark large @click="send">{{$t(sendLabel)}}</v-btn>
-          </v-flex> -->
-         <!--
-          <v-flex xs6>
-            <v-btn class='moddel' block flat dark :to="{name: 'ModifyContact', params:{id:contact.id}}" >{{$t('Modify')}}
-            </v-btn>
-          </v-flex>
-            <v-flex xs6>
-            <v-btn class='send'  block dark large @click="send">{{$t(sendLabel)}}</v-btn>
-          </v-flex>
-        </v-layout>  
-      </v-footer>
-    </div> -->
+   
   </div>
 </template>
 
@@ -213,8 +176,7 @@ export default {
 
       .contact-info {
         padding: 0 6px;
-        font-size: 1.2em;
-        font-weight: lighter;
+        font-size: 16px;
         word-wrap: wrap;
         word-break: break-all;
 
@@ -237,6 +199,11 @@ export default {
   background-color:$primarycolor.gray
   width:100%
   margin:0px 0px
+  position: absolute
+  left: 0
+  bottom: 8px
+  right: 0
+  padding: 8px 8px
 
 .send {
   background-color: #21ce90 !important;
@@ -257,7 +224,6 @@ export default {
   
 
 .contactdetails_addresslabel
-  position:relative
   padding-left:5px
   color:$primarycolor.green
   padding-top:0px

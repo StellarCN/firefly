@@ -23,6 +23,7 @@
       <card padding="10px 10px" class="mycard">
         <div class="card-content" slot="card-content">
           <ul class="settings-ul">
+            <li>
                <v-text-field name="input-name" required dark
                             :label="$t(namelabel)" v-model="name"
               ></v-text-field>
