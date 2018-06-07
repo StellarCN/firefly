@@ -210,8 +210,12 @@ export default {
 
       let syspairs = Object.assign({}, this.sysTradePairs)
       
+      let copypairs = {}
       for(let key  in syspairs){
-        syspairs[key] = syspairs[key].map((item,index)=>{
+        let arr=  syspairs[key]
+        let copyarr = []
+        for(let i=0,n=arr.length; i<n; i++){
+          let item = arr[i]
           let idf = isNativeAsset(item.from) ? 'XLM' : item.from.code+'-'+item.from.issuer
           let idt = isNativeAsset(item.to) ? 'XLM' : item.to.code +'-'+item.to.issuer
           let isChoosed = false
@@ -220,11 +224,13 @@ export default {
           if(custom_ids.indexOf(ida) >= 0 || custom_ids.indexOf(idb) >= 0){
             isChoosed = true
           }
-          return Object.assign({},item,{tradepairIndex: 'sys_'+index, custom: false, isChoosed}) 
-        });
+          copyarr.push(Object.assign({},item,{tradepairIndex: 'sys_'+i, custom: false, isChoosed}) )
+       }
+       copyarr.sort((item1,item2)=> {return item1.from.code.localeCompare(item2.from.code)})
+       copypairs[key] = copyarr
       }
-      syspairs[TAG_CUSTOM] = custom
-      return syspairs;
+      copypairs[TAG_CUSTOM] = custom
+      return copypairs;
     },
     pairs(){
       let result = []
