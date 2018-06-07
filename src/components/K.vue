@@ -3,13 +3,13 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-06-04 18:18:11
+ * @Last Modified time: 2018-06-07 11:05:12
  * @License: MIT 
  */
 <template>
 <card class="k-card" padding="5px 5px">
   <div slot="card-content" class="k">
-      <div class="flex-row atitle" v-if="showTitle && titleData && titleData.price !== null && lastTradeAggregation">
+      <div class="flex-row atitle" v-if="showTitle && titleData && titleData.price !== null">
           <div class="flex1 title-btn-div"  v-if="fullscreen">
               <v-btn class="btn-back k-icon" icon @click="back">
                 <i class="material-icons  k-icon">keyboard_arrow_left</i>
@@ -32,9 +32,9 @@
               </div>
           </div>
           <div class="flex3 values">
-              <div class=""><span class="label">24H {{$t('high')}} </span><span>{{lastTradeAggregation.high}}</span></div>
-              <div class=""><span class="label">24H {{$t('low')}} </span><span>{{lastTradeAggregation.low}}</span></div>
-              <div class=""><span class="label">24H {{$t('volume')}} </span><span>{{Number(lastTradeAggregation.base_volume).toFixed(4)}}</span></div>
+              <div class=""><span class="label">24H {{$t('high')}} </span><span v-if="titleData.high">{{titleData.high}}</span></div>
+              <div class=""><span class="label">24H {{$t('low')}} </span><span v-if="titleData.low">{{titleData.low}}</span></div>
+              <div class=""><span class="label">24H {{$t('volume')}} </span><span v-if="titleData.base_volume">{{Number(titleData.base_volume).toFixed(4)}}</span></div>
           </div>
           <div class="flex1 title-btn-div">
               <v-btn icon @click="switchKgraphShow">
@@ -77,7 +77,7 @@ import { getTradeAggregation, getTradeAggregation1min,
     getTradeAggregation15min, getTradeAggregation1hour, 
     getTradeAggregation1day, getTradeAggregation1week,
     RESOLUTION_1MIN, RESOLUTION_15MIN, RESOLUTION_1HOUR, RESOLUTION_1DAY, RESOLUTION_1WEEK } from '@/api/tradeAggregation'
-import { getAsset } from '@/api/assets'
+import { getAsset,isNativeAsset } from '@/api/assets'
 import { mapState, mapActions, mapGetters} from 'vuex'
 import { getTrades } from '@/api/trade'
 import { DEFAULT_INTERVAL } from '@/api/gateways'
@@ -175,6 +175,7 @@ export default {
     computed: {
       ...mapState({
           redUpGreenDown: state => state.app.redUpGreenDown,
+          tradePairsStat: state => state.accounts.tradePairsStat,
       }),
       upColor(){
         return this.redUpGreenDown ? '#14b143' : '#ef232a'
@@ -183,17 +184,31 @@ export default {
         return this.redUpGreenDown ? '#ef232a' : '#14b143'
       },
       titleData(){
-          if(this.lastTradeAggregation){
-            let price = new Decimal(this.lastTradeAggregation.close)//new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
-            let open = new Decimal(this.lastTradeAggregation.open)
-            let change = price.minus(open)
-            let rate = change.times(100).dividedBy(open)
-            return  defaultsDeep({}, this.lastTradeAggregation, {
-                price: this.lastTradeAggregation.close,
-                change: change.toFixed(7),
-                rate: new Decimal(rate.toFixed(2)).toNumber() })
-          }
-          return {}
+        let idf = isNativeAsset(this.base) ? 'XLM' : this.base.code+'-'+this.base.issuer
+        let idt = isNativeAsset(this.counter) ? 'XLM' : this.counter.code +'-'+this.counter.issuer
+        let key = idf + '_' + idt;
+        let d = this.tradePairsStat[key]
+        if(d){
+        let price = new Decimal(d.latest_price||d.order_book_avg)//new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
+        let rate = new Decimal(0)
+        let change = new Decimal(0)
+        if(d.open){
+            let open = new Decimal(d.open)
+            change = price.minus(open)
+            rate = change.toNumber() === 0 ? new Decimal(0) : change.times(100).dividedBy(open)
+        }
+        if(price.toNumber() === 0){
+            price = null
+        }else{
+            price = price.toFixed(this.decimal)
+        }
+        return Object.assign({},d,{
+                price,
+                rate: Number(rate.toFixed(2)),
+                change: change.toNumber()
+                })
+        }
+        return {}
       }  
     },
     beforeMount () {
@@ -239,8 +254,6 @@ export default {
             this.cleanData()
             this.init();
             this.fetch();
-            this.fetchLastTradeAggregation()
-            // this.fetchLastTrade()
         },
         cleanData(){
             this.ele = null
@@ -539,23 +552,6 @@ export default {
             }
             return result;
         },
-        // 查询24小时的统计数据
-        fetchLastTradeAggregation(){
-          let start_time = 0, end_time = new Date().getTime()
-          getTradeAggregation(getAsset(this.base), getAsset(this.counter), 
-                start_time, end_time, RESOLUTION_1DAY, 1, 'desc')
-            .then(data => {
-                let records = data.records
-                if(records && records.length > 0){
-                    this.lastTradeAggregation = records[0]
-                }
-            })
-            .catch(err=>{
-                console.error(`-----err on get trade aggregation -- `)
-                console.error(err)
-            })
-        },
-
         setupTradeInterval(){
             if (!this.tradeInterval){
                 this.tradeInterval = setInterval(()=>{
