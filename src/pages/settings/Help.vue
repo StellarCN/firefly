@@ -45,6 +45,12 @@ export default {
       this.isios = true
     }
   },
+  beforeMount(){
+    let uri = this.$route.params.uri
+    if(uri){
+      this.url = uri
+    }
+  },
   mounted(){
    this.loading = true
     let frame = document.getElementById("frameinstance");
