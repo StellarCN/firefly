@@ -5,7 +5,10 @@
       :timeout="0"
       :color = 'color'
       >
-        <div class='bottom-notice'>{{ text }}</div>
+        <div class='bottom-notice' v-if="text">{{ text }}</div>
+        <div class="bottom-notice" v-else>
+          <slot></slot>
+        </div>
         <v-btn flat small @click="close">{{$t('Close')}}</v-btn>
       </v-snackbar>
   </v-bottom-sheet>
@@ -23,9 +26,9 @@ export default {
       default: 'notice'
     },
     text:{
-      type: String,
-      default: ""
+      type: String
     }
+
   },
   methods: {
     close(){

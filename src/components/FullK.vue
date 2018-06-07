@@ -7,7 +7,7 @@
 <template>
 <card class="k-card" padding="5px 5px">
   <div slot="card-content" class="k">
-      <div class="flex-row atitle" v-if="titleData && titleData.price !== null && lastTradeAggregation">
+      <div class="flex-row atitle" v-if="titleData && titleData.price !== null">
           <div class="flex1 title-btn-div">
               <v-btn class="btn-back k-icon" icon @click="back">
                 <i class="material-icons  k-icon">keyboard_arrow_left</i>
@@ -30,9 +30,9 @@
               </div>
           </div>
           <div class="flex3 values">
-              <div class=""><span class="label">24H {{$t('high')}} </span><span>{{lastTradeAggregation.high}}</span></div>
-              <div class=""><span class="label">24H {{$t('low')}} </span><span>{{lastTradeAggregation.low}}</span></div>
-              <div class=""><span class="label">24H {{$t('volume')}} </span><span>{{lastTradeAggregation.base_volume}}</span></div>
+              <div class=""><span class="label">24H {{$t('high')}} </span><span v-if="titleData.high">{{titleData.high}}</span></div>
+              <div class=""><span class="label">24H {{$t('low')}} </span><span v-if="titleData.low">{{titleData.low}}</span></div>
+              <div class=""><span class="label">24H {{$t('volume')}} </span><span v-if="titleData.base_volume">{{titleData.base_volume}}</span></div>
           </div>
           <div class="flex1 title-btn-div">
              

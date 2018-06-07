@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-31 09:07:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-05-28 14:21:13
+ * @Last Modified time: 2018-06-07 15:47:14
  * @License MIT 
  */
 import { mapState,mapActions,mapGetters } from 'vuex'
@@ -11,6 +11,11 @@ import {  ACCOUNT_IS_FUNDING,  ACCOUNT_NOT_FUNDING} from '@/store/modules/Accoun
 import  defaultsDeep  from 'lodash/defaultsDeep'
 export default {
   
+  data(){
+    return {
+      accountNotFundDlg: false,
+    }
+  },
 
   computed: {
     ...mapState({
@@ -54,9 +59,14 @@ export default {
             }
             console.error(err)
             if (err.data && err.data.status === 404) {
-              this.noticeText = this.$t('Error.AccountNotFund')
+              // this.noticeText = this.$t('Error.AccountNotFund')
               this.$store.commit(ACCOUNT_NOT_FUNDING)
-              this.notice = true
+              // this.notice = true
+              //查看激活？？
+              this.accountNotFundDlg = true
+
+              
+              
             }
             // this.snackbarText = this.$t('Error.AccountNotFund')
             // this.snackbarColor = 'primary'
@@ -92,6 +102,9 @@ export default {
           })
       }
     },
+    closeAccountNotFoundDlg(){
+      this.accountNotFundDlg = false
+    },
     load() {
       //this.cleanAccount()
       let address = this.account.address
@@ -99,9 +112,7 @@ export default {
       //console.log(process)
       return Promise.all([this.getAccountInfo(this.account.address)]) //,this.getPayments(this.account.address)])
     }
-  }
-
-
+  },
 
 
 }

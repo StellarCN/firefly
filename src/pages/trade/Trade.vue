@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-05 10:51:54 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-05-25 16:14:10
+ * @Last Modified time: 2018-06-07 15:13:48
  * @License MIT 
  */
 <template>
@@ -35,6 +35,8 @@
       </div>
     </div>
 
+    <password-sheet v-if="needpwd" @cancel="cancelpwd" @ok="rightPwd" />
+
 
   </div>  
 </template>
@@ -55,11 +57,13 @@ import { getAsset, isNativeAsset } from '@/api/assets'
 import { DEFAULT_INTERVAL } from '@/api/gateways'
 import { getXdrResultCode } from '@/api/xdr'
 import  defaultsDeep  from 'lodash/defaultsDeep'
+import PasswordSheet from '@/components/PasswordSheet'
 
 
 export default {
   data(){
     return {
+      needpwd: false,
     }
   },
 
@@ -169,7 +173,13 @@ export default {
     },
     toSell(){
       this.$router.push({name: 'TradeBuySell', params: {flag: 'sell'}})
-    }
+    },
+    cancelpwd(){
+      this.needpwd = false
+    },
+    rightPwd(){
+      this.needpwd = false
+    },
 
 
   },
@@ -181,6 +191,7 @@ export default {
     Loading,
     OrderBook,
     TradePairToolBar,
+    PasswordSheet,
   }
   
 

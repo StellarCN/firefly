@@ -169,9 +169,6 @@ export default {
        let data = []
        this.balances.forEach((element) => {
         let id = element.code+"-"+element.issuer
-        console.log(NO_FUNDINS)
-        console.log(id)
-        console.log(NO_FUNDINS.indexOf(id) < 0)
         if( !isNativeAsset(element) && NO_FUNDINS.indexOf(id) < 0 ){
           data.push(defaultsDeep({id}, element))
         }
