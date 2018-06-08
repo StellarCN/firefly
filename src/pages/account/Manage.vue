@@ -57,7 +57,7 @@
     <loading :show="showLoading"  :loading="working" :success="delok" :fail='delerror' 
       :title="loadingTitle" :msg="loadingMsg" :closeable="delerror" @close="hideLoadingView"/>
 
-     <div class="pwdSheetWrapper"v-if="showPwdSheet">
+     <div class="pwdSheetWrapper" v-if="showPwdSheet">
         <v-bottom-sheet  v-model="showPwdSheet"  dark>
           <div class="sheet-content">
             <div class="sheet-input">

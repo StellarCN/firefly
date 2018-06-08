@@ -16,6 +16,11 @@ export default {
         name: 'DAppSetting',
         component: resolve => require(['../pages/dapp/DAppSetting.vue'], resolve)
       },
+      {
+        path: 'dappopener',
+        name: 'DAppOpener',
+        component: resolve => require(['../pages/dapp/DAppOpener.vue'], resolve)
+      },
 
     ]
 }
