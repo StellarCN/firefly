@@ -45,7 +45,7 @@
 
       <div class="dapp-subtitle subheading  pl-2" v-if="myapps.length > 0">{{$t('CustomDApp')}}</div>
 
-      <v-layout class="apps-layout" row wrap  v-if="myapps.length > 0">
+      <v-layout class="apps-layout" row wrap >
         <v-flex
           xs4
           v-for="(app,index) in myapps"
@@ -233,6 +233,7 @@ export default {
         console.error(err)
         this.err = 'Error.AjaxTimeout'
       })
+
   },
   mounted () {
     if(!this.islogin){
@@ -319,11 +320,10 @@ export default {
       let that = this
       this.appInstance.addEventListener('message', debounce(function (e){
         console.log('-----------get message ---- ')
-        console.log(JSON.stringify(e))
-       // alert(JSON.stringify(e))
+        // alert(JSON.stringify(e))
         let type = e.data.type
         if(type === FFW_EVENT_TYPE_PAY){
-          this.doPayEvent(e)
+          that.doPayEvent(e)
         }else if(type === FFW_EVENT_TYPE_PATHPAYMENT){
           that.doPathPaymentEvent(e)
         }else if(type === FFW_EVENT_TYPE_SIGN){
@@ -335,7 +335,7 @@ export default {
           that.appEventData = e.data
           that.hideDapp()
         }
-      },3000))
+      },500))
     },
     hideDapp(e){
       this.appInstance.hide()
