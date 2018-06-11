@@ -452,7 +452,9 @@ export default {
     },
     toActiveAccount(){
       let t = new Date().getTime()
-      this.$router.push({name: 'Help', params: { uri: 'https://wallet.fchain.io/manual/#1?q='+t}})
+      let site = 'https://wallet.fchain.io/manual/#1?q='+t
+      let title = this.$t('Menu.Help')
+      this.$router.push({name: 'DAppOpener', params: { title, site }})
     }
    
   },

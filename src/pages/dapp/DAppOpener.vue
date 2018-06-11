@@ -1,6 +1,6 @@
 // 打开第三方应用
 <template>
-  <div class="page" dark>
+  <div>
     
 
     <send-asset v-if="showSendAsset" 
@@ -93,16 +93,22 @@ export default {
   },
   beforeMount () {
     //接收要打开的应用
-    this.choose.title = this.$route.params.title;
-    this.choose.site = this.$route.params.site;
+    this.choosed.title = this.$route.params.title;
+    this.choosed.site = this.$route.params.site;
 
-
-
+  },
+  beforeDestroy(){
+    if(this.appInstance){
+      this.appInstance.close()
+      this.appInstance = undefined
+    }
   },
   mounted () {
     if(!this.islogin){
       this.$refs.toolbar.showPasswordLogin()
     }
+    this.openApp();
+
   },
   methods: {
     ...mapActions(['addMyApp']),
@@ -113,7 +119,7 @@ export default {
       localStorage.setItem(this.choosed.site, "confirm")
       this.showConfirmDlg = false
       if(cordova.platformId === 'browser'){
-        this.appInstance = cordova.InAppBrowser.open(this.choosed.site, '_blank', 'location=yes,toolbar=yes,toolbarcolor=#21ce90');
+        this.appInstance = cordova.InAppBrowser.open(this.choosed.site, '_blank', 'location=no,toolbar=yes,toolbarcolor=#21ce90');
       }else{
         this.appInstance = cordova.ThemeableBrowser.open(this.choosed.site, '_blank', {
               statusbar: {
@@ -133,13 +139,13 @@ export default {
                   showPageTitle: true,
                   staticText: this.choosed.title 
               },
-              closeButton: {
-                  image: 'close',
-                  imagePressed: 'close_pressed',
-                  align: 'left',
-                  event: 'closePressed'
+              backButton: {
+                image: 'back',
+                imagePressed: 'back_pressed',
+                align: 'left',
+                event: 'backPressed'
               },
-              backButtonCanClose: true,
+              backButtonCanClose: false,
               // hidden: true
           })
           
@@ -155,6 +161,12 @@ export default {
         this.appInstance.close()
         this.appInstance = undefined
       })
+      this.appInstance.addEventListener('backPressed', ()=>{
+        this.appInstance.close()
+        this.appInstance = undefined
+        this.$router.back();
+      });
+
       this.appInstance.addEventListener('loadstop',() => {
         //let script = `if(!window.FFW){window.FFW = {};FFW.address = "${this.account.address}";FFW.pay = function(destination,code,issuer,amount,memo_type,memo){ var params = { type:'pay',destination: destination, code: code, issuer: issuer, amount: amount, memo_type: memo_type, memo: memo };cordova_iab.postMessage(JSON.stringify(params));};};`
         //let scriptEle = `if(!window.FFW){var script = document.createElement('script');script.setAttribute('type', 'text/javascript');script.text = "${script}";document.body.appendChild(script);}`
