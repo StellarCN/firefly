@@ -343,10 +343,10 @@ export default {
     },
     doPayEvent(e){
       try{
+        this.appInstance.hide()
         this.showSendAsset = true
         this.sendTarget = e.data
         this.pathPayment = false
-        this.appInstance.hide()
       }catch(err){
         console.error(err)
         //alert('error:'+err.message)
@@ -370,10 +370,10 @@ export default {
     },
     doPathPaymentEvent(e){
       try{
+        this.appInstance.hide()
         this.showSendAsset = true
         this.sendTarget = e.data
         this.pathPayment = true
-        this.appInstance.hide()
       }catch(err){
         console.error(err)
         //alert('error:'+err.message)
@@ -401,14 +401,17 @@ export default {
     },
     exitSendAsset(){
       this.showSendAsset = false
-      this.appInstance.show()
-      this.doCallbackEvent(this.callbackData('fail','cancel payment'))
+      this.$nextTick(()=>{
+        this.appInstance.show()
+        this.doCallbackEvent(this.callbackData('fail','cancel payment'))
+      });
     },
     sendAssetSuccess(){
       this.showSendAsset = false
-      this.appInstance.show()
-      //TODO 怎么通知应用
-      this.doCallbackEvent(this.callbackData('success','success'))
+      this.$nextTick(()=>{
+        this.appInstance.show()
+        this.doCallbackEvent(this.callbackData('success','success'))
+      });
     },
     shareCB(url){
       let options = {
@@ -424,20 +427,20 @@ export default {
       });
     },
     exitEvent(msg){
-      this.appInstance.show()
-      this.doCallbackEvent(this.callbackData('fail',msg))
+      this.appEventType = null
+      this.appEventData = null      
       this.$nextTick(()=>{
-        this.appEventType = null
-        this.appEventData = null
+        this.appInstance.show()
+        this.doCallbackEvent(this.callbackData('fail',msg))
       })
     },
     successEvent(msg='success',data){
+      this.appEventType = null
+      this.appEventData = null
       //alert('----success--event---'+ JSON.stringify(data))
-      this.appInstance.show()
-      this.doCallbackEvent(this.callbackData('success',msg, data))
       this.$nextTick(()=>{
-        this.appEventType = null
-        this.appEventData = null
+        this.appInstance.show();
+        this.doCallbackEvent(this.callbackData('success',msg, data))
       })
     },
     exitBackUpEvent(){
