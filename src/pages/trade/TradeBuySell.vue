@@ -174,12 +174,14 @@ import { trustAll } from '@/api/operations'
 import { getXdrResultCode } from '@/api/xdr'
 import { Decimal } from 'decimal.js'
 import debounce from 'lodash/debounce'
+import loadaccount from '@/mixins/loadaccount'
 
 const FLAG_BUY = 'buy'
 const FLAG_SELL = 'sell'
 Decimal.rounding = Decimal.ROUND_DOWN
 
 export default {
+  mixins:[loadaccount],
   data(){
     return {
       title: 'Menu.TradeCenter',

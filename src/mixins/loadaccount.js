@@ -3,17 +3,19 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-31 09:07:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-06-07 15:47:14
+ * @Last Modified time: 2018-06-11 13:56:58
  * @License MIT 
  */
 import { mapState,mapActions,mapGetters } from 'vuex'
 import {  ACCOUNT_IS_FUNDING,  ACCOUNT_NOT_FUNDING} from '@/store/modules/AccountStore'
 import  defaultsDeep  from 'lodash/defaultsDeep'
+const FETCH_ACCOUNT_INTERVAL = 180000;
 export default {
   
   data(){
     return {
       accountNotFundDlg: false,
+      _intervalFetchAccount: null,//请求账户数据的
     }
   },
 
@@ -25,6 +27,13 @@ export default {
   beforeMount () {
     if (this.account.address) {
       this.fetchData()
+      this.setupFetchAccountInterval()
+    }
+  },
+  beforeDestroy(){
+    if(this._intervalFetchAccount!== null){
+      clearInterval(this._intervalFetchAccount)
+      this._intervalFetchAccount = null
     }
   },
   methods: {
@@ -40,6 +49,10 @@ export default {
       'paymentSteamData',
       'updateAccount'
     ]),
+
+    setupFetchAccountInterval(){
+      this._intervalFetchAccount = setInterval(this.fetchData, FETCH_ACCOUNT_INTERVAL)
+    },
 
     fetchData() {
       if (this.account.address) {
