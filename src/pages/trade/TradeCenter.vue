@@ -126,6 +126,7 @@ var moment = require('moment')
 import {Decimal} from 'decimal.js'
 import Scroll from '@/components/Scroll'
 import { REMOVE_TRADEPAIR_KLINE_DATA } from '@/store/modules/AccountsStore' 
+import { ZH_CN } from '@/locales/index'
 
 const TAG_ALL = 'All', TAG_XCN = 'XCN', TAG_XLM = 'XLM', TAG_BTC = 'BTC', TAG_ETH = 'ETH', TAG_CUSTOM = '_CUSTOM', TAG_XFF = 'XFF'
 
