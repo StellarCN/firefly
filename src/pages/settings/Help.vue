@@ -85,16 +85,25 @@ export default {
 .content-container
   position: fixed
   top: 48px
+  top: calc(48px+constant(safe-area-inset-top))
+  top: calc(48px+env(safe-area-inset-top))
   bottom: 0px
+  bottom: constant(safe-area-inset-bottom)
+  bottom: env(safe-area-inset-bottom)
   left: 0
   right: 0  
   padding: 0px 0px
 .content-ios
   top: 70px
+
 .loading-content
   position: fixed
   top: 0
+  top: constant(safe-area-inset-top)
+  top: env(safe-area-inset-top)
   bottom:0
+  bottom: constant(safe-area-inset-bottom)
+  bottom: env(safe-area-inset-bottom)
   left: 0
   right: 0
   z-index:99

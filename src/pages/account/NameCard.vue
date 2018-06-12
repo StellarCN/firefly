@@ -134,6 +134,8 @@ export default {
   position: fixed
   overflow-y: auto
   padding-top: 20px
+  padding-top: calc(20px + constant(safe-area-inset-top))
+  padding-top: calc(20px + env(safe-area-inset-top))
   padding-left: 20px
   padding-right: 20px
   background: $primarycolor.gray
@@ -155,6 +157,8 @@ export default {
 .footer
   position:fixed
   bottom:0
+  bottom: constant(safe-area-inset-bottom)
+  bottom: env(safe-area-inset-bottom)
   left:0
   right:0
   z-index:99

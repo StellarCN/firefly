@@ -818,31 +818,41 @@ export default {
       // this.isSell = true
       this.working = true
       this.sending = true
-      trustAll(this.accountData.seed, this.needTrust)
-        .then(response=>{
-          this.sending = false
-          this.sendsuccess = true
-          this.loadingTitle = this.$t('AddAssetSuccess')
-          try{
-            this.getAccountInfo(this.account.address).then(response=>{}).catch(err=>{})
-          }catch(err){
-            console.error(err)
-          }
-          setTimout(()=>{
-            this.working = false
-            this.sendsuccess = false
-            this.loadingTitle = null
-          },3000)
-        })
-        .catch(err=>{
-          this.sending = false
-          this.sendfail = true
-          let msg = getXdrResultCode(err)
-          this.loadingTitle = this.$t('AddAssetFail')
-          if(msg){
-           this.loadingError = this.$t(msg)
-          }     
-        })
+      try{
+        trustAll(this.accountData.seed, this.needTrust)
+          .then(response=>{
+            this.sending = false
+            this.sendsuccess = true
+            this.loadingTitle = this.$t('AddAssetSuccess')
+            try{
+              this.getAccountInfo(this.account.address).then(response=>{}).catch(err=>{})
+            }catch(err){
+              console.error(err)
+            }
+            setTimout(()=>{
+              this.working = false
+              this.sendsuccess = false
+              this.loadingTitle = null
+            },3000)
+          })
+          .catch(err=>{
+            this.sending = false
+            this.sendfail = true
+            let msg = getXdrResultCode(err)
+            this.loadingTitle = this.$t('AddAssetFail')
+            if(msg){
+            this.loadingError = this.$t(msg)
+            }     
+          })//end of trustAll
+      }catch(error){
+        this.sending = false
+        this.sendfail = true
+        let msg = getXdrResultCode(err)
+        this.loadingTitle = this.$t('AddAssetFail')
+        if(msg){
+        this.loadingError = this.$t(msg)
+        }     
+      }
     }
 
 
@@ -896,24 +906,34 @@ export default {
 .confirm-wrapper
   position: fixed
   bottom: 0
+  bottom: constant(safe-area-inset-bottom)
+  bottom: env(safe-area-inset-bottom)
   right: 0
   left: 0
   top: 0
+  top: constant(safe-area-inset-top)
+  top: env(safe-area-inset-bottom)
   z-index: 9
 .confirm-blank
   background: $primarycolor.gray
   opacity: .8
   position: fixed
   bottom: 300px
+  bottom: calc(300px + constant(safe-area-inset-bottom))
+  bottom: calc(300px + env(safe-area-inset-bottom))
   right: 0
   left: 0
   top: 0
+  top: constant(safe-area-inset-top)
+  top: env(safe-area-inset-top)
   z-index: 9
 .confirm-dlg
   background: $secondarycolor.gray
   height: 300px
   position: fixed
   bottom: 0
+  bottom: constant(safe-area-inset-bottom)
+  bottom: env(safe-area-inset-bottom)
   right: 0
   left: 0
   opacity: 1

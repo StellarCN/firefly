@@ -285,6 +285,8 @@
     position: fixed
     left: 0
     top: 0
+    top: constant(safe-area-inset-top)
+    top: env(safe-area-inset-bottom)
     z-index: 100
     width: 100%
     height: 100%

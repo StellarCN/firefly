@@ -80,6 +80,8 @@ export default {
 .tb-menu
   background: $secondarycolor.gray
   box-shadow: 0px -2px 2px $primarycolor.gray
+  bottom: constant(safe-area-inset-bottom)!important
+  bottom: env(safe-area-inset-bottom)!important
   &.bottom-nav.bottom-nav--active.dark
     .btn.btn--flat.btn--active
       color: $primarycolor.green

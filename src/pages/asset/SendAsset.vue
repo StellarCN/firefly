@@ -605,6 +605,9 @@ export default {
   position:fixed
   right:0
   left:0
+  bottom: 0
+  bottom: constant(safe-area-inset-bottom)
+  bottom: env(safe-area-inset-bottom)
   opacity:1
 .v_container
   padding:0px 0px

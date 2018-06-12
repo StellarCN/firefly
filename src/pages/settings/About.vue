@@ -13,7 +13,7 @@
     <div class="content">
       <card class="icard" padding="20px 10px">
         <div slot="card-content" class="">
-          <div class="logo-wrapper">
+          <div class="logo-wrapper" @click="toDebug">
             <img src="../../assets/img/logox.png" alt="firefly" class="logo-img"/>
           </div>
           <div class="textcenter appname">
@@ -166,6 +166,10 @@ export default {
         }
       });
     },
+    toDebug(){
+      //window.location.href = 'http://192.168.2.253:3000'
+      window.open('http://192.168.2.253:3000', "_self");
+    }
   },
   components: {
     Toolbar,

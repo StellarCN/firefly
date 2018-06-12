@@ -198,6 +198,10 @@ export default {
   color: $primarycolor.font
   font-size: 16px
   height: 100vh
+  padding-top: 0
+  padding-top: calc(4px + constant(safe-area-inset-top))
+  padding-top: calc(4px + env(safe-area-inset-top))
+  
 .content
     height: 100%
 .guidepage_swiper
@@ -234,13 +238,18 @@ export default {
     color:$primarycolor.green
     position: fixed
     bottom: 0px
+    bottom: constant(safe-area-inset-bottom)
+    bottom: env(safe-area-inset-bottom)
+    top: calc(100vh - 100px)
+    top: calc(100vh - 100px - constant(safe-area-inset-bottom))
+    top: calc(100vh - 100px - env(safe-area-inset-bottom))
     left: 0px
     right: 0px
-    top: calc(100vh - 100px)
-    height: 1rem
-    line-height: 1rem
     background: $primarycolor.gray!important
-    z-index: 9
+    z-index: 9999
+    padding-bottom: 8px
+    padding-top: 8px
+
 .bg-p
     background: $primarycolor.gray!important
 

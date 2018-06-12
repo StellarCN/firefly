@@ -251,9 +251,13 @@ export default {
 .content
   position:fixed
   top: 48px
+  top: calc(48px +  constant(safe-area-inset-top))
+  top: calc(48px +  env(safe-area-inset-top))
   left: 0
   right: 0
   bottom: 0
+  bottom:  constant(safe-area-inset-bottom)
+  bottom:  env(safe-area-inset-bottom)
   padding: 20px 20px
   background: $primarycolor.gray
 .right
@@ -265,8 +269,10 @@ export default {
       font-size: 24px
       color: $primarycolor.font
 .footer
-  position: absolute
+  position: fixed
   bottom: 0
+  bottom: constant(safe-area-inset-bottom)
+  bottom: env(safe-area-inset-bottom)
   left: 0
   right: 0
   z-index: 99
