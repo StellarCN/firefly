@@ -112,6 +112,14 @@
 
     </div>
 
+  <bottom-notice :show.sync="accountNotFundDlg" @update:show="closeAccountNotFoundDlg">
+    <div slot>
+      <div @click="toHelp">{{$t('Error.AccountNotFund')}}<v-icon color="primary">help</v-icon></div>
+      <div @click="toKYC"><span class="underline">{{$t('kyc_active')}}</span></div>
+    </div>
+  </bottom-notice> 
+  
+
     <!-- 确认内容 -->
     <div class="confirm-wrapper"  v-if="showConfirmSheet">
       <div class="confirm-blank"></div>
@@ -853,7 +861,20 @@ export default {
         this.loadingError = this.$t(msg)
         }     
       }
+    },
+    
+    toHelp(){
+      // let t = new Date().getTime()
+      let site = 'https://wallet.fchain.io/manual/#1'
+      let title = this.$t('Menu.Help')
+      this.$router.push({name: 'Help', params: { title, site }})
+    },
+    toKYC(){
+      // let site = 'https://fchain.io/kyc/accounts/login/?next=/portal/'+'?'+Math.random()
+      // let title = this.$t('kyc')
+      this.$router.push({name: 'KYC'})
     }
+   
 
 
   },

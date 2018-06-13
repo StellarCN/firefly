@@ -1,6 +1,6 @@
 <template>
    <v-bottom-sheet persistent full-width v-model="show">
-    <v-snackbar  bottom vertical full-width
+    <v-snackbar class="bn-snackbar" bottom vertical full-width
       v-model="show"
       :timeout="0"
       :color = 'color'
@@ -9,7 +9,7 @@
         <div class="bottom-notice" v-else>
           <slot></slot>
         </div>
-        <v-btn flat small @click="close">{{$t('Close')}}</v-btn>
+        <v-btn class="snackbar-btn" flat small @click="close">{{$t('Close')}}</v-btn>
       </v-snackbar>
   </v-bottom-sheet>
 </template>
@@ -44,4 +44,11 @@ export default {
   color: $primarycolor.green
 .btn
     color: $primarycolor.green
+// .bn-snackbar
+//   padding-bottom: 8px
+//   padding-bottom: calc(8px + constant(safe-area-inset-bottom))!important
+//   padding-bottom: calc(8px + env(safe-area-inset-bottom))!important
+//   background-color: #303034!important
+.snackbar-btn
+  margin-top: 8px!important
 </style>

@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-31 09:07:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-06-11 13:56:58
+ * @Last Modified time: 2018-06-13 15:52:04
  * @License MIT 
  */
 import { mapState,mapActions,mapGetters } from 'vuex'
@@ -21,7 +21,8 @@ export default {
 
   computed: {
     ...mapState({
-      account: state => state.accounts.selectedAccount
+      account: state => state.accounts.selectedAccount,
+      accountDetails: state => state.account.data
     }),
   },
   beforeMount () {
@@ -95,10 +96,11 @@ export default {
       // update home_domain and inflation_destination from horizon.
       console.log("updateFederationAndInflationInfo")
       console.log(this.accountData)
-      if (this.account.federationAddress !== this.accountData.inflation_destination || this.account.inflationAddress !== this.accountData.home_domain) {
+      if (this.account.inflationAddress !== this.accountDetails.inflation_destination 
+        || this.account.federationAddress !== this.accountDetails.home_domain) {
         let data = defaultsDeep({}, this.account, {
-          federationAddress: this.accountData.home_domain,
-          inflationAddress: this.accountData.inflation_destination
+          federationAddress: this.accountDetails.home_domain,
+          inflationAddress: this.accountDetails.inflation_destination
         })
         let params = {
           index: this.selectedAccountIndex,
