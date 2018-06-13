@@ -515,7 +515,10 @@
   "no_mnemonic_msg":"There is no mnemonic!",
   "bids_max_price":"Highest bid price",
   "asks_min_price":"Lowest ask price",
-  "hot_dapp":"hot dapps"
+  "hot_dapp":"hot dapps",
+  "kyc":"kyc",
+  "kyc_active":"finish kyc to active for free",
+  "help_active":"read help document"
   
 
  

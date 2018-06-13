@@ -1,14 +1,13 @@
-/**
- * 帮助界面
- */
+// 打开KYC界面
 <template>
-  <div class="page">
+  <div class="kycpage">
   
   </div>
 </template>
 
 <script>
 import { mapState, mapActions} from 'vuex'
+import  defaultsDeep  from 'lodash/defaultsDeep'
 import { FFWScript, FFW_EVENT_TYPE_PAY,FFW_EVENT_TYPE_PATHPAYMENT,FFW_EVENT_TYPE_SIGN
    ,FFW_EVENT_TYPE_BACKUP,FFW_EVENT_TYPE_RECOVERY,FFW_EVENT_TYPE_TRUST,FFW_EVENT_TYPE_SIGNXDR } from '@/api/ffw'
 import debounce from 'lodash/debounce'
@@ -23,8 +22,6 @@ import debounce from 'lodash/debounce'
 export default {
   data(){
     return {
-      site:'https://wallet.fchain.io/manual',
-      title:this.$t('Menu.Help'),
     }
   },
    computed:{
@@ -38,11 +35,8 @@ export default {
   },
   beforeMount () {
     //接收要打开的应用
-    let _title = this.$route.params.title;
-    let _site = this.$route.params.site;
-    this.title = _title||this.title
-    this.site = _site||this.site
-    this.site = this.site + '?'+Math.random()
+    // this.choosed.title = this.$route.params.title;
+    // this.choosed.site = this.$route.params.site;
 
   },
   beforeDestroy(){
@@ -59,11 +53,13 @@ export default {
       this.$router.back()
     },
     openApp(){
-      
+      let site = 'https://fchain.io/kyc/accounts/login/?next=/portal/'+'?'+Math.random()
+      let title = this.$t('kyc')
+
       if(cordova.platformId === 'browser'){
-        this.appInstance = cordova.InAppBrowser.open(this.site, '_blank', 'location=no,toolbar=yes,toolbarcolor=#21ce90');
+        this.appInstance = cordova.InAppBrowser.open(site, '_blank', 'location=no,toolbar=yes,toolbarcolor=#21ce90');
       }else{
-        this.appInstance = cordova.ThemeableBrowser.open(this.site, '_blank', {
+        this.appInstance = cordova.ThemeableBrowser.open(site, '_blank', {
               statusbar: {
                   color: '#21ce90'
               },
@@ -79,7 +75,7 @@ export default {
               title: {
                   color: '#FFFFFF',
                   showPageTitle: true,
-                  staticText: this.title 
+                  staticText: title 
               },
               backButton: {
                 image: 'back',
