@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-08 15:40:36 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-05-25 16:07:43
+ * @Last Modified time: 2018-06-14 12:41:35
  * @License MIT 
  */
 
@@ -44,7 +44,7 @@
         <div class="toolbar__title toolbar-title white--text textcenter tb-title">{{$t("Trade.SelfSelection")}}</div>
         <v-btn icon style="visibility:hidden;"><v-icon class="back-icon"></v-icon></v-btn>
       </v-toolbar>
-      <div class="dlg-content mt-5">
+      <div class="dlg-content">
         <div v-for="(item,index) in tradepairs" :key="index" :class="'flex-row row100 pt-2 pb-2 ' + (isChoosenTrade(item.from,item.to) ? 'active':'')" @click="choseTrade(index,item)">
           <div class="flex2">&nbsp;</div>
           <div class="flex3 textcenter">

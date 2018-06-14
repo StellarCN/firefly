@@ -10,43 +10,43 @@
   </div>
 
   <scroll :refresh="reload">
-    <div v-for="(item, index) in records" :key="index">
+    <div v-for="(item, index) in deals" :key="index">
       <card class="offer-card" padding="10px 10px">
         <div class="myoffer-table offer-table" slot="card-content">
           <div class="flex-row">
             <div class="flex3 over-hide">
               <div class="pair-show">
                 <div class="pair-from">
-                  <div class="code">{{item.base_asset}}</div>
-                  <div class="issuer" v-if="assethosts[item.base_asset]">{{assethosts[item.base_asset] | miniaddress}}</div>
-                  <div class="issuer" v-else-if="assethosts[item.base_issuer]">
-                    {{assethosts[item.base_issuer] | miniaddress}}
+                  <div class="code">{{item.bought_asset_code}}</div>
+                  <div class="issuer" v-if="assethosts[item.bought_asset_code]">{{assethosts[item.bought_asset_code] | miniaddress}}</div>
+                  <div class="issuer" v-else-if="assethosts[item.bought_asset_issuer]">
+                    {{assethosts[item.bought_asset_issuer] | miniaddress}}
                   </div>
-                  <div class="issuer" v-else>{{item.base_issuer | miniaddress}}</div>
+                  <div class="issuer" v-else>{{item.sold_asset_issuer | miniaddress}}</div>
                 </div>
                 <div class="pair-icon">
                   <i class="icons material-icons">&#xE8D4;</i>
                 </div>
                 <div class="pair-to">
-                  <div class="code">{{item.counter_asset}}</div>
-                  <div class="issuer" v-if="assethosts[item.counter_asset]">{{assethosts[item.counter_asset] | miniaddress}}</div>
-                  <div class="issuer" v-else-if="assethosts[item.counter_issuer]">{{assethosts[item.counter_issuer] | miniaddress}}
+                  <div class="code">{{item.sold_asset_code}}</div>
+                  <div class="issuer" v-if="assethosts[item.sold_asset_code]">{{assethosts[item.sold_asset_code] | miniaddress}}</div>
+                  <div class="issuer" v-else-if="assethosts[item.sold_asset_issuer]">{{assethosts[item.sold_asset_issuer] | miniaddress}}
                   </div>
-                  <div class="issuer" v-else>{{item.counter_issuer| miniaddress}}</div>
+                  <div class="issuer" v-else>{{item.sold_asset_issuer| miniaddress}}</div>
                 </div>
               </div>
             </div>
             <div class="flex5 textright">
               <div>
-                <span class="value">{{Number(item.price)}}{{item.base_asset}}</span>
+                <span class="value">{{Number(item.price)}}{{item.bought_asset_code}}</span>
                 <span class="label">{{$t('UnitPriceAbbreviation')}}</span>
               </div>
               <div>
-                <span class="value down">-{{Number(item.amount)}}{{item.counter_asset}}</span>
+                <span class="value down">-{{Number(item.sold_amount)}}{{item.sold_asset_code}}</span>
                 <span class="label">{{$t('AmountAbbreviation')}}</span>
               </div>
               <div>
-                <span class="value up">+{{Number(item.total)}}{{item.base_asset}}</span>
+                <span class="value up">+{{Number(item.bought_amount)}}{{item.bought_asset_code}}</span>
                 <span class="label">{{$t('TotalAbbreviation')}}</span>
               </div>
             </div>
@@ -76,14 +76,13 @@ import DateRangePicker from '@/components/DateRangePicker'
 import Loading from './Loading'
 import { Decimal } from 'decimal.js'
 import { getXdrResultCode } from '@/api/xdr'
-import { getAllEffectOffers } from '@/api/fchain'
 var moment = require('moment')
 import  defaultsDeep  from 'lodash/defaultsDeep'
+import { isNativeAsset } from '@/api/assets'
 
   export default {
     data() {
       return {
-        records: [],
         working: false,
         start: null,
         end: null,
@@ -96,18 +95,32 @@ import  defaultsDeep  from 'lodash/defaultsDeep'
         account: state => state.accounts.selectedAccount,
         assethosts: state => state.asset.assethosts,
         accountData: state => state.accounts.accountData,
+        alloffers: state => state.account.alloffers,
       }),
-      
+      deals(){
+        return this.filterOffers()
+      }
     },
     beforeMount () {
       this.start = Number(moment().subtract(30,"days").format('x'))
       this.end = Number(moment().format('x'))
       this.queryAllOffers()
     },
+    beforeDestroy(){
+      this.$store.commit('CLEAN_ALL_OFFERS')
+    },
     methods: {
+      ...mapActions({
+        getAllOffers: 'getAllOffers',
+      }),
       reload(){
          let _address = this.account.address
-        return getAllEffectOffers(_address, this.start, this.end)
+         return this.getAllOffers({
+           account: _address,
+           start_time: this.start,
+           end_time: this.end
+         })
+        //return getAllEffectOffers(_address, this.start, this.end)
       },
       queryAllOffers(){
         //暂时只查询一周的委单数据
@@ -118,24 +131,37 @@ import  defaultsDeep  from 'lodash/defaultsDeep'
         //start_time = new Date(start_time.year(), start_time.month()+1, start_time.date()).getTime()
         //end_time = new Date(end_time.year(), end_time.month()+1, end_time.date()).getTime()
        
-          this.reload()
-          .then(response=>{
-            this.records = response.data.map(item=>{
-              return defaultsDeep({}, item, { total: new Decimal(item.amount).times(item.price).toFixed(7)})
-            })
-          })
-          .catch(err=>{
-            console.error(err)
-            if(err.message){
-              this.$toasted.error(err.message)
-            }
-          })
+        this.reload().then(response=>{}).catch(err=>{console.error(err)})
       },
       doSearch({start,end}){
         this.start =Number(moment(start + ' 00:00:00').format('x'))
         this.end = Number(moment(end + ' 23:59:59').format('x'))
         this.queryAllOffers()
+      },
+      
+    filterOffers(){
+      if(this.alloffers){
+        //过滤掉不是当前要显示的数据
+        return this.alloffers.map(item=>{
+         if(item.bought_asset_code === null || typeof item.bought_asset_code ==='undefined'
+             || item.bought_amount ===null || typeof item.bought_amount === 'undefined' ){
+            let cancelObj = {
+              bought_asset_code: item.base_asset,
+              bought_asset_issuer: item.base_issuer,
+              sold_asset_code: item.counter_asset,
+              sold_asset_issuer: item.counter_issuer,
+              sold_amount:item.amount,
+              bought_amount:new Decimal(item.amount).times(item.price).toFixed(7)
+            }
+            return Object.assign({}, item, cancelObj)
+          }else{
+            return Object.assign({}, item)
+          }
+          
+        })
       }
+      return []
+    },
     },
     components: {
       Card,

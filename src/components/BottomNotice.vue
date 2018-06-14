@@ -1,6 +1,8 @@
 <template>
    <v-bottom-sheet persistent full-width v-model="show">
     <v-snackbar class="bn-snackbar" bottom vertical full-width
+      multi-line
+      auto-height
       v-model="show"
       :timeout="0"
       :color = 'color'
