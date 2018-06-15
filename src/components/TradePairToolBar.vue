@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-08 15:40:36 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-06-15 16:04:53
+ * @Last Modified time: 2018-06-15 16:39:21
  * @License MIT 
  */
 
@@ -39,6 +39,9 @@
 
     <!--  选择交易队内容 -->
     <v-dialog class="tb-dlg" v-model="showChoseTradeDlg" fullscreen transition="dialog-bottom-transition" :overlay=false>
+      <v-system-bar status :color="iosstatusbarcolor" v-if="isIos" app>
+        <v-spacer></v-spacer>
+      </v-system-bar>
       <v-toolbar color="primary" flat dense app :clipped-left='true'>
         <v-btn icon @click="showChoseTradeDlg = false"><v-icon>keyboard_arrow_left</v-icon></v-btn>
         <div class="toolbar__title toolbar-title white--text textcenter tb-title">{{$t("Trade.SelfSelection")}}</div>
@@ -76,6 +79,8 @@ export default {
   data(){
     return {
       showChoseTradeDlg: false,
+      isios: false,
+
     }
   },
   computed:{
@@ -84,6 +89,8 @@ export default {
       selectedTrade: state => state.accounts.selectedTradePair.tradepair,
       selectedTradeIndex: state => state.accounts.selectedTradePair.index,
       assethosts: state => state.asset.assethosts,
+      iosstatusbarcolor: state => state.iosstatusbarcolor,
+      isIos: state => state.app.isIos,
 
     }),
     ...mapGetters([

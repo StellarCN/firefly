@@ -427,20 +427,24 @@ export default {
       });
     },
     exitEvent(msg){
-      this.appEventType = null
-      this.appEventData = null      
       this.$nextTick(()=>{
         this.appInstance.show()
         this.doCallbackEvent(this.callbackData('fail',msg))
+        this.$nextTick(()=>{
+          this.appEventType = null
+          this.appEventData = null   
+        })
       })
     },
     successEvent(msg='success',data){
-      this.appEventType = null
-      this.appEventData = null
       //alert('----success--event---'+ JSON.stringify(data))
       this.$nextTick(()=>{
         this.appInstance.show();
         this.doCallbackEvent(this.callbackData('success',msg, data))
+        this.$nextTick(()=>{
+          this.appEventType = null
+          this.appEventData = null   
+        })
       })
     },
     exitBackUpEvent(){
