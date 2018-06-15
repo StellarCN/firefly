@@ -248,9 +248,9 @@ export default {
     //费用
     fee(){
       if(this.amount!= null && this.amount > 0){
-        return new Decimal(this.amount).times(
-            new Decimal(this.step2data.fee_percent||0)
-          ).add(this.step2data.fee_fixed||0).toNumber().toFixed(7)
+        return new Decimal(this.amount)
+          .times(this.step2data.fee_percent||1)
+          .add(this.step2data.fee_fixed||0).toNumber().toFixed(7)
       }
       return null
     },

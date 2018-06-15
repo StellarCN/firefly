@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-31 09:07:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-06-13 15:52:04
+ * @Last Modified time: 2018-06-15 10:36:47
  * @License MIT 
  */
 import { mapState,mapActions,mapGetters } from 'vuex'
@@ -16,6 +16,8 @@ export default {
     return {
       accountNotFundDlg: false,
       _intervalFetchAccount: null,//请求账户数据的
+      inflation_unset: false,//是否未设置通胀池
+      inflationUnSetDlg: false,
     }
   },
 
@@ -61,6 +63,14 @@ export default {
           .then(data => {
             this.updateFederationAndInflationInfo()
             this.$store.commit(ACCOUNT_IS_FUNDING)
+            
+            //检查当前用户是否设置了通胀池
+            if(!this.accountDetails.inflation_destination){
+              this.inflation_unset = true
+              this.inflationUnSetDlg = true
+            }
+            
+
           })
           .catch(err => {
             console.log("errorhere");
@@ -119,6 +129,9 @@ export default {
     },
     closeAccountNotFoundDlg(){
       this.accountNotFundDlg = false
+    },
+    closeInflationUnSetDlg(){
+
     },
     load() {
       //this.cleanAccount()

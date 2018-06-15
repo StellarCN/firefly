@@ -118,7 +118,7 @@
       <div @click="toKYC"><span class="underline">{{$t('kyc_active')}}</span></div>
       
     </div>
-  </bottom-notice> 
+  </bottom-notice>
   
    <loading :show="working" :loading="working" :success="delok" :fail='delerror' />
    <password-sheet v-if="needpwd" @cancel="cancelpwd" @ok="checkpwd" />
