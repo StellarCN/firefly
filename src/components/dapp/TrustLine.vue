@@ -257,13 +257,13 @@ export default {
 .confirm-wrapper
   position: fixed
   bottom: 0
-  bottom: constant(safe-area-inset-bottom)
-  bottom: env(safe-area-inset-bottom)
+  // bottom: constant(safe-area-inset-bottom)
+  // bottom: env(safe-area-inset-bottom)
   right: 0
   left: 0
   top: 0
-  top: constant(safe-area-inset-top)
-  top: env(safe-area-inset-top)
+  // top: constant(safe-area-inset-top)
+  // top: env(safe-area-inset-top)
   z-index: 9
 .confirm-blank
   background: $primarycolor.gray
@@ -281,10 +281,13 @@ export default {
 .confirm-dlg
   background: $secondarycolor.gray
   height: 8.5rem
+  height: calc(8.5rem + constant(safe-area-inset-bottom))
+  height: calc(8.5rem + env(safe-area-inset-bottom))
   position: fixed
   bottom: 0
-  bottom: constant(safe-area-inset-bottom)
-  bottom: env(safe-area-inset-bottom)
+  padding-bottom: 0
+  padding-bottom: constant(safe-area-inset-bottom)
+  padding-bottom: env(safe-area-inset-bottom)
   right: 0
   left: 0
   opacity: 1

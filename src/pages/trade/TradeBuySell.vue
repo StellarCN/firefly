@@ -927,13 +927,14 @@ export default {
 .confirm-wrapper
   position: fixed
   bottom: 0
-  bottom: constant(safe-area-inset-bottom)
-  bottom: env(safe-area-inset-bottom)
+  padding-bottom: 0
+  padding-bottom: constant(safe-area-inset-bottom)
+  padding-bottom: env(safe-area-inset-bottom)
   right: 0
   left: 0
   top: 0
-  top: constant(safe-area-inset-top)
-  top: env(safe-area-inset-bottom)
+  // top: constant(safe-area-inset-top)
+  // top: env(safe-area-inset-bottom)
   z-index: 9
 .confirm-blank
   background: $primarycolor.gray
@@ -945,16 +946,19 @@ export default {
   right: 0
   left: 0
   top: 0
-  top: constant(safe-area-inset-top)
-  top: env(safe-area-inset-top)
+  // top: constant(safe-area-inset-top)
+  // top: env(safe-area-inset-top)
   z-index: 9
 .confirm-dlg
   background: $secondarycolor.gray
   height: 300px
+  height: calc(300px + constant(safe-area-inset-bottom))
+  height: calc(300px + env(safe-area-inset-bottom))
   position: fixed
   bottom: 0
-  bottom: constant(safe-area-inset-bottom)
-  bottom: env(safe-area-inset-bottom)
+  padding-bottom: 0
+  padding-bottom: constant(safe-area-inset-bottom)
+  padding-bottom: env(safe-area-inset-bottom)
   right: 0
   left: 0
   opacity: 1
@@ -1000,6 +1004,8 @@ export default {
 .trade-content
   position: absolute
   bottom: 0
+  bottom: constant(safe-area-inset-bottom)
+  bottom: env(safe-area-inset-bottom)
   left: 0
   right: 0
   background: $primarycolor.gray

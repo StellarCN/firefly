@@ -77,11 +77,12 @@ export default {
                   showPageTitle: true,
                   staticText: title 
               },
-              backButton: {
-                image: 'back',
-                imagePressed: 'back_pressed',
-                align: 'left',
-                event: 'backPressed'
+              
+              closeButton: {
+                  image: 'close',
+                  imagePressed: 'close_pressed',
+                  align: 'left',
+                  event: 'closePressed'
               },
               backButtonCanClose: false,
               // hidden: true
@@ -92,6 +93,7 @@ export default {
       this.appInstance.addEventListener('closePressed',()=>{
         this.appInstance.close()
         this.appInstance = undefined
+        this.$router.back();
       })
       this.appInstance.addEventListener('backPressed', ()=>{
         this.appInstance.close()

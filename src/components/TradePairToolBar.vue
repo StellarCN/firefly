@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-08 15:40:36 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-06-14 12:41:35
+ * @Last Modified time: 2018-06-15 16:04:53
  * @License MIT 
  */
 
@@ -11,7 +11,7 @@
 <template>
   <div class="trade-tb">
     <!-- toolbar -->
-    <v-toolbar color="primary"  :clipped-left='true'>
+    <v-toolbar color="primary" flat dense app :clipped-left='true'>
       <v-btn icon @click="back"><v-icon>keyboard_arrow_left</v-icon></v-btn>
       <div class="toolbar__title toolbar-title white--text textcenter tb-title flex-row" @click.stop="showChoseTradeDlg = true">
         <div class="flex1">&nbsp;</div>
@@ -39,7 +39,7 @@
 
     <!--  选择交易队内容 -->
     <v-dialog class="tb-dlg" v-model="showChoseTradeDlg" fullscreen transition="dialog-bottom-transition" :overlay=false>
-      <v-toolbar color="primary"  :clipped-left='true'>
+      <v-toolbar color="primary" flat dense app :clipped-left='true'>
         <v-btn icon @click="showChoseTradeDlg = false"><v-icon>keyboard_arrow_left</v-icon></v-btn>
         <div class="toolbar__title toolbar-title white--text textcenter tb-title">{{$t("Trade.SelfSelection")}}</div>
         <v-btn icon style="visibility:hidden;"><v-icon class="back-icon"></v-icon></v-btn>
@@ -194,4 +194,7 @@ export default {
     color: $primarycolor.green
 .tb-dlg
   z-index:99
+  padding-top: 0
+  padding-top: constant(safe-area-inset-bottom)!important
+  padding-top: env(safe-area-inset-bottom)!important
 </style>

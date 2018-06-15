@@ -172,8 +172,8 @@ export default {
   top: calc(48px + constant(safe-area-inset-top))
   top: calc(48px + env(safe-area-inset-top))
   bottom: 0
-  bottom: constant(safe-area-inset-bottom)
-  bottom: env(safe-area-inset-bottom)
+  // bottom: constant(safe-area-inset-bottom)
+  // bottom: env(safe-area-inset-bottom)
   left: 0
   right: 0
   .qrscanner-area
