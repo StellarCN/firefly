@@ -3,28 +3,40 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-31 09:07:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-06-07 15:47:14
+ * @Last Modified time: 2018-06-15 10:36:47
  * @License MIT 
  */
 import { mapState,mapActions,mapGetters } from 'vuex'
 import {  ACCOUNT_IS_FUNDING,  ACCOUNT_NOT_FUNDING} from '@/store/modules/AccountStore'
 import  defaultsDeep  from 'lodash/defaultsDeep'
+const FETCH_ACCOUNT_INTERVAL = 180000;
 export default {
   
   data(){
     return {
       accountNotFundDlg: false,
+      _intervalFetchAccount: null,//请求账户数据的
+      inflation_unset: false,//是否未设置通胀池
+      inflationUnSetDlg: false,
     }
   },
 
   computed: {
     ...mapState({
-      account: state => state.accounts.selectedAccount
+      account: state => state.accounts.selectedAccount,
+      accountDetails: state => state.account.data
     }),
   },
   beforeMount () {
     if (this.account.address) {
       this.fetchData()
+      this.setupFetchAccountInterval()
+    }
+  },
+  beforeDestroy(){
+    if(this._intervalFetchAccount!== null){
+      clearInterval(this._intervalFetchAccount)
+      this._intervalFetchAccount = null
     }
   },
   methods: {
@@ -41,12 +53,24 @@ export default {
       'updateAccount'
     ]),
 
+    setupFetchAccountInterval(){
+      this._intervalFetchAccount = setInterval(this.fetchData, FETCH_ACCOUNT_INTERVAL)
+    },
+
     fetchData() {
       if (this.account.address) {
         this.load()
           .then(data => {
             this.updateFederationAndInflationInfo()
             this.$store.commit(ACCOUNT_IS_FUNDING)
+            
+            //检查当前用户是否设置了通胀池
+            if(!this.accountDetails.inflation_destination){
+              this.inflation_unset = true
+              this.inflationUnSetDlg = true
+            }
+            
+
           })
           .catch(err => {
             console.log("errorhere");
@@ -82,10 +106,11 @@ export default {
       // update home_domain and inflation_destination from horizon.
       console.log("updateFederationAndInflationInfo")
       console.log(this.accountData)
-      if (this.account.federationAddress !== this.accountData.inflation_destination || this.account.inflationAddress !== this.accountData.home_domain) {
+      if (this.account.inflationAddress !== this.accountDetails.inflation_destination 
+        || this.account.federationAddress !== this.accountDetails.home_domain) {
         let data = defaultsDeep({}, this.account, {
-          federationAddress: this.accountData.home_domain,
-          inflationAddress: this.accountData.inflation_destination
+          federationAddress: this.accountDetails.home_domain,
+          inflationAddress: this.accountDetails.inflation_destination
         })
         let params = {
           index: this.selectedAccountIndex,
@@ -104,6 +129,9 @@ export default {
     },
     closeAccountNotFoundDlg(){
       this.accountNotFundDlg = false
+    },
+    closeInflationUnSetDlg(){
+
     },
     load() {
       //this.cleanAccount()

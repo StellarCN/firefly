@@ -10,7 +10,7 @@
           <ul class="settings-ul">
             
             <li class="settings-li">
-              <span>{{redUpGreenDown ? $t('redUpGreenDown') : $t('greenUpRedDown')}}</span>
+              <span>{{$t('redUpGreenDown') }}</span>
               <v-switch class="pincodeswitch f-right"
                   v-model="colorSwitch"
                   color="primary"

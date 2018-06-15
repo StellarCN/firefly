@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-28 11:19:05 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-06-04 18:09:25
+ * @Last Modified time: 2018-06-11 15:49:27
  * @License MIT 
  */
 
@@ -174,6 +174,7 @@ export default {
       switchTradePair: 'switchTradePair',
       selectTradePair: 'selectTradePair',
       queryOrderBook: 'queryOrderBook',
+      queryMyOffers: 'queryMyOffers',
       switchSelectedTradePair: 'switchSelectedTradePair',
 
     }),
@@ -203,7 +204,7 @@ export default {
       })
     },
     load(){
-      return Promise.all([this.queryOrderBook()])
+      return Promise.all([this.queryOrderBook(),this.queryMyOffers()])
     },
     chooseItem(type,data){
       this.$emit('choose',{type,data})

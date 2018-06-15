@@ -68,7 +68,7 @@ export function getAllEffectOffers(account,start_time,end_time){
   end_time = new Decimal(end_time).div( 1000).round().toNumber()
   if(account === null)throw new Error('params invalid')
   let uri = `${host}/api/effectrecords/?account=${account}&start_time=${start_time}&end_time=${end_time}`
-  return axios.get(uri)
+  return axios.get(uri, {timeout: 60000})
 }
 
 const FCHAIN_FEED_URL = 'https://fchain.io/feed/'

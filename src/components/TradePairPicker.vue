@@ -52,5 +52,7 @@ export default {
   display: flex
   position: fixed
   bottom: 0
+  bottom: constant(safe-area-inset-bottom)
+  bottom: env(safe-area-inset-bottom)
   width: 100%
 </style>

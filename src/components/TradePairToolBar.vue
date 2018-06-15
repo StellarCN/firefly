@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-08 15:40:36 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-05-25 16:07:43
+ * @Last Modified time: 2018-06-15 16:39:21
  * @License MIT 
  */
 
@@ -11,7 +11,7 @@
 <template>
   <div class="trade-tb">
     <!-- toolbar -->
-    <v-toolbar color="primary" dark dense :clipped-left='true' app>
+    <v-toolbar color="primary" flat dense app :clipped-left='true'>
       <v-btn icon @click="back"><v-icon>keyboard_arrow_left</v-icon></v-btn>
       <div class="toolbar__title toolbar-title white--text textcenter tb-title flex-row" @click.stop="showChoseTradeDlg = true">
         <div class="flex1">&nbsp;</div>
@@ -39,12 +39,15 @@
 
     <!--  选择交易队内容 -->
     <v-dialog class="tb-dlg" v-model="showChoseTradeDlg" fullscreen transition="dialog-bottom-transition" :overlay=false>
-      <v-toolbar color="primary" dark app dense :clipped-left='true'>
+      <v-system-bar status :color="iosstatusbarcolor" v-if="isIos" app>
+        <v-spacer></v-spacer>
+      </v-system-bar>
+      <v-toolbar color="primary" flat dense app :clipped-left='true'>
         <v-btn icon @click="showChoseTradeDlg = false"><v-icon>keyboard_arrow_left</v-icon></v-btn>
         <div class="toolbar__title toolbar-title white--text textcenter tb-title">{{$t("Trade.SelfSelection")}}</div>
         <v-btn icon style="visibility:hidden;"><v-icon class="back-icon"></v-icon></v-btn>
       </v-toolbar>
-      <div class="dlg-content mt-5">
+      <div class="dlg-content">
         <div v-for="(item,index) in tradepairs" :key="index" :class="'flex-row row100 pt-2 pb-2 ' + (isChoosenTrade(item.from,item.to) ? 'active':'')" @click="choseTrade(index,item)">
           <div class="flex2">&nbsp;</div>
           <div class="flex3 textcenter">
@@ -76,6 +79,8 @@ export default {
   data(){
     return {
       showChoseTradeDlg: false,
+      isios: false,
+
     }
   },
   computed:{
@@ -84,6 +89,8 @@ export default {
       selectedTrade: state => state.accounts.selectedTradePair.tradepair,
       selectedTradeIndex: state => state.accounts.selectedTradePair.index,
       assethosts: state => state.asset.assethosts,
+      iosstatusbarcolor: state => state.iosstatusbarcolor,
+      isIos: state => state.app.isIos,
 
     }),
     ...mapGetters([
@@ -183,6 +190,8 @@ export default {
   background: $primarycolor.gray
   padding-top: 48px!important
   padding-bottom: 48px!important
+  padding-bottom: calc(48px + constant(safe-area-inset-bottom))!important
+  padding-bottom: calc(48px + env(safe-area-inset-bottom))!important
   overflow-y: auto
   -webkit-overflow-scrolling: touch
   height: 100%!important
@@ -192,4 +201,7 @@ export default {
     color: $primarycolor.green
 .tb-dlg
   z-index:99
+  padding-top: 0
+  padding-top: constant(safe-area-inset-bottom)!important
+  padding-top: env(safe-area-inset-bottom)!important
 </style>

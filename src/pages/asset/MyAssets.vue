@@ -113,10 +113,12 @@
   
    <bottom-notice :show.sync="notice" :text="noticeText"></bottom-notice>
   <bottom-notice :show.sync="accountNotFundDlg" @update:show="closeAccountNotFoundDlg">
-    <div slot @click="toActiveAccount">
-      <span>{{$t('Error.AccountNotFund')}}</span><v-icon color="primary">help</v-icon>
+    <div slot>
+      <div @click="toHelp">{{$t('Error.AccountNotFund')}}<v-icon color="primary">help</v-icon></div>
+      <div @click="toKYC"><span class="underline">{{$t('kyc_active')}}</span></div>
+      
     </div>
-  </bottom-notice> 
+  </bottom-notice>
   
    <loading :show="working" :loading="working" :success="delok" :fail='delerror' />
    <password-sheet v-if="needpwd" @cancel="cancelpwd" @ok="checkpwd" />
@@ -450,9 +452,16 @@ export default {
     toThirdApps(){
       this.$router.push({name: 'Apps'})
     },
-    toActiveAccount(){
-      let t = new Date().getTime()
-      this.$router.push({name: 'Help', params: { uri: 'https://wallet.fchain.io/manual/#1?q='+t}})
+    toHelp(){
+      // let t = new Date().getTime()
+      let site = 'https://wallet.fchain.io/manual/#1'
+      let title = this.$t('Menu.Help')
+      this.$router.push({name: 'Help', params: { title, site }})
+    },
+    toKYC(){
+      // let site = 'https://fchain.io/kyc/accounts/login/?next=/portal/'+'?'+Math.random()
+      // let title = this.$t('kyc')
+      this.$router.push({name: 'KYC'})
     }
    
   },

@@ -133,16 +133,18 @@ export default {
               color: $primarycolor.green
 
 .bottom_start
-    position:absolute
+    position:fixed
     bottom: 0px
     left: 0
     right: 0
-    height: 1rem
-    line-height: 1rem
     text-align:center
     background: $primarycolor.gray
     z-index: 9
     color: $primarycolor.green
+    // top: calc(100vh - 100px)
+    padding-bottom: 8px
+    padding-bottom: calc(8px + constant(safe-area-inset-bottom))
+    padding-bottom: calc(8px + env(safe-area-inset-bottom))
 
 .iconfont_style_color
     color:$primarycolor.green

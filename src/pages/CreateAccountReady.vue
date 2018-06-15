@@ -433,9 +433,13 @@ export default {
   position: fixed
   overflow-y: auto
   top: 48px
+  top: calc(48px+ constant(safe-area-inset-top))
+  top: calc(48px + env(safe-area-inset-top))
   left: 0
   right: 0
   bottom: 0
+  bottom:  constant(safe-area-inset-bottom)
+  bottom: env(safe-area-inset-bottom)
   padding: 20px 20px
   background: $secondarycolor.gray
   border-radius:10px
@@ -459,6 +463,8 @@ export default {
 .footer
   position:fixed
   bottom:0
+  bottom: constant(safe-area-inset-bottom)
+  bottom: env(safe-area-inset-bottom)
   left:0
   right:0
   z-index:99
@@ -502,9 +508,13 @@ export default {
 .si-bg
   position: absolute
   top: 48px
+  top: calc(48px+ constant(safe-area-inset-top))
+  top: calc(48px+ env(safe-area-inset-top))
   left: 0
   right: 0
   bottom: 0
+  bottom:  constant(safe-area-inset-bottom)
+  bottom:  env(safe-area-inset-bottom)
   background: $primarycolor.gray
   padding: 10px 10px
   padding-bottom: 0px
@@ -521,6 +531,8 @@ export default {
   left: 0
   right: 0
   bottom: 10px
+  bottom: calc(10px + constant(safe-area-inset-bottom))
+  bottom: calc(10px + env(safe-area-inset-bottom))
   .btn-cancel
   .btn-ok
     font-size: 16px
@@ -545,7 +557,11 @@ export default {
 .si-dlg
   position: fixed
   top: 0px
+  top:  constant(safe-area-inset-top)
+  top: env(safe-area-inset-top)
   bottom: 0px
+  bottom: constant(safe-area-inset-bottom)
+  bottom: env(safe-area-inset-bottom)
   left: 0px
   right: 0px
   background: $primarycolor.gray

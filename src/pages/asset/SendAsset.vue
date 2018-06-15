@@ -602,9 +602,15 @@ export default {
 .sendconfim_bottom_sheet
   background:$secondarycolor.gray
   height:400px
+  height: calc(400px +  constant(safe-area-inset-bottom))
+  height: calc(400px +  env(safe-area-inset-bottom))
   position:fixed
   right:0
   left:0
+  bottom: 0
+  padding-bottom: 0
+  padding-bottom: constant(safe-area-inset-bottom)
+  padding-bottom: env(safe-area-inset-bottom)
   opacity:1
 .v_container
   padding:0px 0px

@@ -1,127 +1,7 @@
-// 第三方应用列表界面
+// 打开第三方应用
 <template>
-  <div class="page" dark>
-    <toolbar :title="$t('Title.ThirdApp')" :showbackicon="true"  @goback="back" 
-      :shadow="false" lockpass  ref="toolbar">
-      <!--右侧打开设置界面-->
-      <v-btn icon slot='right-tool' @click="toSetting">
-        <i class="material-icons">extension</i>
-      </v-btn>
-    </toolbar>
+  <div>
     
-    <v-container fluid v-bind="{ [`grid-list-md`]: true }">
-      <div class="dapp-subtitle subheading pl-2">{{$t('hot_dapp')}}</div>
-      <card padding="8px 0" margin="0 0" v-if="working">
-        <div class="mt-5 textcenter">
-          <v-progress-circular indeterminate color="primary"></v-progress-circular>
-        </div>
-      </card>
-      <card class="server-apps-layout" padding="8px 8px" margin="0 0" v-if="!working && err">
-        <p v-if="err">
-          {{$t(err)}}
-        </p>
-      </card>
-      <v-layout class="server-apps-layout" row wrap  v-if="!working && apps && apps.length > 0">
-        <v-flex
-          xs4
-          v-for="(app,index) in apps"
-          :key="index"
-          @click="choose(app)"
-          class="app-card-wrapper"
-        >
-          <v-card flat tile class="pa-2 textcenter app-card" >
-             <div class="pa-3">
-                <v-avatar class="grey darken-4 app-avatar" :size="`100%`">
-                 <img :src="app.image">
-                </v-avatar>
-             </div>
-             <v-card-title primary-title class="app-title">
-               <div class="textcenter" style="width: 100%;">{{app.title}}</div>
-             </v-card-title>
-          </v-card>
-        </v-flex>
-      </v-layout>
-
-
-      <div class="dapp-subtitle subheading  pl-2" v-if="myapps.length > 0">{{$t('CustomDApp')}}</div>
-
-      <v-layout class="apps-layout" row wrap >
-        <v-flex
-          xs4
-          v-for="(app,index) in myapps"
-          :key="index"
-          @click="choose(app)"
-          class="app-card-wrapper"
-        >
-          <v-card dark flat tile class="pa-2 textcenter app-card" >
-            <div class="pa-3">
-              <v-avatar class="grey darken-4 app-avatar" :size="`62px`">
-               <span class="white--text headline">{{app.title.substring(0,1)}}</span> 
-             </v-avatar>
-            </div>
-             <v-card-title primary-title class="app-title">
-               <div class="textcenter" style="width: 100%;">{{app.title}}</div>
-             </v-card-title>
-          </v-card>
-        </v-flex>
-        <v-flex
-          xs4
-          @click="addDapp"
-          class="app-card-wrapper"
-        >
-          <v-card dark flat tile class="pa-2 textcenter app-card mt-3" >
-            <div class="pa-3">
-              <v-avatar class="grey darken-4 app-avatar add-app-avatar" :size="`62px`">
-               <v-icon :size="`38px`" color="primary">add</v-icon>
-             </v-avatar>
-            </div>
-          </v-card>
-        </v-flex>
-      </v-layout>
-
-    <v-dialog v-model="showConfirmDlg" max-width="95%" persistent>
-      <div>
-        <div class="card-content dlg-content">
-          <div class="avatar-div textcenter">
-            <v-avatar>
-              <img src="../../assets/img/logo-red.png" />
-            </v-avatar>
-          </div>
-          <div class="t2 skip-white pt-2 pb-4">{{$t('Third.OpenAppHint',[choosed.title])}}</div>
-          <div class="btns flex-row">
-            <div class="flex1 skip-red textcenter" @click="openApp">{{$t('Button.OK')}}</div>
-            <div class="flex1 skip-red textcenter" @click="showConfirmDlg = false">{{$t('Button.Cancel')}}</div>
-          </div>
-        </div>
-      </div>
-    </v-dialog>
-
-    <!--新增弹窗-->
-    <v-dialog v-model="showAddDlg" persistent max-width="90%">
-      <v-card>
-        <v-card-text>
-          <v-container grid-list-md>
-            <v-layout wrap>
-              
-              <v-flex xs12 sm6 md4>
-                <v-text-field :label="$t('ContactAdd.name')" clearable required v-model="apptitle"></v-text-field>
-              </v-flex>
-              <v-flex xs12 sm6 md4>
-                <v-text-field :label="$t('ContactAdd.address')" clearable required v-model="appsite"></v-text-field>
-              </v-flex>
-            </v-layout>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="primary darken-1" :loading="addingApp" flat @click.stop="cancelAddApp">{{$t('Button.Cancel')}}</v-btn>
-          <v-btn color="error darken-1" :loading="addingApp" flat @click.stop="doAddApp">{{$t('Save')}}</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-
-    </v-container>
 
     <send-asset v-if="showSendAsset" 
       :destination="sendTarget.destination"
@@ -161,7 +41,6 @@
 </template>
 
 <script>
-const thridAppConfig = `https://update.fchain.io/config/dapp.json`
 import axios from 'axios'
 import { mapState, mapActions} from 'vuex'
 import Toolbar from '@/components/Toolbar'
@@ -189,10 +68,8 @@ import debounce from 'lodash/debounce'
 export default {
   data(){
     return {
-      apps: [],
       working: false,
       err: null,
-      showConfirmDlg: false,
       choosed: {}, //当前选中的app
       showSendAsset: false,
       sendTarget:{},
@@ -202,10 +79,6 @@ export default {
       appEventType: null,//接收到的appevent事件
       appEventData: null,//接收的appevent的data
 
-      showAddDlg: false,
-      apptitle: null,
-      appsite: null,
-      addingApp: false,
     }
   },
    computed:{
@@ -219,47 +92,34 @@ export default {
     }),
   },
   beforeMount () {
-    this.working = true
-    this.err = null
-    axios.get(thridAppConfig)
-      .then(response=>{
-        this.working = false
-        //console.log(response)
-        this.apps = response.data.apps
-        // this.apps = [{site: '111',title: 'aaa'}]
-      })
-      .catch(err=>{
-        this.working = false
-        console.error(err)
-        this.err = 'Error.AjaxTimeout'
-      })
+    //接收要打开的应用
+    this.choosed.title = this.$route.params.title;
+    this.choosed.site = this.$route.params.site;
 
+  },
+  beforeDestroy(){
+    if(this.appInstance){
+      this.appInstance.close()
+      this.appInstance = undefined
+    }
   },
   mounted () {
     if(!this.islogin){
       this.$refs.toolbar.showPasswordLogin()
     }
+    this.openApp();
+
   },
   methods: {
     ...mapActions(['addMyApp']),
     back(){
       this.$router.back()
     },
-    choose(app){
-      this.choosed = app
-      let val = localStorage.getItem(app.site)
-      if(val){
-        this.openApp()
-        return
-      }
-      this.showConfirmDlg = true
-
-    },
     openApp(){
       localStorage.setItem(this.choosed.site, "confirm")
       this.showConfirmDlg = false
       if(cordova.platformId === 'browser'){
-        this.appInstance = cordova.InAppBrowser.open(this.choosed.site, '_blank', 'location=yes,toolbar=yes,toolbarcolor=#21ce90');
+        this.appInstance = cordova.InAppBrowser.open(this.choosed.site, '_blank', 'location=no,toolbar=yes,toolbarcolor=#21ce90');
       }else{
         this.appInstance = cordova.ThemeableBrowser.open(this.choosed.site, '_blank', {
               statusbar: {
@@ -285,7 +145,7 @@ export default {
                   align: 'left',
                   event: 'closePressed'
               },
-              backButtonCanClose: true,
+              backButtonCanClose: false,
               // hidden: true
           })
           
@@ -300,7 +160,14 @@ export default {
       this.appInstance.addEventListener('closePressed',()=>{
         this.appInstance.close()
         this.appInstance = undefined
+        this.$router.back();
       })
+      this.appInstance.addEventListener('backPressed', ()=>{
+        this.appInstance.close()
+        this.appInstance = undefined
+        this.$router.back();
+      });
+
       this.appInstance.addEventListener('loadstop',() => {
         //let script = `if(!window.FFW){window.FFW = {};FFW.address = "${this.account.address}";FFW.pay = function(destination,code,issuer,amount,memo_type,memo){ var params = { type:'pay',destination: destination, code: code, issuer: issuer, amount: amount, memo_type: memo_type, memo: memo };cordova_iab.postMessage(JSON.stringify(params));};};`
         //let scriptEle = `if(!window.FFW){var script = document.createElement('script');script.setAttribute('type', 'text/javascript');script.text = "${script}";document.body.appendChild(script);}`
@@ -320,10 +187,11 @@ export default {
       let that = this
       this.appInstance.addEventListener('message', debounce(function (e){
         console.log('-----------get message ---- ')
-        // alert(JSON.stringify(e))
+        console.log(JSON.stringify(e))
+       // alert(JSON.stringify(e))
         let type = e.data.type
         if(type === FFW_EVENT_TYPE_PAY){
-          that.doPayEvent(e)
+          this.doPayEvent(e)
         }else if(type === FFW_EVENT_TYPE_PATHPAYMENT){
           that.doPathPaymentEvent(e)
         }else if(type === FFW_EVENT_TYPE_SIGN){
@@ -335,7 +203,7 @@ export default {
           that.appEventData = e.data
           that.hideDapp()
         }
-      },500))
+      },3000))
     },
     hideDapp(e){
       this.appInstance.hide()
@@ -343,10 +211,10 @@ export default {
     },
     doPayEvent(e){
       try{
-        this.appInstance.hide()
         this.showSendAsset = true
         this.sendTarget = e.data
         this.pathPayment = false
+        this.appInstance.hide()
       }catch(err){
         console.error(err)
         //alert('error:'+err.message)
@@ -370,10 +238,10 @@ export default {
     },
     doPathPaymentEvent(e){
       try{
-        this.appInstance.hide()
         this.showSendAsset = true
         this.sendTarget = e.data
         this.pathPayment = true
+        this.appInstance.hide()
       }catch(err){
         console.error(err)
         //alert('error:'+err.message)
@@ -401,17 +269,14 @@ export default {
     },
     exitSendAsset(){
       this.showSendAsset = false
-      this.$nextTick(()=>{
-        this.appInstance.show()
-        this.doCallbackEvent(this.callbackData('fail','cancel payment'))
-      });
+      this.appInstance.show()
+      this.doCallbackEvent(this.callbackData('fail','cancel payment'))
     },
     sendAssetSuccess(){
       this.showSendAsset = false
-      this.$nextTick(()=>{
-        this.appInstance.show()
-        this.doCallbackEvent(this.callbackData('success','success'))
-      });
+      this.appInstance.show()
+      //TODO 怎么通知应用
+      this.doCallbackEvent(this.callbackData('success','success'))
     },
     shareCB(url){
       let options = {
@@ -427,24 +292,20 @@ export default {
       });
     },
     exitEvent(msg){
+      this.appInstance.show()
+      this.doCallbackEvent(this.callbackData('fail',msg))
       this.$nextTick(()=>{
-        this.appInstance.show()
-        this.doCallbackEvent(this.callbackData('fail',msg))
-        this.$nextTick(()=>{
-          this.appEventType = null
-          this.appEventData = null   
-        })
+        this.appEventType = null
+        this.appEventData = null
       })
     },
     successEvent(msg='success',data){
       //alert('----success--event---'+ JSON.stringify(data))
+      this.appInstance.show()
+      this.doCallbackEvent(this.callbackData('success',msg, data))
       this.$nextTick(()=>{
-        this.appInstance.show();
-        this.doCallbackEvent(this.callbackData('success',msg, data))
-        this.$nextTick(()=>{
-          this.appEventType = null
-          this.appEventData = null   
-        })
+        this.appEventType = null
+        this.appEventData = null
       })
     },
     exitBackUpEvent(){

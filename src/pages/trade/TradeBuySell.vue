@@ -112,6 +112,14 @@
 
     </div>
 
+  <bottom-notice :show.sync="accountNotFundDlg" @update:show="closeAccountNotFoundDlg">
+    <div slot>
+      <div @click="toHelp">{{$t('Error.AccountNotFund')}}<v-icon color="primary">help</v-icon></div>
+      <div @click="toKYC"><span class="underline">{{$t('kyc_active')}}</span></div>
+    </div>
+  </bottom-notice> 
+  
+
     <!-- 确认内容 -->
     <div class="confirm-wrapper"  v-if="showConfirmSheet">
       <div class="confirm-blank"></div>
@@ -174,12 +182,14 @@ import { trustAll } from '@/api/operations'
 import { getXdrResultCode } from '@/api/xdr'
 import { Decimal } from 'decimal.js'
 import debounce from 'lodash/debounce'
+import loadaccount from '@/mixins/loadaccount'
 
 const FLAG_BUY = 'buy'
 const FLAG_SELL = 'sell'
 Decimal.rounding = Decimal.ROUND_DOWN
 
 export default {
+  mixins:[loadaccount],
   data(){
     return {
       title: 'Menu.TradeCenter',
@@ -816,32 +826,55 @@ export default {
       // this.isSell = true
       this.working = true
       this.sending = true
-      trustAll(this.accountData.seed, this.needTrust)
-        .then(response=>{
-          this.sending = false
-          this.sendsuccess = true
-          this.loadingTitle = this.$t('AddAssetSuccess')
-          try{
-            this.getAccountInfo(this.account.address).then(response=>{}).catch(err=>{})
-          }catch(err){
-            console.error(err)
-          }
-          setTimout(()=>{
-            this.working = false
-            this.sendsuccess = false
-            this.loadingTitle = null
-          },3000)
-        })
-        .catch(err=>{
-          this.sending = false
-          this.sendfail = true
-          let msg = getXdrResultCode(err)
-          this.loadingTitle = this.$t('AddAssetFail')
-          if(msg){
-           this.loadingError = this.$t(msg)
-          }     
-        })
+      try{
+        trustAll(this.accountData.seed, this.needTrust)
+          .then(response=>{
+            this.sending = false
+            this.sendsuccess = true
+            this.loadingTitle = this.$t('AddAssetSuccess')
+            try{
+              this.getAccountInfo(this.account.address).then(response=>{}).catch(err=>{})
+            }catch(err){
+              console.error(err)
+            }
+            setTimout(()=>{
+              this.working = false
+              this.sendsuccess = false
+              this.loadingTitle = null
+            },3000)
+          })
+          .catch(err=>{
+            this.sending = false
+            this.sendfail = true
+            let msg = getXdrResultCode(err)
+            this.loadingTitle = this.$t('AddAssetFail')
+            if(msg){
+            this.loadingError = this.$t(msg)
+            }     
+          })//end of trustAll
+      }catch(error){
+        this.sending = false
+        this.sendfail = true
+        let msg = getXdrResultCode(err)
+        this.loadingTitle = this.$t('AddAssetFail')
+        if(msg){
+        this.loadingError = this.$t(msg)
+        }     
+      }
+    },
+    
+    toHelp(){
+      // let t = new Date().getTime()
+      let site = 'https://wallet.fchain.io/manual/#1'
+      let title = this.$t('Menu.Help')
+      this.$router.push({name: 'Help', params: { title, site }})
+    },
+    toKYC(){
+      // let site = 'https://fchain.io/kyc/accounts/login/?next=/portal/'+'?'+Math.random()
+      // let title = this.$t('kyc')
+      this.$router.push({name: 'KYC'})
     }
+   
 
 
   },
@@ -894,24 +927,38 @@ export default {
 .confirm-wrapper
   position: fixed
   bottom: 0
+  padding-bottom: 0
+  padding-bottom: constant(safe-area-inset-bottom)
+  padding-bottom: env(safe-area-inset-bottom)
   right: 0
   left: 0
   top: 0
+  // top: constant(safe-area-inset-top)
+  // top: env(safe-area-inset-bottom)
   z-index: 9
 .confirm-blank
   background: $primarycolor.gray
   opacity: .8
   position: fixed
   bottom: 300px
+  bottom: calc(300px + constant(safe-area-inset-bottom))
+  bottom: calc(300px + env(safe-area-inset-bottom))
   right: 0
   left: 0
   top: 0
+  // top: constant(safe-area-inset-top)
+  // top: env(safe-area-inset-top)
   z-index: 9
 .confirm-dlg
   background: $secondarycolor.gray
   height: 300px
+  height: calc(300px + constant(safe-area-inset-bottom))
+  height: calc(300px + env(safe-area-inset-bottom))
   position: fixed
   bottom: 0
+  padding-bottom: 0
+  padding-bottom: constant(safe-area-inset-bottom)
+  padding-bottom: env(safe-area-inset-bottom)
   right: 0
   left: 0
   opacity: 1
@@ -957,6 +1004,8 @@ export default {
 .trade-content
   position: absolute
   bottom: 0
+  bottom: constant(safe-area-inset-bottom)
+  bottom: env(safe-area-inset-bottom)
   left: 0
   right: 0
   background: $primarycolor.gray

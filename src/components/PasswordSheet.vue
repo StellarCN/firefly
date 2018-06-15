@@ -132,6 +132,8 @@ export default {
   background: $secondarycolor.gray
   color: $primarycolor.font
   padding: 10px 10px
+  padding-bottom: calc(10px + constant(safe-area-inset-bottom))
+  padding-bottom: calc(10px + env(safe-area-inset-bottom))
   word-wrap: break-word
   .sheet-title
     .title
@@ -149,6 +151,7 @@ export default {
     margin-top: 10px
     display: inline-block
     width: 100%
+    background: $primarycolor.gray
     .sheet-btn
       float: left
       width: 50%

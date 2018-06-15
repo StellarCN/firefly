@@ -52,7 +52,10 @@
 
               <div v-if="standardDepositData">
                 <div class="label">{{$t('DW.DepositInfo')}}</div>
-                <div class="deposit_info" @click="copy(standardDepositData.how)">{{standardDepositData.how}}</div>
+                <div v-if="Array.isArray(standardDepositData.how)">
+                  <div class="deposit_info" v-for="(value,index) in standardDepositData.how" @click="copy(value)" :key="index">{{value}}</div>
+                </div>
+                <div class="deposit_info" @click="copy(standardDepositData.how)" v-else>2{{standardDepositData.how}}</div>
                 <div class="extra_info" v-if="standardDepositData.eta!= undefined">{{$t('DW.DepositInfo.eta',[standardDepositData.eta])}}</div>
                 <div class="extra_info" v-if="standardDepositData.min_amount!=undefined">{{$t('DW.DepositInfo.min', [standardDepositData.min_amount])}}{{selectedasset.code}}</div>
                 <div class="extra_info" v-if="standardDepositData.max_amount!=undefined">{{$t('DW.DepositInfo.max', [standardDepositData.max_amount])}}{{selectedasset.code}}</div>
@@ -398,6 +401,10 @@ export default {
 .page
   background: $primarycolor.gray
   color: $primarycolor.font
+  padding-top: 0px
+  // padding-top: constant(safe-area-inset-bottom)
+  padding-bottom: 0px
+
   .content
     padding: 10px 10px
     padding-bottom: 40px
@@ -422,9 +429,9 @@ export default {
       font-size: 20px
   .menu-wrapper
     background: $primarycolor.green
-    height: 56px
-    line-height: 56px
-    margin-top: -1px
+    height: 56px!important
+    line-height: 56px!important
+    margin-top: -1px!important
     .menu-ul
       width: 100%
       display: flex;

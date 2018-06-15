@@ -615,7 +615,9 @@ export default {
   margin-top: 3px
   text-align:center
   position: fixed
-  bottom: 5px
+  bottom: 8px
+  bottom: calc(8px + constant(safe-area-inset-bottom))
+  bottom: calc(8px + env(safe-area-inset-bottom))
   left: 0
   right: 0
   
@@ -659,6 +661,8 @@ export default {
   height: 140px
   position: fixed
   bottom: 0
+  bottom: constant(safe-area-inset-bottom)
+  bottom: env(safe-area-inset-bottom)
   right: 0
   left: 0
   z-index: 100

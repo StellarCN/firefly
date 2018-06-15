@@ -52,6 +52,11 @@ export default {
         component: resolve => require(['../pages/settings/Help'], resolve)
       },
       {
+        path: 'kyc',
+        name: 'KYC',
+        component: resolve => require(['../pages/settings/KYC'], resolve)
+      },
+      {
         path: 'about',
         name: 'About',
         component: resolve => require(['../pages/settings/About'], resolve)

@@ -86,7 +86,7 @@
       
       <div class="myoffer-table offer-table" v-if="active === 'myTradeHistory'" slot="card-content">
         <div class="table-head font-13">
-          <div class="headcol">{{$t('Trade.Price')}}</div>
+          <div class="headcol">{{$t('deal_price')}}</div>
           <div class="headcol">{{BaseAsset.code}}</div>
           <div class="headcol">{{CounterAsset.code}}</div>    
           <div class="headcol">{{$t('status')}}</div>      
@@ -94,10 +94,12 @@
         <div class="table-row font-13" 
           v-for="(item,index) in deals" :key="index" :class='item.type'>
           <div class="b-row price" >{{item.price}}</div>
-          <div class="b-row" v-if="item.base_asset === BaseAsset.code && item.base_issuer === BaseAsset.issuer">+{{item.amount}}</div>
-          <div class="b-row" v-else>-{{item.total}}</div>
-          <div class="b-row" v-if="item.base_asset === CounterAsset.code && item.base_issuer === CounterAsset.issuer">+{{item.amount}}</div>
-          <div class="b-row" v-else>-{{item.total}}</div>
+          <div class="b-row" v-if="item.sold_asset_code === BaseAsset.code && item.sold_asset_issuer === BaseAsset.issuer">-{{item.sold_amount}}&nbsp;</div>
+          <div class="b-row" v-else>+{{item.bought_amount}}&nbsp;</div>
+          
+          <div class="b-row" v-if="item.sold_asset_code === CounterAsset.code && item.sold_asset_issuer === CounterAsset.issuer">-{{item.sold_amount}}&nbsp;</div>
+          <div class="b-row" v-else>+{{item.bought_amount}}&nbsp;</div>
+
           <div class="b-row">{{$t(item.type)}}</div>
         </div>
       </div>
@@ -114,11 +116,10 @@ import { mapState, mapActions, mapGetters} from 'vuex'
 import { listenOrderbook } from '@/api/orderbook'
 import { cancel as cancelOffer }  from '@/api/offer'
 import { DEFAULT_INTERVAL } from '@/api/gateways'
-import { getAsset } from '@/api/assets'
+import { getAsset,isNativeAsset } from '@/api/assets'
 import Scroll from '@/components/Scroll'
 import { myofferConvert } from '@/api/offer'
 import {Decimal} from 'decimal.js'
-import { getAllEffectOffers } from '@/api/fchain'
 import { getXdrResultCode } from '@/api/xdr'
 import PasswordSheet from './PasswordSheet'
 var moment = require('moment')
@@ -132,7 +133,7 @@ export default {
       working: false,
       delindex: -1,
       timeInterval: null,
-      deals:[],
+      // deals:[],
       needpwd: false,
     }
   },
@@ -155,6 +156,7 @@ export default {
       onpause: state => state.onpause,
       locale: state => state.app.locale,
       islogin: state => state.accounts.accountData.seed ? true:false,
+      alloffers: state => state.account.alloffers,
 
     }),
     ...mapGetters([
@@ -232,9 +234,13 @@ export default {
       })
       return newdata
     },
+    deals(){
+      return this.filterOffers()
+    }
 
   },
   beforeDestroy: function() {
+    this.$store.commit('CLEAN_ALL_OFFERS')
     this.clean()
   },
  
@@ -273,7 +279,8 @@ export default {
       queryOrderBook: 'queryOrderBook',
       switchSelectedTradePair: 'switchSelectedTradePair',
       queryMyOffers: 'queryMyOffers',
-      orderBookStreamHandler: 'orderBookStreamHandler'
+      orderBookStreamHandler: 'orderBookStreamHandler',
+      getAllOffers: 'getAllOffers',
 
     }),
     reload(){
@@ -345,60 +352,117 @@ export default {
     chooseItem(type,data){
       this.$emit('choose',{type,data})
     },
+    filterOffers(){
+      if(this.alloffers){
+        let key1 = this.BaseAsset.code + (isNativeAsset(this.BaseAsset) ? '' : this.BaseAsset.issuer)
+        let key2 = this.CounterAsset.code + (isNativeAsset(this.CounterAsset) ? '' : this.CounterAsset.issuer)
+        //过滤掉不是当前要显示的数据
+        return this.alloffers.filter(item=>{
+          let t1 = null,t2 = null
+          if(item.sold_asset_code){
+            t1 = item.sold_asset_code + ( (isNativeAsset(item.sold_asset_code, item.sold_asset_issuer) ? '': item.sold_asset_issuer) )
+          }else{
+            t1 = item.counter_asset + ( (isNativeAsset(item.counter_asset, item.counter_issuer) ? '': item.counter_issuer) )
+          }
+
+          if(item.bought_asset_code){
+            t2 = item.bought_asset_code + ( (isNativeAsset(item.bought_asset_code, item.bought_asset_issuer) ? '': item.bought_asset_issuer) )
+          }else{
+            t2 = item.base_asset + ( (isNativeAsset(item.base_asset, item.base_issuer) ? '': item.base_issuer) )
+          }
+          
+          if((key1 === t1 && key2 === t2) || (key1 === t2 && key2 === t1)){
+            return true
+          }
+          return false
+        })
+        .map(item=>{
+          if(item.bought_asset_code === null || typeof item.bought_asset_code ==='undefined'
+             || item.bought_amount ===null || typeof item.bought_amount === 'undefined' ){
+            let cancelObj = {
+              bought_asset_code: item.base_asset,
+              bought_asset_issuer: item.base_issuer,
+              sold_asset_code: item.counter_asset,
+              sold_asset_issuer: item.counter_issuer,
+              sold_amount:item.amount,
+              bought_amount:new Decimal(item.amount).times(item.price).toFixed(7)
+            }
+            return Object.assign({}, item, cancelObj)
+          }else{
+            return Object.assign({}, item)
+          }
+          
+        })
+      }
+      return []
+    },
     queryAllOffers(){
       //暂时只查询一周的委单数据
       let start_time = Number(moment().subtract(100,"days").format('x'))
       let end_time = Number(moment().format('x'))
-      getAllEffectOffers(this.account.address, start_time, end_time)
-        .then(response=>{
-          if(!response.data)return;
-          console.log('----response--data--')
-          console.log(response.data)
-          this.deals = response.data.map(item=>{
-            return Object.assign({}, item, { total: new Decimal(item.amount).times(item.price).toFixed(7), 
-              counter_issuer: item.counter_issuer ? item.counter_issuer : 'stellar.org',
-              base_issuer: item.base_issuer ? item.base_issuer : 'stellar.org',
-              price: Number(item.price)
-            })
-          }).filter(item=>{
-            let key1 = item.base_asset + item.base_issuer + item.counter_asset+item.counter_issuer
-            let key2 = item.counter_asset + item.counter_issuer + item.base_asset+item.base_issuer
-            let from = this.selectedTrade.from
-            let to = this.selectedTrade.to
-            let key01 = from.code + from.issuer + to.code + to.issuer
-            let key02 = to.code + to.issuer + from.code + from.issuer
-            if(key01===key1 && key02 === key2){
-              item.itype = 'buy'
-              return true
-            }else if(key01===key2 && key02 === key1){
-              item.itype = 'sell'
+      let address = this.account.address
+      return this.getAllOffers({
+        account: address,
+        start_time,
+        end_time
+      })
+      // getAllEffectOffers(address, start_time, end_time)
+      //   .then(response=>{
+      //     if(!response.data)return;
+      //     console.log('----response--data--')
+      //     console.log(response.data)
+      //     this.deals = response.data.map(item=>{
+      //       let total = item.amount
+      //       let d = null
+      //       if(item.price_r){
+      //         d = new Decimal(total).times(item.price_r.d).div(item.price_r.n).toFixed(7)
+      //       }else{
+      //         d = new Decimal(total).div(item.price).toFixed(7)
+      //       }
+      //       return Object.assign({}, item, { amount: d, total, 
+      //         counter_issuer: item.counter_issuer ? item.counter_issuer : 'stellar.org',
+      //         base_issuer: item.base_issuer ? item.base_issuer : 'stellar.org',
+      //         price: Number(item.price)
+      //       })
+      //     }).filter(item=>{
+      //       let key1 = item.base_asset + item.base_issuer + item.counter_asset+item.counter_issuer
+      //       let key2 = item.counter_asset + item.counter_issuer + item.base_asset+item.base_issuer
+      //       let from = this.selectedTrade.from
+      //       let to = this.selectedTrade.to
+      //       let key01 = from.code + from.issuer + to.code + to.issuer
+      //       let key02 = to.code + to.issuer + from.code + from.issuer
+      //       if(key01===key1 && key02 === key2){
+      //         item.itype = 'buy'
+      //         return true
+      //       }else if(key01===key2 && key02 === key1){
+      //         item.itype = 'sell'
               
-              if(item.type === 'finished'){
-                let t = item.amount
-                item.amount = item.total
-                item.total = t
-              }else{
-                item.price = Number(new Decimal(1).div(item.price).toFixed(7))
-              }
-              return true
-            }else{
-              return false
-            }
-          })
+      //         if(item.type === 'finished'){
+      //           let t = item.amount
+      //           item.amount = item.total
+      //           item.total = t
+      //         }else{
+      //           item.price = Number(new Decimal(1).div(item.price).toFixed(7))
+      //         }
+      //         return true
+      //       }else{
+      //         return false
+      //       }
+      //     })
 
-          this.deals.forEach(item=>{
-            item.price = Number(item.price).toFixed(7)
-            item.total = Number(item.total).toFixed(7)
-            item.amount = Number(item.amount).toFixed(7)
-          })
+      //     this.deals.forEach(item=>{
+      //       item.price = Number(item.price).toFixed(7)
+      //       item.total = Number(item.total).toFixed(7)
+      //       item.amount = Number(item.amount).toFixed(7)
+      //     })
 
-        })
-        .catch(err=>{
-          console.error(err)
-          if(err.message){
-            this.$toasted.error(err.message)
-          }
-        })
+      //   })
+      //   .catch(err=>{
+      //     console.error(err)
+      //     if(err.message){
+      //       this.$toasted.error(err.message)
+      //     }
+      //   })
     },
     cancelpwd(){
       // this.$router.back()

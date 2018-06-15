@@ -19,6 +19,7 @@ export const CLEAN_PAYMENTS = 'CLEAN_PAYMENTS'
 export const ACCOUNT_IS_FUNDING = 'ACCOUNT_IS_FUNDING'
 export const ACCOUNT_NOT_FUNDING = 'ACCOUNT_NOT_FUNDING'
 export const GET_ALL_OFFERS = 'GET_ALL_OFFERS'
+export const CLEAN_ALL_OFFERS = 'CLEAN_ALL_OFFERS'
 export const CLEAN_ACCOUNT_BYSTREAM = 'CLEAN_ACCOUNT_BYSTREAM'
 export const ACCOUNTINFO_BYSTREAM = 'ACCOUNTINFO_BYSTREAM'
 
@@ -89,8 +90,8 @@ const actions = {
     commit(GET_PAYMENT_STREAM, rows)
   },
   async getAllOffers({commit,state}, {account,start_time,end_time}){
-    let data = await getAllEffectOffers(account, start_time, end_time)
-    commit(GET_ALL_OFFERS, data)
+    let response = await getAllEffectOffers(account, start_time, end_time)
+    commit(GET_ALL_OFFERS, response.data)
   }
 
 
@@ -143,6 +144,9 @@ const mutations = {
   },
   GET_ALL_OFFERS(state, data){
     state.alloffers = data
+  },
+  CLEAN_ALL_OFFERS(state){
+    state.alloffers = null
   }
 
 }

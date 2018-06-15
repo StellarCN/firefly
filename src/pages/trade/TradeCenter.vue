@@ -126,10 +126,12 @@ var moment = require('moment')
 import {Decimal} from 'decimal.js'
 import Scroll from '@/components/Scroll'
 import { REMOVE_TRADEPAIR_KLINE_DATA } from '@/store/modules/AccountsStore' 
+import { ZH_CN } from '@/locales/index'
 
 const TAG_ALL = 'All', TAG_XCN = 'XCN', TAG_XLM = 'XLM', TAG_BTC = 'BTC', TAG_ETH = 'ETH', TAG_CUSTOM = '_CUSTOM', TAG_XFF = 'XFF'
 
-const TAGS = [TAG_XCN, TAG_BTC, TAG_XLM, TAG_CUSTOM]
+const TAGS_ZH_CN = [TAG_XCN, TAG_BTC, TAG_XLM, TAG_CUSTOM]
+const TAGS_OTHER = [TAG_XLM, TAG_BTC, TAG_XCN, TAG_CUSTOM]
 
 export default {
   data(){
@@ -149,8 +151,8 @@ export default {
 
       showaccountsview: false,
       selectedItem: null,
-      // allTags: TAGS,
-      // allTagsLabel: []
+      allTags: [],
+      allTagsLabel: []
 
     }
   },
@@ -166,29 +168,11 @@ export default {
       sysTradePairs: state => state.accounts.defaultTradePairs,
       tradePairsStat: state => state.accounts.tradePairsStat,
       lastUpdateTradePairStatTime: state => state.accounts.lastUpdateTradePairStatTime,
-
+      app: state => state.app
     }),
     ...mapGetters([
       'balances',
     ]),
-    allTags(){
-      let result = []
-      for(let key in this.sysTradePairs){
-        result.push(key)
-      }
-      result.push(TAG_CUSTOM)
-      return result;
-    },
-    allTagsLabel(){
-      let n = this.allTags.length
-      if(n>=1)n--
-      let result = []
-      for(let i=0;i<n;i++){
-        result.push(this.allTags[i])
-      }
-      result.push(this.$t('custom'))
-      return result
-    },
     readLabelTxt(){
       if(this.lastUpdateTradePairStatTime){
         return this.$t('lastUpdate')+':' + new moment(this.lastUpdateTradePairStatTime).format('YYYY-MM-DD HH:mm:ss')
@@ -206,6 +190,10 @@ export default {
           let idt = isNativeAsset(item.to) ? 'XLM' : item.to.code +'-'+item.to.issuer
           custom_ids.push(idf+'_'+idt)
           custom_ids.push(idt+'_'+idf)
+      })
+
+      custom.sort((a,b)=>{
+        return a.from.code.localeCompare(b.from.code)
       })
 
       let syspairs = Object.assign({}, this.sysTradePairs)
@@ -280,6 +268,16 @@ export default {
   watch:{
   },
   beforeMount(){
+    let locale = this.app.locale
+    if(locale && locale.key !== ZH_CN.key){
+      this.allTags = TAGS_OTHER
+      this.allTagsLabel = [TAG_BTC, TAG_XLM, TAG_XCN, this.$t('custom')]
+    }else{
+      this.allTags = TAGS_ZH_CN
+      this.allTagsLabel = [TAG_XCN, TAG_BTC, TAG_XLM, this.$t('custom')]
+    }
+    this.filterTag = TAGS_OTHER[0]
+    
     //保存默认的交易对
     // this.saveDefaultTradePairs()
     // let custom = this.tradepairs.custom

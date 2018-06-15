@@ -3,7 +3,7 @@
  */
 <template>
   <div class="terms-service-page">
-    <v-toolbar dark class="tbar primary" dense app>
+    <v-toolbar class="tbar primary">
       <v-btn icon v-show="showbackicon" @click="goback" class="white--text">
             <v-icon class="back-icon">&#xE5CB;</v-icon>
       </v-btn>
@@ -75,9 +75,13 @@ export default {
 .page-content
   position: fixed
   top: 52px
+  top: calc(42px + constant(safe-area-inset-top))
+  top: calc(42px + env(safe-area-inset-top))
   left: 0
   right: 0
   bottom: 56px
+  bottom: calc(56px + constant(safe-area-inset-bottom))
+  bottom: calc(56px + env(safe-area-inset-bottom))
   color: $secondarycolor.font
   overflow-y:auto
   font-size: 14px
@@ -92,6 +96,8 @@ export default {
 .footer
   position: fixed
   bottom: 0
+  bottom: constant(safe-area-inset-bottom)
+  bottom: env(safe-area-inset-bottom)
   left: 0
   right: 0
   z-index: 99

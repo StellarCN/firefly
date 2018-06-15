@@ -58,7 +58,9 @@ export default {
 @require '../stylus/color.styl'
 .back-icon
   font-size: 32px
-
+.create-account-page.page
+  .footer
+    background: $primarycolor.green!important
 .create-account-page
   background: $primarycolor.green
   color: $primarycolor.font
@@ -80,6 +82,8 @@ export default {
   .back-btn
     position: absolute
     top: 10px
+    top: calc(10px + constant(safe-area-inset-top))
+    top: calc(10px + env(safe-area-inset-top))
     left: 10px
   .footer
     position: fixed
@@ -87,10 +91,13 @@ export default {
     left: 0
     right: 0
     z-index: 99
-    background: $secondarycolor.green
-    height: 42px
-    line-height: 42px
+    // background: $secondarycolor.green
     font-size: 16px
     text-align: center
+    padding-top: 8px
+    padding-bottom: 8px
+    padding-bottom: constant(safe-area-inset-bottom)
+    padding-bottom: env(safe-area-inset-bottom)
+
 
 </style>

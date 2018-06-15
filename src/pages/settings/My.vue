@@ -3,7 +3,7 @@
 * @Author: mazhaoyong@gmail.com
 * @Date: 2018-01-23 11:14:24
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-04-08 17:06:19
+ * @Last Modified time: 2018-06-13 12:27:40
 * @License: MIT
 */
 <template>
@@ -86,6 +86,11 @@ export default {
                     icon: "bookmark"
                 },
                 {
+                    title: 'kyc',
+                    name: 'KYC',
+                    icon: "security"
+                },
+                {
                     title: "Menu.Settings",
                     name: "Settings",
                     icon: "settings"
@@ -136,6 +141,19 @@ export default {
               this.$router.push({name:'AccountNameCard'})
         },
         redirect(name){
+            //帮助页面单独做
+            // if('Help' === name){
+            //     let site = 'https://wallet.fchain.io/manual'+'?'+Math.random()
+            //     let title = this.$t('Menu.Help')
+            //     this.$router.push({name: 'DAppOpener', params: { site, title} })
+            //     return;
+            // }
+            // if('kyc' === name){//打开KYC的界面
+            //     let site = 'https://fchain.io/kyc/accounts/login/?next=/portal/'+'?'+Math.random()
+            //     let title = this.$t('kyc')
+            //     this.$router.push({name: 'DAppOpener', params: { site, title} })
+            //     return;
+            // }
             this.$router.push({name})
         },
         showAccounts(){

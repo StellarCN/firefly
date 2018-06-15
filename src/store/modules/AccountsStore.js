@@ -1,13 +1,13 @@
 // 钱包账户地址
 import { createAccount as createAccountApi, readAccounts,
     saveAccounts, readAccountData, saveAccountData,deleteAccountData,
-    saveTradePairData,readTradePairData } from '../../api/storage'
-import { getDefaultTradePairs,getDefaultSysTradePairAndStat, getTradePairStat } from '../../api/gateways'
-import { getOrderbook } from '../../api/orderbook'
-import { getAsset, assetKey } from '../../api/assets'
-import { fetchEffects } from '../../api/effects'
-import { queryOffer } from '../../api/offer'
-
+    saveTradePairData,readTradePairData } from '@/api/storage'
+import { getDefaultTradePairs,getDefaultSysTradePairAndStat, getTradePairStat } from '@/api/gateways'
+import { getOrderbook } from '@/api/orderbook'
+import { getAsset, assetKey } from '@/api/assets'
+import { fetchEffects } from '@/api/effects'
+import { queryOffer } from '@/api/offer'
+import sjcl from 'sjcl'
 
 export const LOAD_ACCOUNTS = 'LOAD_ACCOUNTS'
 export const CHANGE_ACCOUNT = 'CHANGE_ACCOUNT'
@@ -309,6 +309,26 @@ const actions = {
   //查询我的委单（所有的，需要手动过滤）
   async queryMyOffers({dispatch,commit,state}){
     let records = await queryOffer(state.selectedAccount.address)
+    //如果数据不相同，则更新当前界面的account
+    try{
+      let originData = state.selectedTradePair.my
+      if(Array.isArray(originData) || !originData.records){
+        await dispatch('getAccountInfo', state.selectedAccount.address)
+      }else{
+        let d1 = JSON.stringify(originData.records)
+        let d2 = JSON.stringify(records.records)
+        // console.log('---hash---,d1:'+d1+"....d2:"+d2 )
+        let s1 = sjcl.hash.sha256.hash(d1)
+        let s2 = sjcl.hash.sha256.hash(d2)
+        // console.log('---hash---,s1:'+s1+"....s2:"+s2 )
+        if(s1!==s2){
+          await dispatch('getAccountInfo', state.selectedAccount.address)
+        }
+      }
+    }catch(err){
+      console.error(err)
+    }
+
     commit(QUERY_MY_OFFERS,records)
   },
   //盘面监听得到数据后处理

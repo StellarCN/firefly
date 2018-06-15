@@ -248,9 +248,9 @@ export default {
     //费用
     fee(){
       if(this.amount!= null && this.amount > 0){
-        return new Decimal(this.amount).times(
-            new Decimal(this.step2data.fee_percent||0)
-          ).add(this.step2data.fee_fixed||0).toNumber().toFixed(7)
+        return new Decimal(this.amount)
+          .times(this.step2data.fee_percent||1)
+          .add(this.step2data.fee_fixed||0).toNumber().toFixed(7)
       }
       return null
     },
@@ -501,22 +501,32 @@ export default {
 .confirm-wrapper
   position: fixed
   bottom: 0
+  // bottom: constant(safe-area-inset-bottom)
+  // bottom: env(safe-area-inset-bottom)
   right: 0
   left: 0
   top: 0
+  // top: constant(safe-area-inset-top)
+  // top: env(safe-area-inset-top)
   z-index: 9
 .confirm-blank
   background: $primarycolor.gray
   opacity: .8
   position: fixed
   bottom: 320px
+  bottom: calc(320px + constant(safe-area-inset-bottom))
+  bottom: calc(320px + env(safe-area-inset-bottom))
   right: 0
   left: 0
   top: 0
+  // top: constant(safe-area-inset-top)
+  // top: env(safe-area-inset-top)
   z-index: 9
 .confirm-dlg
   background: $secondarycolor.gray
   height: 320px
+  height: calc(320px + constant(safe-area-inset-bottom))
+  height: calc(320px + env(safe-area-inset-bottom))
   position: fixed
   bottom: 0
   right: 0

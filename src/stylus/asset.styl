@@ -209,6 +209,8 @@
   // padding-bottom: 10px
   position:fixed
   bottom: .1rem
+  bottom: calc(.1rem + constant(safe-area-inset-bottom))
+  bottom: calc(.1rem + env(safe-area-inset-bottom))
   left: 0
   right: 0
   // background-color:$secondarycolor.gray

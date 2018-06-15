@@ -507,7 +507,11 @@
   "no_mnemonic_msg":"没有助记词!",
   "bids_max_price":"买单最高价",
   "asks_min_price":"卖单最低价",
-  "hot_dapp":"热门应用"
+  "hot_dapp":"热门应用",
+  "kyc":"实名认证",
+  "kyc_active":"完成实名认证，免费激活",
+  "help_active":"查看激活帮助说明",
+  "deal_price":"成交价格"
 
  
  
