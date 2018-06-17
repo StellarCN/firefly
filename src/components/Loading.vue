@@ -117,6 +117,7 @@ export default {
   padding-top: 10vh
   color: $secondarycolor.font
   font-size: 16px
+  word-wrap: break-word
 .load-close-btn
   padding-top: 15vh
   font-size: 16px
