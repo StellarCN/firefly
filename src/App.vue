@@ -77,9 +77,15 @@ export default {
     '$route'(to,from){
       if(this.tabBarItems.indexOf(to.name) >= 0){
         this.tabBarShow = true
+        this.$store.commit('SHOW_TABBAR')
       }else{
         this.tabBarShow = false
+        this.$store.commit('HIDE_TABBAR')
       }
+    },
+    showTabbar(value){
+      console.log('-------------2:'+value)
+      this.tabBarShow = value
     }    
   },
   computed: {
@@ -89,14 +95,18 @@ export default {
       alldata: state => state,
       address: state => state.accounts.selectedAccount.address,
       iosstatusbarcolor: state => state.iosstatusbarcolor,
-      accounts: state => state.accounts.data
-    })
+      accounts: state => state.accounts.data,
+      showTabbar: state => state.showTabbar,
+    }),
   },
-  mixins: [],
+  mixins: [updateMixin],
   beforeMount() {
-    
+    console.log('-----------------------------1:'+this.$route.name)
     if(this.tabBarItems.indexOf(this.$route.name) >=0 ){
       this.tabBarShow = true
+      this.$store.commit('SHOW_TABBAR')
+    }else{
+      this.$store.commit('HIDE_TABBAR')
     }
     Vue.cordova.on("deviceready", () => {
       initCordovaPlugin()
@@ -273,6 +283,12 @@ export default {
     doUpdate(){
       this.updating = true
       this.checkForUpdates()
+    },
+    showTabbarView(){
+      this.tabBarShow = true
+    },
+    hideTabbarView(){
+      this.tabBarShow = false
     }
     // toPicklanguage(){
     //   this.$router.push({name:'Picklanguage'})

@@ -12,6 +12,10 @@ var Base64 = require('js-base64').Base64
 
 Vue.use(Vuex)
 
+export const SHOW_TABBAR = 'SHOW_TABBAR'
+export const HIDE_TABBAR = 'HIDE_TABBAR'
+
+
 const state = {
   showloading: false,
   error: null,
@@ -26,6 +30,7 @@ const state = {
   memo: null,
   iosstatusbarcolor: 'primary',
   onpause: false,//is app on pause
+  showTabbar: true,//是否显示tabbar
 
 }
 
@@ -116,7 +121,14 @@ const mutations = {
   },
   ON_RESUME(state){
     state.onpause = false
+  },
+  [SHOW_TABBAR](state){
+    state.showTabbar = true
+  },
+  [HIDE_TABBAR](state){
+    state.showTabbar = false
   }
+  
 }
 
 const blocks = [
@@ -129,6 +141,7 @@ const blocks = [
   'accountpassword',
   'password',
   'memo',
+  'showTabbar',
   'accounts.password',
   'accounts.error',
   'accounts.accountData.seed',
