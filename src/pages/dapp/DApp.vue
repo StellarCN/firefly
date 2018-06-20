@@ -1,15 +1,25 @@
 // 第三方应用列表界面
 <template>
-  <div class="page" dark>
+  <div class="page" dark  v-bind:class="{hidebackground: showScanner}">
     <toolbar :title="$t('Title.ThirdApp')" :showbackicon="true"  @goback="back" 
-      :shadow="false" lockpass  ref="toolbar">
+      :shadow="false" lockpass  ref="toolbar" v-if="!showScanner">
       <!--右侧打开设置界面-->
       <v-btn icon slot='right-tool' @click="toSetting">
         <i class="material-icons">extension</i>
       </v-btn>
     </toolbar>
+    <toolbar :title="$t('Title.Scan')" 
+      :showmenuicon="false" 
+      :showbackicon="false"
+      ref="toolbar"
+      v-else
+      :shadow=false
+      >
+      <i class="material-icons" slot="right-tool" 
+        @click="qrclose">&#xE5CD;</i>
+   </toolbar> 
     
-    <v-container fluid v-bind="{ [`grid-list-md`]: true }">
+    <v-container fluid v-bind="{ [`grid-list-md`]: true }" v-if="!showScanner">
       <div class="dapp-subtitle subheading pl-2">{{$t('hot_dapp')}}</div>
       <card padding="8px 0" margin="0 0" v-if="working">
         <div class="mt-5 textcenter">
@@ -156,6 +166,13 @@
       @exit="exitSignXDREvent"
       @success="successSignXDREvent"
       />
+    
+   <q-r-scan
+      @finish="qrfinish"
+      @close="qrclose"
+      :validator="qrvalidator"
+      ref="qrscanner"
+      v-if="showScanner"></q-r-scan>
 
   </div>
 </template>
@@ -173,11 +190,16 @@ import RecoveryData from '@/components/dapp/RecoveryData'
 import TrustLine from '@/components/dapp/TrustLine'
 import BackUpData from '@/components/dapp/BackUpData'
 import SignXDR from '@/components/dapp/SignXDR'
+import QRScan from '@/coponents/QRScan'
 import { FFWScript, FFW_EVENT_TYPE_PAY,FFW_EVENT_TYPE_PATHPAYMENT,FFW_EVENT_TYPE_SIGN
-   ,FFW_EVENT_TYPE_BACKUP,FFW_EVENT_TYPE_RECOVERY,FFW_EVENT_TYPE_TRUST,FFW_EVENT_TYPE_SIGNXDR } from '@/api/ffw'
+   ,FFW_EVENT_TYPE_BACKUP,FFW_EVENT_TYPE_RECOVERY,FFW_EVENT_TYPE_TRUST,
+   FFW_EVENT_TYPE_SIGNXDR, FFW_EVENT_TYPE_SHARE,
+   FFW_EVENT_TYPE_SCAN } from '@/api/ffw'
 import { signToBase64, verifyByBase64 } from '@/api/keypair'
 import isJson from '@/libs/is-json'
 import debounce from 'lodash/debounce'
+
+const COLOR_GREEN = '#21CE90'
 
 // export const FFW_EVENT_TYPE_PAY = 'pay'
 // export const FFW_EVENT_TYPE_PATHPAYMENT = 'pathPayment'
@@ -189,6 +211,7 @@ import debounce from 'lodash/debounce'
 export default {
   data(){
     return {
+      statusbarColor: COLOR_GREEN,
       apps: [],
       working: false,
       err: null,
@@ -206,6 +229,7 @@ export default {
       apptitle: null,
       appsite: null,
       addingApp: false,
+      showqrscan: false,
     }
   },
    computed:{
@@ -258,16 +282,21 @@ export default {
     openApp(){
       localStorage.setItem(this.choosed.site, "confirm")
       this.showConfirmDlg = false
+      let color = this.choosed.color || this.statusbarColor
+      if(StatusBar){
+        StatusBar.backgroundColorByHexString(color);
+        // this.$store.commit('CHANGE_IOSSTATUSBAR_COLOR', 'error');
+      }
       if(cordova.platformId === 'browser'){
         this.appInstance = cordova.InAppBrowser.open(this.choosed.site, '_blank', 'location=yes,toolbar=yes,toolbarcolor=#21ce90');
       }else{
         this.appInstance = cordova.ThemeableBrowser.open(this.choosed.site, '_blank', {
               statusbar: {
-                  color: '#21ce90'
+                  color: color
               },
               toolbar: {
                   height: 44,
-                  color: '#21ce90'
+                  color: color
               },
               browserProgress: {
                 showProgress: true,
@@ -300,6 +329,11 @@ export default {
       this.appInstance.addEventListener('closePressed',()=>{
         this.appInstance.close()
         this.appInstance = undefined
+        this.statusbarColor = COLOR_GREEN
+        if(StatusBar){
+          StatusBar.backgroundColorByHexString(this.statusbarColor);
+          this.$store.commit('CHANGE_IOSSTATUSBAR_COLOR', 'primary');
+        }
       })
       this.appInstance.addEventListener('loadstop',() => {
         //let script = `if(!window.FFW){window.FFW = {};FFW.address = "${this.account.address}";FFW.pay = function(destination,code,issuer,amount,memo_type,memo){ var params = { type:'pay',destination: destination, code: code, issuer: issuer, amount: amount, memo_type: memo_type, memo: memo };cordova_iab.postMessage(JSON.stringify(params));};};`
@@ -330,6 +364,15 @@ export default {
           that.appEventType = e.data.type
           that.appEventData = e.data
           that.doSign(e)
+        }else if(type == FFW_EVENT_TYPE_SCAN){
+          that.appEventType = e.data.type;
+          that.appEventData = e.data
+          this.showScanner = true;
+          that.doQRScanEvent(e);
+        }else if(type == FFW_EVENT_TYPE_SHARE){
+          that.appEventType = e.data.type;
+          that.appEventData = e.data
+          that.doShare(e);
         }else{  
           that.appEventType = e.data.type
           that.appEventData = e.data
@@ -501,7 +544,45 @@ export default {
           })
 
 
-    }
+    },
+    doShare(e){
+      try{
+        let options = e.data.options
+        window.plugins.socialsharing.shareWithOptions(options, result=>{
+          this.successEvent("share ok", result);
+          // console.log("Share completed? " + result.completed); // On Android apps mostly return false even while it's true
+          // console.log("Shared to app: " + result.app); // On Android result.app is currently empty. On iOS it's empty when sharing is cancelled (result.completed=false)
+        }, msg=>{
+          // console.log("Sharing failed with message: " + msg);
+          this.exitEvent(msg);
+        });
+      }catch(err){
+        console.error(err)
+      }
+    },
+    doQRScanEvent(e){
+      try{
+        this.appInstance.hide()
+        this.showScanner = true
+      }catch(err){
+        console.error(err)
+        //alert('error:'+err.message)
+      }
+    },
+    qrvalidator(text){
+      if(!text)return false
+      return true;
+    },
+    qrfinish(result){
+      this.showScanner = false
+      this.successEvent('success',data);
+    },
+    qrclose(){
+      this.showScanner = false
+      this.$refs.qrscanner.closeQRScanner();
+      this.exitEvent('qrscan closed')
+
+    },
     
 
 
@@ -515,6 +596,7 @@ export default {
     RecoveryData,
     BackUpData,
     SignXDR,
+    QRScan,
   }
 }
 </script>
@@ -560,4 +642,6 @@ export default {
   color: $secondarycolor.font
 .add-app-avatar
   background: $secondarycolor.gray!important
+.hidebackground
+  background: none!important
 </style>
