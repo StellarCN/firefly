@@ -146,7 +146,7 @@
   "ChinaPublic":"中国公共地址",
   "WanCloud":"万云公共地址",
   "SaveHorizonSuccess":"保存恒星公网节点地址成功",
-  "Error.SaveHorizonFial": "保存恒星公网节点地址失败",
+  "Error.SaveHorizonFail": "保存恒星公网节点地址失败",
 
   "FederationName": "联邦账户名",
   "FederationName.Description": "本服务由 fed.network 提供，你可以访问该网站以了解更多的信息。在这里你可以注册一个诸如 name*fed.network 的用户名，其他用户可以通过该用户名给你发送资产。但是需要注意的是本服务只是为了让用户便于输入地址，还请用户自行核对解析后的地址是否正确。注册一个地址需要支付 0.5 XLM。取消注册需要支付 1 XLM。",

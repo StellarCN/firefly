@@ -151,7 +151,7 @@
   "ChinaPublic":"China Public",
   "WanCloud":"WanCloud",
   "SaveHorizonSuccess":"save public network URL success",
-  "Error.SaveHorizonFial": "save public network URL failed",
+  "Error.SaveHorizonFail": "save public network URL failed",
 
   "FederationName": "Federation Name",
   "FederationName.Description": "This service is provided by fed.network, you can visit this website for more information. Here you can register a username such as name*fed.network, and other users can send the asset to you with it. However, it should be noted that this service is only for the convenience of the user in inputting the address, please recheck the really address by yourself. To register for an address you need to pay 0.5 XLM. To ungegister for an address you need to pay 1 XLM.",
