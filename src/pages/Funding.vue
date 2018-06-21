@@ -61,7 +61,7 @@
                 <div v-if="Array.isArray(standardDepositData.how)">
                   <div class="deposit_info" v-for="(value,index) in standardDepositData.how" @click="copy(value)" :key="index">{{value}}</div>
                 </div>
-                <div class="deposit_info" @click="copy(standardDepositData.how)" v-else>2{{standardDepositData.how}}</div>
+                <div class="deposit_info" @click="copy(standardDepositData.how)" v-else>{{standardDepositData.how}}</div>
                 <div class="extra_info" v-if="standardDepositData.eta!= undefined">{{$t('DW.DepositInfo.eta',[standardDepositData.eta])}}</div>
                 <div class="extra_info" v-if="standardDepositData.min_amount!=undefined">{{$t('DW.DepositInfo.min', [standardDepositData.min_amount])}}{{selectedasset.code}}</div>
                 <div class="extra_info" v-if="standardDepositData.max_amount!=undefined">{{$t('DW.DepositInfo.max', [standardDepositData.max_amount])}}{{selectedasset.code}}</div>
