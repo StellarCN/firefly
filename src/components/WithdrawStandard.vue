@@ -8,13 +8,13 @@
 
  */
 <template>
-<div class="withdraw_wrapper">
+<div class="withdraw_wrapper" v-bind:class="{hidebackground: showScanner}">
   <loading :show="onsend" :loading="sending" :success="sendsuccess" :fail='sendfail' 
     :title="loadingTitle" :msg="loadingMsg" :closeable="sendfail" @close="hiddenLoadingView"
     />
 
   <!--第1步-->
-  <div class="wcard-content" v-if="step === 1">
+  <div class="wcard-content" v-if="step === 1 && !showScanner">
       <div class="field_select" >
         <div class="label">{{$t('DW.Withdraw.ForwardType')}}</div>
        <v-select
@@ -35,7 +35,8 @@
       </div>
      
       <div class="field_select" >
-        <div class="label">{{$t('DestinationAddress')}}</div>
+        <div class="label" @click="switchScanner">{{$t('DestinationAddress')}}
+          <span class="ml-2 title2">({{$t('Title.Scan')}})</span></div>
         <v-text-field class="field_input"  name="dest" 
           v-model="dest"
           dark
@@ -57,7 +58,7 @@
   </div>
 
   <!--第2步的界面-->
-    <div class="wcard-content" v-if="step === 2 && step2data">    
+    <div class="wcard-content" v-if="step === 2 && step2data  && !showScanner">    
       <div class="field_select" v-if="step2data.eta!= null && typeof step2data.eta!='undefined'">
         <div class="hint">{{$t('DW.Withdraw.eta',[step2data.eta])}}</div>
       </div>
@@ -120,7 +121,7 @@
     </div>
 
     <!--第3步，用户确认界面-->
-    <div class="confirm-wrapper"  v-if="step === 3">
+    <div class="confirm-wrapper"  v-if="step === 3  && !showScanner">
       <div class="confirm-blank"></div>
       <div  class="confirm-dlg">
       <v-bottom-sheet v-model="confirmSheetView" persistent dark >
@@ -163,8 +164,14 @@
     </div>
 
   
-  <contact-book v-if="showbook" :data="bookdata" :close="()=>{showbook=false}" :ok="afterBookChose"/>
-
+  <contact-book v-if="showbook  && !showScanner" :data="bookdata" :close="()=>{showbook=false}" :ok="afterBookChose"/>
+  
+   <q-r-scan
+      @finish="qrfinish"
+      @close="qrclose"
+      :validator="qrvalidator"
+      ref="qrscanner"
+      v-if="showScanner"></q-r-scan>
 
 
 </div>
@@ -179,7 +186,7 @@ import Card from './Card'
 import { xdrMsg,getXdrResultCode } from '@/api/xdr'
 import  defaultsDeep  from 'lodash/defaultsDeep'
 import { Decimal } from 'decimal.js'
-
+import QRScan from '@/components/QRScan'
 export default {
   data(){
     return {
@@ -197,6 +204,7 @@ export default {
       num:null,//数量百分比
       amount: null,//提交的数量
       showbook: false,
+      showScanner: false,
 
 
       working: false,//是否正在处理
@@ -466,6 +474,29 @@ export default {
     },
     resetStep(){
       this.step = 1
+    },
+    switchScanner(){
+      this.showScanner = !this.showScanner
+      if(this.showScanner){
+        this.$emit('showScanner')
+      }
+    },
+    qrvalidator(text){
+      if(!text)return false
+      return true;
+    },
+    qrfinish(result){
+      this.showScanner = false
+      this.dest = result
+      this.$emit('closeScanner')
+      //this.secretkey = result
+    },
+    qrclose(){
+      this.showScanner = false
+      this.$emit('closeScanner')
+    },
+    doCloseQRScanner(){
+      this.$refs.qrscanner.closeQRScanner()
     }
 
   },
@@ -473,7 +504,8 @@ export default {
   components:{
     Loading,
     ContactBook,
-    Card
+    Card,
+    QRScan,
   }
   
 
@@ -562,4 +594,7 @@ export default {
   padding-bottom: 0px
   padding-left: 0
   padding-right: 0
+.title2
+  color: $primarycolor.green
+  font-size: 13px
 </style>

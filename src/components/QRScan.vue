@@ -56,7 +56,7 @@ export default {
           this.closeQRScanner()
         }else{
           // 成功
-          QRScanner.cancelScan(function(){
+          QRScanner.destroy(function(status){
             console.log('cancelScan qrscanner')
           })
           this.$emit('finish',result)
@@ -88,7 +88,7 @@ export default {
     this.removeClass(page,HIDE_CLASSNAME)
     //var loading = window.document.querySelector('.loading')
     //this.removeClass(loading,'hide')
-    QRScanner.cancelScan(function(status){
+    QRScanner.destroy(function(status){
       console.log(status)
     })
   },
@@ -113,7 +113,9 @@ export default {
         })
     },
     closeQRScanner(){
-      QRScanner.cancelScan()
+      QRScanner.destroy(function(status){
+        console.log('destory qrscanner :' + status)
+      })
       this.$emit('close')
     },
     openFlashLight(){

@@ -17,6 +17,8 @@ export const FFW_EVENT_TYPE_BACKUP = 'backup'
 export const FFW_EVENT_TYPE_RECOVERY = 'recovery'
 export const FFW_EVENT_TYPE_TRUST = 'trust'
 export const FFW_EVENT_TYPE_SIGNXDR = 'signXDR'
+export const FFW_EVENT_TYPE_SCAN = 'scan'
+export const FFW_EVENT_TYPE_SHARE = 'share'
 
 export function FFWScript(address, data = {}, isIos = false, platform){
   // return [
@@ -31,6 +33,7 @@ export function FFWScript(address, data = {}, isIos = false, platform){
   let method = isIos ? 'window.webkit.messageHandlers.cordova_iab' : 'cordova_iab'
   let appdata = Object.assign({contacts:[], myaddresses:[]},data);
   let version = pkg.version
+  let uuid = device.uuid
   return `if(!window.FFW){
       window.FFW = {};
       FFW.version = "${version}";
@@ -38,6 +41,7 @@ export function FFWScript(address, data = {}, isIos = false, platform){
       FFW.address = "${address}";
       FFW.contacts = "${appdata.contacts}";
       FFW.myaddresses = "${data.myaddresses}";
+      FFW.uuid = "${uuid}";
       FFW.callbackObjs = {}
 
       FFW.addCallback = function(id,fn){
@@ -45,13 +49,13 @@ export function FFWScript(address, data = {}, isIos = false, platform){
       };
 
       FFW.callback = function(id, data){
-        var fn = FFW.callbackObjs[id]
+        var fn = FFW.callbackObjs[id];
         if(fn === undefined){
           fn = window[id];
         }
         if(fn === undefined){
           throw new Error('no callback function');
-          return
+          return;
         }
         fn.apply(this,[data]);
         delete FFW.callbackObjs[id];    
@@ -59,13 +63,7 @@ export function FFWScript(address, data = {}, isIos = false, platform){
 
       FFW.pay = function(data,callback){ 
         var params = { type:'pay',destination: data.destination, code: data.code, issuer: data.issuer, amount: data.amount, memo_type: data.memo_type, memo: data.memo};
-        if(typeof callback === 'function'){
-          var id = 'FFW_CB_' + new Date().getTime();
-          FFW.addCallback(id, callback);
-          params['callback'] = id;
-        }else{
-          params['callback'] = callback;
-        }
+        params = genParams(params, callback);
         try{
           ${method}.postMessage(JSON.stringify(params));  
         }catch(err){
@@ -75,13 +73,7 @@ export function FFWScript(address, data = {}, isIos = false, platform){
       };
       FFW.pathPayment = function(data,callback){ 
         var params = { type:'pathPayment',destination: data.destination, code: data.code, issuer: data.issuer, amount: data.amount, memo_type: data.memo_type, memo: data.memo };
-        if(typeof callback === 'function'){
-          var id = 'FFW_CB_' + new Date().getTime();
-          FFW.addCallback(id, callback);
-          params['callback'] = id;
-        }else{
-          params['callback'] = callback;
-        }
+        params = genParams(params, callback);
         try{
           ${method}.postMessage(JSON.stringify(params));  
         }catch(err){
@@ -92,13 +84,7 @@ export function FFWScript(address, data = {}, isIos = false, platform){
 
       FFW.sign = function(data,callback){
         var params = { type: 'sign', data: data};
-        if(typeof callback === 'function'){
-          var id = 'FFW_CB_' + new Date().getTime();
-          FFW.addCallback(id, callback);
-          params['callback'] = id;
-        }else{
-          params['callback'] = callback;
-        }
+        params = genParams(params, callback);
         try{
           ${method}.postMessage(JSON.stringify(params));  
         }catch(err){
@@ -109,13 +95,7 @@ export function FFWScript(address, data = {}, isIos = false, platform){
 
       FFW.signXDR = function(data,message,callback){
         var params = { type: 'signXDR', data: data, message: message };
-        if(typeof callback === 'function'){
-          var id = 'FFW_CB_' + new Date().getTime()
-          FFW.addCallback(id, callback)
-          params['callback'] = id
-        }else{
-          params['callback'] = callback
-        }
+        params = genParams(params, callback);
         try{
           ${method}.postMessage(JSON.stringify(params));  
         }catch(err){
@@ -127,13 +107,7 @@ export function FFWScript(address, data = {}, isIos = false, platform){
 
       FFW.backup = function(callback){
         var params = { type: 'backup'};
-        if(typeof callback === 'function'){
-          var id = 'FFW_CB_' + new Date().getTime();
-          FFW.addCallback(id, callback);
-          params['callback'] = id;
-        }else{
-          params['callback'] = callback;
-        }
+        params = genParams(params, callback);
         try{
           ${method}.postMessage(JSON.stringify(params));  
         }catch(err){
@@ -143,13 +117,7 @@ export function FFWScript(address, data = {}, isIos = false, platform){
       };
       FFW.recovery = function(data,callback){
         var params = { type: 'recovery', data: data };
-        if(typeof callback === 'function'){
-          var id = 'FFW_CB_' + new Date().getTime();
-          FFW.addCallback(id, callback);
-          params['callback'] = id;
-        }else{
-          params['callback'] = callback;
-        }
+        params = genParams(params, callback);
         try{
           ${method}.postMessage(JSON.stringify(params));  
         }catch(err){
@@ -159,6 +127,39 @@ export function FFWScript(address, data = {}, isIos = false, platform){
       };
       FFW.trust = function(code,issuer,callback){
         var params = { type: 'trust', code: code, issuer: issuer };
+        params = genParams(params, callback);
+        try{
+          ${method}.postMessage(JSON.stringify(params));  
+        }catch(err){
+          console.error(err);
+          FFW.callback(params['callback'] ,{code:"fail",message:err.message});
+        }
+      };
+
+      FFW.scan = function(callback){
+        var params = { type: 'scan'};
+        params = genParams(params, callback);
+        try{
+          ${method}.postMessage(JSON.stringify(params));  
+        }catch(err){
+          console.error(err);
+          FFW.callback(params['callback'] ,{code:"fail",message:err.message});
+        }
+      };
+
+      FFW.share = function(options,callback){
+        var params = { type: 'share', options: options };
+        params = genParams(params, callback);
+        try{
+          ${method}.postMessage(JSON.stringify(params));  
+        }catch(err){
+          console.error(err);
+          FFW.callback(params['callback'] ,{code:"fail",message:err.message});
+        }
+      };
+
+      function genParams(param, callback){
+        var params = Object.assign({}, param);
         if(typeof callback === 'function'){
           var id = 'FFW_CB_' + new Date().getTime();
           FFW.addCallback(id, callback);
@@ -166,12 +167,7 @@ export function FFWScript(address, data = {}, isIos = false, platform){
         }else{
           params['callback'] = callback;
         }
-        try{
-          ${method}.postMessage(JSON.stringify(params));  
-        }catch(err){
-          console.error(err);
-          FFW.callback(params['callback'] ,{code:"fail",message:err.message});
-        }
+        return params;
       };
       
     };`

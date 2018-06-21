@@ -341,11 +341,7 @@ export default {
     },
     scan(){
       //只能识别stargazer类似的格式数据
-      if(this.showScanner){
-        this.showScanner = false
-      }else{
-        this.showScanner = true
-      }
+      this.showScanner = !this.showScanner
     },
     qrvalidator(text){
       if(!text)return false
@@ -479,15 +475,16 @@ export default {
           this.loadingTitle = this.$t('SendAssetSuccess')
           try{
             this.getAccountInfo(this.account.address)
+            setTimeout(()=>{
+              this.onsend=false
+              this.sendsuccess = false //
+              //this.$router.back()
+              this.cleanData()
+              },3000)
           }catch(err){
             console.error(err)
           }
-          setTimeout(()=>{
-            this.onsend=false
-            this.sendsuccess = false //
-            //this.$router.back()
-            this.cleanData()
-            },3000)
+          
         })
         .catch(err=>{
           console.log(err)
@@ -546,9 +543,6 @@ export default {
           this.fedSearching = true
           resolveByFedAddress(val)
             .then(data=>{
-              console.log(this)
-              console.log('--------')
-              console.log(data)
              this.setDataByFed(data)
             })
             .catch(err=>{

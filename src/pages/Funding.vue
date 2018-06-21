@@ -1,12 +1,17 @@
 <template>
-  <div class="page" dark>
+  <div class="page" dark v-bind:class="{hidebackground: scannerView}">
    <toolbar :title="$t(title)" 
       :showmenuicon="showmenuicon" 
       :showbackicon="showbackicon"
       ref="toolbar"
       :shadow=false
-      /> 
-    <div class="menu-wrapper">
+      >
+      <i class="material-icons" slot="right-tool" 
+        @click="closeQRScanner"
+        v-if="scannerView">&#xE5CD;</i>
+   </toolbar> 
+      
+    <div class="menu-wrapper" v-if="!scannerView">
       <ul class="menu-ul">
         <li :class="'menu-li ' + (active==='deposit'?'active':'')" @click="switchMenu('deposit')">{{$t('DW.Deposit')}}</li>
         <li :class="'menu-li ' + (active==='withdraw'? 'active':'')" @click="switchMenu('withdraw')">{{$t('DW.Withdraw')}}</li>
@@ -14,7 +19,7 @@
     </div>
 
     <div class="content">
-      <card padding="10px 10px">
+      <div class="pa-2">
         <div class="card-content" slot="card-content">
           <v-select
               v-bind:items="assets"
@@ -26,6 +31,7 @@
               dark
               :return-object="assetChoseReturnObject"
               @change="changeAsset"
+               v-show="!scannerView"
             >
             <template slot="selection" slot-scope="data">
               <span class="asset-select-code show">{{data.item.code}}</span>
@@ -55,7 +61,7 @@
                 <div v-if="Array.isArray(standardDepositData.how)">
                   <div class="deposit_info" v-for="(value,index) in standardDepositData.how" @click="copy(value)" :key="index">{{value}}</div>
                 </div>
-                <div class="deposit_info" @click="copy(standardDepositData.how)" v-else>2{{standardDepositData.how}}</div>
+                <div class="deposit_info" @click="copy(standardDepositData.how)" v-else>{{standardDepositData.how}}</div>
                 <div class="extra_info" v-if="standardDepositData.eta!= undefined">{{$t('DW.DepositInfo.eta',[standardDepositData.eta])}}</div>
                 <div class="extra_info" v-if="standardDepositData.min_amount!=undefined">{{$t('DW.DepositInfo.min', [standardDepositData.min_amount])}}{{selectedasset.code}}</div>
                 <div class="extra_info" v-if="standardDepositData.max_amount!=undefined">{{$t('DW.DepositInfo.max', [standardDepositData.max_amount])}}{{selectedasset.code}}</div>
@@ -83,6 +89,8 @@
             <withdraw-standard v-if="selectedasset && assetAccounts[selectedasset.issuer]"
               :homedomain="assetAccounts[selectedasset.issuer].home_domain"
               :asset="selectedasset"
+              @showScanner="showScanner"
+              @closeScanner="closeScanner"
               ref="withdraw"
             ></withdraw-standard>
             
@@ -91,7 +99,7 @@
          
         </div>
 
-      </card>
+      </div>
 
       <card margin="20px 0px" padding="10px 10px" class="withdraw_form_card" v-if="working">
         <div class="working" slot="card-content">
@@ -99,7 +107,7 @@
         </div>
       </card>
 
-      <card margin="20px 0px" padding="0 0" class="withdraw_form_card">
+      <card margin="20px 0px" padding="0 0" class="withdraw_form_card"  v-if="!scannerView">
         <div class="working fundinginfo" slot="card-content">
           {{$t('FundingInfo')}}
         </div>
@@ -153,6 +161,7 @@ export default {
       noticeText: '',  
       notice: false,
       withdrawurl: '',//提现的数据提交地址
+      scannerView: false,
     }
   },
   computed:{
@@ -381,6 +390,19 @@ export default {
       console.log(data)
       return data
     },
+    showScanner(){
+      this.scannerView = true
+      console.log('------------------show scanner------------')
+      this.$store.commit('HIDE_TABBAR')
+    },
+    closeScanner(){
+      this.scannerView = false
+      this.$store.commit('SHOW_TABBAR')
+    },
+    closeQRScanner(){
+      this.$refs.withdraw.doCloseQRScanner()
+      this.$store.commit('SHOW_TABBAR')
+    }
 
    
   },
@@ -494,5 +516,7 @@ export default {
   //   animation-timing-function: linear
   //   margin: auto auto
 
+.hidebackground
+  background: none
 </style>
 

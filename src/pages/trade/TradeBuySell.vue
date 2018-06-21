@@ -118,6 +118,10 @@
       <div @click="toKYC"><span class="underline">{{$t('kyc_active')}}</span></div>
     </div>
   </bottom-notice> 
+
+  <password-sheet
+    v-if="needpwd" @cancel="cancelpwd" @ok="rightpwd"
+    ></password-sheet>
   
 
     <!-- 确认内容 -->
@@ -183,6 +187,7 @@ import { getXdrResultCode } from '@/api/xdr'
 import { Decimal } from 'decimal.js'
 import debounce from 'lodash/debounce'
 import loadaccount from '@/mixins/loadaccount'
+import BottomNotice from '@/components/BottomNotice'
 
 const FLAG_BUY = 'buy'
 const FLAG_SELL = 'sell'
@@ -199,6 +204,8 @@ export default {
       sending: false,
       sendsuccess: false,
       sendfail: false,
+      txResult: null,
+
       price: null,//单价
       amount: null,//数量
       num: 0,
@@ -208,6 +215,7 @@ export default {
       showConfirmSheet: false,
       loadingTitle: null,
       loadingError: null,
+      needpwd: false,
 
     }
   },
@@ -438,6 +446,7 @@ export default {
       let seed = this.accountData.seed
       if(!seed){
         this.$toasted.error(this.$t('Error.NoPassword'))
+        this.needpwd = true;
         return
       }
       if(this.working)return
@@ -448,10 +457,11 @@ export default {
       this.sendfail = false
       this.working = true
       this.sending = true
+      this.txResult = null
       let option = {type:this.flag, // sell or buy
-        currency:this.BaseAsset.code,    //base   buying:  base ++  counter --
+        currency:this.BaseAsset.code,//base   buying:  base ++  counter --
         issuer: this.BaseAsset.issuer, 
-        base: this.CounterAsset.code,     //counter  selling : base -- counter ++
+        base: this.CounterAsset.code,//counter  selling : base -- counter ++
         base_issuer: this.CounterAsset.issuer, 
         amount:  Number(this.amount), 
         price: Number(this.price)
@@ -461,39 +471,53 @@ export default {
           this.sending = false
           this.sendsuccess = true
           this.sendfail = false
-          this.clean()
-          this.hideLoading()
+          
           //this.$toasted.show(this.$t('Trade.OfferSuccess'))
           this.loadingTitle = this.$t('Trade.OfferSuccess')
-
-          this.queryMyOffers().then(()=>{}).catch(err=>{console.error(err)});
-          //查询账户数据
-          this.getAccountInfo(this.account.address).then(()=>{}).catch(err=>{console.error(err)})
+          
           try{
+            this.txResult = data
+            this.loadingError = 'tx:'+data.hash
+            this.queryMyOffers().then(()=>{}).catch(err=>{console.error(err)});
+            //查询账户数据
+            this.getAccountInfo(this.account.address).then(()=>{}).catch(err=>{console.error(err)})
             this.$refs.orderbook.reload()
+            //隔10秒再查询一次
+            setTimeout(()=>{
+              this.getAccountInfo(this.account.address).then(()=>{}).catch(err=>{console.error(err)})
+            },10000)
           }catch(err){
             console.error(err)
           }
-          //隔10秒再查询一次
-          setTimeout(()=>{
-            this.getAccountInfo(this.account.address).then(()=>{}).catch(err=>{console.error(err)})
-          },10000)
-
+          this.clean()
+          this.hideLoading()
         })
         .catch(err=>{
           console.log(err)
           //this.sending = false;
-          this.sendfail = true;
-          this.sendsuccess = false
+         
           //this.clean();
           //this.hideLoading();
           //this.$toasted.error(this.$t('Error.OfferFailed'));
           this.loadingTitle = this.$t('Error.OfferFailed')
-          let errcode = getXdrResultCode(err);
-          if(errcode){
-            //this.$toasted.error(this.$t(errcode));
-            this.loadingError = this.$t(errorcode)
+          try{
+            let errcode = getXdrResultCode(err);
+            if(errcode){
+              //this.$toasted.error(this.$t(errcode));
+              this.loadingError = this.$t(errorcode)
+            }
+            if(err.data.details){
+              this.loadingError +=  ' ' + this.$t('Detail') + ':'+err.data.details
+            }
+            if(err.data.extras){
+              this.loadingError +=  '(xdr:' + err.data.extras.result_xdr+')'
+            }
+          }catch(err){
+            console.error(err)
           }
+          this.sendfail = true;
+          this.sendsuccess = false;
+
         })
 
     }, 
@@ -502,8 +526,7 @@ export default {
       setTimeout(()=>{
           this.sending = false
           this.working = false
-         
-        },3000)
+        },5000)
     },
     
     clean(){
@@ -820,6 +843,10 @@ export default {
     },
     
     doTrust(){
+      if(!this.islogin){
+        this.needpwd = true;
+        return;
+      }
       //   <loading :show="working" :loading="sending" :success="sendsuccess" :fail='sendfail' 
       // :color="isSell?'red':'green'" :title="loadingTitle" :msg="loadingError" :closeable="sendfail" @close="hiddenLoading"/>
       if(this.working)return
@@ -873,6 +900,12 @@ export default {
       // let site = 'https://fchain.io/kyc/accounts/login/?next=/portal/'+'?'+Math.random()
       // let title = this.$t('kyc')
       this.$router.push({name: 'KYC'})
+    },
+    cancelpwd(){
+      this.needpwd = false
+    },
+    rightpwd(){
+      this.needpwd = false
     }
    
 
@@ -885,6 +918,8 @@ export default {
     Loading,
     TradePairToolBar,
     OrderBookLite,
+    PasswordSheet,
+    BottomNotice,
   }
 }
 </script>
