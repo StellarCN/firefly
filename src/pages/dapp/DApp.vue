@@ -16,7 +16,7 @@
       :shadow=false
       >
       <i class="material-icons" slot="right-tool" 
-        @click="qrclose">&#xE5CD;</i>
+        @click="closeQRScanner">&#xE5CD;</i>
    </toolbar> 
     
     <v-container fluid v-bind="{ [`grid-list-md`]: true }" v-if="!showScanner">
@@ -184,13 +184,13 @@ import { mapState, mapActions} from 'vuex'
 import Toolbar from '@/components/Toolbar'
 import Card from '@/components/Card'
 import Loading from '@/components/Loading'
-import  defaultsDeep  from 'lodash/defaultsDeep'
+import defaultsDeep  from 'lodash/defaultsDeep'
 import SendAsset from '@/components/dapp/SendAsset'
 import RecoveryData from '@/components/dapp/RecoveryData'
 import TrustLine from '@/components/dapp/TrustLine'
 import BackUpData from '@/components/dapp/BackUpData'
 import SignXDR from '@/components/dapp/SignXDR'
-import QRScan from '@/coponents/QRScan'
+import QRScan from '@/components/QRScan'
 import { FFWScript, FFW_EVENT_TYPE_PAY,FFW_EVENT_TYPE_PATHPAYMENT,FFW_EVENT_TYPE_SIGN
    ,FFW_EVENT_TYPE_BACKUP,FFW_EVENT_TYPE_RECOVERY,FFW_EVENT_TYPE_TRUST,
    FFW_EVENT_TYPE_SIGNXDR, FFW_EVENT_TYPE_SHARE,
@@ -575,15 +575,15 @@ export default {
     },
     qrfinish(result){
       this.showScanner = false
-      this.successEvent('success',data);
+      this.successEvent('success',result);
     },
     qrclose(){
-      this.showScanner = false
-      this.$refs.qrscanner.closeQRScanner();
       this.exitEvent('qrscan closed')
-
     },
-    
+    closeQRScanner(){
+      this.$refs.qrscanner.closeQRScanner();
+      this.showScanner = false
+    }
 
 
   },
