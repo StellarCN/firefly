@@ -131,7 +131,7 @@ import { ZH_CN } from '@/locales/index'
 const TAG_ALL = 'All', TAG_XCN = 'XCN', TAG_XLM = 'XLM', TAG_BTC = 'BTC', TAG_ETH = 'ETH', TAG_CUSTOM = '_CUSTOM', TAG_XFF = 'XFF'
 
 const TAGS_ZH_CN = [TAG_XCN, TAG_BTC, TAG_XLM, TAG_CUSTOM]
-const TAGS_OTHER = [TAG_XLM, TAG_BTC, TAG_XCN, TAG_CUSTOM]
+const TAGS_OTHER = [TAG_BTC, TAG_XLM, TAG_XCN, TAG_CUSTOM]
 
 export default {
   data(){
@@ -469,6 +469,8 @@ export default {
         })
     },
     trade(index,tradepair){
+      console.log('------------------------trade----')
+      console.log(tradepair)
       this.selectTradePair({custom: tradepair.custom, index: tradepair.tradepairIndex, tradepair})
       console.log('-------111-----22---')
       this.$router.push({name: 'Trade'})

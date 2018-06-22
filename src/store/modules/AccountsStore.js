@@ -250,6 +250,21 @@ const actions = {
     if(custom){
       pairs.custom[index] = tradepair
     }else{
+      // pairs.sys[index] = tradepair
+      //index不正确，重新查询
+      let tempPair = null
+      let key = tradepair.key
+      if(!key){
+        key = assetKey(tradepair.to, tradepair.from)
+        tradepair.key = key
+      }
+      for(let i=0,n=pairs.sys.length;i<n;i++){
+        tempPair = pairs.sys[i]
+        if(tempPair.key === key){
+          index = i
+          break;
+        }
+      }
       pairs.sys[index] = tradepair
     }
     await saveTradePairData(pairs)
@@ -259,7 +274,30 @@ const actions = {
   },
   // 选中某个交易对
   selectTradePair({commit,state},{custom, index,tradepair}){
-    commit(SELECT_TRADE_PAIR,{custom, index, tradepair})
+    console.log('----selecte trade pair ---- ' + custom + ',index:' + index)
+    console.log(tradepair)
+    if(custom){
+      commit(SELECT_TRADE_PAIR,{custom, index, tradepair})
+    }else{
+      let pairs = Object.assign({}, state.tradepairs)
+      let tempPair = null
+      let key = tradepair.key
+      if(!key){
+        key = assetKey(tradepair.to, tradepair.from)
+        tradepair.key = key
+      }
+      console.log(key)
+      console.log(pairs.sys)
+      for(let i=0,n=pairs.sys.length;i<n;i++){
+        tempPair = pairs.sys[i]
+        if(tempPair.key === key){
+          index = i
+          break;
+        }
+      }
+      commit(SELECT_TRADE_PAIR,{custom, index, tradepair})
+    }
+
   },
 
   //保存默认交易对
@@ -506,7 +544,7 @@ const mutations = {
       for(let i=0,n=arr.length;i<n;i++){
         let item = arr[i]
         let k = assetKey(item.base_asset, item.counter_asset)
-        let d = {from: item.base_asset, to: item.counter_asset}
+        let d = {from: item.base_asset, to: item.counter_asset, k}
         pairs.push(d)
         allpairs.push(d)
         stats[k] = item.stat

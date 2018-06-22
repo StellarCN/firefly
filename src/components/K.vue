@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-06-07 11:05:12
+ * @Last Modified time: 2018-06-22 12:20:59
  * @License: MIT 
  */
 <template>
@@ -189,24 +189,12 @@ export default {
         let key = idf + '_' + idt;
         let d = this.tradePairsStat[key]
         if(d){
-        let price = new Decimal(d.latest_price||d.order_book_avg)//new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
-        let rate = new Decimal(0)
-        let change = new Decimal(0)
-        if(d.open){
-            let open = new Decimal(d.open)
-            change = price.minus(open)
-            rate = change.toNumber() === 0 ? new Decimal(0) : change.times(100).dividedBy(open)
+            return this.genTitleData(d)
         }
-        if(price.toNumber() === 0){
-            price = null
-        }else{
-            price = price.toFixed(this.decimal)
-        }
-        return Object.assign({},d,{
-                price,
-                rate: Number(rate.toFixed(2)),
-                change: change.toNumber()
-                })
+        let key2 = idt + '_' + idf;
+        d = this.tradePairsStat[key2]
+        if(d){
+            return this.genTitleDataEx(d)
         }
         return {}
       }  
@@ -597,6 +585,46 @@ export default {
         },
         switchKgraphShow(){
             this.showKgraph = !this.showKgraph
+        },
+        genTitleData(d){
+            let price = new Decimal(d.latest_price||d.order_book_avg)//new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
+            let rate = new Decimal(0)
+            let change = new Decimal(0)
+            if(d.open){
+                let open = new Decimal(d.open)
+                change = price.minus(open)
+                rate = change.toNumber() === 0 ? new Decimal(0) : change.times(100).dividedBy(open)
+            }
+            if(price.toNumber() === 0){
+                price = null
+            }else{
+                price = price.toFixed(this.decimal)
+            }
+            return Object.assign({},d,{
+                    price,
+                    rate: Number(rate.toFixed(2)),
+                    change: change.toNumber()
+                    })
+        },
+        genTitleDataEx(d){
+            let price = new Decimal(1).dividedBy(new Decimal(d.latest_price||d.order_book_avg))//new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
+            let rate = new Decimal(0)
+            let change = new Decimal(0)
+            if(d.open){
+                let open = new Decimal(1).dividedBy(d.open)
+                change = price.minus(open)
+                rate = change.toNumber() === 0 ? new Decimal(0) : change.times(100).dividedBy(open)
+            }
+            if(price.toNumber() === 0){
+                price = null
+            }else{
+                price = price.toFixed(this.decimal || 7)
+            }
+            return Object.assign({},d,{
+                    price: price,
+                    rate: Number(rate.toFixed(2)),
+                    change: Number(change.toFixed(7))
+                    })
         }
 
     },
