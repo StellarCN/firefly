@@ -242,6 +242,17 @@ export default {
       myapps: state => state.app.myapps,
     }),
   },
+  beforeDestroy(){
+    if(this.appInstance){
+      this.appInstance.close()
+      this.appInstance = undefined
+      this.statusbarColor = COLOR_GREEN
+      if(StatusBar){
+        StatusBar.backgroundColorByHexString(this.statusbarColor);
+        this.$store.commit('CHANGE_IOSSTATUSBAR_COLOR', 'primary');
+      }
+    }
+  },
   beforeMount () {
     this.working = true
     this.err = null
