@@ -8,16 +8,19 @@
       :showbackicon="showbackicon"
       ref="toolbar"
       >
-      <v-btn icon slot='left-tool' @click="toThirdApps">
+      <!-- <v-btn icon slot='left-tool' @click="toThirdApps">
         <i class="material-icons">apps</i>
+      </v-btn> -->
+      <v-btn icon @click="showAccounts" slot="left-tool">
+          <i class="material-icons font28">repeat</i>
       </v-btn>
 
-
       <v-btn icon slot='right-tool' @click="toAddAsset">
-        <i class="material-icons">&#xE145;</i>
+        <i class="material-icons font28">&#xE145;</i>
       </v-btn>
       <span slot="switch_password">{{$t('Account.Password')}}</span>
     </toolbar>
+    <accounts-nav :show="showaccountsview" @close="closeView"/>
      <!--=======================================================-->
 <div class="accountandtotalasset">
   <scroll :refresh="reload">
@@ -83,8 +86,9 @@
             <v-flex xs3 class="myassets-wrapper">
               <div class="myassets">
                 <div class="myassets-name">{{item.code}}</div>
-                <div class="myassets-issuer" v-if="assethosts[item.issuer]">{{assethosts[item.issuer] }}</div>
-                 <div class="myassets-issuer" v-else>{{item.issuer | miniaddress}}</div>
+                <div class="myassets-issuer" v-if="item.home_domain">{{item.home_domain}}</div>
+                <div class="myassets-issuer" v-else-if="assethosts[item.issuer]">{{assethosts[item.issuer] }}</div>
+                <div class="myassets-issuer" v-else>{{item.issuer | miniaddress}}</div>
               </div>
             </v-flex>
             <v-flex xs7 class="myassets-wrapper">
@@ -143,6 +147,7 @@ import  defaultsDeep  from 'lodash/defaultsDeep'
 import { getAssetPrice } from '@/api/fchain'
 import { Decimal } from 'decimal.js'
 import throttle from 'lodash/throttle'
+import AccountsNav from '@/components/AccountsNav'
 import {SET_PRICE_BY_API} from '@/store/modules/AppSettingStore'
 //过滤0资产
 const FLAG_FILTER_ZERO = "filter_zero";
@@ -161,6 +166,8 @@ export default {
       showmenuicon: true,
       noticeText: '',  
       notice: false,
+
+      showaccountsview: false,
 
       working:false,
       delok: false,
@@ -260,6 +267,7 @@ export default {
           let p = this.prices[key]
           if(p){
             item.price = p.price
+            item.home_domain = p.home_domain
             item.total = new Decimal(p.price || 0).times(Number(item.balance)).toFixed(7);
           }
         }else{
@@ -277,7 +285,7 @@ export default {
       this.selectedItem = null
     },
     balances(){
-      if(this._getPriceFn){
+      if(this.balances && this.balances.length>0 && this._getPriceFn){
         this._getPriceFn()
       }
     }
@@ -287,14 +295,17 @@ export default {
   },
   mounted() {
     this._getPriceFn = throttle(()=>{
-      getAssetPrice(this.balances.filter(item=> Number(item.balance)>0).map(item=> {
-        return {code: item.code, issuer:item.issuer }
-      }))
-      .then(response => {
-        this.price = response.data;
-        this.$store.commit(SET_PRICE_BY_API, response.data)
-      }).catch(err => {});
-    },60000)
+      //this.balances.filter(item=> Number(item.balance)>0
+      if(this.balances && this.balances.length > 0){
+        getAssetPrice(this.balances.map(item=> {
+          return {code: item.code, issuer:item.issuer }
+        }))
+        .then(response => {
+          this.price = response.data;
+          this.$store.commit(SET_PRICE_BY_API, response.data)
+        }).catch(err => {});
+      }
+     },60000)
 
     this.$nextTick(() => {
       
@@ -462,7 +473,13 @@ export default {
       // let site = 'https://fchain.io/kyc/accounts/login/?next=/portal/'+'?'+Math.random()
       // let title = this.$t('kyc')
       this.$router.push({name: 'KYC'})
-    }
+    },
+    showAccounts(){
+        this.showaccountsview = true
+    },
+    closeView(){
+        this.showaccountsview = false
+    },
    
   },
   components: {
@@ -472,6 +489,7 @@ export default {
     Scroll,
     TabBar,
     'loading': Loading,
+    AccountsNav,
   }
 }
 

@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-08 15:40:36 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-06-15 16:39:21
+ * @Last Modified time: 2018-07-02 18:06:02
  * @License MIT 
  */
 
@@ -12,7 +12,7 @@
   <div class="trade-tb">
     <!-- toolbar -->
     <v-toolbar color="primary" flat dense app :clipped-left='true'>
-      <v-btn icon @click="back"><v-icon>keyboard_arrow_left</v-icon></v-btn>
+      <v-btn icon @click="back"><i class="icons material-icons font32">keyboard_arrow_left</i></v-btn>
       <div class="toolbar__title toolbar-title white--text textcenter tb-title flex-row" @click.stop="showChoseTradeDlg = true">
         <div class="flex1">&nbsp;</div>
         <div class="flex2 textcenter">
@@ -28,22 +28,23 @@
           <div class="tb-issuer" v-else-if="assethosts[CounterAsset.issuer]">{{assethosts[CounterAsset.issuer]}}</div>
           <div class="tb-issuer" v-else>{{CounterAsset.issuer | miniaddress}}</div>
         </div>
-        <div class="flex1 tb-icon"><i class="icons material-icons">keyboard_arrow_down</i></div>
+        <div class="flex1 tb-icon"><i class="icons material-icons font28">keyboard_arrow_down</i></div>
         <div class="flex1">&nbsp;</div>
       </div>
       
       <v-btn icon @click="doSwitchTradePair">
-        <i class="material-icons">swap_horiz</i>
+        <i class="material-icons font28">swap_horiz</i>
       </v-btn>
     </v-toolbar>
 
     <!--  选择交易队内容 -->
-    <v-dialog class="tb-dlg" v-model="showChoseTradeDlg" fullscreen transition="dialog-bottom-transition" :overlay=false>
-      <v-system-bar status :color="iosstatusbarcolor" v-if="isIos" app>
+    <div class="tb-dlg" v-if="showChoseTradeDlg" transition="dialog-bottom-transition" >
+      <!-- <v-system-bar status :color="iosstatusbarcolor" v-if="isIos" app>
         <v-spacer></v-spacer>
-      </v-system-bar>
-      <v-toolbar color="primary" flat dense app :clipped-left='true'>
-        <v-btn icon @click="showChoseTradeDlg = false"><v-icon>keyboard_arrow_left</v-icon></v-btn>
+      </v-system-bar> -->
+      <status-bar/>
+      <v-toolbar color="primary" flat dense :clipped-left='true'>
+        <v-btn icon @click="showChoseTradeDlg = false"> <i class="material-icons font32">keyboard_arrow_left</i></v-btn>
         <div class="toolbar__title toolbar-title white--text textcenter tb-title">{{$t("Trade.SelfSelection")}}</div>
         <v-btn icon style="visibility:hidden;"><v-icon class="back-icon"></v-icon></v-btn>
       </v-toolbar>
@@ -66,7 +67,7 @@
           <div class="flex2">&nbsp;</div>
         </div>
       </div>
-    </v-dialog>
+    </div>
 
 
   </div>  
@@ -74,6 +75,7 @@
 
 <script>
 import { mapState, mapActions, mapGetters} from 'vuex'
+import StatusBar from './StatusBar.vue';
 
 export default {
   data(){
@@ -164,6 +166,10 @@ export default {
 
 
   },
+
+  components:{
+    StatusBar,
+  }
   
 
 
@@ -188,7 +194,9 @@ export default {
     font-size: 24px
 .dlg-content
   background: $primarycolor.gray
-  padding-top: 48px!important
+  padding-top: 24px!important
+  // padding-top: calc(24px + constant(safe-area-inset-top))!important
+  // padding-top: calc(24px + env(safe-area-inset-top))!important
   padding-bottom: 48px!important
   padding-bottom: calc(48px + constant(safe-area-inset-bottom))!important
   padding-bottom: calc(48px + env(safe-area-inset-bottom))!important
@@ -200,6 +208,11 @@ export default {
   &.active
     color: $primarycolor.green
 .tb-dlg
+  position: fixed
+  top: 0
+  left: 0
+  bottom: 0
+  right: 0
   z-index:99
   padding-top: 0
   padding-top: constant(safe-area-inset-bottom)!important

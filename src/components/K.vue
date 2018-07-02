@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-06-22 12:20:59
+ * @Last Modified time: 2018-07-02 17:33:23
  * @License: MIT 
  */
 <template>
@@ -15,7 +15,7 @@
                 <i class="material-icons  k-icon">keyboard_arrow_left</i>
             </v-btn>
           </div>
-          <div :class="'flex3 textcenter ' + ( (titleData.change >=0 ^ redUpGreenDown) ? 'up':'down') ">
+          <div :class="'flex5 textcenter ' + ( (titleData.change >=0 ^ redUpGreenDown) ? 'up':'down') ">
               <div class="price textcenter">
                   <span class="price">{{titleData.price}}</span>
                   <!-- <span class="code">{{counter.code}}</span> -->
@@ -31,16 +31,14 @@
                   </div>
               </div>
           </div>
-          <div class="flex3 values">
+          <div class="flex5 values">
               <div class=""><span class="label">24H {{$t('high')}} </span><span v-if="titleData.high">{{titleData.high}}</span></div>
               <div class=""><span class="label">24H {{$t('low')}} </span><span v-if="titleData.low">{{titleData.low}}</span></div>
               <div class=""><span class="label">24H {{$t('volume')}} </span><span v-if="titleData.base_volume">{{Number(titleData.base_volume).toFixed(4)}}</span></div>
           </div>
           <div class="flex1 title-btn-div">
-              <v-btn icon @click="switchKgraphShow">
-                <i class="material-icons k-icon" v-if="showKgraph">trending_up</i>
-                <i class="material-icons  k-icon" v-else>visibility_off</i>
-              </v-btn>
+                <i class="material-icons k-icon" v-if="showKgraph" @click="switchKgraphShow">trending_up</i>
+                <i class="material-icons  k-icon" v-else @click="switchKgraphShow">visibility_off</i>
           </div>
          
       </div>

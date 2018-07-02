@@ -8,7 +8,7 @@
         <i class="material-icons">&#xE145;</i>
       </div> -->
       <v-btn icon slot='right-tool' @click="toAdd">
-        <i class="material-icons">&#xE145;</i>
+        <i class="material-icons font28">&#xE145;</i>
       </v-btn>
     </toolbar>
     <div class="content">

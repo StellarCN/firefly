@@ -102,10 +102,14 @@ export default {
     computed: {
     },
     beforeDestroy () {
-      screen.orientation.lock('portrait');        
+      this.$store.commit('IS_FULL', false)
+    },
+    destroyed(){
+        screen.orientation.lock('portrait');
     },
     beforeCreate () {
-      screen.orientation.lock('landscape');  
+      screen.orientation.lock('landscape');
+      this.$store.commit('IS_FULL', true)
     },
     created () {
       let clientH = document.documentElement.clientWidth

@@ -6,7 +6,7 @@
 
     <v-toolbar  dark :class="color" :flat="!shadow" dense :clipped-left='true' app>
       <v-btn icon v-if="showbackicon" @click="back" class="white--text">
-            <v-icon class="back-icon">&#xE5CB;</v-icon>
+            <v-icon class="back-icon font28">&#xE5CB;</v-icon>
       </v-btn>
       <slot name="left-tool">
         <v-btn icon style="visibility:hidden;" v-if="!showmenuicon && !showbackicon">

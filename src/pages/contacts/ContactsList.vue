@@ -5,7 +5,7 @@
   <div class="page">
     <toolbar :title="$t(title)" :showbackicon="true"  @goback="back">
       <v-btn icon slot='right-tool' @click="toAddContact">
-        <i class="material-icons">&#xE145;</i>
+        <i class="material-icons font28">&#xE145;</i>
       </v-btn>
     </toolbar>
     <div class="content">

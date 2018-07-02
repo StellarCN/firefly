@@ -8,8 +8,8 @@
     >
       <div class="right" slot="right-tool">
         <span class="toolbar-ico" @click="scan">
-          <i class="material-icons" v-if="showScanner">&#xE5CD;</i>
-          <i class="iconfont icon-erweima1" v-else></i>
+          <i class="material-icons font28" v-if="showScanner">&#xE5CD;</i>
+          <i class="iconfont icon-erweima1 font28" v-else></i>
         </span>
       </div>
     </toolbar>

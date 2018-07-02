@@ -9,8 +9,8 @@
         </v-btn>
       <div class="right" slot="right-tool">
         <span class="toolbar-ico" @click="scan">
-          <v-icon v-if="showScanner">&#xE5CD;</v-icon>
-          <i v-else class="iconfont icon-erweima1"></i>
+          <v-icon class="font28" v-if="showScanner">&#xE5CD;</v-icon>
+          <i v-else class="iconfont icon-erweima1 font28"></i>
         </span>
       </div>
     </toolbar>
