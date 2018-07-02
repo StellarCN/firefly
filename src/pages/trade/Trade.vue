@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-05 10:51:54 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-06-07 15:13:48
+ * @Last Modified time: 2018-07-02 17:27:58
  * @License MIT 
  */
 <template>
@@ -11,7 +11,7 @@
     <!-- toolbar -->
     <trade-pair-tool-bar @choseTradePair="choseTradePair" @switchTradePair="switchTradePair"/>
 
-    <div class="content">
+    <div class="content trade-content">
       <!--K线图-->
       <k :base="BaseAsset" :counter="CounterAsset" :incremental="true" :showTitle="true" ref="kgraph"/>
       
@@ -199,6 +199,6 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style lang="stylus"  scoped>
 @require '~@/stylus/trade.styl'
 </style>
