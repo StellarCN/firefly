@@ -29,11 +29,17 @@ export default {
           icon: "trending_up"
         },
         {
-          title: "Menu.Funding",
-          name: "Funding",
-          path: "/funding",
-          icon: "import_export"
+          title: "Title.ThirdApp",
+          name: "Apps",
+          path: "/apps/all",
+          icon: "apps"
         },
+        // {
+        //   title: "Menu.Funding",
+        //   name: "Funding",
+        //   path: "/funding",
+        //   icon: "import_export"
+        // },
         {
           title: "Menu.My",
           name: "My",

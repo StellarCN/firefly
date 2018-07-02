@@ -157,7 +157,7 @@ export default {
       withdrawFields:[],
       withdrawAccountId:"",
       showmenuicon: true,
-      showbackicon: false,
+      showbackicon: true,
       noticeText: '',  
       notice: false,
       withdrawurl: '',//提现的数据提交地址
