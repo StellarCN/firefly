@@ -3,13 +3,15 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-31 09:07:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-06-15 10:36:47
+ * @Last Modified time: 2018-07-03 14:23:09
  * @License MIT 
  */
 import { mapState,mapActions,mapGetters } from 'vuex'
 import {  ACCOUNT_IS_FUNDING,  ACCOUNT_NOT_FUNDING} from '@/store/modules/AccountStore'
 import  defaultsDeep  from 'lodash/defaultsDeep'
 const FETCH_ACCOUNT_INTERVAL = 180000;
+import { initStreams } from '@/streams'
+
 export default {
   
   data(){
@@ -69,7 +71,13 @@ export default {
               this.inflation_unset = true
               this.inflationUnSetDlg = true
             }
-            
+
+            // try{
+            //   initStreams(this.account.address)
+            // }catch(err){
+            //   console.error(err)
+            // }
+
 
           })
           .catch(err => {
