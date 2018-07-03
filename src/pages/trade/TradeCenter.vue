@@ -185,7 +185,7 @@ export default {
       let custom=[];
       let custom_ids = []
       this.tradepairs.custom.forEach((item,index) => {
-          custom.push(Object.assign({}, item,{tradepairIndex: 'custom_'+index, custom: true}))
+          custom.push(Object.assign({}, item,{tradepairIndex: 'custom_'+index, custom: true,index}))
           let idf = isNativeAsset(item.from) ? 'XLM' : item.from.code+'-'+item.from.issuer
           let idt = isNativeAsset(item.to) ? 'XLM' : item.to.code +'-'+item.to.issuer
           custom_ids.push(idf+'_'+idt)
