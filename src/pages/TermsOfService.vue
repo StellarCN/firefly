@@ -5,7 +5,7 @@
   <div class="terms-service-page">
     <v-toolbar class="tbar primary" dark  :flat="false" dense :clipped-left='true' app>
       <v-btn icon v-show="showbackicon" @click="goback" class="white--text">
-            <v-icon class="back-icon font28">&#xE5CB;</v-icon>
+            <i class="material-icons font28">&#xE5CB;</i>
       </v-btn>
       <v-toolbar-title class="white--text title">{{$t('TermsOfServiceTitle')}}</v-toolbar-title>
       <v-spacer></v-spacer>
