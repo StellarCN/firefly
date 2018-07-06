@@ -5,7 +5,7 @@
   <div class="page">
     <toolbar :title="$t(title)" :showbackicon="false" ref="toolbar">
       <v-btn icon @click.native="showAccounts" slot="left-tool">
-          <i class="material-icons font28">repeat</i>
+          <i class="material-icons font28">menu</i>
       </v-btn>
     
        <v-btn icon slot='right-tool' @click="pickershow()">

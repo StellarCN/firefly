@@ -360,9 +360,9 @@ export default {
           if (data.stellar.payment) {
             let payment = data.stellar.payment
             if (payment.asset) {
-              this.selectasset = payment.asset
+              this.selectedasset = payment.asset
             } else {
-              this.selectasset = {code: 'XLM'}
+              this.selectedasset = {code: 'XLM'}
             }
             this.destination = payment.destination
             this.amount = payment.amount

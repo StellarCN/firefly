@@ -241,6 +241,7 @@ export default {
       allcontacts: state => state.app.contacts||[],
       myaddresses: state => state.app.myaddresses||[],
       myapps: state => state.app.myapps,
+      locale: state => state.app.locale,
     }),
   },
   beforeDestroy(){
@@ -354,7 +355,7 @@ export default {
         let contacts = this.allcontacts
         let myaddresses = this.myaddresses
         let isIos = "ios" === cordova.platformId
-        let script = FFWScript(this.account.address, {contacts,myaddresses} ,isIos, cordova.platformId)
+        let script = FFWScript(this.account.address, {contacts,myaddresses} ,isIos, cordova.platformId, this.locale.key)
         // alert(script)
         this.appInstance.executeScript({ code: script },params => {
           //console.log(params)

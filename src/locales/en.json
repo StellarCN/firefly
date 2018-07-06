@@ -519,7 +519,15 @@
   "kyc":"kyc",
   "kyc_active":"finish kyc to active for free",
   "help_active":"read help document",
-  "deal_price":"price"
+  "deal_price":"price",
+  "auto_fund":"fund",
+  "fund_success":"Successfully funded",
+  "unfund":"account unfunded",
+  "fund_hint":"need more than 1 XLM to fund",
+  "fund_askfor":"ask for funding",
+  "fund_free":"free funding",
+  "fund_used_up":"there is no free funding, may ask for help from your friends"
+
   
 
  

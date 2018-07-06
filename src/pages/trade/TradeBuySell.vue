@@ -140,12 +140,15 @@
 
     </div>
 
-  <bottom-notice :show.sync="accountNotFundDlg" @update:show="closeAccountNotFoundDlg">
+  <!-- <bottom-notice :show.sync="accountNotFundDlg" @update:show="closeAccountNotFoundDlg">
     <div slot>
       <div @click="toHelp">{{$t('Error.AccountNotFund')}}<v-icon color="primary">help</v-icon></div>
       <div @click="toKYC"><span class="underline">{{$t('kyc_active')}}</span></div>
     </div>
-  </bottom-notice> 
+  </bottom-notice>  -->
+
+  <un-fund-notice v-if="accountNotFundDlg" @close="closeAccountNotFoundDlg">></un-fund-notice>
+  
 
   <password-sheet
     v-if="needpwd" @cancel="cancelpwd" @ok="rightpwd"
@@ -219,6 +222,7 @@ import debounce from 'lodash/debounce'
 import loadaccount from '@/mixins/loadaccount'
 import BottomNotice from '@/components/BottomNotice'
 var moment = require('moment')
+import UnFundNotice from '@/components/UnFundNotice'
 
 const FLAG_BUY = 'buy'
 const FLAG_SELL = 'sell'
@@ -1045,6 +1049,7 @@ export default {
     OrderBookLite,
     PasswordSheet,
     BottomNotice,
+    UnFundNotice
   }
 }
 </script>

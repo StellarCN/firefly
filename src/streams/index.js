@@ -27,7 +27,7 @@ export function initStreams(address){
     console.log('-------------init streams -------------')
     console.log(_data.store)
     //初始化payments
-    initPaymentStream()
+    // initPaymentStream()
 
 }
 

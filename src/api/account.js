@@ -119,13 +119,13 @@ function checkAssetAvailable(assetdata,balances){
 
 // send asset
 // return Promise
-export function send(seed,address,target,assetdata,amount,memo_type,memo_value,base_reserve){
-  console.log(`address: ${address}, target: ${target}`)
+export function send(seed,pubkey,target,assetdata,amount,memo_type,memo_value,base_reserve){
+  console.log(`address: ${pubkey}, target: ${target}`)
   let amountstr = NP.round(Number(amount), 7).toString();//Math.round(amount, 7)
-  address = address ? address : address(address)
+  pubkey = pubkey ? pubkey : address(seed)
   let asset = getAsset(assetdata.code , assetdata.issuer)
   let server  = getServer()
-  return server.loadAccount(address).then(acc=>{
+  return server.loadAccount(pubkey).then(acc=>{
     //判断资产是否不够
     let balances = acc.balances
     checkBalance(asset, amount, balances)

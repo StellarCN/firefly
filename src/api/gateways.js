@@ -247,3 +247,29 @@ export function getTradePairStat(base, counter){
   // console.log('----uri:' + uri)
   return axios.get(uri)
 }
+
+
+//自动激活功能
+let _fund_config = null
+
+export function getFundConfig(){
+  return _fund_config;
+}
+
+let fund_config_url = `https://update.fchain.io/fund/fund.json`
+export function initFundConfig(callback){
+  if(_fund_config!=null)return;
+  let url = `${fund_config_url}?r=` + new Date().getTime()
+  axios.get(url)
+    .then(response => {
+      _fund_config = response.data
+      if(callback){
+        callback(_fund_config)
+      }
+    })
+    .catch(err=>{
+      console.error(err)
+    })
+}
+
+

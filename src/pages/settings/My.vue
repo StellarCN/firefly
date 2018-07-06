@@ -3,14 +3,14 @@
 * @Author: mazhaoyong@gmail.com
 * @Date: 2018-01-23 11:14:24
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-07-02 17:00:18
+ * @Last Modified time: 2018-07-05 15:25:06
 * @License: MIT
 */
 <template>
   <div class="page">
       <toolbar :title="$t('Menu.My')" :showbackicon="false" lockpass  ref="toolbar">
             <v-btn icon @click.native="showAccounts" slot="left-tool">
-                <i class="material-icons font28">repeat</i>
+                <i class="material-icons font28">menu</i>
             </v-btn>
       </toolbar>
 

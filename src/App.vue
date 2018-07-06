@@ -44,7 +44,7 @@
 import Vue from "vue";
 import { mapActions, mapState } from "vuex";
 import PinCode from "@/components/PinCode";
-import { defaultTradePairsAPI } from "@/api/gateways";
+import { defaultTradePairsAPI,initFundConfig } from "@/api/gateways";
 import { closeStreams, initStreams } from "@/streams";
 import { initStorage, checkPlatform } from "@/api/storage";
 import { getDeviceLanguage, ZH_CN } from "@/locales";
@@ -115,9 +115,9 @@ export default {
       checkPlatform();
       try {
         //获取默认交易对
-        defaultTradePairsAPI();
+        // defaultTradePairsAPI();
+        initFundConfig();
       } catch (err) {
-        console.error("获取默认交易对失败！");
         console.error(err);
       }
 

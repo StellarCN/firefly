@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-31 09:07:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-07-03 14:23:09
+ * @Last Modified time: 2018-07-05 17:54:51
  * @License MIT 
  */
 import { mapState,mapActions,mapGetters } from 'vuex'
@@ -11,6 +11,7 @@ import {  ACCOUNT_IS_FUNDING,  ACCOUNT_NOT_FUNDING} from '@/store/modules/Accoun
 import  defaultsDeep  from 'lodash/defaultsDeep'
 const FETCH_ACCOUNT_INTERVAL = 180000;
 import { initStreams } from '@/streams'
+import { CLEAN_ACCOUNT } from '@/store/modules/AccountStore'
 
 export default {
   
@@ -96,6 +97,10 @@ export default {
               // this.notice = true
               //查看激活？？
               this.accountNotFundDlg = true
+              //请理账户数据
+              this.$store.commit(CLEAN_ACCOUNT)
+              console.log('---after clean account---')
+
 
               
               

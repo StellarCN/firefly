@@ -7,7 +7,7 @@
 // 6. 恢复非敏感数据
 // 7. 授信
 import pkg from '../../package'
-
+var sjcl = require('sjcl')
 
 
 export const FFW_EVENT_TYPE_PAY = 'pay'
@@ -20,7 +20,7 @@ export const FFW_EVENT_TYPE_SIGNXDR = 'signXDR'
 export const FFW_EVENT_TYPE_SCAN = 'scan'
 export const FFW_EVENT_TYPE_SHARE = 'share'
 
-export function FFWScript(address, data = {}, isIos = false, platform){
+export function FFWScript(address, data = {}, isIos = false, platform, locale = 'zh_cn'){
   // return [
   //   'if(!window.FFW){'
   //     ,'window.FFW = {};'
@@ -34,6 +34,10 @@ export function FFWScript(address, data = {}, isIos = false, platform){
   let appdata = Object.assign({contacts:[], myaddresses:[]},data);
   let version = pkg.version
   let uuid = device.uuid
+  if(uuid){
+    let uuidhash = sjcl.hash.sha256.hash(uuid)
+    uuid = sjcl.codec.hex.fromBits(uuidhash)
+  }
   return `if(!window.FFW){
       window.FFW = {};
       FFW.version = "${version}";
@@ -42,6 +46,7 @@ export function FFWScript(address, data = {}, isIos = false, platform){
       FFW.contacts = "${appdata.contacts}";
       FFW.myaddresses = "${data.myaddresses}";
       FFW.uuid = "${uuid}";
+      FFW.locale = "${locale}";
       FFW.callbackObjs = {}
 
       FFW.addCallback = function(id,fn){
@@ -157,6 +162,17 @@ export function FFWScript(address, data = {}, isIos = false, platform){
           FFW.callback(params['callback'] ,{code:"fail",message:err.message});
         }
       };
+
+      FFW.fireEvent = function(type, data, callback){
+        var params = { type: type, data: data};
+        params = genParams(params, callback);
+        try{
+          ${method}.postMessage(JSON.stringify(params));  
+        }catch(err){
+          console.error(err);
+          FFW.callback(params['callback'] ,{code:"fail",message:err.message});
+        }
+      }
 
       function genParams(param, callback){
         var params = Object.assign({}, param);

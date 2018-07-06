@@ -12,7 +12,7 @@
         <i class="material-icons">apps</i>
       </v-btn> -->
       <v-btn icon @click="showAccounts" slot="left-tool">
-          <i class="material-icons font28">repeat</i>
+          <i class="material-icons font28">menu</i>
       </v-btn>
 
       <v-btn icon slot='right-tool' @click="toAddAsset">
@@ -116,14 +116,17 @@
    -->
   
    <bottom-notice :show.sync="notice" :text="noticeText"></bottom-notice>
-  <bottom-notice :show.sync="accountNotFundDlg" @update:show="closeAccountNotFoundDlg">
+
+  <!-- <bottom-notice :show.sync="accountNotFundDlg" @update:show="closeAccountNotFoundDlg">
     <div slot>
       <div @click="toHelp">{{$t('Error.AccountNotFund')}}<v-icon color="primary">help</v-icon></div>
       <div @click="toKYC"><span class="underline">{{$t('kyc_active')}}</span></div>
       
     </div>
-  </bottom-notice>
+  </bottom-notice> -->
+  <un-fund-notice v-if="accountNotFundDlg" @close="closeAccountNotFoundDlg">></un-fund-notice>
   
+
    <loading :show="working" :loading="working" :success="delok" :fail='delerror' />
    <password-sheet v-if="needpwd" @cancel="cancelpwd" @ok="checkpwd" />
   </div>
@@ -157,6 +160,7 @@ const FLAG_DEFAULT = "none";
 const SORT_NAME = "name";
 const SORT_BANLANCE = "balance";
 const SORT_DEFAULT = "none";
+import UnFundNotice from '@/components/UnFundNotice'
 
 export default {
   data(){
@@ -490,6 +494,7 @@ export default {
     TabBar,
     'loading': Loading,
     AccountsNav,
+    UnFundNotice,
   }
 }
 
