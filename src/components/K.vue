@@ -3,11 +3,11 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-07-02 17:33:23
+ * @Last Modified time: 2018-07-06 14:27:50
  * @License: MIT 
  */
 <template>
-<card class="k-card" padding="5px 5px">
+<card class="k-card" padding="5px 0px">
   <div slot="card-content" class="k">
       <div class="flex-row atitle" v-if="showTitle && titleData && titleData.price !== null">
           <div class="flex1 title-btn-div"  v-if="fullscreen">
@@ -21,13 +21,13 @@
                   <!-- <span class="code">{{counter.code}}</span> -->
               </div>
               <div class="flex-row">
-                  <div class="flex3 textright lchange">
-                        <span v-if="titleData.change>0">+</span>
-                        <span>{{titleData.change}}&nbsp;</span>
+                  <div class="flex2 textright lchange">
+                        <span v-if="titleData.change>0">+{{titleData.change}}</span>
+                        <span v-else>{{titleData.change}}</span>
                   </div>
-                  <div class="flex2 textleft lchange">
-                        <span v-if="titleData.rate>0"> +</span>
-                        <span>{{titleData.rate}}%</span>
+                  <div class="flex2 textleft lchange pl-1">
+                        <span v-if="titleData.rate>0"> +{{titleData.rate}}%</span>
+                        <span v-else>{{titleData.rate}}%</span>
                   </div>
               </div>
           </div>

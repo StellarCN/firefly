@@ -303,6 +303,8 @@ export default {
   left: 0
   right: 0
   bottom: .2rem
+  bottom:  calc(.2rem + constant(safe-area-inset-bottom))
+  bottom:  calc(.2rem + env(safe-area-inset-bottom))
   padding: .1rem .2rem
 //颜色分类
   // brand-primary: darken(#428bca, 6.5%); // #337ab7

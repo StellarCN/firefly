@@ -102,6 +102,9 @@ export default {
   background #333
   opacity: 0.5
   z-index: 999
+  padding-bottom: 0
+  padding-bottom: constant(safe-area-inset-bottom)
+  padding-bottom: env(safe-area-inset-bottom)
 .unfund-dlg
   position: fixed
   bottom: 0

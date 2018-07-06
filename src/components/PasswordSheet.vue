@@ -151,7 +151,10 @@ export default {
     margin-top: 10px
     display: inline-block
     width: 100%
-    background: $primarycolor.gray
+    background: $secondarycolor.gray
+    padding-bottom: 0
+    padding-bottom: constant(safe-area-inset-bottom)
+    padding-bottom: env(safe-area-inset-bottom)
     .sheet-btn
       float: left
       width: 50%

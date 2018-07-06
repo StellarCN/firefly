@@ -364,6 +364,20 @@ export default {
             } else {
               this.selectedasset = {code: 'XLM'}
             }
+            //根据当前资产选择
+            if(this.selectedasset.code){
+              let sn = isNativeAsset(this.selectedasset)
+              let as = this.assets.filter(item=>{
+                if(sn){
+                  return isNativeAsset(item)
+                }else{
+                  return this.selectedasset.code === item.code && this.selectedasset.issuer === item.issuer
+                }
+              })
+              if(as.length>0){
+                this.selectedasset = as[0]
+              }
+            }
             this.destination = payment.destination
             this.amount = payment.amount
             let memo = payment.memo
