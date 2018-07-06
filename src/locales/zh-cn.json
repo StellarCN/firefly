@@ -511,7 +511,14 @@
   "kyc":"实名认证",
   "kyc_active":"完成实名认证，免费激活",
   "help_active":"查看激活帮助说明",
-  "deal_price":"成交价格"
+  "deal_price":"成交价格",
+  "auto_fund":"账户激活",
+  "fund_success":"账户已经激活",
+  "unfund":"账户尚未激活",
+  "fund_hint":"激活需要向该账户发送至少1XLM",
+  "fund_askfor":"收币激活",
+  "fund_free":"免费激活",
+  "fund_used_up":"免费激活名额已经用完，您可向朋友收取1XLM完成账户激活。"
 
  
  

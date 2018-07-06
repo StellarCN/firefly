@@ -85,6 +85,16 @@ const router = new Router({
       }
     },
     {
+      path: '/autofund',
+      name: 'AutoFund',
+      component: resolve => require(['../pages/AutoFund.vue'], resolve)
+    },
+    {
+      path: '/askforfund',
+      name: 'AskForFund',
+      component: resolve => require(['../pages/AskForFund.vue'], resolve)
+    },
+    {
       path: '/history',
       name: 'History',
       component: resolve => require(['../pages/History.vue'], resolve),

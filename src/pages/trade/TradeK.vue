@@ -126,4 +126,12 @@ export default {
 @require '~@/stylus/trade.styl'
 .footer-btns
   position: relative
+.page
+  width: 100%
+  padding-left: 0
+  padding-left:  constant(safe-area-inset-left)
+  padding-left:  env(safe-area-inset-left)
+  padding-right: 0
+  padding-right: constant(safe-area-inset-right)
+  padding-right: env(safe-area-inset-right)
 </style>

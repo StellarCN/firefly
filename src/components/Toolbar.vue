@@ -6,7 +6,7 @@
 
     <v-toolbar  dark :class="color" :flat="!shadow" dense :clipped-left='true' app>
       <v-btn icon v-if="showbackicon" @click="back" class="white--text">
-            <v-icon class="back-icon">&#xE5CB;</v-icon>
+            <v-icon class="back-icon font28">&#xE5CB;</v-icon>
       </v-btn>
       <slot name="left-tool">
         <v-btn icon style="visibility:hidden;" v-if="!showmenuicon && !showbackicon">
@@ -295,6 +295,9 @@ export default {
     margin-top: 10px
     display: inline-block
     width: 100%
+    padding-bottom: 0
+    padding-bottom: constant(safe-area-inset-bottom)
+    padding-bottom: env(safe-area-inset-bottom)
     .sheet-btn
       float: left
       width: 50%

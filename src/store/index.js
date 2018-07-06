@@ -14,6 +14,7 @@ Vue.use(Vuex)
 
 export const SHOW_TABBAR = 'SHOW_TABBAR'
 export const HIDE_TABBAR = 'HIDE_TABBAR'
+export const IS_FULL = 'IS_FULL'
 
 
 const state = {
@@ -31,6 +32,7 @@ const state = {
   iosstatusbarcolor: 'primary',
   onpause: false,//is app on pause
   showTabbar: true,//是否显示tabbar
+  ifFull: false,//是否全屏
 
 }
 
@@ -127,6 +129,9 @@ const mutations = {
   },
   [HIDE_TABBAR](state){
     state.showTabbar = false
+  },
+  [IS_FULL](state, full){
+    state.isFull = full
   }
   
 }

@@ -3,11 +3,11 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-06-07 11:05:12
+ * @Last Modified time: 2018-07-06 14:27:50
  * @License: MIT 
  */
 <template>
-<card class="k-card" padding="5px 5px">
+<card class="k-card" padding="5px 0px">
   <div slot="card-content" class="k">
       <div class="flex-row atitle" v-if="showTitle && titleData && titleData.price !== null">
           <div class="flex1 title-btn-div"  v-if="fullscreen">
@@ -15,32 +15,30 @@
                 <i class="material-icons  k-icon">keyboard_arrow_left</i>
             </v-btn>
           </div>
-          <div :class="'flex3 textcenter ' + ( (titleData.change >=0 ^ redUpGreenDown) ? 'up':'down') ">
+          <div :class="'flex5 textcenter ' + ( (titleData.change >=0 ^ redUpGreenDown) ? 'up':'down') ">
               <div class="price textcenter">
                   <span class="price">{{titleData.price}}</span>
                   <!-- <span class="code">{{counter.code}}</span> -->
               </div>
               <div class="flex-row">
-                  <div class="flex3 textright lchange">
-                        <span v-if="titleData.change>0">+</span>
-                        <span>{{titleData.change}}&nbsp;</span>
+                  <div class="flex2 textright lchange">
+                        <span v-if="titleData.change>0">+{{titleData.change}}</span>
+                        <span v-else>{{titleData.change}}</span>
                   </div>
-                  <div class="flex2 textleft lchange">
-                        <span v-if="titleData.rate>0"> +</span>
-                        <span>{{titleData.rate}}%</span>
+                  <div class="flex2 textleft lchange pl-1">
+                        <span v-if="titleData.rate>0"> +{{titleData.rate}}%</span>
+                        <span v-else>{{titleData.rate}}%</span>
                   </div>
               </div>
           </div>
-          <div class="flex3 values">
+          <div class="flex5 values">
               <div class=""><span class="label">24H {{$t('high')}} </span><span v-if="titleData.high">{{titleData.high}}</span></div>
               <div class=""><span class="label">24H {{$t('low')}} </span><span v-if="titleData.low">{{titleData.low}}</span></div>
               <div class=""><span class="label">24H {{$t('volume')}} </span><span v-if="titleData.base_volume">{{Number(titleData.base_volume).toFixed(4)}}</span></div>
           </div>
           <div class="flex1 title-btn-div">
-              <v-btn icon @click="switchKgraphShow">
-                <i class="material-icons k-icon" v-if="showKgraph">trending_up</i>
-                <i class="material-icons  k-icon" v-else>visibility_off</i>
-              </v-btn>
+                <i class="material-icons k-icon" v-if="showKgraph" @click="switchKgraphShow">trending_up</i>
+                <i class="material-icons  k-icon" v-else @click="switchKgraphShow">visibility_off</i>
           </div>
          
       </div>
@@ -189,24 +187,12 @@ export default {
         let key = idf + '_' + idt;
         let d = this.tradePairsStat[key]
         if(d){
-        let price = new Decimal(d.latest_price||d.order_book_avg)//new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
-        let rate = new Decimal(0)
-        let change = new Decimal(0)
-        if(d.open){
-            let open = new Decimal(d.open)
-            change = price.minus(open)
-            rate = change.toNumber() === 0 ? new Decimal(0) : change.times(100).dividedBy(open)
+            return this.genTitleData(d)
         }
-        if(price.toNumber() === 0){
-            price = null
-        }else{
-            price = price.toFixed(this.decimal)
-        }
-        return Object.assign({},d,{
-                price,
-                rate: Number(rate.toFixed(2)),
-                change: change.toNumber()
-                })
+        let key2 = idt + '_' + idf;
+        d = this.tradePairsStat[key2]
+        if(d){
+            return this.genTitleDataEx(d)
         }
         return {}
       }  
@@ -597,6 +583,46 @@ export default {
         },
         switchKgraphShow(){
             this.showKgraph = !this.showKgraph
+        },
+        genTitleData(d){
+            let price = new Decimal(d.latest_price||d.order_book_avg)//new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
+            let rate = new Decimal(0)
+            let change = new Decimal(0)
+            if(d.open){
+                let open = new Decimal(d.open)
+                change = price.minus(open)
+                rate = change.toNumber() === 0 ? new Decimal(0) : change.times(100).dividedBy(open)
+            }
+            if(price.toNumber() === 0){
+                price = null
+            }else{
+                price = price.toFixed(this.decimal)
+            }
+            return Object.assign({},d,{
+                    price,
+                    rate: Number(rate.toFixed(2)),
+                    change: change.toNumber()
+                    })
+        },
+        genTitleDataEx(d){
+            let price = new Decimal(1).dividedBy(new Decimal(d.latest_price||d.order_book_avg))//new Decimal(this.lastTrade.base_amount).dividedBy(this.lastTrade.counter_amount)
+            let rate = new Decimal(0)
+            let change = new Decimal(0)
+            if(d.open){
+                let open = new Decimal(1).dividedBy(d.open)
+                change = price.minus(open)
+                rate = change.toNumber() === 0 ? new Decimal(0) : change.times(100).dividedBy(open)
+            }
+            if(price.toNumber() === 0){
+                price = null
+            }else{
+                price = price.toFixed(this.decimal || 7)
+            }
+            return Object.assign({},d,{
+                    price: price,
+                    rate: Number(rate.toFixed(2)),
+                    change: Number(change.toFixed(7))
+                    })
         }
 
     },

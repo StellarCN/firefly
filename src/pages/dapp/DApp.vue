@@ -1,11 +1,11 @@
 // 第三方应用列表界面
 <template>
   <div class="page" dark  v-bind:class="{hidebackground: showScanner}">
-    <toolbar :title="$t('Title.ThirdApp')" :showbackicon="true"  @goback="back" 
+    <toolbar :title="$t('Title.ThirdApp')" :showbackicon="false"  @goback="back" 
       :shadow="false" lockpass  ref="toolbar" v-if="!showScanner">
       <!--右侧打开设置界面-->
       <v-btn icon slot='right-tool' @click="toSetting">
-        <i class="material-icons">extension</i>
+        <i class="material-icons font28">extension</i>
       </v-btn>
     </toolbar>
     <toolbar :title="$t('Title.Scan')" 
@@ -15,7 +15,7 @@
       v-else
       :shadow=false
       >
-      <i class="material-icons" slot="right-tool" 
+      <i class="material-icons font28" slot="right-tool" 
         @click="closeQRScanner">&#xE5CD;</i>
    </toolbar> 
     
@@ -229,7 +229,8 @@ export default {
       apptitle: null,
       appsite: null,
       addingApp: false,
-      showqrscan: false,
+      // showqrscan: false,
+      showScanner: false,
     }
   },
    computed:{
@@ -240,7 +241,19 @@ export default {
       allcontacts: state => state.app.contacts||[],
       myaddresses: state => state.app.myaddresses||[],
       myapps: state => state.app.myapps,
+      locale: state => state.app.locale,
     }),
+  },
+  beforeDestroy(){
+    if(this.appInstance){
+      this.appInstance.close()
+      this.appInstance = undefined
+      this.statusbarColor = COLOR_GREEN
+      if(StatusBar){
+        StatusBar.backgroundColorByHexString(this.statusbarColor);
+        this.$store.commit('CHANGE_IOSSTATUSBAR_COLOR', 'primary');
+      }
+    }
   },
   beforeMount () {
     this.working = true
@@ -342,7 +355,7 @@ export default {
         let contacts = this.allcontacts
         let myaddresses = this.myaddresses
         let isIos = "ios" === cordova.platformId
-        let script = FFWScript(this.account.address, {contacts,myaddresses} ,isIos, cordova.platformId)
+        let script = FFWScript(this.account.address, {contacts,myaddresses} ,isIos, cordova.platformId, this.locale.key)
         // alert(script)
         this.appInstance.executeScript({ code: script },params => {
           //console.log(params)

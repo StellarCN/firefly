@@ -8,8 +8,9 @@
 .footer-btns
   position: fixed
   bottom: 0
-  bottom: constant(safe-area-inset-bottom)
-  bottom: env(safe-area-inset-bottom)
+  padding-bottom: 0px
+  padding-bottom: constant(safe-area-inset-bottom)
+  padding-bottom: env(safe-area-inset-bottom)
   left: 0
   right: 0
   background: $primarycolor.gray
@@ -41,3 +42,8 @@ input[type=number]::-webkit-inner-spin-button
 .maintent
   overflow-y: scroll
   -webkit-overflow-scrolling: touch
+
+.trade-content
+  padding-top: 24px
+  // padding-top:calc(24px + constant(safe-area-inset-top))
+  // padding-top:calc(24px + env(safe-area-inset-top))

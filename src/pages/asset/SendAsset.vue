@@ -11,8 +11,8 @@
       >
        <div class="right" slot="right-tool" v-if="!showContacts">
         <span class="toolbar-ico" @click="scan">
-          <i class="material-icons" v-if="showScanner">&#xE5CD;</i>
-          <i class="iconfont icon-erweima1" v-else></i>
+          <i class="material-icons font28" v-if="showScanner">&#xE5CD;</i>
+          <i class="iconfont icon-erweima1 font28" v-else></i>
         </span>
       </div>
     </toolbar>
@@ -360,9 +360,23 @@ export default {
           if (data.stellar.payment) {
             let payment = data.stellar.payment
             if (payment.asset) {
-              this.selectasset = payment.asset
+              this.selectedasset = payment.asset
             } else {
-              this.selectasset = {code: 'XLM'}
+              this.selectedasset = {code: 'XLM'}
+            }
+            //根据当前资产选择
+            if(this.selectedasset.code){
+              let sn = isNativeAsset(this.selectedasset)
+              let as = this.assets.filter(item=>{
+                if(sn){
+                  return isNativeAsset(item)
+                }else{
+                  return this.selectedasset.code === item.code && this.selectedasset.issuer === item.issuer
+                }
+              })
+              if(as.length>0){
+                this.selectedasset = as[0]
+              }
             }
             this.destination = payment.destination
             this.amount = payment.amount

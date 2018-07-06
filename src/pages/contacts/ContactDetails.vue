@@ -77,7 +77,7 @@ export default {
   computed: {
     qrtext() {
       //类似于stargazer的格式
-      return exportNameCard(this.account);
+      return exportNameCard(this.contact.address);
       //return JSON.stringify(exportNameCard(this.account))
     },
     ...mapState({

@@ -1,12 +1,15 @@
 <template>
 <!-- <v-card class="menu-card"> -->
-  <v-bottom-nav :value="true" :active.sync="active" color="dark" class="tb-menu" app fixed>
-      <v-btn flat v-for="(item,index) in menus" :key="index" :value="index" @click="redirect(index,item.name)"> 
-        <span>{{$t(item.title)}}</span>
-        <v-icon>{{item.icon}}</v-icon>
-        <div  v-if="index!==active && index===3 && unReadCount !==0 "  class="unread-wrapper"></div>
-      </v-btn>
-  </v-bottom-nav>
+  <div class="tabbar-wrapper">
+    <v-bottom-nav :value="true" :active.sync="active" color="dark" class="tb-menu" app fixed>
+        <v-btn flat v-for="(item,index) in menus" :key="index" :value="index" @click="redirect(index,item.name)"> 
+          <span>{{$t(item.title)}}</span>
+          <v-icon>{{item.icon}}</v-icon>
+          <div  v-if="index!==active && index===3 && unReadCount !==0 "  class="unread-wrapper"></div>
+        </v-btn>
+    </v-bottom-nav>
+    <div class="bottom-safe-area"></div>
+  </div>
 <!-- </v-card> -->
 </template>
 
@@ -29,11 +32,17 @@ export default {
           icon: "trending_up"
         },
         {
-          title: "Menu.Funding",
-          name: "Funding",
-          path: "/funding",
-          icon: "import_export"
+          title: "Title.ThirdApp",
+          name: "Apps",
+          path: "/apps/all",
+          icon: "apps"
         },
+        // {
+        //   title: "Menu.Funding",
+        //   name: "Funding",
+        //   path: "/funding",
+        //   icon: "import_export"
+        // },
         {
           title: "Menu.My",
           name: "My",
@@ -100,4 +109,16 @@ export default {
   top:5px
   position: absolute
   z-index: 10
+.bottom-safe-area
+  position: fixed
+  bottom: 0
+  left: 0
+  right: 0
+  height: 0
+  height:  constant(safe-area-inset-bottom)
+  height:  env(safe-area-inset-bottom)
+  background: $secondarycolor.gray!important
+  z-index: 999
+.tabbar-wrapper
+  background: $secondarycolor.gray!important
 </style>

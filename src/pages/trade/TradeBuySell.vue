@@ -22,9 +22,10 @@
     <div class="flex-row full-width tmenu input-menu">
       <div :class="'flex1 textcenter' + ( isBuy ? ' active':'' )" @click="switchBuy">{{$t('Trade.Buy')}}</div>
       <div :class="'flex1 textcenter' + ( isSell ? ' active':'' )" @click="switchSell">{{$t('Trade.Sell')}}</div>
+      <div :class="'flex1 textcenter' + ( showOffer ? ' active':'' )" @click="switchMyOffers">{{$t('Trade.MyOffer')}}</div>
     </div>
 
-    <div class="content input-content">
+    <div class="content input-content" v-if="!showOffer">
       <card class="mytrade" padding="10px 10px">
         <div class="card-content" slot="card-content">
           
@@ -109,15 +110,45 @@
 
 
     </div>
+    <!--显示我的委单-->
+    <div class="content input-content" v-else>
+      <card class="offer-card" padding="10px 10px">
+        <div class="myoffer-table offer-table" slot="card-content">
+        <div class="table-head font-13">
+          <div class="headcol">{{$t('Trade.Price')}}</div>
+          <div class="headcol">{{BaseAsset.code}}</div>
+          <div class="headcol">{{CounterAsset.code}}</div>
+          <div class="headcol"></div>
+        </div>
+        <div class="table-row font-13" 
+          v-for="(item,index) in myoffers" :key="index" :class='item.type'>
+          <div class="b-row price" >{{item.price}}</div>
+          <div class="b-row" v-if="item.type==='buy'">+{{[locale.key,Number(item.base)] | I18NNumberFormat}}</div>
+          <div class="b-row" v-else>-{{[locale.key,Number(item.amount)] | I18NNumberFormat}}</div>
+          <div class="b-row" v-if="item.type==='buy'">-{{[locale.key,Number(item.amount)] | I18NNumberFormat}}</div>
+          <div class="b-row" v-else>+{{[locale.key,Number(item.base)] | I18NNumberFormat}}</div>
+          <div class="b-row depth">
+            <span class="working" v-if="working && delindex===index"></span>
+            <a v-else href="javascript:void(0)"   @click.stop="cancelMyOffer(item,index)">{{$t('Trade.Cancel')}}</a>
+          </div>
+        </div>
+      </div>
+
+      </card>
+    </div>
+
 
     </div>
 
-  <bottom-notice :show.sync="accountNotFundDlg" @update:show="closeAccountNotFoundDlg">
+  <!-- <bottom-notice :show.sync="accountNotFundDlg" @update:show="closeAccountNotFoundDlg">
     <div slot>
       <div @click="toHelp">{{$t('Error.AccountNotFund')}}<v-icon color="primary">help</v-icon></div>
       <div @click="toKYC"><span class="underline">{{$t('kyc_active')}}</span></div>
     </div>
-  </bottom-notice> 
+  </bottom-notice>  -->
+
+  <un-fund-notice v-if="accountNotFundDlg" @close="closeAccountNotFoundDlg">></un-fund-notice>
+  
 
   <password-sheet
     v-if="needpwd" @cancel="cancelpwd" @ok="rightpwd"
@@ -180,6 +211,8 @@ import Loading from '@/components/Loading'
 import TradePairToolBar from '@/components/TradePairToolBar'
 import PasswordSheet from '@/components/PasswordSheet'
 import { offer as doOffer } from '@/api/offer'
+import { myofferConvert } from '@/api/offer'
+import { cancel as cancelOffer }  from '@/api/offer'
 import { mapState, mapActions, mapGetters} from 'vuex'
 import { getAsset, isNativeAsset } from '@/api/assets'
 import { trustAll } from '@/api/operations'
@@ -188,9 +221,12 @@ import { Decimal } from 'decimal.js'
 import debounce from 'lodash/debounce'
 import loadaccount from '@/mixins/loadaccount'
 import BottomNotice from '@/components/BottomNotice'
+var moment = require('moment')
+import UnFundNotice from '@/components/UnFundNotice'
 
 const FLAG_BUY = 'buy'
 const FLAG_SELL = 'sell'
+const FLAG_MYOFFER = 'myOffer'
 Decimal.rounding = Decimal.ROUND_DOWN
 
 export default {
@@ -216,6 +252,7 @@ export default {
       loadingTitle: null,
       loadingError: null,
       needpwd: false,
+      delindex: -1,
 
     }
   },
@@ -230,6 +267,8 @@ export default {
       islogin: state => state.accounts.accountData.seed ? true:false,
       bids: state => state.accounts.selectedTradePair.bids,//买单
       asks: state => state.accounts.selectedTradePair.asks,//卖单
+      my: state => state.accounts.selectedTradePair.my.records,
+      locale: state => state.app.locale,
     }),
     ...mapGetters([
       'balances',
@@ -294,6 +333,9 @@ export default {
     isSell(){
       return this.flag === FLAG_SELL
     },
+    showOffer(){
+      return this.flag === FLAG_MYOFFER
+    },
 
     maxamount(){
       if(this.price!=null&&this.price>0){
@@ -328,6 +370,18 @@ export default {
       }
       return null
     },
+     myoffers(){
+      if(this.my){
+        let data = myofferConvert(this.BaseAsset,this.CounterAsset,this.my)
+        data.forEach(item=>{
+          item.price = Number(item.price).toFixed(7)
+          item.base = Number(item.base).toFixed(7)
+          item.amount = Number(item.amount).toFixed(7)
+        })
+        return data
+      }
+      return []
+    },
 
     
   },
@@ -351,7 +405,8 @@ export default {
       switchSelectedTradePair: 'switchSelectedTradePair',
       queryMyOffers: 'queryMyOffers',
       orderBookStreamHandler: 'orderBookStreamHandler',
-      getAccountInfo:'getAccountInfo'
+      getAccountInfo:'getAccountInfo',
+      getAllOffers: 'getAllOffers',
 
     }),
     back(){
@@ -542,6 +597,9 @@ export default {
     switchSell(){
       this.flag = FLAG_SELL
       this.clean()
+    },
+    switchMyOffers(){
+      this.flag  = FLAG_MYOFFER
     },
     choose({type,data}){
       if(this.justify) return
@@ -906,8 +964,79 @@ export default {
     },
     rightpwd(){
       this.needpwd = false
-    }
-   
+    },
+    //撤消委单
+    cancelMyOffer(item,index){
+      if(!this.islogin){
+        this.needpwd = true;
+        return;
+      }
+      if(this.working ) return
+      if(!this.accountData.seed)return
+      this.loadingTitle = null
+      this.working = true
+      this.sending = true
+      this.delindex = index
+      cancelOffer(this.accountData.seed,item)
+        .then(data=>{
+          //this.$toasted.show(this.$t('Trade.CancelOfferSuccess'))
+          this.loadingTitle = this.$t('Trade.CancelOfferSuccess')
+          this.sendsuccess = true
+          setTimeout(()=>{
+            this.sendsuccess = false
+            this.working = false
+            this.loadingTitle = null
+            this.loadingError = null
+          },1000)
+          this.delindex = -1
+          //this.queryMyOffers()
+          //查询盘面
+          try{
+            this.load().then(()=>{}).catch(err=>{console.error(err)});
+          }catch(err){
+            console.error(err)
+          }
+        })
+        .catch(err=>{
+          console.log('-----cancel----- error-----')
+          console.log(err)
+          // this.$toasted.show(this.$t('Error.CancelOfferFailed'))
+          this.loadingTitle = this.$t('Error.CancelOfferFailed')
+          let errcode = getXdrResultCode(err);
+          if(errcode){
+            //this.$toasted.error(this.$t(errcode));
+            // this.$toasted.show( this.$t(errorcode))
+            this.loadingError = this.$t(errorcode)
+          }
+          this.sendfail = true
+          setTimeout(()=>{
+            this.sendfail = false
+            this.loadingTitle = null
+            this.loadingError = null
+            this.working = false
+          },3000)
+
+          this.delindex = -1
+        })
+    },
+    load(){
+      let queryOffersFn = new Promise((resolve,reject)=>{
+        this.queryAllOffers()
+        resolve()
+      })
+      return Promise.all([this.queryOrderBook(), this.queryMyOffers(), queryOffersFn])
+    },
+    queryAllOffers(){
+      //暂时只查询一周的委单数据
+      let start_time = Number(moment().subtract(100,"days").format('x'))
+      let end_time = Number(moment().format('x'))
+      let address = this.account.address
+      return this.getAllOffers({
+        account: address,
+        start_time,
+        end_time
+      })
+    },
 
 
   },
@@ -920,6 +1049,7 @@ export default {
     OrderBookLite,
     PasswordSheet,
     BottomNotice,
+    UnFundNotice
   }
 }
 </script>
@@ -1050,6 +1180,37 @@ export default {
 .orderbook-content
   overflow-y: auto
   height: calc(100vh - 340px)
-
+.table-head
+  display: flex
+  font-size: 14px
+  color: $secondarycolor.font
+  padding-top: 2px
+  padding-bottom: 2px
+  .headcol
+    flex: 1
+    text-align: right
+  .headcol:nth-child(1)
+    text-align: left
+.table-row
+  display: flex
+  font-size: 13px
+  color: $secondarycolor.font
+  padding-top: 10px
+  /*margin-bottom: 20px*/
+  .b-row
+    flex: 1
+    text-align: right
+    padding-right: 1px
+  .b-row.price
+    text-align: left
+  .b-row.depth
+    text-align: right
+    &>a
+      color: $primarycolor.green
+    
+.offer-card
+  height: 100%
+  width: 100%
+  overflow-y: auto
 </style>
 

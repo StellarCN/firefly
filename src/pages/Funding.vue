@@ -120,6 +120,9 @@
     <tab-bar /> -->
 
    <bottom-notice :show.sync="notice" :text="noticeText">    </bottom-notice>
+
+   <un-fund-notice v-if="accountNotFundDlg" @close="closeAccountNotFoundDlg">></un-fund-notice>
+  
   </div>
 </template>
 
@@ -138,6 +141,7 @@ import WithdrawStandard from '@/components/WithdrawStandard'
 import TabBar from '@/components/TabBar'
 import  defaultsDeep  from 'lodash/defaultsDeep'
 import { NO_FUNDINS } from '@/api/gateways'
+import UnFundNotice from '@/components/UnFundNotice'
 
 export default {
   data(){
@@ -157,11 +161,12 @@ export default {
       withdrawFields:[],
       withdrawAccountId:"",
       showmenuicon: true,
-      showbackicon: false,
+      showbackicon: true,
       noticeText: '',  
       notice: false,
       withdrawurl: '',//提现的数据提交地址
       scannerView: false,
+      accountNotFundDlg: false,
     }
   },
   computed:{
@@ -402,7 +407,11 @@ export default {
     closeQRScanner(){
       this.$refs.withdraw.doCloseQRScanner()
       this.$store.commit('SHOW_TABBAR')
-    }
+    },
+    closeAccountNotFoundDlg(){
+      this.accountNotFundDlg = false
+    },
+
 
    
   },
@@ -413,6 +422,7 @@ export default {
     WithdrawInput,
     WithdrawStandard,
     TabBar,
+    UnFundNotice,
   }
 }
 </script>

@@ -5,7 +5,7 @@
               :showbackicon="true"
               @goback="back">
       <v-btn icon slot="right-tool" @click="readAll">
-        <i class="material-icons">done_all</i>
+        <i class="material-icons font28">done_all</i>
       </v-btn>
       
 

@@ -94,10 +94,10 @@
         <div class="table-row font-13" 
           v-for="(item,index) in deals" :key="index" :class='item.type'>
           <div class="b-row price" >{{item.price}}</div>
-          <div class="b-row" v-if="item.sold_asset_code === BaseAsset.code && item.sold_asset_issuer === BaseAsset.issuer">-{{item.sold_amount}}&nbsp;</div>
+          <div class="b-row" v-if="assetEqBaseAsset(item)">-{{item.sold_amount}}&nbsp;</div>
           <div class="b-row" v-else>+{{item.bought_amount}}&nbsp;</div>
           
-          <div class="b-row" v-if="item.sold_asset_code === CounterAsset.code && item.sold_asset_issuer === CounterAsset.issuer">-{{item.sold_amount}}&nbsp;</div>
+          <div class="b-row" v-if="assetEqCounterAsset(item)">-{{item.sold_amount}}&nbsp;</div>
           <div class="b-row" v-else>+{{item.bought_amount}}&nbsp;</div>
 
           <div class="b-row">{{$t(item.type)}}</div>
@@ -356,7 +356,7 @@ export default {
       if(this.alloffers){
         let key1 = this.BaseAsset.code + (isNativeAsset(this.BaseAsset) ? '' : this.BaseAsset.issuer)
         let key2 = this.CounterAsset.code + (isNativeAsset(this.CounterAsset) ? '' : this.CounterAsset.issuer)
-        //过滤掉不是当前要显示的数据
+        //过滤掉不是当前要显示的数据，价格，如果当前的买和卖是反着的，则重新计算价格
         return this.alloffers.filter(item=>{
           let t1 = null,t2 = null
           if(item.sold_asset_code){
@@ -377,6 +377,19 @@ export default {
           return false
         })
         .map(item=>{
+          let t1 = null,t2 = null
+          if(item.sold_asset_code){
+            t1 = item.sold_asset_code + ( (isNativeAsset(item.sold_asset_code, item.sold_asset_issuer) ? '': item.sold_asset_issuer) )
+          }else{
+            t1 = item.counter_asset + ( (isNativeAsset(item.counter_asset, item.counter_issuer) ? '': item.counter_issuer) )
+          }
+
+          if(item.bought_asset_code){
+            t2 = item.bought_asset_code + ( (isNativeAsset(item.bought_asset_code, item.bought_asset_issuer) ? '': item.bought_asset_issuer) )
+          }else{
+            t2 = item.base_asset + ( (isNativeAsset(item.base_asset, item.base_issuer) ? '': item.base_issuer) )
+          }
+          let obj = null
           if(item.bought_asset_code === null || typeof item.bought_asset_code ==='undefined'
              || item.bought_amount ===null || typeof item.bought_amount === 'undefined' ){
             let cancelObj = {
@@ -387,10 +400,18 @@ export default {
               sold_amount:item.amount,
               bought_amount:new Decimal(item.amount).times(item.price).toFixed(7)
             }
-            return Object.assign({}, item, cancelObj)
+            obj = Object.assign({}, item, cancelObj)
           }else{
-            return Object.assign({}, item)
+            obj= Object.assign({}, item)
           }
+          if(t1 === key2 && t2 === key1){
+            if(item.price_r){
+              obj.price = new Decimal(item.price_r.d).dividedBy(item.price_r.n).toFixed(7)
+            }else{
+              obj.price = new Decimal(1).dividedBy(item.price).toFixed(7)
+            }
+          }
+          return obj;
           
         })
       }
@@ -471,6 +492,22 @@ export default {
     rightPwd(){
       this.needpwd = false
     },
+    assetEqBaseAsset(item){
+      let codeeq = item.sold_asset_code === this.BaseAsset.code
+      if(!codeeq)return false
+      let isNA = isNativeAsset(item.sold_asset_code, item.sold_asset_issuer)
+      let isNAB = isNativeAsset(this.BaseAsset)
+      if(isNA && isNAB)return true
+      return item.sold_asset_issuer === this.BaseAsset.issuer
+    },
+    assetEqCounterAsset(item){
+      let codeeq = item.sold_asset_code === this.CounterAsset.code
+      if(!codeeq)return false
+      let isNA = isNativeAsset(item.sold_asset_code, item.sold_asset_issuer)
+      let isNAB = isNativeAsset(this.CounterAsset)
+      if(isNA && isNAB)return true
+      return item.sold_asset_issuer === this.CounterAsset.issuer
+    }
    
   },
   components: {

@@ -74,6 +74,11 @@ export default {
     }),
 
   },
+  watch: {
+    redUpGreenDown(){
+      this.colorSwitch = this.redUpGreenDown
+    }
+  },
   beforeMount(){
     this.pinEnable = this.app.enablePin || false
     this.colorSwitch = this.redUpGreenDown

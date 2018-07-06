@@ -147,49 +147,51 @@
 
       <!-- 修改密码 -->
        <div class="pwdSheetWrapper rePwdSheetWrapper" v-if="showResetPwdSheet">
-        <v-bottom-sheet  v-model="showResetPwdSheet"  dark>
-          <div class="sheet-title">
-            <div class="stitle">
-             {{$t('ResetPassword')}}
+        <v-bottom-sheet  v-model="showResetPwdSheet" dark>
+          <div class="bts-dlg">
+            <div class="sheet-title">
+              <div class="stitle">
+              {{$t('ResetPassword')}}
+              </div>
             </div>
-          </div>
-          <div class="sheet-content">
-            <div class="sheet-input">
+            <div class="sheet-content">
               <div class="sheet-input">
+                <div class="sheet-input">
+                  <v-text-field
+                        name="password1"
+                        :label="$t('Account.OriginPassword')"
+                        v-model="inpassword1"
+                        :append-icon="pwd1visible ? 'visibility' : 'visibility_off'"
+                        :append-icon-cb="() => (pwd1visible = !pwd1visible)"
+                        :type="pwd1visible ? 'text':'password'"
+                        required dark
+                      ></v-text-field>
+                </div>
+                <div class="sheet-input">
+                  <v-text-field
+                        name="password2"
+                        :label="$t('Account.NewPassword')"
+                        v-model="inpassword2"
+                        :append-icon="pwd2visible ? 'visibility' : 'visibility_off'"
+                        :append-icon-cb="() => (pwd2visible = !pwd2visible)"
+                        :type="pwd2visible ? 'text':'password'"
+                        required dark
+                      ></v-text-field>
+                </div>
                 <v-text-field
-                      name="password1"
-                      :label="$t('Account.OriginPassword')"
-                      v-model="inpassword1"
-                      :append-icon="pwd1visible ? 'visibility' : 'visibility_off'"
-                      :append-icon-cb="() => (pwd1visible = !pwd1visible)"
-                      :type="pwd1visible ? 'text':'password'"
+                      name="password"
+                      :label="$t('Account.RePassword')"
+                      v-model="inpassword3"
+                      :append-icon="pwd3visible ? 'visibility' : 'visibility_off'"
+                      :append-icon-cb="() => (pwd3visible = !pwd3visible)"
+                      :type="pwd3visible ? 'text':'password'"
                       required dark
                     ></v-text-field>
               </div>
-              <div class="sheet-input">
-                <v-text-field
-                      name="password2"
-                      :label="$t('Account.NewPassword')"
-                      v-model="inpassword2"
-                      :append-icon="pwd2visible ? 'visibility' : 'visibility_off'"
-                      :append-icon-cb="() => (pwd2visible = !pwd2visible)"
-                      :type="pwd2visible ? 'text':'password'"
-                      required dark
-                    ></v-text-field>
+              <div  class="sheet-btns">
+                <div class="sheet-btn" @click="cancleResetPwdInput">{{$t('Button.Cancel')}}</div>
+                <div class="sheet-btn" @click="okResetPwdInput">{{$t('Button.OK')}}</div>
               </div>
-              <v-text-field
-                    name="password"
-                    :label="$t('Account.RePassword')"
-                    v-model="inpassword3"
-                    :append-icon="pwd3visible ? 'visibility' : 'visibility_off'"
-                    :append-icon-cb="() => (pwd3visible = !pwd3visible)"
-                    :type="pwd3visible ? 'text':'password'"
-                    required dark
-                  ></v-text-field>
-            </div>
-            <div  class="sheet-btns">
-              <div class="sheet-btn" @click="cancleResetPwdInput">{{$t('Button.Cancel')}}</div>
-              <div class="sheet-btn" @click="okResetPwdInput">{{$t('Button.OK')}}</div>
             </div>
           </div>
         </v-bottom-sheet>
@@ -658,7 +660,7 @@ export default {
     height: 36px
 .pwdSheetWrapper
   background: $secondarycolor.gray
-  height: 140px
+  height: 160px
   position: fixed
   bottom: 0
   bottom: constant(safe-area-inset-bottom)
@@ -667,9 +669,12 @@ export default {
   left: 0
   z-index: 100
   &.rePwdSheetWrapper
-    height: 320px
+    height: 360px
 .sheet-content
   padding: 10px 10px
+  padding-bottom: calc(10px + constant(safe-area-inset-bottom))
+  padding-bottom: calc(10px + env(safe-area-inset-bottom))
+  background: $secondarycolor.gray
 .sheet-btns
   display: flex
   color: $primarycolor.green
@@ -678,6 +683,7 @@ export default {
   .sheet-btn
     flex: 1
     text-align: center
+    font-size: 16px
 .dlg-content
   font-size: 14px
 .stitle
@@ -732,6 +738,11 @@ export default {
   font-size:16px
   // text-align:center
   padding-left:175px
-  
+
+.bts-dlg
+  background: $secondarycolor.gray!important
+  padding-bottom: 0px
+  padding-bottom: constant(safe-area-inset-bottom)
+  padding-bottom: env(safe-area-inset-bottom)
 </style>
 

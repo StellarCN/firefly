@@ -2,7 +2,7 @@
 <div>
 
   <v-app :class="'app ' + (showFuzzyView?'fuzzy-app':'')  + (isios ? ' ios-app ':' ' )" dark>
-      <v-system-bar status :color="iosstatusbarcolor" v-if="isios" app>
+      <v-system-bar status :color="iosstatusbarcolor" v-if="isios && !isFull" app>
         <v-spacer></v-spacer>
       </v-system-bar>
       <v-content class="contentx">
@@ -44,8 +44,8 @@
 import Vue from "vue";
 import { mapActions, mapState } from "vuex";
 import PinCode from "@/components/PinCode";
-import { defaultTradePairsAPI } from "@/api/gateways";
-//import { closeStreams, initStreams } from "@/streams";
+import { defaultTradePairsAPI,initFundConfig } from "@/api/gateways";
+import { closeStreams, initStreams } from "@/streams";
 import { initStorage, checkPlatform } from "@/api/storage";
 import { getDeviceLanguage, ZH_CN } from "@/locales";
 import  TabBar from '@/components/TabBar'
@@ -64,7 +64,7 @@ export default {
       devicelang: null,
       showFuzzyView: false,
       tabBarShow: false,
-      tabBarItems: ['MyAssets', 'TradeCenter', 'Funding', 'My'],
+      tabBarItems: ['MyAssets', 'TradeCenter', 'Apps', 'My'],
 
       messagesInterval: null,
       updateConfirmDlg: false,
@@ -84,7 +84,7 @@ export default {
       }
     },
     showTabbar(value){
-      console.log('-------------2:'+value)
+      // console.log('-------------2:'+value)
       this.tabBarShow = value
     }    
   },
@@ -97,6 +97,7 @@ export default {
       iosstatusbarcolor: state => state.iosstatusbarcolor,
       accounts: state => state.accounts.data,
       showTabbar: state => state.showTabbar,
+      isFull: state => state.isFull,
     }),
   },
   mixins: [updateMixin],
@@ -114,9 +115,9 @@ export default {
       checkPlatform();
       try {
         //获取默认交易对
-        defaultTradePairsAPI();
+        // defaultTradePairsAPI();
+        initFundConfig();
       } catch (err) {
-        console.error("获取默认交易对失败！");
         console.error(err);
       }
 
@@ -176,7 +177,8 @@ export default {
             if (this.address) {
               //this.getAccountInfo(this.address)
               //closeStreams();
-              //initStreams(this.address);
+              
+              // initStreams(this.address);
               this.getAllAssetHosts();
             }
             this.saveDefaultTradePairsStat().then(()=>{}).catch(err=>{console.error(err)});
@@ -403,6 +405,11 @@ export default {
 // .ios-app
 //   .page
 //     padding-top: .2rem!important
+.contentx
+  padding-top: 0px
+  padding-top: constant(safe-area-inset-top)
+  padding-top: env(safe-area-inset-top)
+
 
 .a-card-content
   padding: 20px 10px

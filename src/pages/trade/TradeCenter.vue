@@ -5,11 +5,11 @@
   <div class="page">
     <toolbar :title="$t(title)" :showbackicon="false" ref="toolbar">
       <v-btn icon @click.native="showAccounts" slot="left-tool">
-          <i class="material-icons">repeat</i>
+          <i class="material-icons font28">menu</i>
       </v-btn>
     
        <v-btn icon slot='right-tool' @click="pickershow()">
-        <i class="material-icons">&#xE145;</i>
+        <i class="material-icons font28">&#xE145;</i>
       </v-btn>
       <span slot="switch_password">{{$t('Account.Password')}}</span>
     </toolbar>
@@ -131,7 +131,7 @@ import { ZH_CN } from '@/locales/index'
 const TAG_ALL = 'All', TAG_XCN = 'XCN', TAG_XLM = 'XLM', TAG_BTC = 'BTC', TAG_ETH = 'ETH', TAG_CUSTOM = '_CUSTOM', TAG_XFF = 'XFF'
 
 const TAGS_ZH_CN = [TAG_XCN, TAG_BTC, TAG_XLM, TAG_CUSTOM]
-const TAGS_OTHER = [TAG_XLM, TAG_BTC, TAG_XCN, TAG_CUSTOM]
+const TAGS_OTHER = [TAG_BTC, TAG_XLM, TAG_XCN, TAG_CUSTOM]
 
 export default {
   data(){
@@ -185,7 +185,7 @@ export default {
       let custom=[];
       let custom_ids = []
       this.tradepairs.custom.forEach((item,index) => {
-          custom.push(Object.assign({}, item,{tradepairIndex: 'custom_'+index, custom: true}))
+          custom.push(Object.assign({}, item,{tradepairIndex: 'custom_'+index, custom: true,index}))
           let idf = isNativeAsset(item.from) ? 'XLM' : item.from.code+'-'+item.from.issuer
           let idt = isNativeAsset(item.to) ? 'XLM' : item.to.code +'-'+item.to.issuer
           custom_ids.push(idf+'_'+idt)
@@ -469,6 +469,8 @@ export default {
         })
     },
     trade(index,tradepair){
+      console.log('------------------------trade----')
+      console.log(tradepair)
       this.selectTradePair({custom: tradepair.custom, index: tradepair.tradepairIndex, tradepair})
       console.log('-------111-----22---')
       this.$router.push({name: 'Trade'})

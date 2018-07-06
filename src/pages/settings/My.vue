@@ -3,14 +3,14 @@
 * @Author: mazhaoyong@gmail.com
 * @Date: 2018-01-23 11:14:24
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-06-13 12:27:40
+ * @Last Modified time: 2018-07-05 15:25:06
 * @License: MIT
 */
 <template>
   <div class="page">
       <toolbar :title="$t('Menu.My')" :showbackicon="false" lockpass  ref="toolbar">
             <v-btn icon @click.native="showAccounts" slot="left-tool">
-                <i class="material-icons">repeat</i>
+                <i class="material-icons font28">menu</i>
             </v-btn>
       </toolbar>
 
@@ -90,16 +90,21 @@ export default {
                     name: 'KYC',
                     icon: "security"
                 },
+                 {
+                    title: "Menu.Funding",
+                    name: "Funding",
+                    icon: "import_export"
+                },
                 {
                     title: "Menu.Settings",
                     name: "Settings",
                     icon: "settings"
                 },
-                {
-                    title: "Title.ThirdApp",
-                    name: "Apps",
-                    icon: "apps"
-                },
+                // {
+                //     title: "Title.ThirdApp",
+                //     name: "Apps",
+                //     icon: "apps"
+                // },
                 {
                     title: "Menu.Help",
                     name: "Help",
