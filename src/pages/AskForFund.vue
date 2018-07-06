@@ -105,9 +105,15 @@ export default {
     },
     share(){
       if(window.plugins && window.plugins.socialsharing){
+        let img = 'data:image';
+        if(this.qrcodebase64 && this.qrcodebase64.indexOf(img) < 0){
+          img += this.qrcodebase64
+        }else{
+          img = this.qrcodebase64
+        }
         var options = {
           subject: this.$t('fund_askfor'), // fi. for email
-          files: ['data:image/png;base64,'+this.qrcodebase64]//, // an array of filenames either locally or remotely
+          files: [img]//, // an array of filenames either locally or remotely
 //          chooserTitle: 'Pick an app' // Android only, you can override the default share sheet title
         }
         window.plugins.socialsharing.shareWithOptions(options, (result)=>{
