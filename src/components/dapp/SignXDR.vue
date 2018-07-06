@@ -7,66 +7,68 @@
       <div class="confirm-blank"></div>
       <div  class="confirm-dlg">
       <v-bottom-sheet v-model="showDlg" persistent dark>
-        <div class="menu-head">
-          <div class="menu-row">
-            <div class=" menu-row-1">
-              <v-icon class="avatar iconfont icon-erweima" color="primary"></v-icon>
-            </div>
-          </div>
-          <div class="menu-row menu-row-2">
-            <div class="name">{{account.name}}</div>
-            <div class="address">{{account.address | shortaddress}}</div>
-          </div>
-          <div style="clear:both"></div>
-        </div>
-        
-        <div class="confirm-content">
-          <div class="dlg-title text-center">
-            <span>{{$t('Sign')}}({{appname}})</span>
-          </div>
-
-          <div class="tx-opt-msg pl-3">
-            {{message}} <span class="confirm-memo">({{tx.operations.length}})</span>
-          </div>
-
-          <!---解析operation-->
-          <div class="tx-opt-content" v-if="tx">
-            <!--手续费，序列号，有效时间，备注，业务操作数-->
-            <div>
-              <span class="confirm-title">{{$t('DW.Fee')}}</span>
-              <span class="confirm-memo">{{fee}}</span>
-            </div>
-
-            <div class="tx-opts">
-              <div class="flex-row tx-opt-item" v-for="(opt,index) in tx.operations" :key="index">
-                <div class="flex1 textcenter">{{index+1}}</div>
-                <div class="flex6" v-if="opt.type === 'payment'">
-                  <span class="pa-1 tx-opt-item-type textcenter">{{$t(opt.type)}}</span>
-                  <span class="pa-1">{{opt.amount}}{{opt.asset.code}}</span>
-                  <span class="pa-1">{{$t('DestinationAddress')}}:{{opt.destination | miniaddress}}</span>
-                </div>
-                <div class="flex6" v-if="opt.type === 'allowTrust'">
-                  <span class="pa-1 tx-opt-item-type">{{$t(opt.type)}}</span>
-                  <span class="pa-1">{{opt.assetCode}}</span>
-                </div>
-                <div class="flex6" v-if="opt.type === 'changeTrust'">
-                  <span class="pa-1 tx-opt-item-type">{{$t(opt.type)}}</span>
-                  <span class="pa-1">{{opt.line.code}}({{opt.line.issuer | miniaddress}})</span>
-                  <span class="pa-1">{{$t('limit')}}:{{opt.limit}}</span>
-                </div>
+        <div class="sign-xdr-content">
+          <div class="menu-head">
+            <div class="menu-row">
+              <div class=" menu-row-1">
+                <v-icon class="avatar iconfont icon-erweima" color="primary"></v-icon>
               </div>
             </div>
-
-          </div>
-          <div class="tx-opt-content" v-if="err">
-            {{$t(err)}}
+            <div class="menu-row menu-row-2">
+              <div class="name">{{account.name}}</div>
+              <div class="address">{{account.address | shortaddress}}</div>
+            </div>
+            <div style="clear:both"></div>
           </div>
           
-        </div>
+          <div class="confirm-content">
+            <div class="dlg-title text-center">
+              <span>{{$t('Sign')}}({{appname}})</span>
+            </div>
 
-        <div class="confirm-btns flex-row textcenter">
-          <div class="confirm-btn flex1" @click="exit">{{$t('Button.Cancel')}}</div>
-          <div class="confirm-btn flex1" @click="doSign">{{$t('Button.OK')}}</div>
+            <div class="tx-opt-msg pl-3">
+              {{message}} <span class="confirm-memo">({{tx.operations.length}})</span>
+            </div>
+
+            <!---解析operation-->
+            <div class="tx-opt-content" v-if="tx">
+              <!--手续费，序列号，有效时间，备注，业务操作数-->
+              <div>
+                <span class="confirm-title">{{$t('DW.Fee')}}</span>
+                <span class="confirm-memo">{{fee}}</span>
+              </div>
+
+              <div class="tx-opts">
+                <div class="flex-row tx-opt-item" v-for="(opt,index) in tx.operations" :key="index">
+                  <div class="flex1 textcenter">{{index+1}}</div>
+                  <div class="flex6" v-if="opt.type === 'payment'">
+                    <span class="pa-1 tx-opt-item-type textcenter">{{$t(opt.type)}}</span>
+                    <span class="pa-1">{{opt.amount}}{{opt.asset.code}}</span>
+                    <span class="pa-1">{{$t('DestinationAddress')}}:{{opt.destination | miniaddress}}</span>
+                  </div>
+                  <div class="flex6" v-if="opt.type === 'allowTrust'">
+                    <span class="pa-1 tx-opt-item-type">{{$t(opt.type)}}</span>
+                    <span class="pa-1">{{opt.assetCode}}</span>
+                  </div>
+                  <div class="flex6" v-if="opt.type === 'changeTrust'">
+                    <span class="pa-1 tx-opt-item-type">{{$t(opt.type)}}</span>
+                    <span class="pa-1">{{opt.line.code}}({{opt.line.issuer | miniaddress}})</span>
+                    <span class="pa-1">{{$t('limit')}}:{{opt.limit}}</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="tx-opt-content" v-if="err">
+              {{$t(err)}}
+            </div>
+            
+          </div>
+
+          <div class="confirm-btns flex-row textcenter">
+            <div class="confirm-btn flex1" @click="exit">{{$t('Button.Cancel')}}</div>
+            <div class="confirm-btn flex1" @click="doSign">{{$t('Button.OK')}}</div>
+          </div>
         </div>
       </v-bottom-sheet>
       </div>
@@ -334,5 +336,11 @@ export default {
   overflow-y: auto
 .tx-opt-item
   color: $secondarycolor.font
+.sign-xdr-content
+  background: $secondarycolor.gray
+  padding-top: 8px
+  padding-bottom: 8px
+  padding-bottom: calc(8px + constant(safe-area-inset-bottom))
+  padding-bottom: calc(8px + env(safe-area-inset-bottom))
 </style>
 

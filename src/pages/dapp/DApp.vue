@@ -258,7 +258,7 @@ export default {
   beforeMount () {
     this.working = true
     this.err = null
-    axios.get(thridAppConfig)
+    axios.get(thridAppConfig+'?r='+ new Date().getTime())
       .then(response=>{
         this.working = false
         //console.log(response)

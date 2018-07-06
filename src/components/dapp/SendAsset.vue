@@ -7,58 +7,60 @@
       <div class="confirm-blank"></div>
       <div  class="confirm-dlg">
       <v-bottom-sheet v-model="showSendDlg" persistent dark>
-        <div class="menu-head">
-          <div class="menu-row">
-            <div class=" menu-row-1">
-              <v-icon class="avatar iconfont icon-erweima" color="primary"></v-icon>
-            </div>
-          </div>
-          <div class="menu-row menu-row-2">
-            <div class="name">{{account.name}}</div>
-            <div class="address">{{account.address | shortaddress}}</div>
-          </div>
-          <div style="clear:both"></div>
-        </div>
-        
-        <div class="confirm-content">
-          <div class="confirm-title">
-            <span v-if="appname">{{$t('Third.SendTo',[appname])}}</span>
-            <span v-else>{{$t('Third.SendTo',[target])}}</span>
-          </div>
-          <div class="confirm-amount">{{Number(Number(amount).toFixed(7))}}&nbsp;&nbsp;{{asset_code}}</div>
-          <div class="confirm-title" v-if="memo">
-            <span>{{$t('Memo')}}</span>
-            <span v-if="memo_type">({{memo_type}})</span>
-          </div>
-          <div class="confirm-memo" v-if="memo">{{memo}}</div>
-          <div class="confirm-title">{{$t('ChooseAsset')}}</div>
-          <div class="confirm-assets">
-            <swiper :options="swiperOpt"  ref="swiperRef">
-              <swiper-slide v-for="(item,index) in payments" :key="index">
-                <div :class="'asset-card textcenter ' + (choosed.code === item.code && choosed.issuer === item.issuer ? ' active' : ' ')">
-                  <div class="asset-icon">
-                    <i :class="'iconfont ' + assetIcon(item.code,item.issuer)"></i>
-                  </div>
-                  <div class="asset-code">{{item.code}}</div>
-                  <div class="asset-issuer" v-if="assethosts[item.issuer]">{{assethosts[item.issuer] }}</div>
-                  <div class="asset-issuer" v-else>{{item.issuer | miniaddress}}</div>
-                  <div class="asset-amount">{{item.amount}}</div>
+        <div class="send-dlg-content sheet-content">
+          <div class="menu-head">
+            <div class="menu-row">
+              <div class=" menu-row-1">
+                <v-icon class="avatar iconfont icon-erweima" color="primary"></v-icon>
               </div>
-              </swiper-slide>
-            </swiper>
-            <div class="loading-wrapper" v-if="loading">
-              <v-progress-circular indeterminate color="primary"></v-progress-circular>
             </div>
-            <div class="loading-wrapper textcenter" v-if="nodata">
-              {{$t('Error.NoData')}}
+            <div class="menu-row menu-row-2">
+              <div class="name">{{account.name}}</div>
+              <div class="address">{{account.address | shortaddress}}</div>
             </div>
-            
+            <div style="clear:both"></div>
           </div>
-        </div>
+          
+          <div class="confirm-content">
+            <div class="confirm-title">
+              <span v-if="appname">{{$t('Third.SendTo',[appname])}}</span>
+              <span v-else>{{$t('Third.SendTo',[target])}}</span>
+            </div>
+            <div class="confirm-amount">{{Number(Number(amount).toFixed(7))}}&nbsp;&nbsp;{{asset_code}}</div>
+            <div class="confirm-title" v-if="memo">
+              <span>{{$t('Memo')}}</span>
+              <span v-if="memo_type">({{memo_type}})</span>
+            </div>
+            <div class="confirm-memo" v-if="memo">{{memo}}</div>
+            <div class="confirm-title">{{$t('ChooseAsset')}}</div>
+            <div class="confirm-assets">
+              <swiper :options="swiperOpt"  ref="swiperRef">
+                <swiper-slide v-for="(item,index) in payments" :key="index">
+                  <div :class="'asset-card textcenter ' + (choosed.code === item.code && choosed.issuer === item.issuer ? ' active' : ' ')">
+                    <div class="asset-icon">
+                      <i :class="'iconfont ' + assetIcon(item.code,item.issuer)"></i>
+                    </div>
+                    <div class="asset-code">{{item.code}}</div>
+                    <div class="asset-issuer" v-if="assethosts[item.issuer]">{{assethosts[item.issuer] }}</div>
+                    <div class="asset-issuer" v-else>{{item.issuer | miniaddress}}</div>
+                    <div class="asset-amount">{{item.amount}}</div>
+                </div>
+                </swiper-slide>
+              </swiper>
+              <div class="loading-wrapper" v-if="loading">
+                <v-progress-circular indeterminate color="primary"></v-progress-circular>
+              </div>
+              <div class="loading-wrapper textcenter" v-if="nodata">
+                {{$t('Error.NoData')}}
+              </div>
+              
+            </div>
+          </div>
 
-        <div class="confirm-btns flex-row textcenter">
-          <div class="confirm-btn flex1" @click="exit">{{$t('Button.Cancel')}}</div>
-          <div :class="'confirm-btn flex1 ' + (choosedIndex >=0 ? '':'disable-btn')" @click="showPwdDlg">{{$t('Button.OK')}}</div>
+          <div class="confirm-btns flex-row textcenter">
+            <div class="confirm-btn flex1" @click="exit">{{$t('Button.Cancel')}}</div>
+            <div :class="'confirm-btn flex1 ' + (choosedIndex >=0 ? '':'disable-btn')" @click="showPwdDlg">{{$t('Button.OK')}}</div>
+          </div>
         </div>
       </v-bottom-sheet>
       </div>
@@ -66,7 +68,7 @@
 
     <!--显示密码输入界面-->
     <v-bottom-sheet persistent v-model="showPwdSheet" v-if="showPwdSheet" dark>
-      <div class="sheet-content">
+      <div class="sheet-content send-dlg-content">
         <div class="sheet-title textcenter">
           <div class="title">{{$t('payment')}} {{choosed.amount}}  {{choosed.code}}</div>
         </div>
@@ -557,7 +559,9 @@ export default {
 .sheet-content
   background: $secondarycolor.gray
   color: $primarycolor.font
-  padding: 10px 10px
+  padding: 8px 8px
+  padding-bottom: calc(8px +  constant(safe-area-inset-bottom))
+  padding-bottom: calc(8px +  env(safe-area-inset-bottom))
   word-wrap: break-word
   .sheet-title
     .title
