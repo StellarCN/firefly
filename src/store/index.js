@@ -6,9 +6,10 @@ import AccountStore from './modules/AccountStore'
 import AssetStore from './modules/AssetStore'
 import createPersist from './plugins/persistence'
 import TradesStore from './modules/tradesStore'
-import { APP_NAME, APP_VERSION } from '@/api/gateways'
+import { APP_NAME, APP_VERSION,fetchSysDApps} from '@/api/gateways'
 import   MessageStore from "./modules/MessageStore"
 var Base64 = require('js-base64').Base64
+
 
 Vue.use(Vuex)
 
@@ -33,12 +34,15 @@ const state = {
   onpause: false,//is app on pause
   showTabbar: true,//是否显示tabbar
   ifFull: false,//是否全屏
+  dapps:[],//推荐应用
 
 }
 
 const getters = {
 
 }
+
+export const LOAD_DAPPS = 'LOAD_DAPPS'
 
 const actions = {
   importAccountChange({commit}){
@@ -70,6 +74,10 @@ const actions = {
   },
   onResume({commit}){
     commit(ON_RESUME)
+  },
+  async loadDApps({commit}){
+    let data = await fetchSysDApps()
+    commit(LOAD_DAPPS, data.apps)
   }
 
 
@@ -132,6 +140,9 @@ const mutations = {
   },
   [IS_FULL](state, full){
     state.isFull = full
+  },
+  [LOAD_DAPPS](state,data){
+    state.dapps = data
   }
   
 }
