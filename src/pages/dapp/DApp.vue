@@ -240,7 +240,7 @@ export default {
       myaddresses: state => state.app.myaddresses||[],
       myapps: state => state.app.myapps,
       locale: state => state.app.locale,
-      apps: state => state.dapps,
+      apps: state => state.dapps || [],
     }),
   },
   beforeDestroy(){
@@ -254,8 +254,13 @@ export default {
       }
     }
   },
-  mounted () {
+  beforeMount(){
     this.fetchApps()
+  },
+  mounted () {
+    if(this.apps.length === 0){
+      this.fetchApps()
+    }
     if(!this.islogin){
       this.$refs.toolbar.showPasswordLogin()
     }

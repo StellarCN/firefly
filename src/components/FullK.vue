@@ -213,7 +213,7 @@ export default {
                     type: 'slider',
                     xAxisIndex: [0, 1, 2],
                     realtime: false,
-                    start: 50,
+                    start: 0,
                     end: 100,
                     top: this.blank*2+this.kH,//65,
                     height: this.dH,
