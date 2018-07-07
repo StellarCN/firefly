@@ -254,10 +254,8 @@ export default {
       }
     }
   },
-  created () {
-    this.fetchApps()
-  },
   mounted () {
+    this.fetchApps()
     if(!this.islogin){
       this.$refs.toolbar.showPasswordLogin()
     }
@@ -265,14 +263,14 @@ export default {
   methods: {
     ...mapActions(['addMyApp','loadDApps']),
     fetchApps(){
-      this.working = true
+      // this.working = true
       this.err = null
       this.loadDApps()
         .then(response=>{
-          this.working = false
+          // this.working = false
         })
         .catch(err=>{
-          this.working = false
+          // this.working = false
           console.error(err)
           this.err = 'Error.AjaxTimeout'
         })
