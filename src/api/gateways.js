@@ -276,9 +276,27 @@ export const DAPP_FETCH_URL = 'https://update.fchain.io/config/dapp.json'
 
 export function fetchSysDApps(){
   let url = DAPP_FETCH_URL + '?r=' + new Date().getTime()
-  return axios.get(url, {
-    timeout: 10000
+  // if(cordova.platformId === 'browser'){
+    // return axios.get(url, {
+    //   timeout: 10000
+    // }).then(response => {
+    //   return Promise.resolve(response.data)
+    // })
+  // }else{
+  //   return cordova.plugin.http.get(url, {},  {}, (response) => {
+  //     return Promise.resolve(JSON.parse(response.data))
+  //   })
+  // }
+  return new Promise((resolve,reject) => {
+    cordova.plugin.http.get(url, {}, {}, response => {
+      resolve(JSON.parse(response.data))
+    }, response => {
+      reject(response.error)
+    })
   })
+  
+  
+
     // .then(response=>{
     //   return Promise.resolve(response.data)
     // })

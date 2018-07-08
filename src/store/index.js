@@ -76,8 +76,8 @@ const actions = {
     commit(ON_RESUME)
   },
   async loadDApps({commit}){
-    let response = await fetchSysDApps()
-    commit(LOAD_DAPPS, response.data.apps)
+    let data = await fetchSysDApps()
+    commit(LOAD_DAPPS, data.apps)
   }
 
 

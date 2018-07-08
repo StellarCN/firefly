@@ -20,7 +20,7 @@
    </toolbar> 
     
     <v-container fluid v-bind="{ [`grid-list-md`]: true }" v-if="!showScanner">
-      <div class="dapp-subtitle subheading pl-2">{{$t('hot_dapp')}}</div>
+      <div class="dapp-subtitle subheading pl-2" @click="fetchApps">{{$t('hot_dapp')}}</div>
       <card padding="8px 0" margin="0 0" v-if="working">
         <div class="mt-5 textcenter">
           <v-progress-circular indeterminate color="primary"></v-progress-circular>
@@ -28,7 +28,7 @@
       </card>
       <card class="server-apps-layout" padding="8px 8px" margin="0 0" v-if="!working && err">
         <p v-if="err">
-          {{$t(err)}}
+          {{err}}
         </p>
       </card>
       <v-layout class="server-apps-layout" row wrap  v-if="!working && apps && apps.length > 0">
@@ -273,11 +273,13 @@ export default {
       this.loadDApps()
         .then(response=>{
           // this.working = false
+
         })
         .catch(err=>{
           // this.working = false
           console.error(err)
-          this.err = 'Error.AjaxTimeout'
+          // this.err = 'Error.AjaxTimeout'
+          this.err = this.$t('FederationName.NetworkError') +  (err.message?  err.message : '')
         })
 
     },
