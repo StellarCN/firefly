@@ -178,8 +178,6 @@
 </template>
 
 <script>
-const thridAppConfig = `https://update.fchain.io/config/dapp.json`
-import axios from 'axios'
 import { mapState, mapActions} from 'vuex'
 import Toolbar from '@/components/Toolbar'
 import Card from '@/components/Card'
@@ -212,7 +210,7 @@ export default {
   data(){
     return {
       statusbarColor: COLOR_GREEN,
-      apps: [],
+      // apps: [],
       working: false,
       err: null,
       showConfirmDlg: false,
@@ -242,6 +240,7 @@ export default {
       myaddresses: state => state.app.myaddresses||[],
       myapps: state => state.app.myapps,
       locale: state => state.app.locale,
+      apps: state => state.dapps || [],
     }),
   },
   beforeDestroy(){
@@ -255,30 +254,33 @@ export default {
       }
     }
   },
-  beforeMount () {
-    this.working = true
-    this.err = null
-    axios.get(thridAppConfig)
-      .then(response=>{
-        this.working = false
-        //console.log(response)
-        this.apps = response.data.apps
-        // this.apps = [{site: '111',title: 'aaa'}]
-      })
-      .catch(err=>{
-        this.working = false
-        console.error(err)
-        this.err = 'Error.AjaxTimeout'
-      })
-
+  beforeMount(){
+    this.fetchApps()
   },
   mounted () {
+    if(this.apps.length === 0){
+      this.fetchApps()
+    }
     if(!this.islogin){
       this.$refs.toolbar.showPasswordLogin()
     }
   },
   methods: {
-    ...mapActions(['addMyApp']),
+    ...mapActions(['addMyApp','loadDApps']),
+    fetchApps(){
+      // this.working = true
+      this.err = null
+      this.loadDApps()
+        .then(response=>{
+          // this.working = false
+        })
+        .catch(err=>{
+          // this.working = false
+          console.error(err)
+          this.err = 'Error.AjaxTimeout'
+        })
+
+    },
     back(){
       this.$router.back()
     },

@@ -8,7 +8,7 @@
           <div  v-if="index!==active && index===3 && unReadCount !==0 "  class="unread-wrapper"></div>
         </v-btn>
     </v-bottom-nav>
-    <div class="bottom-safe-area"></div>
+    <!-- <div class="bottom-safe-area"></div> -->
   </div>
 <!-- </v-card> -->
 </template>

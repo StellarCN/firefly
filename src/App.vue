@@ -117,6 +117,7 @@ export default {
         //获取默认交易对
         // defaultTradePairsAPI();
         initFundConfig();
+        this.loadDApps().then(data=>{}).catch(err=>{});
       } catch (err) {
         console.error(err);
       }
@@ -263,7 +264,8 @@ export default {
       "onPause",
       "onResume",
       "getMessages",
-      "saveDefaultTradePairsStat"
+      "saveDefaultTradePairsStat",
+      'loadDApps',
     ]),
     onAppPause() {
       this.showFuzzyView = true

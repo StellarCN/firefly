@@ -1,4 +1,5 @@
 import Parent from '@/pages/dapp/DAPPParent.vue'
+import DApp from '@/pages/dapp/DApp.vue'
 // dapp 路由
 export default {
   path:'/apps/',
@@ -9,7 +10,7 @@ export default {
       {
         path: 'all',
         name: 'Apps',
-        component: resolve => require(['../pages/dapp/DApp.vue'], resolve)
+        component: DApp
       },
       {
         path: 'setting',

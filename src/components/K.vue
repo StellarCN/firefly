@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-07-06 14:27:50
+ * @Last Modified time: 2018-07-07 11:04:24
  * @License: MIT 
  */
 <template>
@@ -365,7 +365,7 @@ export default {
                     xAxisIndex: [0, 1],
                     filterMode: 'none',
                     realtime: false,
-                    start: 50,
+                    start: 0,
                     end: 100,
                     top: 180,//65,
                     height: 20,
