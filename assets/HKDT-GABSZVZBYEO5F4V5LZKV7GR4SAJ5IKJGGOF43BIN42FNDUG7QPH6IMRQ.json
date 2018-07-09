@@ -1,0 +1,8 @@
+{
+  "code": "HKDT",
+  "issuer": "GCMS2VO5ANJCESJBZVC3INFSETS3K4UWMU47W7KSQ2BYASEQAN4NUSTM",
+  "domain": "https://labs.stream/",
+  "image": "https://cryptomover.com/.well-known/cmhkdt.png",
+  "info_en": "<B>Fchain Certified Asset</B></P>HKDT is a digit asset that issued by Cryptomover Ltd.",
+  "info_zh_cn":"<B>萤火认证资产</B></P>HKDT是cryptomover發行的數字資產。"
+}
