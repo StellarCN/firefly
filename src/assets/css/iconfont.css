@@ -3,6 +3,7 @@
   src: url('../fonts/iconfont.eot?t=1521771216831'); /* IE9*/
   src: url('../fonts/iconfont.ttf?t=1521771216831') format('truetype'); /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
 }
+
 .iconfont {
   font-family:"iconfont" !important;
   font-size:16px;
@@ -22,6 +23,10 @@
 .icon-cancel:before { content: "\e71b"; }
 
 .icon-duigou:before { content: "\e640"; }
+
+.icon-shoucang:before { content: "\e8c2"; }
+
+.icon-shoucang-xianxing:before { content: "\e8c3"; }
 
 .icon-btc:before { content: "\e609"; }
 
@@ -118,3 +123,12 @@
 .icon-XFF:before { content: "\e63f"; }
 
 .icon-xel:before { content: "\e641"; }
+
+.icon-XCN:before { content: "\e642"; }
+
+.icon-hkdt:before { content: "\e643"; }
+
+.icon-STM:before { content: "\e644"; }
+
+.icon-WICC:before { content: "\e645"; }
+
