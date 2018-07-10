@@ -123,8 +123,8 @@
       <div @click="toKYC"><span class="underline">{{$t('kyc_active')}}</span></div>
       
     </div>
-  </bottom-notice> -->
-  <un-fund-notice v-if="accountNotFundDlg" @close="closeAccountNotFoundDlg">></un-fund-notice>
+  </bottom-notice> --><!--v-if="accountNotFundDlg"-->
+  <un-fund-notice  v-if="accountNotFundDlg" @close="closeAccountNotFoundDlg">></un-fund-notice>
   
 
    <loading :show="working" :loading="working" :success="delok" :fail='delerror' />

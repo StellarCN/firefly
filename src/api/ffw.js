@@ -38,13 +38,15 @@ export function FFWScript(address, data = {}, isIos = false, platform, locale = 
     let uuidhash = sjcl.hash.sha256.hash(uuid)
     uuid = sjcl.codec.hex.fromBits(uuidhash)
   }
+  let contactstr = JSON.stringify(appdata.contacts)
+  let myaddressstr = JSON.stringify(appdata.myaddresses)
   return `if(!window.FFW){
       window.FFW = {};
       FFW.version = "${version}";
       FFW.platform = "${platform}";
       FFW.address = "${address}";
-      FFW.contacts = "${appdata.contacts}";
-      FFW.myaddresses = "${data.myaddresses}";
+      FFW.contacts = ${contactstr};
+      FFW.myaddresses = ${myaddressstr};
       FFW.uuid = "${uuid}";
       FFW.locale = "${locale}";
       FFW.callbackObjs = {}
@@ -63,10 +65,10 @@ export function FFWScript(address, data = {}, isIos = false, platform, locale = 
           return;
         }
         fn.apply(this,[data]);
-        delete FFW.callbackObjs[id];    
+        delete FFW.callbackObjs[id]; 
       };
 
-      FFW.pay = function(data,callback){ 
+      FFW.pay = function(data,callback){
         var params = { type:'pay',destination: data.destination, code: data.code, issuer: data.issuer, amount: data.amount, memo_type: data.memo_type, memo: data.memo};
         params = genParams(params, callback);
         try{
@@ -172,7 +174,7 @@ export function FFWScript(address, data = {}, isIos = false, platform, locale = 
           console.error(err);
           FFW.callback(params['callback'] ,{code:"fail",message:err.message});
         }
-      }
+      };
 
       function genParams(param, callback){
         var params = Object.assign({}, param);

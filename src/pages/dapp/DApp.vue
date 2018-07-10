@@ -53,7 +53,7 @@
       </v-layout>
 
 
-      <div class="dapp-subtitle subheading  pl-2" v-if="myapps.length > 0">{{$t('CustomDApp')}}</div>
+      <div class="dapp-subtitle subheading  pl-2">{{$t('CustomDApp')}}</div>
 
       <v-layout class="apps-layout" row wrap >
         <v-flex
@@ -196,6 +196,7 @@ import { FFWScript, FFW_EVENT_TYPE_PAY,FFW_EVENT_TYPE_PATHPAYMENT,FFW_EVENT_TYPE
 import { signToBase64, verifyByBase64 } from '@/api/keypair'
 import isJson from '@/libs/is-json'
 import debounce from 'lodash/debounce'
+import { trustAll } from '@/api/operations'
 
 const COLOR_GREEN = '#21CE90'
 
@@ -370,7 +371,7 @@ export default {
       })
       let that = this
       this.appInstance.addEventListener('message', debounce(function (e){
-        console.log('-----------get message ---- ')
+        // console.log('-----------get message ---- ')
         // alert(JSON.stringify(e))
         let type = e.data.type
         if(type === FFW_EVENT_TYPE_PAY){
@@ -384,12 +385,14 @@ export default {
         }else if(type == FFW_EVENT_TYPE_SCAN){
           that.appEventType = e.data.type;
           that.appEventData = e.data
-          this.showScanner = true;
+          that.showScanner = true;
           that.doQRScanEvent(e);
         }else if(type == FFW_EVENT_TYPE_SHARE){
           that.appEventType = e.data.type;
           that.appEventData = e.data
           that.doShare(e);
+        // }else if(type === 'after_fund'){
+        //   that.doTrust(e.data.data)
         }else{  
           that.appEventType = e.data.type
           that.appEventData = e.data
@@ -400,6 +403,26 @@ export default {
     hideDapp(e){
       this.appInstance.hide()
       console.log('-----app-event--hideapp--'+JSON.stringify(this.appEventData))
+    },
+    doTrust(assets){
+      //强制授信相应的资产
+      // let source = config.account
+      // if(!source)return
+      
+      trustAll(this.accountData.seed, assets)
+        .then(resp => {
+          this.hideDapp()
+          this.$toasted.show(this.$t('fund_success'))
+          setTimeout(()=>{
+            this.$router.push({name: 'MyAssets'})  
+          },1000)
+        })
+        .catch(err=>{
+          console.error(err)
+          console.error('授信失败')
+          this.$router.push({name: 'MyAssets'})
+        })
+
     },
     doPayEvent(e){
       try{

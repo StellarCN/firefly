@@ -189,7 +189,11 @@ export const COINS_ICON = {
   ETH: 'icon-ETH',
   BTC: 'icon-btc',
   XEL: 'icon-xel',
-  XFF: 'icon-XFF'
+  XFF: 'icon-XFF',
+  STM: 'icon-STM',
+  HKDT: 'icon-hkdt',
+  XCN: 'icon-XCN',
+  WICC: 'icon-WICC'
   
 }
 
@@ -250,7 +254,8 @@ export function getTradePairStat(base, counter){
 
 
 //自动激活功能
-let _fund_config = null
+var _fund_config = undefined
+
 
 export function getFundConfig(){
   return _fund_config;
@@ -258,16 +263,19 @@ export function getFundConfig(){
 
 let fund_config_url = `https://update.fchain.io/fund/fund.json`
 export function initFundConfig(callback){
-  if(_fund_config!=null)return;
   let url = `${fund_config_url}?r=` + new Date().getTime()
-  axios.get(url)
+  axios.get(url,{
+    timeout: AXIOS_DEFAULT_TIMEOUT
+  })
     .then(response => {
       _fund_config = response.data
+      // alert(JSON.stringify(_fund_config))
       if(callback){
         callback(_fund_config)
       }
     })
     .catch(err=>{
+      // alert('-----err:' + err.message)
       console.error(err)
     })
 }

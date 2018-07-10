@@ -12,6 +12,7 @@
       <div class="ud-hint pa-3 textcenter">{{$t('fund_hint')}}</div>
       <div class="flex-row ud-btns">
         <div class="flex1 textcenter" @click="askForFund">{{$t('fund_askfor')}}</div>
+        <!-- <div class="flex1 textcenter" @click="freeFund">{{$t('fund_free')}}</div> -->
         <div class="flex1 textcenter" @click="freeFund" v-if="fund_config && fund_config.active">{{$t('fund_free')}}</div>
         <div class="flex1 textcenter" @click="toKYC" v-else>{{$t('kyc_active')}}</div>
       </div>
@@ -53,7 +54,9 @@ export default {
     },
     freeFund(){
       //校验是否有可用余额
-      let config = getFundConfig()
+      // alert('--1----free fund')
+      let config = this.fund_config
+      // alert('--2----config:' + JSON.stringify(config))
       let source = config.account
       if(!source || !isValidateAddress(source)){
         this.$toasted.error(this.$t('fund_used_up'))
@@ -66,12 +69,11 @@ export default {
           let balances = ac.balances.filter(item=> item.asset_type === 'native')
           console.log(balances)
           if(balances.length === 0){
-            console.log(this.$t)
             this.$toasted.error(this.$t('fund_used_up'))
             return
           }
           let b = new Decimal(balances[0].balance).minus(config.minbalance).toNumber()
-          console.log(b)
+          // alert('---checkbalance-' + b)
           if(b<=0){
             this.$toasted.error(this.$t('fund_used_up'))
             return
@@ -102,9 +104,9 @@ export default {
   background #333
   opacity: 0.5
   z-index: 999
-  padding-bottom: 0
-  padding-bottom: constant(safe-area-inset-bottom)
-  padding-bottom: env(safe-area-inset-bottom)
+  padding-bottom: 1rem
+  padding-bottom: calc(1rem + constant(safe-area-inset-bottom))
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom))
 .unfund-dlg
   position: fixed
   bottom: 0

@@ -47,7 +47,7 @@ export default {
 
       appEventType: null,//接收到的appevent事件
       appEventData: null,//接收的appevent的data
-
+      fund_config: null,
     }
   },
    computed:{
@@ -59,6 +59,7 @@ export default {
   },
   watch:{
     islogin(){
+      // alert('----is login--' + this.islogin)
       if(this.islogin && !this.appInstance){
         this.openApp()
       }
@@ -67,7 +68,9 @@ export default {
   created(){
     let config = getFundConfig()
     if(!config){
-      initFundConfig()
+      initFundConfig((data)=>{
+        this.fund_config = data
+      })
     }
   },
   beforeDestroy(){
@@ -80,16 +83,28 @@ export default {
     if(!this.islogin){
       this.$refs.toolbar.showPasswordLogin()
     }
-    this.openApp();
+    if(!this.fund_config){
+      // alert('---init fun config----1--')
+      initFundConfig((data)=>{
+        // alert('--------int config---2')
+        this.fund_config = data
+        // alert('---3--' + JSON.stringify(data))
+        // alert(JSON.stringify(this.fund_config))
+        if(this.islogin){
+          this.openApp();
+        }
+      })
+    }
   },
   methods: {
     back(){
       this.$router.back()
     },
     openApp(){
-      let config = getFundConfig()
+      let config = this.fund_config
+      // alert('config=----' + JSON.stringify(config))
       if(config === null)return;
-      if(!config.active)return
+      // alert(JSON.stringify(config))
       if(cordova.platformId === 'browser'){
         this.appInstance = cordova.InAppBrowser.open(config.site, '_blank', 'location=no,toolbar=yes,toolbarcolor=#21ce90');
       }else{
@@ -126,7 +141,7 @@ export default {
         this.appInstance.reload()
       })
       this.appInstance.addEventListener('sharePressed', e => {
-          this.shareCB(e.url)
+          // this.shareCB(e.url)
       })
       // this.appInstance.removeEventListener('closePressed')
       this.appInstance.addEventListener('closePressed',()=>{
@@ -159,11 +174,11 @@ export default {
       let that = this
       this.appInstance.addEventListener('message', debounce(function (e){
         console.log('-----------get message ---- ')
-        console.log(JSON.stringify(e))
+        // console.log(JSON.stringify(e))
        // alert(JSON.stringify(e))
         let type = e.data.type
         if(type === 'after_fund'){
-          this.doTrust()
+          that.doTrust(config)
         }
       },3000))
     },
@@ -172,13 +187,16 @@ export default {
       console.log('-----app-event--hideapp--'+JSON.stringify(this.appEventData))
     },
     doTrust(config){
+      alert('dotrust-' + JSON.stringify(config.assets));
       //强制授信相应的资产
       // let source = config.account
       // if(!source)return
       let assets = config.assets
       trustAll(this.accountData.seed, assets)
         .then(resp => {
+          this.hideDapp()
           this.$toasted.show(this.$t('fund_success'))
+          alert('成功！')
           setTimeout(()=>{
             this.$router.push({name: 'MyAssets'})  
           },1000)
@@ -186,6 +204,7 @@ export default {
         .catch(err=>{
           console.error(err)
           console.error('授信失败')
+          alert('失败'+err.message)
           this.$router.push({name: 'MyAssets'})
         })
 
