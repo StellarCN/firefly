@@ -602,18 +602,21 @@ export default {
       this.flag  = FLAG_MYOFFER
     },
     choose({type,data}){
+      console.log(type)
+      console.log(data)
+      console.log('------choose--')
       if(this.justify) return
       this.justify = true
       let origin = data.origin
       this.price = Number(origin.price)
       if(this.isBuy){
         if(type === 'buy'){
-          let tempTotal = Number(origin.amount)
+          let tempTotal = Number(data.originDepth || origin.amount)
           this.total = tempTotal <= this.tradeBalance? tempTotal:this.tradeBalance
           this.setNum()
           this.setAmount()
         }else{
-          let tempAmount = new Decimal(origin.amount)
+          let tempAmount = new Decimal(data.originDepth || origin.amount)
           let tempTotal = tempAmount.times(origin.price_r.n).div(origin.price_r.d)
           if(tempTotal.toNumber() <= this.tradeBalance){
             this.amount = Number(tempAmount.toFixed(7))
@@ -631,7 +634,7 @@ export default {
         // this.setAmount()
       }else if(this.isSell){
         if(type === 'buy'){
-          let tempAmount = new Decimal(origin.amount).times(origin.price_r.d).div(origin.price_r.n)
+          let tempAmount = new Decimal(data.originDepth || origin.amount)//.times(origin.price_r.d).div(origin.price_r.n)
           if(tempAmount.toNumber() <= this.tradeBalance){
             this.amount = Number(tempAmount.toFixed(7))
             this.setTotal()
@@ -642,7 +645,7 @@ export default {
             this.setNum()
           }
         }else{
-          let tempAmount = Number(origin.amount)
+          let tempAmount = Number(data.originDepth || origin.amount)
           if(tempAmount <= this.tradeBalance){
             this.amount = tempAmount
             this.setTotal()
