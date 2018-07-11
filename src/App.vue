@@ -116,29 +116,22 @@ export default {
       try {
         //获取默认交易对
         // defaultTradePairsAPI();
-        initFundConfig();
+        // initFundConfig();
         this.loadDApps().then(data=>{}).catch(err=>{});
+        this.loadFundConfig().then(data=>{}).catch(err=>{})
       } catch (err) {
         console.error(err);
       }
 
       //添加cordova事件
-      document.addEventListener(
-        "pause",
-        () => {
+      document.addEventListener("pause",() => {
           this.onAppPause();
           this.onPause();
-        },
-        false
-      );
-      document.addEventListener(
-        "resume",
-        () => {
+        }, false);
+      document.addEventListener("resume",() => {
           this.onAppResume();
           this.onResume();
-        },
-        false
-      );
+        },false);
 
       if ("ios" === cordova.platformId) {
         this.isios = true;
@@ -266,6 +259,7 @@ export default {
       "getMessages",
       "saveDefaultTradePairsStat",
       'loadDApps',
+      'loadFundConfig',
     ]),
     onAppPause() {
       this.showFuzzyView = true

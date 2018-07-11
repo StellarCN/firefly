@@ -47,7 +47,6 @@ export default {
 
       appEventType: null,//接收到的appevent事件
       appEventData: null,//接收的appevent的data
-      fund_config: null,
     }
   },
    computed:{
@@ -55,6 +54,7 @@ export default {
       account: state => state.accounts.selectedAccount,
       accountData: state => state.accounts.accountData,
       islogin: state => (state.accounts.accountData.seed ? true : false),
+      fund_config: state => state.autoFundConfig,
     }),
   },
   watch:{
@@ -66,11 +66,8 @@ export default {
     }
   },
   created(){
-    let config = getFundConfig()
-    if(!config){
-      initFundConfig((data)=>{
-        this.fund_config = data
-      })
+    if(!this.fund_config){
+      this.loadFundConfig().then(data=>{}).catch(err=>{console.error(err);})
     }
   },
   beforeDestroy(){
@@ -82,21 +79,22 @@ export default {
   mounted () {
     if(!this.islogin){
       this.$refs.toolbar.showPasswordLogin()
-    }
-    if(!this.fund_config){
-      // alert('---init fun config----1--')
-      initFundConfig((data)=>{
-        // alert('--------int config---2')
-        this.fund_config = data
-        // alert('---3--' + JSON.stringify(data))
-        // alert(JSON.stringify(this.fund_config))
-        if(this.islogin){
-          this.openApp();
-        }
-      })
+    } else {
+      if(!this.fund_config){
+        this.loadFundConfig().then(data=>{
+          this.$nextTick(()=>{
+            this.openApp()
+          })
+        }).catch(err=>{
+          console.error(err)
+        })
+      }else{
+        this.openApp()
+      }
     }
   },
   methods: {
+    ...mapActions(['loadFundConfig']),
     back(){
       this.$router.back()
     },
@@ -208,22 +206,6 @@ export default {
           this.$router.push({name: 'MyAssets'})
         })
 
-    },
-    doSign(e){
-      //签名
-      let data = e.data.data
-      if(!isJson(data)){
-        return this.doCallbackEvent(this.callbackData('fail','data is invalid'))
-      }
-      if(data){
-        let cdata = signToBase64(this.accountData.seed, data)
-        console.log('---------------encrypt data---' + cdata)
-       // alert('sign---'+cdata)
-        this.doCallbackEvent(this.callbackData('success', 'success', cdata))
-      }else{
-       // alert('sign-fail--')
-        this.doCallbackEvent(this.callbackData('fail','no data to sign'))
-      }
     },
     doCallbackEvent(data){
       console.log('-----------docallback event---' + JSON.stringify(this.appEventData))

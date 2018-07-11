@@ -24,27 +24,26 @@
 import { getFundConfig,initFundConfig } from '@/api/gateways'
 import { getAccountInfo, isValidateAddress } from '@/api/account'
 import { Decimal } from 'decimal.js'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   data(){
-    return {
-      fund_config: null,
-    }
+    return {    }
   },
-  props:{
 
+  props:{  },
+  computed:{
+    ...mapState({
+      fund_config: state => state.autoFundConfig
+    })
   },
-  beforeMount(){
-    let config = getFundConfig()
-    if(config === null){
-      initFundConfig((data)=>{
-        this.fund_config = data
-      });
-    }else{
-      this.fund_config = config
+  created(){
+    if(!this.fund_config){
+      this.loadFundConfig().then(data=>{}).catch(err=>{console.error(err);})
     }
   },
   methods:{
+    ...mapActions(['loadFundConfig']),
     close(){
       // this.$emit('close')
       this.$emit('close')
@@ -53,6 +52,10 @@ export default {
       this.$router.push({name: 'AskForFund'})
     },
     freeFund(){
+      if(!this.fund_config){
+        this.$toasted.error(this.$t('FederationName.NetworkError'))
+        return
+      }
       //校验是否有可用余额
       // alert('--1----free fund')
       let config = this.fund_config

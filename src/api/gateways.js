@@ -280,6 +280,13 @@ export function initFundConfig(callback){
     })
 }
 
+export function fetchFundConfig(){
+  let url = `${fund_config_url}?r=` + new Date().getTime()
+  return axios.get(url,{
+    timeout: AXIOS_DEFAULT_TIMEOUT
+  })
+}
+
 export const DAPP_FETCH_URL = 'https://update.fchain.io/config/dapp.json'
 
 export function fetchSysDApps(){
