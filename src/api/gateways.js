@@ -4,6 +4,8 @@ import { isNativeAsset } from './assets'
 
 export const APP_NAME = 'firefly'
 
+export const DEBUG = false // 是否dbug模式
+
 //app版本号
 export const APP_VERSION = pkg.version
 
@@ -30,35 +32,15 @@ export const INFLATION_POOL = [
 
 
 //默认交易对
-export const TRADE_PAIRS = [
-
-  {
-    from: {
-      code: 'XLM'
-    },
-    to: {
-      code: 'XCN',
-      issuer: 'GCNY5OXYSY4FKHOPT2SPOQZAOEIGXB5LBYW3HVU3OWSTQITS65M5RCNY'
-    }
-  },
-  {
-    from: {
-      code: 'XLM'
-    },
-    to: {
-      code: 'BTC',
-      issuer: 'GATEMHCCKCY67ZUCKTROYN24ZYT5GK4EQZ65JJLDHKHRUZI3EUEKMTCH'
-    }
-  },
-  {
-    from: {
-      code: 'XLM'
-    },
-    to: {
-      code: 'ETH',
+export const TRADE_PAIRS = [  {
+    from: {      code: 'XLM'   },
+    to: {      code: 'XCN',      issuer: 'GCNY5OXYSY4FKHOPT2SPOQZAOEIGXB5LBYW3HVU3OWSTQITS65M5RCNY' }
+  },  {    from: {      code: 'XLM'    },
+    to: {      code: 'BTC',      issuer: 'GATEMHCCKCY67ZUCKTROYN24ZYT5GK4EQZ65JJLDHKHRUZI3EUEKMTCH'}
+  },  {    from: {      code: 'XLM'    },
+    to: {      code: 'ETH',
       issuer: 'GBETHKBL5TCUTQ3JPDIYOZ5RDARTMHMEKIO2QZQ7IOZ4YC5XV3C2IKYU'
-    }
-  }
+    }  }
 ]
 
 
@@ -262,8 +244,15 @@ export function getFundConfig(){
 }
 
 let fund_config_url = `https://update.fchain.io/fund/fund.json`
+let fund_config_url_debug = `https://update.fchain.io/fund/fund_test.json`
 export function initFundConfig(callback){
-  let url = `${fund_config_url}?r=` + new Date().getTime()
+  let r = new Date().getTime()
+  let url = null
+  if(DEBUG){
+    url = `${fund_config_url_debug}?r=${r}` 
+  }else{
+    url = `${fund_config_url}?r=${r}`
+  }
   axios.get(url,{
     timeout: AXIOS_DEFAULT_TIMEOUT
   })
@@ -281,7 +270,13 @@ export function initFundConfig(callback){
 }
 
 export function fetchFundConfig(){
-  let url = `${fund_config_url}?r=` + new Date().getTime()
+  let r = new Date().getTime()
+  let url = null
+  if(DEBUG){
+    url = `${fund_config_url_debug}?r=${r}` 
+  }else{
+    url = `${fund_config_url}?r=${r}`
+  }
   return axios.get(url,{
     timeout: AXIOS_DEFAULT_TIMEOUT
   })
