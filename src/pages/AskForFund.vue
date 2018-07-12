@@ -59,7 +59,7 @@ export default {
       showmenuicon: false,
       showbackicon: true,
       qrcodebase64:null,
-      amount: null,
+      amount: 1,
 
     }
   },
