@@ -147,7 +147,7 @@ export function send(seed,pubkey,target,assetdata,amount,memo_type,memo_value,ba
         if(err.data && err.data.status === 404){
           //新建用户只能发XLM
           if(!isNativeAsset(asset)){
-            throw new Error('Error.AccountNotFund')
+            throw new Error('Error.UnFundNeedXLM')
           }
             //是否资产不足
             var reserve = 2 * ( base_reserve || BASE_RESERVE )

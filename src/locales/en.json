@@ -332,6 +332,7 @@
 
 
   "Error.AccountNotFund": "Your account have not been activated. View the help information to continue.",
+  "Error.UnFundNeedXLM":"The destination is unactivated, you need send XLM for activation",
   "ERROR.SCANNER_CONTENT_VALIDATE":"QR code content is not validated",
 
 

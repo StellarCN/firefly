@@ -326,7 +326,8 @@
   "SeedNotice":"密钥：非常重要！！丢失密钥=丢失一切！把密钥抄下来，或者打印出来放到安全保险的地方。不建议截图保存、直接存在手机里、网盘或邮箱中。保存完毕后就点“完成”。",
   "Congrats":"To da moon!",
   "CongratsMessage":"祝贺您！保存好信息后，您就可以开始使用萤火钱包了。",
-  "Error.AccountNotFund": "您的账号尚未激活。请查看帮助信息",
+  "Error.AccountNotFund": "账户尚未激活。请查看帮助信息",
+  "Error.UnFundNeedXLM":"对方账户未激活，必须发送XLM进行激活",
   "ERROR.SCANNER_CONTENT_VALIDATE":"二维码内容不正确",
 
   "About.Title":"关于",
