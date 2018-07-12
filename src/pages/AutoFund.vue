@@ -185,7 +185,7 @@ export default {
       console.log('-----app-event--hideapp--'+JSON.stringify(this.appEventData))
     },
     doTrust(config){
-      alert('dotrust-' + JSON.stringify(config.assets));
+      // alert('dotrust-' + JSON.stringify(config.assets));
       //强制授信相应的资产
       // let source = config.account
       // if(!source)return
@@ -194,7 +194,7 @@ export default {
         .then(resp => {
           this.hideDapp()
           this.$toasted.show(this.$t('fund_success'))
-          alert('成功！')
+          // alert('成功！')
           setTimeout(()=>{
             this.$router.push({name: 'MyAssets'})  
           },1000)
@@ -202,7 +202,7 @@ export default {
         .catch(err=>{
           console.error(err)
           console.error('授信失败')
-          alert('失败'+err.message)
+          // alert('失败'+err.message)
           this.$router.push({name: 'MyAssets'})
         })
 
