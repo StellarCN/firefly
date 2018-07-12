@@ -124,34 +124,11 @@ export default {
                   showPageTitle: true,
                   staticText: this.$t('auto_fund')
               },
-              closeButton: {
-                  image: 'close',
-                  imagePressed: 'close_pressed',
-                  align: 'left',
-                  event: 'closePressed'
-              },
-              backButtonCanClose: true,
+              backButtonCanClose: false,
               // hidden: true
           })
           
       }
-      this.appInstance.addEventListener('reloadPressed', e => {
-        this.appInstance.reload()
-      })
-      this.appInstance.addEventListener('sharePressed', e => {
-          // this.shareCB(e.url)
-      })
-      // this.appInstance.removeEventListener('closePressed')
-      this.appInstance.addEventListener('closePressed',()=>{
-        this.appInstance.close()
-        this.appInstance = undefined
-        this.$router.back();
-      })
-      this.appInstance.addEventListener('backPressed', ()=>{
-        this.appInstance.close()
-        this.appInstance = undefined
-        this.$router.back();
-      });
 
       this.appInstance.addEventListener('loadstop',() => {
         //let script = `if(!window.FFW){window.FFW = {};FFW.address = "${this.account.address}";FFW.pay = function(destination,code,issuer,amount,memo_type,memo){ var params = { type:'pay',destination: destination, code: code, issuer: issuer, amount: amount, memo_type: memo_type, memo: memo };cordova_iab.postMessage(JSON.stringify(params));};};`

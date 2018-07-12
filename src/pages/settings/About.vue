@@ -20,7 +20,7 @@
             FireFly
           </div>
           <div class="textcenter appversion">
-            {{$t('Version')}}:{{appversion}}
+            {{$t('Version')}}:{{appversion}}<span v-if="isDebug">&nbsp;DEBUG</span>
           </div>
         </div>
       </card>
@@ -79,7 +79,8 @@ import {
   APP_GITHUB,
   OFFICIAL_SITE,
   getPackageJson,
-  getVersionInfo
+  getVersionInfo,
+  DEBUG
 } from "@/api/gateways";
 const semver = require("semver");
 import  debounce  from 'lodash/debounce'
@@ -97,6 +98,7 @@ export default {
       needUpdate: false,
       working: false,
       counter: 0,
+      isDebug: DEBUG,
     };
   },
   beforeDestroy () {

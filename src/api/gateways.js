@@ -4,7 +4,7 @@ import { isNativeAsset } from './assets'
 
 export const APP_NAME = 'firefly'
 
-export const DEBUG = false // 是否dbug模式
+export const DEBUG = true // 是否dbug模式
 
 //app版本号
 export const APP_VERSION = pkg.version
@@ -277,8 +277,12 @@ export function fetchFundConfig(){
   }else{
     url = `${fund_config_url}?r=${r}`
   }
-  return axios.get(url,{
-    timeout: AXIOS_DEFAULT_TIMEOUT
+  return new Promise((resolve,reject) => {
+    cordova.plugin.http.get(url, {}, {}, response => {
+      resolve(JSON.parse(response.data))
+    }, response => {
+      reject(response.error)
+    })
   })
 }
 

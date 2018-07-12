@@ -25,6 +25,7 @@ import { getFundConfig,initFundConfig } from '@/api/gateways'
 import { getAccountInfo, isValidateAddress } from '@/api/account'
 import { Decimal } from 'decimal.js'
 import { mapState, mapActions } from 'vuex'
+// import axios from 'axios'
 
 export default {
   data(){
@@ -38,8 +39,15 @@ export default {
     })
   },
   created(){
+    ////alert('------created--' + (this.fund_config) +',' + (!this.fund_config))
     if(!this.fund_config){
-      this.loadFundConfig().then(data=>{}).catch(err=>{console.error(err);})
+     // alert('------load config---')
+      this.loadFundConfig().then(data=>{
+       // alert('--------load fun config--' + JSON.stringify(data))
+      }).catch(err=>{
+        console.error(err);
+       // alert('----error--' + err.message)  
+      })
     }
   },
   methods:{
@@ -85,13 +93,26 @@ export default {
         })
         .catch(err=>{
           console.log(err)
-          this.$toasted.error(this.$t('FederationName.NetworkError')+':'+ err.message)
+          let message = ''
+          if(err.message){
+            message = typeof err.message === 'object' ? JSON.stringify(err.message) : err.message
+          }
+          this.$toasted.error(this.$t('FederationName.NetworkError')+':'+ message)
         })
      
     },
     toKYC(){
       this.$router.push({name: 'KYC'})
-    }
+    },
+    // debug(){
+    //   axios.get('https://update.fchain.io/fund/fund_test.json?r='+new Date().getTime())
+    //     .then(response=>{
+    //       alert(JSON.stringify(response.data))
+    //     })
+    //     .catch(err=>{
+    //       alert(err.message)
+    //     })
+    // }
   }
 }
 </script>

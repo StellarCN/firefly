@@ -95,8 +95,8 @@ const actions = {
     commit(LOAD_DAPPS, data.apps)
   },
   async loadFundConfig({commit}){
-    let response = await fetchFundConfig()
-    commit(LOAD_FUNDCONFIG, response.data)
+    let data = await fetchFundConfig()
+    commit(LOAD_FUNDCONFIG, data)
   }
 
 
