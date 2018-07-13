@@ -174,8 +174,8 @@ export default {
         return data;
       }
       return this.paymentsRecords.filter(item=>{
-        return (isNativeAsset(this.selectedAsset) && isNativeAsset(item.asset)
-          || (item.asset.code === this.selectedAsset.code &&  item.asset.issuer === this.selectedAsset.issuer))
+        return item.asset && ((isNativeAsset(this.selectedAsset) && isNativeAsset(item.asset)
+          || (item.asset.code === this.selectedAsset.code &&  item.asset.issuer === this.selectedAsset.issuer)))
       }).map(item=>{
         let ele = Object.assign({}, item)
         if(ele.type==='payment' || ele.type==='path_payment'){
