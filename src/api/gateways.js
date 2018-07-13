@@ -4,7 +4,7 @@ import { isNativeAsset } from './assets'
 
 export const APP_NAME = 'firefly'
 
-export const DEBUG = true // 是否dbug模式
+export const DEBUG = false // 是否dbug模式
 
 //app版本号
 export const APP_VERSION = pkg.version
