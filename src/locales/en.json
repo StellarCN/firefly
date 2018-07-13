@@ -527,7 +527,8 @@
   "fund_hint":"need more than 1 XLM to fund",
   "fund_askfor":"ask for funding",
   "fund_free":"free funding",
-  "fund_used_up":"there is no free funding, may ask for help from your friends"
+  "fund_used_up":"there is no free funding, may ask for help from your friends",
+  "tickets":"tickets"
 
   
 
