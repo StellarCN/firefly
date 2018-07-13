@@ -30,11 +30,11 @@ export default {
             "1min": RESOLUTION_1MIN
           },
           RESOLUTION_HOURS: {
-            "week": 5880,
-            "day": 840,
-            "hour": 48,
-            "15min": 24,
-            "1min": 24
+            "week": 16800,//100周
+            "day": 2400,//100天
+            "hour": 240,//10天
+            "15min": 60,//5天
+            "1min": 60
         },
             id: null,//元素主键
             ele: null,//echarts对象
@@ -160,7 +160,7 @@ export default {
         getStartTime(){
             let defHour = this.RESOLUTION_HOURS[this.resolution_key]
             if(!defHour){
-                defHour = 24
+                defHour = 100
             }
             return Number(moment().subtract(defHour,"hours").format('x'))
         },

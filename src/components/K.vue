@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-07-07 11:04:24
+ * @Last Modified time: 2018-07-13 18:05:35
  * @License: MIT 
  */
 <template>
@@ -91,13 +91,6 @@ const RESOLUTIONS = {
     "1min": RESOLUTION_1MIN
 }
 
-const RESOLUTION_HOURS = {
-    "week": 5880,
-    "day": 840,
-    "hour": 48,
-    "15min": 24,
-    "1min": 24
-}
 
 export default {
     data(){
@@ -116,6 +109,14 @@ export default {
             data: [],//每条数据是一个数组，[开盘价，收盘价，最低价，最高价]
             tinterval: null,//定时器
             lasttime: null,//上次的执行时间
+            RESOLUTION_HOURS: {
+                "week": 16800,//100周
+                "day": 2400,//100天
+                "hour": 240,//10天
+                "15min": 60,//5天
+                "1min": 60
+            },
+            
             
             //24小时的成交记录
             lastTradeAggregation: null,
@@ -254,9 +255,9 @@ export default {
             this.initView()
         },
         getStartTime(){
-            let defHour = RESOLUTION_HOURS[this.resolution_key]
+            let defHour = this.RESOLUTION_HOURS[this.resolution_key]
             if(!defHour){
-                defHour = 24
+                defHour = 100
             }
             return Number(moment().subtract(defHour,"hours").format('x'))
         },
