@@ -13,7 +13,10 @@
       <div class="flex-row ud-btns">
         <div class="flex1 textcenter" @click="askForFund">{{$t('fund_askfor')}}</div>
         <!-- <div class="flex1 textcenter" @click="freeFund">{{$t('fund_free')}}</div> -->
-        <div class="flex1 textcenter" @click="freeFund" v-if="fund_config && fund_config.active">{{$t('fund_free')}}</div>
+        <div class="flex1 textcenter" @click="freeFund" v-if="fund_config && fund_config.active">
+          <v-progress-circular indeterminate :width="3" :size="16" color="primary" v-if="working"></v-progress-circular>
+          <span v-else>{{$t('fund_free')}}</span>
+        </div>
         <div class="flex1 textcenter" @click="toKYC" v-else>{{$t('kyc_active')}}</div>
       </div>
     </div>
@@ -29,7 +32,9 @@ import { mapState, mapActions } from 'vuex'
 
 export default {
   data(){
-    return {    }
+    return {  
+      working: false,
+    }
   },
 
   props:{  },
@@ -57,6 +62,7 @@ export default {
       this.$emit('close')
     },
     askForFund(){
+      if(this.working)return
       this.$router.push({name: 'AskForFund'})
     },
     freeFund(){
@@ -73,8 +79,10 @@ export default {
         this.$toasted.error(this.$t('fund_used_up'))
         return;
       }
+      this.working = true
       getAccountInfo(source)
         .then(ac=>{
+          this.working = false
           console.log(config)
           console.log(ac)
           let balances = ac.balances.filter(item=> item.asset_type === 'native')
@@ -92,6 +100,7 @@ export default {
           this.$router.push({name: 'AutoFund'})
         })
         .catch(err=>{
+          this.working = false
           console.log(err)
           let message = ''
           if(err.message){
