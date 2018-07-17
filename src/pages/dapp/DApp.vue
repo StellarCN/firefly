@@ -387,6 +387,8 @@ export default {
           that.appEventData = e.data
           that.showScanner = true;
           that.doQRScanEvent(e);
+          
+
         }else if(type == FFW_EVENT_TYPE_SHARE){
           that.appEventType = e.data.type;
           that.appEventData = e.data
@@ -464,6 +466,7 @@ export default {
     },
     doCallbackEvent(data){
       console.log('-----------docallback event---' + JSON.stringify(this.appEventData))
+      // alert('do callback event- ' + JSON.stringify(this.appEventData))
       if(this.appEventData && this.appEventData.callback){
         try{
           let cb = this.appEventData.callback
@@ -520,7 +523,7 @@ export default {
       })
     },
     successEvent(msg='success',data){
-      //alert('----success--event---'+ JSON.stringify(data))
+      // alert('----success--event---'+ JSON.stringify(data))
       this.$nextTick(()=>{
         this.appInstance.show();
         this.doCallbackEvent(this.callbackData('success',msg, data))
@@ -549,11 +552,11 @@ export default {
       this.successEvent()
     },
     exitSignXDREvent(){
-      //alert('----exit---signxdr---')
+      // alert('----exit---signxdr---')
       this.exitEvent('cancel signxdr')
     },
     successSignXDREvent(data){
-      //alert('-----signxdr-success---')
+      // alert('-----signxdr-success---' + data)
       this.successEvent('success',data)
     },
     toSetting(){
@@ -604,6 +607,8 @@ export default {
       try{
         this.appInstance.hide()
         this.showScanner = true
+        //隐藏底部tab
+        this.$store.commit('HIDE_TABBAR')
       }catch(err){
         console.error(err)
         //alert('error:'+err.message)
@@ -616,13 +621,16 @@ export default {
     qrfinish(result){
       this.showScanner = false
       this.successEvent('success',result);
+      this.$store.commit('SHOW_TABBAR')
     },
     qrclose(){
       this.exitEvent('qrscan closed')
+      this.$store.commit('SHOW_TABBAR')
     },
     closeQRScanner(){
       this.$refs.qrscanner.closeQRScanner();
       this.showScanner = false
+      this.$store.commit('SHOW_TABBAR')
     }
 
 
