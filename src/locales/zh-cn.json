@@ -505,7 +505,7 @@
   "fchainHorizon":"萤火官方地址",
   "validateMnemonic":"请输入相应的助记词进行验证",
   "Warning_mnemonic_msg":"账户助记词为重要信息，请做好备份并谨慎保存，勿与他人分享",
-  "no_mnemonic_msg":"没有助记词!",
+  "no_mnemonic_msg":"您的账户没有助记词!",
   "bids_max_price":"买单最高价",
   "asks_min_price":"卖单最低价",
   "hot_dapp":"热门应用",
@@ -520,7 +520,8 @@
   "fund_askfor":"收币激活",
   "fund_free":"免费激活",
   "fund_used_up":"免费激活名额已经用完，您可向朋友收取1XLM完成账户激活。",
-  "tickets":"工单"
+  "tickets":"工单",
+  "autofund_hint":"请稍等，正在进行激活操作！"
 
  
  

@@ -505,7 +505,7 @@
   "fchainHorizon":"螢火官方地址",
   "validateMnemonic":"請輸入相應的助記詞進行驗證",
   "Warning_mnemonic_msg":"賬戶助記詞為重要信息，請做好備份並謹慎保存，勿與他人分享",
-  "no_mnemonic_msg":"没有助記詞!",
+  "no_mnemonic_msg":"您的賬戶沒有助記詞!",
   "bids_max_price":"買單最高價",
   "asks_min_price":"賣單最低價",
   "hot_dapp":"熱門應用",
@@ -520,7 +520,8 @@
   "fund_askfor":"收幣激活",
   "fund_free":"免費激活",
   "fund_used_up":"免費激活名額已經用完，您可向朋友收取1XLM完成賬戶激活。",
-  "tickets":"工單"
+  "tickets":"工單",
+  "autofund_hint":"請稍等，正在進行激活操作！"
 
   
 

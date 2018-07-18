@@ -8,7 +8,9 @@
         ref="toolbar"
         >
     </toolbar>
-
+    <div class="af_hint">
+      {{$t('autofund_hint')}}
+    </div>
   </div>
 </template>
 
@@ -131,9 +133,6 @@ export default {
       }
 
       this.appInstance.addEventListener('loadstop',() => {
-        //let script = `if(!window.FFW){window.FFW = {};FFW.address = "${this.account.address}";FFW.pay = function(destination,code,issuer,amount,memo_type,memo){ var params = { type:'pay',destination: destination, code: code, issuer: issuer, amount: amount, memo_type: memo_type, memo: memo };cordova_iab.postMessage(JSON.stringify(params));};};`
-        //let scriptEle = `if(!window.FFW){var script = document.createElement('script');script.setAttribute('type', 'text/javascript');script.text = "${script}";document.body.appendChild(script);}`
-        //alert(scriptEle)
         let contacts = this.allcontacts
         let myaddresses = this.myaddresses
         let isIos = "ios" === cordova.platformId
@@ -146,6 +145,12 @@ export default {
         })
 
       })
+      this.appInstance.addEventListener('backPressed', ()=>{
+        alert('---back pressed---')
+        //判断是否授信，未授信进行授信
+        that.doTrust(config);
+      });
+
       let that = this
       this.appInstance.addEventListener('message', debounce(function (e){
         console.log('-----------get message ---- ')
@@ -153,6 +158,7 @@ export default {
        // alert(JSON.stringify(e))
         let type = e.data.type
         if(type === 'after_fund'){
+          localStorage.setItem('allowBack',"0")
           that.doTrust(config)
         }
       },3000))
@@ -173,6 +179,7 @@ export default {
           this.$toasted.show(this.$t('fund_success'))
           // alert('成功！')
           setTimeout(()=>{
+            localStorage.setItem('allowBack',"1")
             this.$router.push({name: 'MyAssets'})  
           },1000)
         })
@@ -180,6 +187,7 @@ export default {
           console.error(err)
           console.error('授信失败')
           // alert('失败'+err.message)
+          localStorage.setItem('allowBack',"1")
           this.$router.push({name: 'MyAssets'})
         })
 
@@ -257,4 +265,9 @@ export default {
   color: $secondarycolor.font
 .add-app-avatar
   background: $secondarycolor.gray!important
+.af_hint
+  margin-top: 50%
+  text-align: center
+  color: $primarycolor.font
+  font-size: 14px
 </style>

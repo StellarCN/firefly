@@ -116,6 +116,15 @@ const router = new Router({
         keepAlive: false
       }
     },
+    {
+      path: '/autofundhelp',
+      name: 'AutoFundHelp',
+      component: resolve => require(['../pages/AutoFundHelp.vue'], resolve),
+      meta: {
+        keepAlive: false,
+        allowBack: false
+      }
+    },
 
     mysettings,
     assets,
@@ -129,6 +138,10 @@ const router = new Router({
 })
 
 router.beforeEach((to,from,next) => {
+  let allowBack = localStorage.getItem("allowBack")
+  if(allowBack !== undefined && allowBack === '0'){
+    return;
+  }
   NProgress.start();
   next()
 })

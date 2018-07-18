@@ -4,7 +4,9 @@
     <div class="unfund-wrapper"></div>
     <div class="unfund-dlg pa-2 pb-4">
       <div class="flex-row pt-2">
-        <div class="flex1">&nbsp;</div>
+        <div class="flex1 textright ud-title" @click="toAutoFundHelp">
+          <i class="material-icons close-icon">help_outline</i> 
+        </div>
         <div class="flex6 textcenter">{{$t('unfund')}}</div>
         <div class="flex1 textright ud-title" @click="close">
           <i class="material-icons close-icon">close</i></div>
@@ -113,6 +115,9 @@ export default {
     toKYC(){
       this.$router.push({name: 'KYC'})
     },
+    toAutoFundHelp(){
+      this.$router.push({name: 'AutoFundHelp'})
+    },
     // debug(){
     //   axios.get('https://update.fchain.io/fund/fund_test.json?r='+new Date().getTime())
     //     .then(response=>{
@@ -151,11 +156,11 @@ export default {
 
 .close-icon
   color: $primarycolor.green
-  font-size: 16px
+  font-size: 24px
   padding-right: .2rem
 .ud-title
   color: $primarycolor.font
-  font-size: 16px
+  font-size: 24px
 .ud-hint
   font-size: 12px
   color: $secondarycolor.font
