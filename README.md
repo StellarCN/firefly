@@ -6,7 +6,7 @@ firefly is a mobile wallet for [Stellar](https://stellar.org) network. It suppor
 
 ## [中文文档](README-CN.md)
 
-## [DAPP API文档](https://firefly.gitbook.io/apidoc/)
+## [DAPP API文档](http://fireflyapi.mydoc.io/)
 
 ## [Help Document](https://wallet.fchain.io/manual/#0)
 
