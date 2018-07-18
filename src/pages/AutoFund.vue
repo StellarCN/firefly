@@ -46,6 +46,8 @@ export default {
       working: false,
       err: null,
       appInstance: null,
+      
+      retry: 0,
 
       appEventType: null,//接收到的appevent事件
       appEventData: null,//接收的appevent的data
@@ -146,7 +148,6 @@ export default {
 
       })
       this.appInstance.addEventListener('backPressed', ()=>{
-        alert('---back pressed---')
         //判断是否授信，未授信进行授信
         that.doTrust(config);
       });
@@ -158,7 +159,7 @@ export default {
        // alert(JSON.stringify(e))
         let type = e.data.type
         if(type === 'after_fund'){
-          localStorage.setItem('allowBack',"0")
+          // localStorage.setItem('allowBack',"0")
           that.doTrust(config)
         }
       },3000))
@@ -179,7 +180,7 @@ export default {
           this.$toasted.show(this.$t('fund_success'))
           // alert('成功！')
           setTimeout(()=>{
-            localStorage.setItem('allowBack',"1")
+            // localStorage.setItem('allowBack',"1")
             this.$router.push({name: 'MyAssets'})  
           },1000)
         })
@@ -187,8 +188,14 @@ export default {
           console.error(err)
           console.error('授信失败')
           // alert('失败'+err.message)
-          localStorage.setItem('allowBack',"1")
-          this.$router.push({name: 'MyAssets'})
+          // localStorage.setItem('allowBack',"1")
+          // this.$router.push({name: 'MyAssets'})
+          if(this.retry>4){
+            this.$router.push({name: 'MyAssets'})
+            return;
+          }
+          this.retry = this.retry + 1
+          this.doTrust(config)
         })
 
     },

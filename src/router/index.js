@@ -138,10 +138,6 @@ const router = new Router({
 })
 
 router.beforeEach((to,from,next) => {
-  let allowBack = localStorage.getItem("allowBack")
-  if(allowBack !== undefined && allowBack === '0'){
-    return;
-  }
   NProgress.start();
   next()
 })

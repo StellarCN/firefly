@@ -1,7 +1,7 @@
 //激活帮助说明
 <template>
   <div>
-     <toolbar :title="$t('Menu.Help')" 
+     <toolbar :title="$t('fund_free_title')" 
           :showmenuicon="false" 
           :showbackicon="true"
           ref="toolbar"
@@ -25,6 +25,30 @@
           例如：账户A发行资产：BTC，账户B也发行资产：BTC，但二者的发行地址绝对不同，所以两种资产属于不同发行资产，由不同的机构进行信用保证。<br/>
           您想要持有某一种发行资产，首选需要信任该资产的发行账户，即手动添加信任线（Trustline）。添加一项资产需要冻结0.5XLM。<br/>
         </p>
+
+        <h2 class="help-t pt-1 pl-2">四、冻结与消耗</h2>
+        <p class="help-c pl-2">
+          所有需要冻结、消耗XLM的内容包含：<br/>
+          a.激活：冻结1XLM<br/>
+          b.添加资产：冻结0.5XLM/个<br/>
+          c.操作：消耗0.00001XLM/次。操作行为包括：转账、授信、挂单、吃单、撤单等，凡是需要向stellar网络发起请求的行为都要消耗0.00001XLM。<br/>
+        </p>
+
+        <h2 class="help-t pt-1 pl-2">五、友情提示</h2>
+        <p class="help-c pl-2">
+          1.如果您首次进行最简单的交易，激活账号（1XLM）+授信A资产（0.5XLM）+授信B资产（0.5XLM）+挂单/吃单（0.00001XLM）=2.00001XLM；<br/>
+          2.如果第二次进行相同的动作，因为账号已经激活，资产已经添加，则仅需要0.00001XLM即可；<br/>
+          3.目前萤火提供10种资产，您只需要保证账户拥有6.01个XLM就可以畅通无阻啦；<br/>
+          4.随着您的姿势越来越熟练，多存点XLM可以防止交易行为被打断。另，XLM本身也是可以交易的。<br/>
+        </p>
+
+        <h2 class="help-t pt-1 pl-2">六、联系我们</h2>
+        <p class="help-c pl-2">
+          1.TG群：<span @click="toHref('https://t.me/fchain_io')">https://t.me/fchain_io</span><br/>
+          2.网址：<span @click="toHref('https://fchain.io/')">https://fchain.io/</span><br/>
+        </p>
+        
+
 
       </div>
     </card>
@@ -52,7 +76,9 @@ export default {
     }),
   },
   methods: {
-
+    toHref(url){
+      window.open(url, "_system");
+    }
   },
   components: {
     Toolbar,
@@ -72,4 +98,6 @@ export default {
     font-size: 16px
     font-weight: bold
     color: $primarycolor.green
+  .help-c
+    font-size: 14px
 </style>
