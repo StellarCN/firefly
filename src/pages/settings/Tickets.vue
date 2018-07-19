@@ -3,7 +3,12 @@
  */
 <template>
   <div class="page">
-  
+     <toolbar :title="$t('tickets')" 
+        :showmenuicon="false" 
+        :showbackicon="true"
+        ref="toolbar"
+        >
+    </toolbar>
   </div>
 </template>
 
@@ -12,6 +17,7 @@ import { mapState, mapActions} from 'vuex'
 import { FFWScript, FFW_EVENT_TYPE_PAY,FFW_EVENT_TYPE_PATHPAYMENT,FFW_EVENT_TYPE_SIGN
    ,FFW_EVENT_TYPE_BACKUP,FFW_EVENT_TYPE_RECOVERY,FFW_EVENT_TYPE_TRUST,FFW_EVENT_TYPE_SIGNXDR } from '@/api/ffw'
 import debounce from 'lodash/debounce'
+import Toolbar from '@/components/Toolbar'
 
 // export const FFW_EVENT_TYPE_PAY = 'pay'
 // export const FFW_EVENT_TYPE_PATHPAYMENT = 'pathPayment'
@@ -133,6 +139,7 @@ export default {
     },
   },
   components: {
+    Toolbar,
   }
 }
 </script>
