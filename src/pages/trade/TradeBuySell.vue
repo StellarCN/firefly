@@ -581,6 +581,7 @@ export default {
       setTimeout(()=>{
           this.sending = false
           this.working = false
+          this.txResult = null
         },5000)
     },
     
