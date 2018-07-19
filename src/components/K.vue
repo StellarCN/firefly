@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-07-13 18:05:35
+ * @Last Modified time: 2018-07-19 09:30:42
  * @License: MIT 
  */
 <template>
@@ -56,7 +56,7 @@
           <div :class="'flex1 ' + (resolution_key === '1min' ? 'active' : '')" @click="chgResolution('1min')">1{{$t('minute')}}</div>
       </div> -->
 
-      <v-tabs class="tabs-bg-dark" grow hide-slider color="transparent" v-show="showKgraph">
+      <v-tabs class="tabs-bg-dark" v-model="resolutionIndex" grow hide-slider color="transparent" v-show="showKgraph">
         <v-tab @click="chgResolution('week')">{{$t('week')}}</v-tab>
         <v-tab @click="chgResolution('day')">{{$t('day')}}</v-tab>
         <v-tab @click="chgResolution('hour')">{{$t('hour')}}</v-tab>
@@ -91,6 +91,14 @@ const RESOLUTIONS = {
     "1min": RESOLUTION_1MIN
 }
 
+const RESOLUTIONS_ITEMS = {
+    "week": "0",
+    "day": "1",
+    "hour": "2",
+    "15min": "3",
+    "1min": "4"
+    }
+
 
 export default {
     data(){
@@ -102,6 +110,7 @@ export default {
             
             resolution_key: '15min',
             resolution: RESOLUTION_15MIN,
+            resolutionIndex: "3",
 
             dates:[],//日期
             volumes: [],//成交量
@@ -580,6 +589,7 @@ export default {
         chgResolution(key){
             this.resolution_key = key
             this.resolution = RESOLUTIONS[key]
+            this.resolutionIndex = RESOLUTIONS_ITEMS[key]
             this.reload()
         },
         switchKgraphShow(){

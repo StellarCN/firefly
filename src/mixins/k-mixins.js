@@ -29,6 +29,7 @@ export default {
             "15min": RESOLUTION_15MIN,
             "1min": RESOLUTION_1MIN
           },
+          
           RESOLUTION_HOURS: {
             "week": 16800,//100周
             "day": 2400,//100天
@@ -36,6 +37,7 @@ export default {
             "15min": 60,//5天
             "1min": 60
         },
+            
             id: null,//元素主键
             ele: null,//echarts对象
             opt: null,
