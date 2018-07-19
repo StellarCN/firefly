@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-07-07 11:04:24
+ * @Last Modified time: 2018-07-19 09:30:42
  * @License: MIT 
  */
 <template>
@@ -56,7 +56,7 @@
           <div :class="'flex1 ' + (resolution_key === '1min' ? 'active' : '')" @click="chgResolution('1min')">1{{$t('minute')}}</div>
       </div> -->
 
-      <v-tabs class="tabs-bg-dark" grow hide-slider color="transparent" v-show="showKgraph">
+      <v-tabs class="tabs-bg-dark" v-model="resolutionIndex" grow hide-slider color="transparent" v-show="showKgraph">
         <v-tab @click="chgResolution('week')">{{$t('week')}}</v-tab>
         <v-tab @click="chgResolution('day')">{{$t('day')}}</v-tab>
         <v-tab @click="chgResolution('hour')">{{$t('hour')}}</v-tab>
@@ -91,13 +91,14 @@ const RESOLUTIONS = {
     "1min": RESOLUTION_1MIN
 }
 
-const RESOLUTION_HOURS = {
-    "week": 5880,
-    "day": 840,
-    "hour": 48,
-    "15min": 24,
-    "1min": 24
-}
+const RESOLUTIONS_ITEMS = {
+    "week": "0",
+    "day": "1",
+    "hour": "2",
+    "15min": "3",
+    "1min": "4"
+    }
+
 
 export default {
     data(){
@@ -109,6 +110,7 @@ export default {
             
             resolution_key: '15min',
             resolution: RESOLUTION_15MIN,
+            resolutionIndex: "3",
 
             dates:[],//日期
             volumes: [],//成交量
@@ -116,6 +118,14 @@ export default {
             data: [],//每条数据是一个数组，[开盘价，收盘价，最低价，最高价]
             tinterval: null,//定时器
             lasttime: null,//上次的执行时间
+            RESOLUTION_HOURS: {
+                "week": 16800,//100周
+                "day": 2400,//100天
+                "hour": 240,//10天
+                "15min": 60,//5天
+                "1min": 60
+            },
+            
             
             //24小时的成交记录
             lastTradeAggregation: null,
@@ -254,9 +264,9 @@ export default {
             this.initView()
         },
         getStartTime(){
-            let defHour = RESOLUTION_HOURS[this.resolution_key]
+            let defHour = this.RESOLUTION_HOURS[this.resolution_key]
             if(!defHour){
-                defHour = 24
+                defHour = 100
             }
             return Number(moment().subtract(defHour,"hours").format('x'))
         },
@@ -579,6 +589,7 @@ export default {
         chgResolution(key){
             this.resolution_key = key
             this.resolution = RESOLUTIONS[key]
+            this.resolutionIndex = RESOLUTIONS_ITEMS[key]
             this.reload()
         },
         switchKgraphShow(){

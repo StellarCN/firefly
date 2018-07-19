@@ -3,7 +3,7 @@
 * @Author: mazhaoyong@gmail.com
 * @Date: 2018-01-23 11:14:24
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-07-05 15:25:06
+ * @Last Modified time: 2018-07-18 16:14:54
 * @License: MIT
 */
 <template>
@@ -114,6 +114,11 @@ export default {
                 title: "Menu.MessageCenter",
                 name: "MessageCenter",
                 icon: "message"
+              },   
+               {
+                title: "tickets",
+                name: "Tickets",
+                icon: "assignment"
               }
             ],
             myofferpage:{ name: 'History', params: { active: 'offer' } },

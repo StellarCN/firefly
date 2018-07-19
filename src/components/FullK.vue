@@ -56,7 +56,7 @@
           <div :class="'flex1 ' + (resolution_key === '15min' ? 'active' : '')" @click="chgResolutionKey('15min')">15{{$t('minute')}}</div>
           <div :class="'flex1 ' + (resolution_key === '1min' ? 'active' : '')" @click="chgResolutionKey('1min')">1{{$t('minute')}}</div>
       </div> -->
-      <v-tabs class="tabs-bg-dark" grow hide-slider color="transparent">
+      <v-tabs class="tabs-bg-dark" v-model="resolutionIndex" grow hide-slider color="transparent">
         <v-tab @click="chgResolutionKey('week')">{{$t('week')}}</v-tab>
         <v-tab @click="chgResolutionKey('day')">{{$t('day')}}</v-tab>
         <v-tab @click="chgResolutionKey('hour')">{{$t('hour')}}</v-tab>
@@ -79,10 +79,18 @@ import echarts from '@/libs/pkgs/initEcharts'
 
 import NP from 'number-precision'
 import { getTradeAggregation } from '@/api/tradeAggregation'
+import { RESOLUTION_1MIN, RESOLUTION_15MIN, RESOLUTION_1HOUR, RESOLUTION_1DAY, RESOLUTION_1WEEK } from '@/api/tradeAggregation'
 import { getAsset } from '@/api/assets'
 var moment = require('moment')
 import {Decimal} from 'decimal.js'
 
+const RESOLUTIONS_ITEMS = {
+    "week": "0",
+    "day": "1",
+    "hour": "2",
+    "15min": "3",
+    "1min": "4"
+    }
 export default {
     mixins: [orderbookMixins, kmixins],
     data(){
@@ -97,6 +105,7 @@ export default {
            vH: 40,//交易量高度
            mH: 40,//macd图的高度
            toolH: 37,//底部切换区间的工具条的高度
+           resolutionIndex: "3",
         }
     },
     computed: {
@@ -464,6 +473,7 @@ export default {
             }
         }, // end of koption
         chgResolutionKey(key){
+            this.resolutionIndex = RESOLUTIONS_ITEMS[key]
             this.chgResolution(key)
             this.reloadAll()
         },

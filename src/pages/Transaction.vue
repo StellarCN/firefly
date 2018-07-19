@@ -26,7 +26,7 @@
           <div class="value" @click="copy(transaction.id)">{{transaction.id  | shortaddress}}</div>
           <div class="label" v-if="!isInbound && selected.counterparty">{{$t('To')}}</div>
           <div class="label" v-if="isInbound && selected.counterparty">{{$t('From')}}</div>
-          <div class="value" @click="copy(selected.counterparty)" v-if="isInbound && selected">{{selected.counterparty | shortaddress}}<span v-if="this.contactName"> ({{$t('Transaction.ContactName')}}: {{this.contactName}})</span></div>
+          <div class="value" @click="copy(selected.counterparty)" v-if="selected.counterparty">{{selected.counterparty | shortaddress}}<span v-if="this.contactName"> ({{$t('Transaction.ContactName')}}: {{this.contactName}})</span></div>
           <div class="label">{{$t('DateTime')}}</div>
           <div class="value">{{date}}</div>
           <div class="label">{{$t('Memo')}}</div>

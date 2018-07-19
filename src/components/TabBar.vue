@@ -53,6 +53,16 @@ export default {
       active: -1
     };
   },
+  
+  watch: {
+    '$route'(to,from){
+      let names = this.menus.map(item=> item.name)
+      let i = names.indexOf(to.name)
+      if(i >= 0){
+        this.active = i
+      }
+    }    
+  },
   beforeMount() {
     let name = this.$route.name;
     let index = -1;

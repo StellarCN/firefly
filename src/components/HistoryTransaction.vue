@@ -17,7 +17,7 @@
                   <span class="inbound" v-if="item.isInbound">+</span>
                   <span class="inbound" v-else>-</span>
                   <span class="amount">{{item.amount}}</span>
-                  <span class="code">{{item.asset.code}}</span>
+                  <span class="code" v-if="item.asset">{{item.asset.code}}</span>
                 </div>
               </v-flex>
             </v-layout>

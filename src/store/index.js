@@ -6,7 +6,7 @@ import AccountStore from './modules/AccountStore'
 import AssetStore from './modules/AssetStore'
 import createPersist from './plugins/persistence'
 import TradesStore from './modules/tradesStore'
-import { APP_NAME, APP_VERSION,fetchSysDApps} from '@/api/gateways'
+import { APP_NAME, APP_VERSION, fetchSysDApps, fetchFundConfig} from '@/api/gateways'
 import   MessageStore from "./modules/MessageStore"
 var Base64 = require('js-base64').Base64
 
@@ -35,6 +35,7 @@ const state = {
   showTabbar: true,//是否显示tabbar
   ifFull: false,//是否全屏
   dapps:[],//推荐应用
+  autoFundConfig: null,//自动激活配置
 
 }
 
@@ -43,6 +44,20 @@ const getters = {
 }
 
 export const LOAD_DAPPS = 'LOAD_DAPPS'
+export const LOAD_FUNDCONFIG = 'LOAD_FUNDCONFIG'
+
+export const IMPORT_ACCOUNT_CHANGE = 'IMPORT_ACCOUNT_CHANGE'
+export const CREATE_ACCOUNT_CHANGE = 'CREATE_ACCOUNT_CHANGE'
+export const BACK_TO_ACCOUNT = 'BACK_TO_ACCOUNT'
+export const GLOBAL_ERROR = 'GLOBAL_ERROR'
+export const SET_NEW_SEED = 'SET_NEW_SEED'
+export const SET_CREATE_ACCOUNT_DATA = 'SET_CREATE_ACCOUNT_DATA'
+export const SHOW_LOADING = 'SHOW_LOADING'
+export const HIDEN_LOADING = 'HIDEN_LOADING'
+export const CLEAN_GLOBAL_STATE = 'CLEAN_GLOBAL_STATE'
+export const CHANGE_IOSSTATUSBAR_COLOR = 'CHANGE_IOSSTATUSBAR_COLOR'
+export const ON_PAUSE = 'ON_PAUSE'
+export const ON_RESUME = 'ON_RESUME'
 
 const actions = {
   importAccountChange({commit}){
@@ -76,60 +91,64 @@ const actions = {
     commit(ON_RESUME)
   },
   async loadDApps({commit}){
-    let response = await fetchSysDApps()
-    commit(LOAD_DAPPS, response.data.apps)
+    let data = await fetchSysDApps()
+    commit(LOAD_DAPPS, data.apps)
+  },
+  async loadFundConfig({commit}){
+    let data = await fetchFundConfig()
+    commit(LOAD_FUNDCONFIG, data)
   }
 
 
 }
 
 const mutations = {
-  IMPORT_ACCOUNT_CHANGE(state){
+  [IMPORT_ACCOUNT_CHANGE](state){
     state.isImportAccount = true
     state.isCreateAccount = false
   },
-  CREATE_ACCOUNT_CHANGE(state){
+  [CREATE_ACCOUNT_CHANGE](state){
     state.isImportAccount = false
     state.isCreateAccount = true
   },
-  BACK_TO_ACCOUNT(state){
+  [BACK_TO_ACCOUNT](state){
     state.isImportAccount = false
     state.isCreateAccount = false
   },
-  GLOBAL_ERROR(state,err){
+  [GLOBAL_ERROR](state,err){
     state.error = err
   },
-  SET_NEW_SEED(state,{seed,extdata, mnemonic, mIndex}){
+  [SET_NEW_SEED](state,{seed,extdata, mnemonic, mIndex}){
     state.seed = seed
     state.seedExtData = extdata
     state.mnemonic = mnemonic
     state.mIndex = mIndex
   },
-  SET_CREATE_ACCOUNT_DATA(state,{name,password,memo}){
+  [SET_CREATE_ACCOUNT_DATA](state,{name,password,memo}){
     state.accountname = name
     state.accountpassword = password
     state.memo = memo
   },
-  SHOW_LOADING(state){
+  [SHOW_LOADING](state){
     state.showloading = true
   },
-  HIDEN_LOADING(state){
+  [HIDEN_LOADING](state){
     state.showloading = false
   },
-  CLEAN_GLOBAL_STATE(state){
+  [CLEAN_GLOBAL_STATE](state){
     state.seed = null
     state.seedExtData= null
     state.accountname= null
     state.accountpassword= null
     state.memo= null
   },
-  CHANGE_IOSSTATUSBAR_COLOR(state,color){
+  [CHANGE_IOSSTATUSBAR_COLOR](state,color){
     state.iosstatusbarcolor = color
   },
-  ON_PAUSE(state){
+  [ON_PAUSE](state){
     state.onpause = true
   },
-  ON_RESUME(state){
+  [ON_RESUME](state){
     state.onpause = false
   },
   [SHOW_TABBAR](state){
@@ -143,6 +162,9 @@ const mutations = {
   },
   [LOAD_DAPPS](state,data){
     state.dapps = data
+  },
+  [LOAD_FUNDCONFIG](state, data){
+    state.autoFundConfig = data
   }
   
 }
@@ -158,6 +180,7 @@ const blocks = [
   'password',
   'memo',
   'showTabbar',
+  'autoFundConfig',
   'accounts.password',
   'accounts.error',
   'accounts.accountData.seed',
@@ -222,18 +245,6 @@ function deserialize(value){
   return JSON.parse(value)
 }
 
-export const IMPORT_ACCOUNT_CHANGE = 'IMPORT_ACCOUNT_CHANGE'
-export const CREATE_ACCOUNT_CHANGE = 'CREATE_ACCOUNT_CHANGE'
-export const BACK_TO_ACCOUNT = 'BACK_TO_ACCOUNT'
-export const GLOBAL_ERROR = 'GLOBAL_ERROR'
-export const SET_NEW_SEED = 'SET_NEW_SEED'
-export const SET_CREATE_ACCOUNT_DATA = 'SET_CREATE_ACCOUNT_DATA'
-export const SHOW_LOADING = 'SHOW_LOADING'
-export const HIDEN_LOADING = 'HIDEN_LOADING'
-export const CLEAN_GLOBAL_STATE = 'CLEAN_GLOBAL_STATE'
-export const CHANGE_IOSSTATUSBAR_COLOR = 'CHANGE_IOSSTATUSBAR_COLOR'
-export const ON_PAUSE = 'ON_PAUSE'
-export const ON_RESUME = 'ON_RESUME'
 
 // if (module.hot) {
 //   module.hot.accept([

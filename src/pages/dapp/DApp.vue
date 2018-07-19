@@ -20,7 +20,7 @@
    </toolbar> 
     
     <v-container fluid v-bind="{ [`grid-list-md`]: true }" v-if="!showScanner">
-      <div class="dapp-subtitle subheading pl-2">{{$t('hot_dapp')}}</div>
+      <div class="dapp-subtitle subheading pl-2" @click="fetchApps">{{$t('hot_dapp')}}</div>
       <card padding="8px 0" margin="0 0" v-if="working">
         <div class="mt-5 textcenter">
           <v-progress-circular indeterminate color="primary"></v-progress-circular>
@@ -28,7 +28,7 @@
       </card>
       <card class="server-apps-layout" padding="8px 8px" margin="0 0" v-if="!working && err">
         <p v-if="err">
-          {{$t(err)}}
+          {{err}}
         </p>
       </card>
       <v-layout class="server-apps-layout" row wrap  v-if="!working && apps && apps.length > 0">
@@ -53,7 +53,7 @@
       </v-layout>
 
 
-      <div class="dapp-subtitle subheading  pl-2" v-if="myapps.length > 0">{{$t('CustomDApp')}}</div>
+      <div class="dapp-subtitle subheading  pl-2">{{$t('CustomDApp')}}</div>
 
       <v-layout class="apps-layout" row wrap >
         <v-flex
@@ -196,6 +196,7 @@ import { FFWScript, FFW_EVENT_TYPE_PAY,FFW_EVENT_TYPE_PATHPAYMENT,FFW_EVENT_TYPE
 import { signToBase64, verifyByBase64 } from '@/api/keypair'
 import isJson from '@/libs/is-json'
 import debounce from 'lodash/debounce'
+import { trustAll } from '@/api/operations'
 
 const COLOR_GREEN = '#21CE90'
 
@@ -273,11 +274,13 @@ export default {
       this.loadDApps()
         .then(response=>{
           // this.working = false
+
         })
         .catch(err=>{
           // this.working = false
           console.error(err)
-          this.err = 'Error.AjaxTimeout'
+          // this.err = 'Error.AjaxTimeout'
+          this.err = this.$t('FederationName.NetworkError') +  (err.message?  err.message : '')
         })
 
     },
@@ -368,7 +371,7 @@ export default {
       })
       let that = this
       this.appInstance.addEventListener('message', debounce(function (e){
-        console.log('-----------get message ---- ')
+        // console.log('-----------get message ---- ')
         // alert(JSON.stringify(e))
         let type = e.data.type
         if(type === FFW_EVENT_TYPE_PAY){
@@ -382,12 +385,16 @@ export default {
         }else if(type == FFW_EVENT_TYPE_SCAN){
           that.appEventType = e.data.type;
           that.appEventData = e.data
-          this.showScanner = true;
+          that.showScanner = true;
           that.doQRScanEvent(e);
+          
+
         }else if(type == FFW_EVENT_TYPE_SHARE){
           that.appEventType = e.data.type;
           that.appEventData = e.data
           that.doShare(e);
+        // }else if(type === 'after_fund'){
+        //   that.doTrust(e.data.data)
         }else{  
           that.appEventType = e.data.type
           that.appEventData = e.data
@@ -398,6 +405,26 @@ export default {
     hideDapp(e){
       this.appInstance.hide()
       console.log('-----app-event--hideapp--'+JSON.stringify(this.appEventData))
+    },
+    doTrust(assets){
+      //强制授信相应的资产
+      // let source = config.account
+      // if(!source)return
+      
+      trustAll(this.accountData.seed, assets)
+        .then(resp => {
+          this.hideDapp()
+          this.$toasted.show(this.$t('fund_success'))
+          setTimeout(()=>{
+            this.$router.push({name: 'MyAssets'})  
+          },1000)
+        })
+        .catch(err=>{
+          console.error(err)
+          console.error('授信失败')
+          this.$router.push({name: 'MyAssets'})
+        })
+
     },
     doPayEvent(e){
       try{
@@ -439,6 +466,7 @@ export default {
     },
     doCallbackEvent(data){
       console.log('-----------docallback event---' + JSON.stringify(this.appEventData))
+      // alert('do callback event- ' + JSON.stringify(this.appEventData))
       if(this.appEventData && this.appEventData.callback){
         try{
           let cb = this.appEventData.callback
@@ -495,7 +523,7 @@ export default {
       })
     },
     successEvent(msg='success',data){
-      //alert('----success--event---'+ JSON.stringify(data))
+      // alert('----success--event---'+ JSON.stringify(data))
       this.$nextTick(()=>{
         this.appInstance.show();
         this.doCallbackEvent(this.callbackData('success',msg, data))
@@ -524,11 +552,11 @@ export default {
       this.successEvent()
     },
     exitSignXDREvent(){
-      //alert('----exit---signxdr---')
+      // alert('----exit---signxdr---')
       this.exitEvent('cancel signxdr')
     },
     successSignXDREvent(data){
-      //alert('-----signxdr-success---')
+      // alert('-----signxdr-success---' + data)
       this.successEvent('success',data)
     },
     toSetting(){
@@ -579,6 +607,8 @@ export default {
       try{
         this.appInstance.hide()
         this.showScanner = true
+        //隐藏底部tab
+        this.$store.commit('HIDE_TABBAR')
       }catch(err){
         console.error(err)
         //alert('error:'+err.message)
@@ -591,13 +621,16 @@ export default {
     qrfinish(result){
       this.showScanner = false
       this.successEvent('success',result);
+      this.$store.commit('SHOW_TABBAR')
     },
     qrclose(){
       this.exitEvent('qrscan closed')
+      this.$store.commit('SHOW_TABBAR')
     },
     closeQRScanner(){
       this.$refs.qrscanner.closeQRScanner();
       this.showScanner = false
+      this.$store.commit('SHOW_TABBAR')
     }
 
 

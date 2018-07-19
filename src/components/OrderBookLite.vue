@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-28 11:19:05 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-06-11 15:49:27
+ * @Last Modified time: 2018-07-11 14:08:33
  * @License MIT 
  */
 
@@ -101,16 +101,19 @@ export default {
       return this.selectedTrade.to
     },
     bidsdata(){
-      let dep = new Decimal(0)
+      let dep = new Decimal(0),adep = new Decimal(0)
       let newdata = this.bids.map(obj=>{
         let amount = new Decimal(obj.amount)
+        let realamount = amount.times(obj.price_r.d).dividedBy(obj.price_r.n)
         dep = dep.add(amount)
+        adep = adep.add(realamount)
         return Object.assign({}, obj, {
           origin: obj,
           num: amount.toFixed(4),
           price: new Decimal(obj.price).toFixed(this.decimal),
-          amount: amount.times(obj.price_r.d).dividedBy(obj.price_r.n).toFixed(4),
+          amount: realamount.toFixed(4),
           depth: Number(dep.toFixed(4)),
+          originDepth: adep.toNumber()
         })
       })
       newdata.forEach(ele=>{
@@ -120,17 +123,19 @@ export default {
       return newdata
     },
     asksdata(){
-      let dep = new Decimal(0)
+      let dep = new Decimal(0),adep = new Decimal(0)
       let newdata = this.asks.map(obj => {
         let amount = new Decimal(obj.amount)
         let num = amount.times(obj.price)
         dep = dep.add(num);
+        adep = adep.add(amount);
         return Object.assign({}, obj, {
           amount: amount.toFixed(4),
           price: new Decimal(obj.price).toFixed(this.decimal),
           num: num.toFixed(4),
           depth: dep.toFixed(4),
           origin: obj,
+          originDepth: adep.toNumber()
         });
       })
       newdata.forEach(ele=>{

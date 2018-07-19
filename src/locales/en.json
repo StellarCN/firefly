@@ -332,6 +332,7 @@
 
 
   "Error.AccountNotFund": "Your account have not been activated. View the help information to continue.",
+  "Error.UnFundNeedXLM":"The destination is unactivated, you need send XLM for activation",
   "ERROR.SCANNER_CONTENT_VALIDATE":"QR code content is not validated",
 
 
@@ -526,7 +527,10 @@
   "fund_hint":"need more than 1 XLM to fund",
   "fund_askfor":"ask for funding",
   "fund_free":"free funding",
-  "fund_used_up":"there is no free funding, may ask for help from your friends"
+  "fund_free_title":"funding summary",
+  "fund_used_up":"there is no free funding, may ask for help from your friends",
+  "tickets":"tickets",
+  "autofund_hint":"please wait, autofund is working..."
 
   
 

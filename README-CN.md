@@ -5,7 +5,7 @@
 
 ## [English Document](README.md)
 
-## [DAPP API文档](https://firefly.gitbook.io/apidoc/)
+## [DAPP API文档](http://fireflyapi.mydoc.io/)
 
 ## [帮助文档](https://wallet.fchain.io/manual/#0)
 

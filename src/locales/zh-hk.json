@@ -325,7 +325,8 @@
   "SeedNotice":"密鑰：非常重要！！丟失密鑰=丟失一切！把密鑰抄下來，或者打印出來放到安全保險的地方。不建議截圖保存、直接存在手機里、網盤或郵箱中。保存完畢後就點「完成」。",
   "Congrats":"To da moon!",
   "CongratsMessage":"祝賀您！保存好信息後，您就可以開始使用螢火錢包了。",
-  "Error.AccountNotFund": "您的賬號尚未激活。請查看幫助信息",
+  "Error.AccountNotFund": "您的賬戶尚未激活。請查看幫助信息",
+  "Error.UnFundNeedXLM":"對方賬戶未激活，必須發送XLM進行激活",
   "ERROR.SCANNER_CONTENT_VALIDATE":"二維碼內容不正確",
 
   "About.Title":"關於",
@@ -504,7 +505,7 @@
   "fchainHorizon":"螢火官方地址",
   "validateMnemonic":"請輸入相應的助記詞進行驗證",
   "Warning_mnemonic_msg":"賬戶助記詞為重要信息，請做好備份並謹慎保存，勿與他人分享",
-  "no_mnemonic_msg":"没有助記詞!",
+  "no_mnemonic_msg":"您的賬戶沒有助記詞!",
   "bids_max_price":"買單最高價",
   "asks_min_price":"賣單最低價",
   "hot_dapp":"熱門應用",
@@ -518,7 +519,10 @@
   "fund_hint":"激活需要向該賬戶發送至少1XLM",
   "fund_askfor":"收幣激活",
   "fund_free":"免費激活",
-  "fund_used_up":"免費激活名額已經用完，您可向朋友收取1XLM完成賬戶激活。"
+  "fund_free_title":"激活說明",
+  "fund_used_up":"免費激活名額已經用完，您可向朋友收取1XLM完成賬戶激活。",
+  "tickets":"工單",
+  "autofund_hint":"請稍等，正在進行激活操作！"
 
   
 

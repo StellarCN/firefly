@@ -4,6 +4,8 @@ import { isNativeAsset } from './assets'
 
 export const APP_NAME = 'firefly'
 
+export const DEBUG = false // 是否dbug模式
+
 //app版本号
 export const APP_VERSION = pkg.version
 
@@ -30,35 +32,15 @@ export const INFLATION_POOL = [
 
 
 //默认交易对
-export const TRADE_PAIRS = [
-
-  {
-    from: {
-      code: 'XLM'
-    },
-    to: {
-      code: 'XCN',
-      issuer: 'GCNY5OXYSY4FKHOPT2SPOQZAOEIGXB5LBYW3HVU3OWSTQITS65M5RCNY'
-    }
-  },
-  {
-    from: {
-      code: 'XLM'
-    },
-    to: {
-      code: 'BTC',
-      issuer: 'GATEMHCCKCY67ZUCKTROYN24ZYT5GK4EQZ65JJLDHKHRUZI3EUEKMTCH'
-    }
-  },
-  {
-    from: {
-      code: 'XLM'
-    },
-    to: {
-      code: 'ETH',
+export const TRADE_PAIRS = [  {
+    from: {      code: 'XLM'   },
+    to: {      code: 'XCN',      issuer: 'GCNY5OXYSY4FKHOPT2SPOQZAOEIGXB5LBYW3HVU3OWSTQITS65M5RCNY' }
+  },  {    from: {      code: 'XLM'    },
+    to: {      code: 'BTC',      issuer: 'GATEMHCCKCY67ZUCKTROYN24ZYT5GK4EQZ65JJLDHKHRUZI3EUEKMTCH'}
+  },  {    from: {      code: 'XLM'    },
+    to: {      code: 'ETH',
       issuer: 'GBETHKBL5TCUTQ3JPDIYOZ5RDARTMHMEKIO2QZQ7IOZ4YC5XV3C2IKYU'
-    }
-  }
+    }  }
 ]
 
 
@@ -189,7 +171,11 @@ export const COINS_ICON = {
   ETH: 'icon-ETH',
   BTC: 'icon-btc',
   XEL: 'icon-xel',
-  XFF: 'icon-XFF'
+  XFF: 'icon-XFF',
+  STM: 'icon-STM',
+  HKDT: 'icon-hkdt',
+  XCN: 'icon-XCN',
+  WICC: 'icon-WICC'
   
 }
 
@@ -250,35 +236,81 @@ export function getTradePairStat(base, counter){
 
 
 //自动激活功能
-let _fund_config = null
+var _fund_config = undefined
+
 
 export function getFundConfig(){
   return _fund_config;
 }
 
 let fund_config_url = `https://update.fchain.io/fund/fund.json`
+let fund_config_url_debug = `https://update.fchain.io/fund/fund_test.json`
 export function initFundConfig(callback){
-  if(_fund_config!=null)return;
-  let url = `${fund_config_url}?r=` + new Date().getTime()
-  axios.get(url)
+  let r = new Date().getTime()
+  let url = null
+  if(DEBUG){
+    url = `${fund_config_url_debug}?r=${r}` 
+  }else{
+    url = `${fund_config_url}?r=${r}`
+  }
+  axios.get(url,{
+    timeout: AXIOS_DEFAULT_TIMEOUT
+  })
     .then(response => {
       _fund_config = response.data
+      // alert(JSON.stringify(_fund_config))
       if(callback){
         callback(_fund_config)
       }
     })
     .catch(err=>{
+      // alert('-----err:' + err.message)
       console.error(err)
     })
+}
+
+export function fetchFundConfig(){
+  let r = new Date().getTime()
+  let url = null
+  if(DEBUG){
+    url = `${fund_config_url_debug}?r=${r}` 
+  }else{
+    url = `${fund_config_url}?r=${r}`
+  }
+  return new Promise((resolve,reject) => {
+    cordova.plugin.http.get(url, {}, {}, response => {
+      resolve(JSON.parse(response.data))
+    }, response => {
+      reject(response.error)
+    })
+  })
 }
 
 export const DAPP_FETCH_URL = 'https://update.fchain.io/config/dapp.json'
 
 export function fetchSysDApps(){
   let url = DAPP_FETCH_URL + '?r=' + new Date().getTime()
-  return axios.get(url, {
-    timeout: 10000
+  // if(cordova.platformId === 'browser'){
+    // return axios.get(url, {
+    //   timeout: 10000
+    // }).then(response => {
+    //   return Promise.resolve(response.data)
+    // })
+  // }else{
+  //   return cordova.plugin.http.get(url, {},  {}, (response) => {
+  //     return Promise.resolve(JSON.parse(response.data))
+  //   })
+  // }
+  return new Promise((resolve,reject) => {
+    cordova.plugin.http.get(url, {}, {}, response => {
+      resolve(JSON.parse(response.data))
+    }, response => {
+      reject(response.error)
+    })
   })
+  
+  
+
     // .then(response=>{
     //   return Promise.resolve(response.data)
     // })

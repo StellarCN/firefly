@@ -326,7 +326,8 @@
   "SeedNotice":"密钥：非常重要！！丢失密钥=丢失一切！把密钥抄下来，或者打印出来放到安全保险的地方。不建议截图保存、直接存在手机里、网盘或邮箱中。保存完毕后就点“完成”。",
   "Congrats":"To da moon!",
   "CongratsMessage":"祝贺您！保存好信息后，您就可以开始使用萤火钱包了。",
-  "Error.AccountNotFund": "您的账号尚未激活。请查看帮助信息",
+  "Error.AccountNotFund": "账户尚未激活。请查看帮助信息",
+  "Error.UnFundNeedXLM":"对方账户未激活，必须发送XLM进行激活",
   "ERROR.SCANNER_CONTENT_VALIDATE":"二维码内容不正确",
 
   "About.Title":"关于",
@@ -504,7 +505,7 @@
   "fchainHorizon":"萤火官方地址",
   "validateMnemonic":"请输入相应的助记词进行验证",
   "Warning_mnemonic_msg":"账户助记词为重要信息，请做好备份并谨慎保存，勿与他人分享",
-  "no_mnemonic_msg":"没有助记词!",
+  "no_mnemonic_msg":"您的账户没有助记词!",
   "bids_max_price":"买单最高价",
   "asks_min_price":"卖单最低价",
   "hot_dapp":"热门应用",
@@ -518,7 +519,10 @@
   "fund_hint":"激活需要向该账户发送至少1XLM",
   "fund_askfor":"收币激活",
   "fund_free":"免费激活",
-  "fund_used_up":"免费激活名额已经用完，您可向朋友收取1XLM完成账户激活。"
+  "fund_free_title":"激活说明",
+  "fund_used_up":"免费激活名额已经用完，您可向朋友收取1XLM完成账户激活。",
+  "tickets":"工单",
+  "autofund_hint":"请稍等，正在进行激活操作！"
 
  
  

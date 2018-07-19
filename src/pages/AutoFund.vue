@@ -8,7 +8,9 @@
         ref="toolbar"
         >
     </toolbar>
-
+    <div class="af_hint">
+      {{$t('autofund_hint')}}
+    </div>
   </div>
 </template>
 
@@ -44,10 +46,11 @@ export default {
       working: false,
       err: null,
       appInstance: null,
+      
+      retry: 0,
 
       appEventType: null,//接收到的appevent事件
       appEventData: null,//接收的appevent的data
-
     }
   },
    computed:{
@@ -55,19 +58,20 @@ export default {
       account: state => state.accounts.selectedAccount,
       accountData: state => state.accounts.accountData,
       islogin: state => (state.accounts.accountData.seed ? true : false),
+      fund_config: state => state.autoFundConfig,
     }),
   },
   watch:{
     islogin(){
+      // alert('----is login--' + this.islogin)
       if(this.islogin && !this.appInstance){
         this.openApp()
       }
     }
   },
   created(){
-    let config = getFundConfig()
-    if(!config){
-      initFundConfig()
+    if(!this.fund_config){
+      this.loadFundConfig().then(data=>{}).catch(err=>{console.error(err);})
     }
   },
   beforeDestroy(){
@@ -79,17 +83,30 @@ export default {
   mounted () {
     if(!this.islogin){
       this.$refs.toolbar.showPasswordLogin()
+    } else {
+      if(!this.fund_config){
+        this.loadFundConfig().then(data=>{
+          this.$nextTick(()=>{
+            this.openApp()
+          })
+        }).catch(err=>{
+          console.error(err)
+        })
+      }else{
+        this.openApp()
+      }
     }
-    this.openApp();
   },
   methods: {
+    ...mapActions(['loadFundConfig']),
     back(){
       this.$router.back()
     },
     openApp(){
-      let config = getFundConfig()
+      let config = this.fund_config
+      // alert('config=----' + JSON.stringify(config))
       if(config === null)return;
-      if(!config.active)return
+      // alert(JSON.stringify(config))
       if(cordova.platformId === 'browser'){
         this.appInstance = cordova.InAppBrowser.open(config.site, '_blank', 'location=no,toolbar=yes,toolbarcolor=#21ce90');
       }else{
@@ -111,39 +128,13 @@ export default {
                   showPageTitle: true,
                   staticText: this.$t('auto_fund')
               },
-              closeButton: {
-                  image: 'close',
-                  imagePressed: 'close_pressed',
-                  align: 'left',
-                  event: 'closePressed'
-              },
-              backButtonCanClose: true,
+              backButtonCanClose: false,
               // hidden: true
           })
           
       }
-      this.appInstance.addEventListener('reloadPressed', e => {
-        this.appInstance.reload()
-      })
-      this.appInstance.addEventListener('sharePressed', e => {
-          this.shareCB(e.url)
-      })
-      // this.appInstance.removeEventListener('closePressed')
-      this.appInstance.addEventListener('closePressed',()=>{
-        this.appInstance.close()
-        this.appInstance = undefined
-        this.$router.back();
-      })
-      this.appInstance.addEventListener('backPressed', ()=>{
-        this.appInstance.close()
-        this.appInstance = undefined
-        this.$router.back();
-      });
 
       this.appInstance.addEventListener('loadstop',() => {
-        //let script = `if(!window.FFW){window.FFW = {};FFW.address = "${this.account.address}";FFW.pay = function(destination,code,issuer,amount,memo_type,memo){ var params = { type:'pay',destination: destination, code: code, issuer: issuer, amount: amount, memo_type: memo_type, memo: memo };cordova_iab.postMessage(JSON.stringify(params));};};`
-        //let scriptEle = `if(!window.FFW){var script = document.createElement('script');script.setAttribute('type', 'text/javascript');script.text = "${script}";document.body.appendChild(script);}`
-        //alert(scriptEle)
         let contacts = this.allcontacts
         let myaddresses = this.myaddresses
         let isIos = "ios" === cordova.platformId
@@ -156,14 +147,20 @@ export default {
         })
 
       })
+      this.appInstance.addEventListener('backPressed', ()=>{
+        //判断是否授信，未授信进行授信
+        that.doTrust(config);
+      });
+
       let that = this
       this.appInstance.addEventListener('message', debounce(function (e){
         console.log('-----------get message ---- ')
-        console.log(JSON.stringify(e))
+        // console.log(JSON.stringify(e))
        // alert(JSON.stringify(e))
         let type = e.data.type
         if(type === 'after_fund'){
-          this.doTrust()
+          // localStorage.setItem('allowBack',"0")
+          that.doTrust(config)
         }
       },3000))
     },
@@ -172,39 +169,35 @@ export default {
       console.log('-----app-event--hideapp--'+JSON.stringify(this.appEventData))
     },
     doTrust(config){
+      // alert('dotrust-' + JSON.stringify(config.assets));
       //强制授信相应的资产
       // let source = config.account
       // if(!source)return
       let assets = config.assets
       trustAll(this.accountData.seed, assets)
         .then(resp => {
+          this.hideDapp()
           this.$toasted.show(this.$t('fund_success'))
+          // alert('成功！')
           setTimeout(()=>{
+            // localStorage.setItem('allowBack',"1")
             this.$router.push({name: 'MyAssets'})  
           },1000)
         })
         .catch(err=>{
           console.error(err)
           console.error('授信失败')
-          this.$router.push({name: 'MyAssets'})
+          // alert('失败'+err.message)
+          // localStorage.setItem('allowBack',"1")
+          // this.$router.push({name: 'MyAssets'})
+          if(this.retry>4){
+            this.$router.push({name: 'MyAssets'})
+            return;
+          }
+          this.retry = this.retry + 1
+          this.doTrust(config)
         })
 
-    },
-    doSign(e){
-      //签名
-      let data = e.data.data
-      if(!isJson(data)){
-        return this.doCallbackEvent(this.callbackData('fail','data is invalid'))
-      }
-      if(data){
-        let cdata = signToBase64(this.accountData.seed, data)
-        console.log('---------------encrypt data---' + cdata)
-       // alert('sign---'+cdata)
-        this.doCallbackEvent(this.callbackData('success', 'success', cdata))
-      }else{
-       // alert('sign-fail--')
-        this.doCallbackEvent(this.callbackData('fail','no data to sign'))
-      }
     },
     doCallbackEvent(data){
       console.log('-----------docallback event---' + JSON.stringify(this.appEventData))
@@ -279,4 +272,9 @@ export default {
   color: $secondarycolor.font
 .add-app-avatar
   background: $secondarycolor.gray!important
+.af_hint
+  margin-top: 50%
+  text-align: center
+  color: $primarycolor.font
+  font-size: 14px
 </style>

@@ -116,6 +116,15 @@ const router = new Router({
         keepAlive: false
       }
     },
+    {
+      path: '/autofundhelp',
+      name: 'AutoFundHelp',
+      component: resolve => require(['../pages/AutoFundHelp.vue'], resolve),
+      meta: {
+        keepAlive: false,
+        allowBack: false
+      }
+    },
 
     mysettings,
     assets,
