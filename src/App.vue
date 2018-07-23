@@ -10,7 +10,7 @@
       </v-content>
       <tab-bar v-if="tabBarShow"/>
 
-    <v-dialog v-model="updateConfirmDlg" max-width="95%" persistent>
+    <v-dialog v-model="updateConfirmDlg" max-width="95%" persistent class="upDlg">
       <div>
         <div class="a-card-content">
           <div class="avatar-div textcenter">
@@ -418,7 +418,9 @@ export default {
   color: $primarycolor.red
 .a-btns
   font-size: 16px
-  
+
+.upDlg
+  z-index: 999  
 
 @css {
   html{

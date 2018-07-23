@@ -7,6 +7,9 @@
         :showbackicon="false"
         ref="toolbar"
         >
+        <v-btn icon @click="back" slot="left-tool">
+          <i class="material-icons font28">keyboard_arrow_left</i>
+        </v-btn>
     </toolbar>
     <div class="af_hint">
       {{$t('autofund_hint')}}
@@ -48,6 +51,7 @@ export default {
       appInstance: null,
       
       retry: 0,
+      working: false,
 
       appEventType: null,//接收到的appevent事件
       appEventData: null,//接收的appevent的data
@@ -128,6 +132,18 @@ export default {
                   showPageTitle: true,
                   staticText: this.$t('auto_fund')
               },
+              closeButton: {
+                  image: 'close',
+                  imagePressed: 'close_pressed',
+                  align: 'left',
+                  event: 'closePressed'
+              },
+              backButton: {
+                  image: 'back',
+                  imagePressed: 'back_pressed',
+                  align: 'left',
+                  event: 'backPressed'
+              },
               backButtonCanClose: false,
               // hidden: true
           })
@@ -147,9 +163,14 @@ export default {
         })
 
       })
+      this.appInstance.addEventListener('closePressed', ()=>{
+        if(!this.working){
+          this.$router.push({name: 'MyAssets'})
+        }
+        //否则不关闭当前界面
+      });
       this.appInstance.addEventListener('backPressed', ()=>{
-        //判断是否授信，未授信进行授信
-        that.doTrust(config);
+        
       });
 
       let that = this
@@ -159,6 +180,7 @@ export default {
        // alert(JSON.stringify(e))
         let type = e.data.type
         if(type === 'after_fund'){
+          that.working = true
           // localStorage.setItem('allowBack',"0")
           that.doTrust(config)
         }
@@ -180,17 +202,19 @@ export default {
           this.$toasted.show(this.$t('fund_success'))
           // alert('成功！')
           setTimeout(()=>{
+            this.working = false
             // localStorage.setItem('allowBack',"1")
             this.$router.push({name: 'MyAssets'})  
           },1000)
         })
-        .catch(err=>{
+        .catch(err => {
           console.error(err)
           console.error('授信失败')
           // alert('失败'+err.message)
           // localStorage.setItem('allowBack',"1")
           // this.$router.push({name: 'MyAssets'})
           if(this.retry>4){
+            this.working = false
             this.$router.push({name: 'MyAssets'})
             return;
           }
@@ -219,6 +243,11 @@ export default {
       // return JSON.stringify({code,message,data})
       return {code,message,data}
     },
+    back(){
+      if(!this.working){
+        this.$router.push({name: 'MyAssets'})
+      }
+    }
     
 
 

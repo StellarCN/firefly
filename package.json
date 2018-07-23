@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "animate.css": ">3.5.2",
-    "awesome-qr": "^1.0.9",
+    "awesome-qr": "1.0.9",
     "axios": ">0.17.1",
     "better-scroll": "^1.4.2",
     "bip39": "^2.4.0",

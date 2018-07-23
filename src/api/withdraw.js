@@ -130,6 +130,7 @@ export function queryWithdrawInfo(domain, asset_code, address, forward_type = 'c
         if(!fed.endsWith('/federation')){
           fed+='/fedration'
         }
+        dest_extra = dest_extra === null ? '':dest_extra
         let url = `${fed}?type=forward&forward_type=${forward_type}&asset_code=${asset_code}&dest=${dest}&dest_extra=${dest_extra}&account_id=${address}`
         return axios.get(url)
       }

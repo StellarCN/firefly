@@ -2,11 +2,12 @@
  * PIN码锁定界面
  */
 <template>
-  <div class="page">
+  <div class="page pinlock-page">
     <Toolbar 
       :title="$t(title)"
       :showmenuicon="showmenuicon" 
       :showbackicon="showbackicon"
+      style="z-index:9999;"
       >
         <v-btn icon slot='right-tool' @click="exitApp" v-if="!isios">
           <i class="material-icons">exit_to_app</i>
@@ -88,4 +89,6 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.pinlock-page
+  z-index: 9999
 </style>

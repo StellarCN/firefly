@@ -4,7 +4,7 @@
  */
 <template>
   <div class="pin">
-    <div class="password-content" >
+    <div class="password-content"       style="z-index:9999;">
       <div :class="'password-list ' + (shake ? 'animated shake':'' )" >
         <div v-for="item in pwdlength" :key="'pwd'+item" class="show-pwd">
           <div class="dot"></div>
@@ -14,7 +14,9 @@
         </div>
       </div>
     </div>
-    <number-keyboard :show="showkeyboard" :max="max" :reset="reset" v-on:onChange="onChange"></number-keyboard>
+    <number-keyboard
+      style="z-index:9999;"
+     :show="showkeyboard" :max="max" :reset="reset" v-on:onChange="onChange"></number-keyboard>
   </div>
 </template>
 

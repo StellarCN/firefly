@@ -141,7 +141,7 @@ export default {
   right: 0
   background #333
   opacity: 0.5
-  z-index: 999
+  z-index: 9
   padding-bottom: 1rem
   padding-bottom: calc(1rem + constant(safe-area-inset-bottom))
   padding-bottom: calc(1rem + env(safe-area-inset-bottom))
@@ -152,7 +152,7 @@ export default {
   right: 0
   // height: 5rem
   background: $secondarycolor.gray
-  z-index:9999
+  z-index:10
 
 .close-icon
   color: $primarycolor.green

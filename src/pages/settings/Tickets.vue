@@ -3,7 +3,12 @@
  */
 <template>
   <div class="page">
-  
+     <toolbar :title="$t('tickets')" 
+        :showmenuicon="false" 
+        :showbackicon="true"
+        ref="toolbar"
+        >
+    </toolbar>
   </div>
 </template>
 
@@ -12,6 +17,9 @@ import { mapState, mapActions} from 'vuex'
 import { FFWScript, FFW_EVENT_TYPE_PAY,FFW_EVENT_TYPE_PATHPAYMENT,FFW_EVENT_TYPE_SIGN
    ,FFW_EVENT_TYPE_BACKUP,FFW_EVENT_TYPE_RECOVERY,FFW_EVENT_TYPE_TRUST,FFW_EVENT_TYPE_SIGNXDR } from '@/api/ffw'
 import debounce from 'lodash/debounce'
+import Toolbar from '@/components/Toolbar'
+import { signToBase64, verifyByBase64 } from '@/api/keypair'
+import isJson from '@/libs/is-json'
 
 // export const FFW_EVENT_TYPE_PAY = 'pay'
 // export const FFW_EVENT_TYPE_PATHPAYMENT = 'pathPayment'
@@ -122,17 +130,55 @@ export default {
       })
       let that = this
       this.appInstance.addEventListener('message', debounce(function (e){
-        console.log('-----------get message ---- ')
-        console.log(JSON.stringify(e))
-       // alert(JSON.stringify(e))
+        // alert('message - ' + JSON.stringify(e))
+       let type = e.data.type
+       if(type === FFW_EVENT_TYPE_SIGN){
+          that.doSign(e)
+        }
       },3000))
     },
     hideDapp(e){
       this.appInstance.hide()
       console.log('-----app-event--hideapp--'+JSON.stringify(this.appEventData))
     },
+     doSign(e){
+      //签名
+      let data = e.data.data
+      if(!isJson(data)){
+        return this.doCallbackEvent(this.callbackData('fail','data is invalid'))
+      }
+      if(data){
+        let cdata = signToBase64(this.accountData.seed, data)
+        console.log('---------------encrypt data---' + cdata)
+       // alert('sign---'+cdata)
+        this.doCallbackEvent(e.data.callback,this.callbackData('success', 'success', cdata))
+      }else{
+       // alert('sign-fail--')
+        this.doCallbackEvent(e.data.callback,this.callbackData('fail','no data to sign'))
+      }
+    },
+    doCallbackEvent(cb,data){
+      console.log('-----------docallback event---' + JSON.stringify(this.appEventData))
+      // alert('do callback event- ' + JSON.stringify(this.appEventData))
+      try{
+        let code = `FFW.callback("${cb}",{code: "${data.code}",message:"${data.message}",data:"${data.data}"})`
+        console.log('===============callback------event---')
+        console.log(code)
+        this.appInstance.executeScript({
+          code: code }, 
+          params=>{})
+      }catch(err){
+        console.error(err)
+      }
+    },
+    callbackData(code,message,data){
+      // return JSON.stringify({code,message,data})
+      return {code,message,data}
+    },
+
   },
   components: {
+    Toolbar,
   }
 }
 </script>

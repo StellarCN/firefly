@@ -53,7 +53,7 @@
           ></v-text-field>
       </div>
       <div class="field_btn">
-        <v-btn :loading="working" class="error btn_ok" @click.stop="submitStep1">{{$t('Button.OK')}}</v-btn>
+        <v-btn :loading="working"  class="error btn_ok btn_ok1" @click.stop="submitStep1">{{$t('Button.OK')}}</v-btn>
       </div>
   </div>
 
@@ -116,7 +116,7 @@
           ></v-text-field>
       </div>
       <div class="field_btn">
-        <v-btn :loading="working" :disabled="btn_disabled" class="error btn_ok" @click.stop="submitStep2">{{$t('Button.OK')}}</v-btn>
+        <v-btn :loading="working" :disabled="btn_disabled" class="error btn_ok btn_ok1" @click.stop="submitStep2">{{$t('Button.OK')}}</v-btn>
       </div>
     </div>
 
@@ -308,8 +308,11 @@ export default {
         })
         .catch(err=>{
           this.working = false
-          if(err.response && err.response.error){
-            this.$toasted.error(err.response.error)
+          console.log('----------------------error---')
+          console.log(err)
+          console.log(err.response)
+          if(err.response && err.response.data && err.response.data.error){
+            this.$toasted.error(err.response.data.error)
             return
           }
           if(err.response && err.response.statusText){
@@ -523,11 +526,12 @@ export default {
 .field_select
 .field_input
   padding-top: 2px
-.field_btn
-  .btn_ok
-    padding: 0px 0px
-    margin: 0px 0px
-    width: 100%
+
+.btn_ok
+  padding: 0px 0px
+  margin: 0px 0px
+  width: 100%!important
+
 .hint
   color: $secondarycolor.font
 .confirm-wrapper
