@@ -17,6 +17,7 @@ import { FFWScript, FFW_EVENT_TYPE_PAY,FFW_EVENT_TYPE_PATHPAYMENT,FFW_EVENT_TYPE
    ,FFW_EVENT_TYPE_BACKUP,FFW_EVENT_TYPE_RECOVERY,FFW_EVENT_TYPE_TRUST,FFW_EVENT_TYPE_SIGNXDR } from '@/api/ffw'
 import debounce from 'lodash/debounce'
 import Toolbar from '@/components/Toolbar'
+import { KYC_SITE } from '@/api/gateways'
 
 // export const FFW_EVENT_TYPE_PAY = 'pay'
 // export const FFW_EVENT_TYPE_PATHPAYMENT = 'pathPayment'
@@ -59,9 +60,9 @@ export default {
       this.$router.back()
     },
     openApp(){
-      let site = 'https://fchain.io/kyc/accounts/login/?next=/portal/'+'?'+Math.random()
+      let site = KYC_SITE+'?r='+Math.random()
+      // let site = 'https://fchain.io/kyc/accounts/login/?next=/portal/'+'?'+Math.random()
       let title = this.$t('kyc')
-
       if(cordova.platformId === 'browser'){
         this.appInstance = cordova.InAppBrowser.open(site, '_blank', 'location=no,toolbar=yes,toolbarcolor=#21ce90');
       }else{
