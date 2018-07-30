@@ -13,12 +13,23 @@
 <script>
 import { mapState, mapActions} from 'vuex'
 import  defaultsDeep  from 'lodash/defaultsDeep'
-import { FFWScript, FFW_EVENT_TYPE_PAY,FFW_EVENT_TYPE_PATHPAYMENT,FFW_EVENT_TYPE_SIGN
-   ,FFW_EVENT_TYPE_BACKUP,FFW_EVENT_TYPE_RECOVERY,FFW_EVENT_TYPE_TRUST,FFW_EVENT_TYPE_SIGNXDR } from '@/api/ffw'
-import debounce from 'lodash/debounce'
 import Toolbar from '@/components/Toolbar'
 import { KYC_SITE } from '@/api/gateways'
+import { signToBase64, verifyByBase64 } from '@/api/keypair'
 
+import SendAsset from '@/components/dapp/SendAsset'
+import RecoveryData from '@/components/dapp/RecoveryData'
+import TrustLine from '@/components/dapp/TrustLine'
+import BackUpData from '@/components/dapp/BackUpData'
+import SignXDR from '@/components/dapp/SignXDR'
+import QRScan from '@/components/QRScan'
+import { FFWScript, FFW_EVENT_TYPE_PAY,FFW_EVENT_TYPE_PATHPAYMENT,FFW_EVENT_TYPE_SIGN
+   ,FFW_EVENT_TYPE_BACKUP,FFW_EVENT_TYPE_RECOVERY,FFW_EVENT_TYPE_TRUST,
+   FFW_EVENT_TYPE_SIGNXDR, FFW_EVENT_TYPE_SHARE,
+   FFW_EVENT_TYPE_SCAN } from '@/api/ffw'
+import isJson from '@/libs/is-json'
+import debounce from 'lodash/debounce'
+import { trustAll } from '@/api/operations'
 // export const FFW_EVENT_TYPE_PAY = 'pay'
 // export const FFW_EVENT_TYPE_PATHPAYMENT = 'pathPayment'
 // export const FFW_EVENT_TYPE_SIGN = 'sign'
@@ -29,6 +40,8 @@ import { KYC_SITE } from '@/api/gateways'
 export default {
   data(){
     return {
+      appEventType: null,
+      appEventData: null
     }
   },
    computed:{
@@ -116,7 +129,7 @@ export default {
         let contacts = this.allcontacts
         let myaddresses = this.myaddresses
         let isIos = "ios" === cordova.platformId
-        let script = FFWScript(this.account.address, {contacts,myaddresses} ,isIos, cordova.platformId,this.locale.key)
+        let script = FFWScript(this.account.address, {contacts,myaddresses} ,isIos, cordova.platformId, this.locale.key)
         // alert(script)
         this.appInstance.executeScript({ code: script },params => {
           //console.log(params)
@@ -125,17 +138,62 @@ export default {
         })
 
       })
+
       let that = this
       this.appInstance.addEventListener('message', debounce(function (e){
         console.log('-----------get message ---- ')
         console.log(JSON.stringify(e))
        // alert(JSON.stringify(e))
+       let type = e.data.type
+        if(type === FFW_EVENT_TYPE_SIGN){
+          that.appEventType = e.data.type
+          that.appEventData = e.data
+          that.doSign(e)
+        }
       },3000))
     },
     hideDapp(e){
       this.appInstance.hide()
       console.log('-----app-event--hideapp--'+JSON.stringify(this.appEventData))
     },
+     doCallbackEvent(data){
+      console.log('-----------docallback event---' + JSON.stringify(this.appEventData))
+      // alert('do callback event- ' + JSON.stringify(this.appEventData))
+      if(this.appEventData && this.appEventData.callback){
+        try{
+          let cb = this.appEventData.callback
+          let code = `FFW.callback("${cb}",{code: "${data.code}",message:"${data.message}",data:"${data.data}"})`
+          console.log('===============callback------event---')
+          console.log(code)
+          this.appInstance.executeScript({
+            code: code }, 
+            params=>{})
+        }catch(err){
+          console.error(err)
+        }
+      }
+    },
+    callbackData(code,message,data){
+      // return JSON.stringify({code,message,data})
+      return {code,message,data}
+    },
+    doSign(e){
+      //签名
+      let data = e.data.data
+      if(!isJson(data)){
+        return this.doCallbackEvent(this.callbackData('fail','data is invalid'))
+      }
+      if(data){
+        let cdata = signToBase64(this.accountData.seed, data)
+        console.log('---------------encrypt data---' + cdata)
+       // alert('sign---'+cdata)
+        this.doCallbackEvent(this.callbackData('success', 'success', cdata))
+      }else{
+       // alert('sign-fail--')
+        this.doCallbackEvent(this.callbackData('fail','no data to sign'))
+      }
+    },
+
   },
   components: {
     Toolbar,
