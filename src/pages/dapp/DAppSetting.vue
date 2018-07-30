@@ -11,7 +11,7 @@
 
     <div class="content">
       <div class="app-row" v-for="(app,index) in myapps" :key="index">
-        <v-layout class="app-row-li third-li" row wrap v-swiper=1.5 @click.stop="modify(index,app)">
+        <v-layout class="app-row-li third-li" row wrap v-swiper=2 @click.stop="modify(index,app)">
           <v-flex xs2 class="app-wrapper">
             <v-avatar :tile=false class="grey darken-4 app-avatar">
               <span class="white--text headline">{{app.title.substring(0,1)}}</span>  
