@@ -39,7 +39,7 @@
             <v-tab-item v-for="(item,index) in allTags" :key="index">
               <ul class="tradepairs-ul">
                 <li class="tradepair-li" v-for="(pair,index) in pairItems[item]" :key="index">
-                  <v-layout class="pair-wrapper" row v-swiper="pair.custom ? 1.5:0.1" >
+                  <v-layout class="pair-wrapper" row v-swiper="pair.custom ? 2:0.1" >
                     <v-flex xs4>
                       <div class="flex-row">
                         <div class="flex1 choose-icon-wrapper" v-if="!pair.custom">

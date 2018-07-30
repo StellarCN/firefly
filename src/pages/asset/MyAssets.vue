@@ -77,7 +77,7 @@
                 right: () => selectedItem = null
               }"
             >
-            <v-layout class="myassets-li third-li" row wrap v-swiper=2.2 @click.stop="toAsset(item)">
+            <v-layout class="myassets-li third-li" row wrap v-swiper=2.5 @click.stop="toAsset(item)">
               <v-flex xs2 class="myassets-wrapper">
                 <div class="icon-wrapper">
                   <i :class="'iconfont ' + assetIcon(item.code,item.issuer)"></i>

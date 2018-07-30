@@ -63,6 +63,7 @@ export default {
       accountData: state => state.accounts.accountData,
       islogin: state => (state.accounts.accountData.seed ? true : false),
       fund_config: state => state.autoFundConfig,
+      locale: state => state.app.locale,
     }),
   },
   watch:{
@@ -154,7 +155,7 @@ export default {
         let contacts = this.allcontacts
         let myaddresses = this.myaddresses
         let isIos = "ios" === cordova.platformId
-        let script = FFWScript(this.account.address, {contacts,myaddresses} ,isIos, cordova.platformId)
+        let script = FFWScript(this.account.address, {contacts,myaddresses} ,isIos, cordova.platformId,this.locale.key)
         // alert(script)
         this.appInstance.executeScript({ code: script },params => {
           //console.log(params)

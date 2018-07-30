@@ -316,3 +316,4 @@ export function fetchSysDApps(){
     // })
 }
 
+export const KYC_SITE = 'http://jn279.gitee.io/firefly_assets/kyc'
