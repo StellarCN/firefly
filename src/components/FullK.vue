@@ -105,7 +105,7 @@ export default {
            vH: 40,//交易量高度
            mH: 40,//macd图的高度
            toolH: 37,//底部切换区间的工具条的高度
-           resolutionIndex: "3",
+           resolutionIndex: "2",
         }
     },
     computed: {
@@ -231,7 +231,7 @@ export default {
                 },{
                     type: 'inside',
                     xAxisIndex: [0, 1, 2],
-                    start: 50,
+                    start: 0,
                     end: 100
                 }],
                 xAxis: [{
