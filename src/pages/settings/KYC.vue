@@ -141,30 +141,23 @@ export default {
 
       let that = this
       this.appInstance.addEventListener('message', debounce(function (e){
-        console.log('-----------get message ---- ')
-        console.log(JSON.stringify(e))
-       // alert(JSON.stringify(e))
        let type = e.data.type
         if(type === FFW_EVENT_TYPE_SIGN){
           that.appEventType = e.data.type
           that.appEventData = e.data
           that.doSign(e)
         }
-      },3000))
+      },300))
     },
     hideDapp(e){
       this.appInstance.hide()
-      console.log('-----app-event--hideapp--'+JSON.stringify(this.appEventData))
     },
      doCallbackEvent(data){
-      console.log('-----------docallback event---' + JSON.stringify(this.appEventData))
       // alert('do callback event- ' + JSON.stringify(this.appEventData))
       if(this.appEventData && this.appEventData.callback){
         try{
           let cb = this.appEventData.callback
           let code = `FFW.callback("${cb}",{code: "${data.code}",message:"${data.message}",data:"${data.data}"})`
-          console.log('===============callback------event---')
-          console.log(code)
           this.appInstance.executeScript({
             code: code }, 
             params=>{})

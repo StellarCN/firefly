@@ -367,12 +367,7 @@ export default {
       //根据当前的数量，计算path payment
       pathAssets(this.account.address, this.destination, this.asset_code, this.asset_issuer, this.amount + '')
         .then(data => {
-          // let values = {}
-          // this.balances.map(item => 
-          //   isNativeAsset(item) ? 
-          //     Object.assign({},item,{id: item.code}) :  
-          //     Object.assign({},item,{id: item.code + '-' + item.issuer }))
-          //   .forEach(item => { values[item.id] = item })
+          this.loading = false
           let paths = {}
           data.filter(record => Number(record.source_amount) > 0)
             .forEach(record => {
@@ -401,6 +396,7 @@ export default {
                     destId: origin.destination_asset_type === 'native' ? 
                       'XLM': origin.destination_asset_code + '-' + origin.destination_asset_issuer,
                     amount: Number(origin.source_amount), destination_amount: origin.destination_amount,
+                    path:origin.path,
                     origin
                   })
                 }
@@ -414,6 +410,7 @@ export default {
                     id: origin.source_asset_code + '-' + origin.source_asset_issuer,
                     destId: origin.destination_asset_type === 'native' ? 
                       'XLM': origin.destination_asset_code + '-' + origin.destination_asset_issuer,
+                    path:origin.path,
                     origin
                   })
                 }
@@ -428,7 +425,10 @@ export default {
           }else{
             this.nodata = true
           }
-          this.loading = false
+          this.$nextTick(()=>{
+            this.loading = false
+          })
+          
         })
         .catch(err => {
           this.loading = false

@@ -19,6 +19,7 @@ export const FFW_EVENT_TYPE_TRUST = 'trust'
 export const FFW_EVENT_TYPE_SIGNXDR = 'signXDR'
 export const FFW_EVENT_TYPE_SCAN = 'scan'
 export const FFW_EVENT_TYPE_SHARE = 'share'
+export const FFW_EVENT_TYPE_BALANCES = 'balances'//查询账户余额
 
 export function FFWScript(address, data = {}, isIos = false, platform, locale = 'zh_cn'){
   // return [
@@ -66,6 +67,17 @@ export function FFWScript(address, data = {}, isIos = false, platform, locale = 
         }
         fn.apply(this,[data]);
         delete FFW.callbackObjs[id]; 
+      };
+
+      FFW.balances = function(callback){
+        var params = { type:'balances'};
+        params = genParams(params, callback);
+        try{
+          ${method}.postMessage(JSON.stringify(params));  
+        }catch(err){
+          console.error(err);
+          FFW.callback(params['callback'] ,{code:"fail",message:err.message});
+        }
       };
 
       FFW.pay = function(data,callback){

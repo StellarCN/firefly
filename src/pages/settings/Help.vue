@@ -125,7 +125,7 @@ export default {
         console.log('-----------get message ---- ')
         console.log(JSON.stringify(e))
        // alert(JSON.stringify(e))
-      },3000))
+      },300))
     },
     hideDapp(e){
       this.appInstance.hide()

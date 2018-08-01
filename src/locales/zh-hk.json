@@ -173,7 +173,7 @@
 
   "payment":"支付",
   "path_payment":"路徑支付",
-  "create_account":"創建",
+  "create_account":"創建賬戶",
   "Receive":"接收",
   "Send":"發送",
   "Delete":"刪除",
@@ -522,7 +522,10 @@
   "fund_free_title":"激活說明",
   "fund_used_up":"免費激活名額已經用完，您可向朋友收取1XLM完成賬戶激活。",
   "tickets":"工單",
-  "autofund_hint":"請稍等，正在進行激活操作！"
+  "autofund_hint":"請稍等，正在進行激活操作！",
+  "manageOffer":"操作委單",
+  "createPassiveOffer":"創建延遲委單",
+  "accountMerge":"合并賬戶"
 
   
 
