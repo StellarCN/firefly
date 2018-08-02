@@ -926,7 +926,7 @@ export default {
             }catch(err){
               console.error(err)
             }
-            setTimout(()=>{
+            setTimeout(()=>{
               this.working = false
               this.sendsuccess = false
               this.loadingTitle = null
