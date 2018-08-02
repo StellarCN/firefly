@@ -332,27 +332,6 @@ export default {
     reload(){
       return this.getAccountInfo(this.account.address)
     },
-    updateFederationAndInflationInfo() {
-      // update home_domain and inflation_destination from horizon.
-      console.log("updateFederationAndInflationInfo")
-      console.log(this.accountData)
-      if (this.account.federationAddress !== this.accountData.inflation_destination || this.account.inflationAddress !== this.accountData.home_domain) {
-        let data = Object.assign({}, this.account, {
-          federationAddress: this.accountData.home_domain,
-          inflationAddress: this.accountData.inflation_destination
-        })
-        let params = {index: this.selectedAccountIndex, account: data}
-        console.log(params)
-        this.updateAccount(params)
-          .then(data => {
-            console.log("success")
-          })
-          .catch(err => {
-            console.log("failed")
-            console.error(err)
-          })
-      }
-    },
     /*
      *
      * 尝试修改的我不同的资产转换为xcn时的值

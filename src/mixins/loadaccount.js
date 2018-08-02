@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-31 09:07:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-07-05 17:54:51
+ * @Last Modified time: 2018-08-02 20:41:31
  * @License MIT 
  */
 import { mapState,mapActions,mapGetters } from 'vuex'
@@ -27,7 +27,8 @@ export default {
   computed: {
     ...mapState({
       account: state => state.accounts.selectedAccount,
-      accountDetails: state => state.account.data
+      accountDetails: state => state.account.data,
+      selectedAccountIndex: state　=> state.accounts.selected,
     }),
   },
   beforeMount () {
