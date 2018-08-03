@@ -23,8 +23,8 @@
           
           <div class="confirm-content">
             <div class="confirm-title">
-              <span v-if="appname">{{$t('Third.SendTo',[appname])}}</span>
-              <span v-else>{{$t('Third.SendTo',[target])}}</span>
+              <!-- <span v-if="appname">{{$t('Third.SendTo',[appname])}}</span> -->
+              <span>{{$t('Third.SendTo',[target])}}</span>
             </div>
             <div class="confirm-amount">{{Number(Number(amount).toFixed(7))}}&nbsp;&nbsp;{{asset_code}}</div>
             <div class="confirm-title" v-if="memo">
@@ -214,7 +214,17 @@ export default {
     }
   },
   beforeMount () {
-    this.fetchPaths()
+    if(this.pathPayment){
+      this.fetchPaths()
+    }else{
+      this.assets = [{
+        code: this.asset_code,
+        issuer: this.asset_issuer,
+        path:[]
+      }]
+      this.choosedIndex = 0
+      this.choosed = this.assets[0]
+    }
   },
   mounted () {
     //this.swiperInstance.controller.control = this.swiperContent
@@ -293,7 +303,7 @@ export default {
       this.loadingTitle = null
       this.loadingError = null
 
-      if(this.choosed.id === this.choosed.destId){
+      if(!this.pathPayment || this.choosed.id === this.choosed.destId){
         this.sendNoPath(seed)
       }else{
         this.sendByPath(seed)
@@ -310,10 +320,11 @@ export default {
         memo_type:  this.memo_type,
         memo_value: this.memo
       }
+      // alert('send no path:'+ JSON.stringify(params))
 
       this.sendAsset(params)
         .then(response=>{
-          this.sendsuccess()
+          this.sendSuccess()
         })
         .catch(err=>{
           this.sendFail(err)
@@ -325,9 +336,11 @@ export default {
       let record = this.choosed.origin
       let memo_type =  this.memo_type
       let memo = this.memo
-      this.sendPathPayment({seed,destination,record,memo_type,memo})
+      let params = {seed,destination,record,memo_type,memo}
+      // alert('Send By Path: ' + JSON.stringify(params))
+      this.sendPathPayment(params)
           .then(response=>{
-            this.sendsuccess()
+            this.sendSuccess()
           })
           .catch(err=>{
             this.sendFail(err)
