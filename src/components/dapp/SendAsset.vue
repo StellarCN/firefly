@@ -336,7 +336,7 @@ export default {
       let record = this.choosed.origin
       let memo_type =  this.memo_type
       let memo = this.memo
-      let params = {seed,destination,record,memo_type,memo}
+      let params = {seed,address: this.account.address, destination,record,memo_type,memo}
       // alert('Send By Path: ' + JSON.stringify(params))
       this.sendPathPayment(params)
           .then(response=>{

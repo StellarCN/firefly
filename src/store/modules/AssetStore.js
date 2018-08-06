@@ -30,7 +30,7 @@ const actions = {
     await dispatch('getAccountInfo',address)
     //await dispatch('getPayments', address)
   },
-  async sendPathPayment({dispatch, commit, rootState, rootGetters}, {seed,destination,record,memo_type,memo}){
+  async sendPathPayment({dispatch, commit, rootState, rootGetters}, {seed,address,destination,record,memo_type,memo}){
     let data = await sendByPathPayment(seed,destination,record,memo_type,memo)
     await dispatch('getAccountInfo',address)
   },
