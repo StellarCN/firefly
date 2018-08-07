@@ -23,10 +23,8 @@
             </v-layout>
           </div>
         </card>
-        <div class="loadmore textcenter" v-if="history.length > 0">
-          <v-progress-circular indeterminate color="primary" v-if="loadmore"></v-progress-circular>
-          <span v-if="!loadmore && hasmore " @click="loadmoreData">{{$t('LoadMore')}}</span>
-        </div>
+        <v-btn block flat v-if="hasmore" class="mt-1"
+          :loading="loadmore" color="primary" @click="loadmoreData">{{$t('LoadMore')}}</v-btn>
       </div>
     </scroll>
   </div>
