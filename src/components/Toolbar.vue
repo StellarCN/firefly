@@ -60,6 +60,7 @@
 
 <script>
 import { mapState, mapActions} from 'vuex'
+import  defaultsDeep  from 'lodash/defaultsDeep'
 export default {
   data(){
     return {
@@ -94,6 +95,7 @@ export default {
       account: state => state.accounts.selectedAccount,
       selectedAccountIndex: state => state.accounts.selected,
       accountData: state => state.accounts.accountData,
+      accountDetails: state => state.account.data,
     }),
   },
   props: {
@@ -130,7 +132,8 @@ export default {
       cleanAccount:'cleanAccount',
       choseAccount: 'changeAccount',
       choseAccountNoPwd: 'changeAccountNoPassword',
-      getAccountInfo: 'getAccountInfo'
+      getAccountInfo: 'getAccountInfo',
+      updateAccount:'updateAccount',
 
     }),
     changetheme(color){
@@ -150,48 +153,6 @@ export default {
     },
     resetPwdInput(){
       this.password = null
-    },
-    //取消输入密码，则直接无密码跳转账户
-    canclePwdInput(){
-      this.showPwdSheet=false
-      //this.choseAccountNoPwd({index:this.selectedIndex, account: this.selectedAccount.address})
-    },
-    //校验密码是否正确，不正确则提示，正确则跳转账户
-    okPwdInput(){
-      if(this.checkPwd)return
-      //无密码则报错
-      if(!this.password){
-        this.$toasted.error(this.$t('Error.PasswordWrong')) //请输入密码
-        return
-      }
-      //检验密码
-      this.checkPwd = true
-      let data = {
-        index: this.selectedIndex === null ? this.selectedAccountIndex : this.selectedIndex,
-        address: this.selectedAccount.address || this.account.address,
-        password: this.password
-      }
-      console.log(data)
-      this.choseAccount(data).then(account=>{
-        this.$toasted.show(this.$t('Info.ChangeAccountSuccess'));
-        this.showPwdSheet = false;
-        this.checkPwd = false;
-        this.password = null;
-        this.showaccounts = false;
-        this.getAccountInfo(this.account.address)
-      }).catch(err=>{
-        console.error('change account error')
-        console.error(err)
-        this.$toasted.error(this.$t('Error.PasswordWrong'))
-        this.checkPwd = false
-      })
-    },
-    isPage(path){
-      let url = this.$route.name
-      if(url.indexOf(path.name)===0){
-        return ' menuactive'
-      }
-      return ''
     },
     showMenu(){
       this.showmenu = !this.showmenu
@@ -214,9 +175,6 @@ export default {
       if(this.changeAccount){
         this.changeAccount(index,item)
       }
-    },
-    showPasswordLogin(){
-      this.showPwdSheet = true
     },
     //取消输入密码，则直接无密码跳转账户
     canclePwdInput(){
@@ -246,11 +204,39 @@ export default {
         this.password = null
         this.showaccounts = false
         
-        this.getAccountInfo(this.account.address)
+        return this.getAccountInfo(this.account.address)
 
-      }).catch(err=>{
-        console.error('change account error')
+      }).then(data => {
+        this.updateFederationAndInflationInfo()
+        this.$store.commit(ACCOUNT_IS_FUNDING)
+        //检查当前用户是否设置了通胀池
+        if(!this.accountDetails.inflation_destination){
+          this.inflation_unset = true
+          this.inflationUnSetDlg = true
+        }
+      })
+      .catch(err=>{
+        console.log('---------------------------info----error------------')
+        console.log(err)
         console.error(err)
+        console.log(err.response)
+
+        let msg = err.message
+        if (msg && 'Network Error' === msg) {
+          this.$toasted.error(this.$t('Account.NetworkError'))
+          return
+        }
+        if ((err.data && err.data.status === 404)||(err.response && err.response.status === 404)) {
+          // this.noticeText = this.$t('Error.AccountNotFund')
+          this.$store.commit('ACCOUNT_NOT_FUNDING')
+          // this.notice = true
+          //查看激活？？
+          this.accountNotFundDlg = true
+          //请理账户数据
+          this.$store.commit('CLEAN_ACCOUNT')
+          // this.$emit('unfunding')
+          return
+        }
         this.$toasted.error(this.$t('Error.PasswordWrong'))
         this.checkPwd = false
       })

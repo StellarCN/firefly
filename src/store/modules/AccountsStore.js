@@ -113,7 +113,7 @@ const actions = {
     commit(CHANGE_ACCOUNT, { index, address, password, accountdata:data} )
     dispatch('saveAccountsAction')
     dispatch('cleanAccount')
-    dispatch('getAccountInfo', address)
+    // dispatch('getAccountInfo', address)
   },
 
   /**

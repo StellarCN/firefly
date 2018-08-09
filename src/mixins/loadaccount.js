@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-31 09:07:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-08-06 21:01:19
+ * @Last Modified time: 2018-08-09 17:07:04
  * @License MIT 
  */
 import { mapState,mapActions,mapGetters } from 'vuex'
@@ -29,7 +29,13 @@ export default {
       account: state => state.accounts.selectedAccount,
       accountDetails: state => state.account.data,
       selectedAccountIndex: state　=> state.accounts.selected,
+      account_not_funding: state=> state.account.account_not_funding,
     }),
+  },
+  watch:{
+    account_not_funding(value){
+      this.accountNotFundDlg = value
+    }
   },
   created () {
     if (this.account.address) {
@@ -90,6 +96,8 @@ export default {
               this.$toasted.error(this.$t('Account.NetworkError'))
               return
             }
+            console.log('----------------------------------xxxx')
+            console.log(err.response)
             if ((err.data && err.data.status === 404)||(err.response && err.response.status === 404)) {
               // this.noticeText = this.$t('Error.AccountNotFund')
               this.$store.commit(ACCOUNT_NOT_FUNDING)
@@ -147,6 +155,9 @@ export default {
       //console.log(process)
       // return Promise.all([this.getAccountInfo(this.account.address)]) //,this.getPayments(this.account.address)])
       return this.getAccountInfo(this.account.address)
+    },
+    unfunding(){
+
     }
   },
 
