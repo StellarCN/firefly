@@ -185,7 +185,7 @@ export default {
           // localStorage.setItem('allowBack',"0")
           that.doTrust(config)
         }
-      },3000))
+      },300))
     },
     hideDapp(e){
       this.appInstance.hide()

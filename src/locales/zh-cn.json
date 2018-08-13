@@ -173,7 +173,7 @@
 
   "payment":"支付",
   "path_payment":"路径支付",
-  "create_account":"创建",
+  "create_account":"创建账户",
   "Receive":"接收",
   "Send":"发送",
   "Delete":"删除",
@@ -522,7 +522,10 @@
   "fund_free_title":"激活说明",
   "fund_used_up":"免费激活名额已经用完，您可向朋友收取1XLM完成账户激活。",
   "tickets":"工单",
-  "autofund_hint":"请稍等，正在进行激活操作！"
+  "autofund_hint":"请稍等，正在进行激活操作！",
+  "manageOffer":"操作委单",
+  "createPassiveOffer":"创建延迟委单",
+  "accountMerge":"合并账户"
 
  
  

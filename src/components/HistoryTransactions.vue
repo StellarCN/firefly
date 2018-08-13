@@ -5,13 +5,12 @@
             <v-flex  v-for="item in transactions" :key="item.id" xs12 class="transactions_itemstyle">
               <v-flex @click="showmoreinformation(item.id)">
                 <v-layout>
-                  <v-flex xs7 class="itemstyleo">{{item.temptype==='payment'?$t("Dispatcher"):item.temptype==='change_trust'?$t("ChangeTrust"):item.temptype==='manage_offer'?$t("Trade"):item.temptype==='set_options'?$t("Menu.Settings"):item.temptype==='create_account'?$t("AccountCreated"):item.temptype==='allow_trust'?$t("AllowTrust"):''}}</v-flex>
-                  <v-flex xs5 class="itemstylet" v-if="item.memo_type!='none'">{{$t("Memo")}}:{{getTransactionsMiniAddress(item.memo)}}</v-flex>
-                  <v-flex xs5 class="itemstylef" v-else>{{$t("Memo")}}:{{$t("No")}}</v-flex>
+                  <v-flex xs12 class="itemstyleth pl-2">TX:{{item.hash | shortaddress}}</v-flex>
                 </v-layout>
                 <v-layout>
                   <v-flex xs7 class="itemtime">{{getlocaltime_ymd(item.created_at)}}</v-flex>
-                  <v-flex xs5 class="itemstyleth">TX:{{getTransactionsMiniAddress(item.hash)}}</v-flex>
+                  <v-flex xs5 class="itemstylet" v-if="item.memo_type!='none'">{{$t("Memo")}}:{{getTransactionsMiniAddress(item.memo)}}</v-flex>
+                  <v-flex xs5 class="itemstylef" v-else>{{$t("Memo")}}:{{$t("No")}}</v-flex>
                 </v-layout>
               </v-flex>
             </v-flex>
@@ -272,6 +271,9 @@
                   </v-layout>
                 </div>
               </v-card>
+              <v-card class="pa-4 textcenter">
+                <v-progress-circular indeterminate color="primary"></v-progress-circular>
+              </v-card>
             </v-dialog>
       </div>
     </scroll>
@@ -341,7 +343,7 @@
                 console.log('----------transactions instance --')
                 console.log(response)
                 this.loadmore_count = this.transactions.length
-                this.transactions = this.transactions.concat(response.records)
+                this.transactions = this.transactions.concat(response ? response.records : [])
                  this.transactions = this.transactions.map(item=> Object.assign({temptype: ''},item))
                 this.transactionsInstance = response
                 console.log(this.transactions)
@@ -359,12 +361,13 @@
         }else{
             transactionsPage(this.account.address).then(response=>{
                 this.transactionsInstance = response
-                this.transactions = this.transactions.concat(response.records)
+                this.transactions = this.transactions.concat(response? response.records:[])
                 this.loading_flag  = false
                 this.transactions = this.transactions.map(item=> Object.assign({temptype: ''},item))
                 this.transactions.forEach((ele)=>{
                   ele.operations().then((response)=>{
-                    ele.temptype = response._embedded.records[0].type
+                    ele.temptype = (response._embedded&&response._embedded.records.length>0)
+                     ? response._embedded.records[0].type : ''
                   })
                 })
                 console.log(this.transactions)
@@ -393,9 +396,7 @@
                 let newDataObj =null
                 transactionOperations(ele.hash)
                   .then(response=>{
-                    console.log('---------------------xxxxxxxxxxxxxx---------------')
-                    console.log(response)
-                    newDataObj = response.records
+                    newDataObj = response ? response.records : []
                     this.transactionsOperations=this.transactionsOperations.concat(newDataObj)
                   })
              }

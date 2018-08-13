@@ -192,7 +192,7 @@ import QRScan from '@/components/QRScan'
 import { FFWScript, FFW_EVENT_TYPE_PAY,FFW_EVENT_TYPE_PATHPAYMENT,FFW_EVENT_TYPE_SIGN
    ,FFW_EVENT_TYPE_BACKUP,FFW_EVENT_TYPE_RECOVERY,FFW_EVENT_TYPE_TRUST,
    FFW_EVENT_TYPE_SIGNXDR, FFW_EVENT_TYPE_SHARE,
-   FFW_EVENT_TYPE_SCAN } from '@/api/ffw'
+   FFW_EVENT_TYPE_SCAN,FFW_EVENT_TYPE_BALANCES } from '@/api/ffw'
 import { signToBase64, verifyByBase64 } from '@/api/keypair'
 import isJson from '@/libs/is-json'
 import debounce from 'lodash/debounce'
@@ -242,6 +242,7 @@ export default {
       myapps: state => state.app.myapps,
       locale: state => state.app.locale,
       apps: state => state.dapps || [],
+      balances: state=> state.account.data.balances,
     }),
   },
   beforeDestroy(){
@@ -267,7 +268,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['addMyApp','loadDApps']),
+    ...mapActions(['addMyApp','loadDApps','getAccountInfo']),
     fetchApps(){
       // this.working = true
       this.err = null
@@ -374,33 +375,29 @@ export default {
         // console.log('-----------get message ---- ')
         // alert(JSON.stringify(e))
         let type = e.data.type
+        that.appEventType = e.data.type;
+        that.appEventData = e.data
         if(type === FFW_EVENT_TYPE_PAY){
           that.doPayEvent(e)
         }else if(type === FFW_EVENT_TYPE_PATHPAYMENT){
           that.doPathPaymentEvent(e)
         }else if(type === FFW_EVENT_TYPE_SIGN){
-          that.appEventType = e.data.type
-          that.appEventData = e.data
           that.doSign(e)
-        }else if(type == FFW_EVENT_TYPE_SCAN){
-          that.appEventType = e.data.type;
-          that.appEventData = e.data
+        }else if(type === FFW_EVENT_TYPE_SCAN){
           that.showScanner = true;
           that.doQRScanEvent(e);
-          
-
-        }else if(type == FFW_EVENT_TYPE_SHARE){
-          that.appEventType = e.data.type;
-          that.appEventData = e.data
+        }else if(type === FFW_EVENT_TYPE_SHARE){
           that.doShare(e);
         // }else if(type === 'after_fund'){
         //   that.doTrust(e.data.data)
-        }else{  
-          that.appEventType = e.data.type
-          that.appEventData = e.data
+        }else if(type === FFW_EVENT_TYPE_BALANCES){
+          //查询账户余额
+          that.getBalances()
+        }else{
           that.hideDapp()
+          //that.doCallbackEvent(that.callbackData('fail','unknown event type'))
         }
-      },500))
+      },300))
     },
     hideDapp(e){
       this.appInstance.hide()
@@ -453,6 +450,15 @@ export default {
         this.doCallbackEvent(this.callbackData('fail','no data to sign'))
       }
     },
+    getBalances(e){
+      this.getAccountInfo(this.account.address)
+        .then(data=>{
+          this.doCallbackEvent(this.callbackData('success', 'success', this.balances))
+        })
+        .catch(err=>{
+          this.doCallbackEvent(this.callbackData('fail',err.message))
+        })
+    },
     doPathPaymentEvent(e){
       try{
         this.appInstance.hide()
@@ -470,7 +476,8 @@ export default {
       if(this.appEventData && this.appEventData.callback){
         try{
           let cb = this.appEventData.callback
-          let code = `FFW.callback("${cb}",{code: "${data.code}",message:"${data.message}",data:"${data.data}"})`
+          let d = JSON.stringify(data)
+          let code = `FFW.callback("${cb}",${d})`
           console.log('===============callback------event---')
           console.log(code)
           this.appInstance.executeScript({

@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-31 09:07:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-07-05 17:54:51
+ * @Last Modified time: 2018-08-09 17:07:04
  * @License MIT 
  */
 import { mapState,mapActions,mapGetters } from 'vuex'
@@ -27,10 +27,17 @@ export default {
   computed: {
     ...mapState({
       account: state => state.accounts.selectedAccount,
-      accountDetails: state => state.account.data
+      accountDetails: state => state.account.data,
+      selectedAccountIndex: state　=> state.accounts.selected,
+      account_not_funding: state=> state.account.account_not_funding,
     }),
   },
-  beforeMount () {
+  watch:{
+    account_not_funding(value){
+      this.accountNotFundDlg = value
+    }
+  },
+  created () {
     if (this.account.address) {
       this.fetchData()
       this.setupFetchAccountInterval()
@@ -61,6 +68,7 @@ export default {
     },
 
     fetchData() {
+      console.log('----------fetch data------' + this.account.address)
       if (this.account.address) {
         this.load()
           .then(data => {
@@ -82,16 +90,15 @@ export default {
 
           })
           .catch(err => {
-            console.log("errorhere");
             //this.cleanAccount()
-            console.log(err.message)
             let msg = err.message
             if (msg && 'Network Error' === msg) {
               this.$toasted.error(this.$t('Account.NetworkError'))
               return
             }
-            console.error(err)
-            if (err.data && err.data.status === 404) {
+            console.log('----------------------------------xxxx')
+            console.log(err.response)
+            if ((err.data && err.data.status === 404)||(err.response && err.response.status === 404)) {
               // this.noticeText = this.$t('Error.AccountNotFund')
               this.$store.commit(ACCOUNT_NOT_FUNDING)
               // this.notice = true
@@ -99,11 +106,6 @@ export default {
               this.accountNotFundDlg = true
               //请理账户数据
               this.$store.commit(CLEAN_ACCOUNT)
-              console.log('---after clean account---')
-
-
-              
-              
             }
             // this.snackbarText = this.$t('Error.AccountNotFund')
             // this.snackbarColor = 'primary'
@@ -151,7 +153,11 @@ export default {
       let address = this.account.address
       // let process = [this.getAccountInfo(address),this.getPayments(address)]
       //console.log(process)
-      return Promise.all([this.getAccountInfo(this.account.address)]) //,this.getPayments(this.account.address)])
+      // return Promise.all([this.getAccountInfo(this.account.address)]) //,this.getPayments(this.account.address)])
+      return this.getAccountInfo(this.account.address)
+    },
+    unfunding(){
+
     }
   },
 

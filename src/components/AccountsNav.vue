@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com
  * @Date: 2018-01-30 16:58:05
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-07-02 12:39:14
+ * @Last Modified time: 2018-08-09 17:22:22
  * @License: MIT
  */
 <template>
@@ -94,6 +94,7 @@
 
 <script>
 import { mapState, mapActions} from 'vuex'
+import  defaultsDeep  from 'lodash/defaultsDeep'
 export default {
   data(){
     return {
@@ -109,6 +110,7 @@ export default {
       account: state => state.accounts.selectedAccount,
       selectedAccountIndex: state => state.accounts.selected,
       accountData: state => state.accounts.accountData,
+      accountDetails: state => state.account.data,
     }),
   },
   props:{
@@ -134,7 +136,8 @@ export default {
       cleanAccount:'cleanAccount',
       choseAccount: 'changeAccount',
       choseAccountNoPwd: 'changeAccountNoPassword',
-      getAccountInfo: 'getAccountInfo'
+      getAccountInfo: 'getAccountInfo',
+      updateAccount:'updateAccount',
     }),
     redirect(url){
       this.$router.push(url)
@@ -169,14 +172,57 @@ export default {
         this.showPwdSheet = false;
         this.checkPwd = false;
         this.password = null;
-        this.getAccountInfo(this.account.address);
-
-      }).catch(err=>{
-        console.error('change account error')
+        return this.getAccountInfo(this.account.address);
+      }).then(data => {
+        this.updateFederationAndInflationInfo()
+        this.$store.commit('ACCOUNT_IS_FUNDING')
+      })
+      .catch(err=>{
+        console.log('---------------------------info----error------------')
+        console.log(err)
         console.error(err)
+        console.log(err.response)
+
+        let msg = err.message
+        if (msg && 'Network Error' === msg) {
+          this.$toasted.error(this.$t('Account.NetworkError'))
+          return
+        }
+        if ((err.data && err.data.status === 404)||(err.response && err.response.status === 404)) {
+          // this.noticeText = this.$t('Error.AccountNotFund')
+          this.$store.commit('ACCOUNT_NOT_FUNDING')
+          //请理账户数据
+          this.$store.commit('CLEAN_ACCOUNT')
+          return
+        }
         this.$toasted.error(this.$t('Error.PasswordWrong'))
         this.checkPwd = false
       })
+    },
+    updateFederationAndInflationInfo() {
+      // update home_domain and inflation_destination from horizon.
+      console.log("updateFederationAndInflationInfo")
+      console.log(this.accountData)
+      if (this.account.inflationAddress !== this.accountDetails.inflation_destination 
+        || this.account.federationAddress !== this.accountDetails.home_domain) {
+        let data = defaultsDeep({}, this.account, {
+          federationAddress: this.accountDetails.home_domain,
+          inflationAddress: this.accountDetails.inflation_destination
+        })
+        let params = {
+          index: this.selectedAccountIndex,
+          account: data
+        }
+        console.log(params)
+        this.updateAccount(params)
+          .then(data => {
+            console.log("success")
+          })
+          .catch(err => {
+            console.log("failed")
+            console.error(err)
+          })
+      }
     },
     switchShowAccounts(){
       this.showaccounts = !this.showaccounts

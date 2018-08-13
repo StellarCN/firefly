@@ -33,9 +33,9 @@ export default {
           RESOLUTION_HOURS: {
             "week": 16800,//100周
             "day": 2400,//100天
-            "hour": 240,//10天
-            "15min": 60,//5天
-            "1min": 60
+            "hour": 480,//10天
+            "15min": 120,//5天
+            "1min": 120
         },
             
             id: null,//元素主键
@@ -43,8 +43,8 @@ export default {
             opt: null,
             colors: ['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'],
             
-            resolution_key: '15min',
-            resolution: RESOLUTION_15MIN,
+            resolution_key: 'hour',
+            resolution: RESOLUTION_1HOUR,
 
             dates:[],//日期
             volumes: [],//成交量

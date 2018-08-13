@@ -58,7 +58,8 @@ import TrustLine from '@/components/dapp/TrustLine'
 import BackUpData from '@/components/dapp/BackUpData'
 import SignXDR from '@/components/dapp/SignXDR'
 import { FFWScript, FFW_EVENT_TYPE_PAY,FFW_EVENT_TYPE_PATHPAYMENT,FFW_EVENT_TYPE_SIGN
-   ,FFW_EVENT_TYPE_BACKUP,FFW_EVENT_TYPE_RECOVERY,FFW_EVENT_TYPE_TRUST,FFW_EVENT_TYPE_SIGNXDR } from '@/api/ffw'
+   ,FFW_EVENT_TYPE_BACKUP,FFW_EVENT_TYPE_RECOVERY,FFW_EVENT_TYPE_TRUST,
+   FFW_EVENT_TYPE_SIGNXDR,FFW_EVENT_TYPE_BALANCES } from '@/api/ffw'
 import { signToBase64, verifyByBase64 } from '@/api/keypair'
 import isJson from '@/libs/is-json'
 import debounce from 'lodash/debounce'
@@ -94,6 +95,7 @@ export default {
       allcontacts: state => state.app.contacts||[],
       myaddresses: state => state.app.myaddresses||[],
       myapps: state => state.app.myapps,
+      balances: state=> state.account.data.balances,
     }),
   },
   watch:{
@@ -123,7 +125,7 @@ export default {
 
   },
   methods: {
-    ...mapActions(['addMyApp']),
+    ...mapActions(['addMyApp','getAccountInfo']),
     back(){
       this.$router.back()
     },
@@ -202,20 +204,22 @@ export default {
         console.log(JSON.stringify(e))
        // alert(JSON.stringify(e))
         let type = e.data.type
+        that.appEventType = e.data.type
+        that.appEventData = e.data
         if(type === FFW_EVENT_TYPE_PAY){
           this.doPayEvent(e)
         }else if(type === FFW_EVENT_TYPE_PATHPAYMENT){
           that.doPathPaymentEvent(e)
         }else if(type === FFW_EVENT_TYPE_SIGN){
-          that.appEventType = e.data.type
-          that.appEventData = e.data
           that.doSign(e)
-        }else{  
-          that.appEventType = e.data.type
-          that.appEventData = e.data
-          that.hideDapp()
+        }else if(type === FFW_EVENT_TYPE_BALANCES){
+          //查询账户余额
+          that.getBalances()
+        }else{
+          //that.hideDapp(),未知事件
+          that.doCallbackEvent(that.callbackData('fail','unknown event type'))
         }
-      },3000))
+      },300))
     },
     hideDapp(e){
       this.appInstance.hide()
@@ -258,6 +262,15 @@ export default {
         console.error(err)
         //alert('error:'+err.message)
       }
+    },
+    getBalances(e){
+      this.getAccountInfo(this.account.address)
+        .then(data=>{
+          this.doCallbackEvent(this.callbackData('success', 'success', this.balances))
+        })
+        .catch(err=>{
+          this.doCallbackEvent(this.callbackData('fail',err.message))
+        })
     },
     doCallbackEvent(data){
       console.log('-----------docallback event---' + JSON.stringify(this.appEventData))

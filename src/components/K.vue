@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-01-25 11:53:34 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-07-19 09:30:42
+ * @Last Modified time: 2018-08-01 15:30:24
  * @License: MIT 
  */
 <template>
@@ -108,9 +108,9 @@ export default {
             opt: null,
             colors: ['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'],
             
-            resolution_key: '15min',
-            resolution: RESOLUTION_15MIN,
-            resolutionIndex: "3",
+            resolution_key: 'hour',
+            resolution: RESOLUTION_1HOUR,
+            resolutionIndex: "2",
 
             dates:[],//日期
             volumes: [],//成交量

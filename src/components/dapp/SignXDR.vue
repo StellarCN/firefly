@@ -9,11 +9,6 @@
       <v-bottom-sheet v-model="showDlg" persistent dark>
         <div class="sign-xdr-content">
           <div class="menu-head">
-            <div class="menu-row">
-              <div class=" menu-row-1">
-                <v-icon class="avatar iconfont icon-erweima" color="primary"></v-icon>
-              </div>
-            </div>
             <div class="menu-row menu-row-2">
               <div class="name">{{account.name}}</div>
               <div class="address">{{account.address | shortaddress}}</div>
@@ -26,36 +21,27 @@
               <span>{{$t('Sign')}}({{appname}})</span>
             </div>
 
-            <div class="tx-opt-msg pl-3">
-              {{message}} <span class="confirm-memo">({{tx.operations.length}})</span>
-            </div>
+            <!-- <div class="tx-opt-msg pl-3">
+              {{message}}
+            </div> -->
 
             <!---解析operation-->
             <div class="tx-opt-content" v-if="tx">
-              <!--手续费，序列号，有效时间，备注，业务操作数-->
-              <div>
-                <span class="confirm-title">{{$t('DW.Fee')}}</span>
-                <span class="confirm-memo">{{fee}}</span>
+             
+
+              <div class="tx-opts ml-2 mr-2 pl-1 pr-1">
+                <div class="flex-row tx-opt-item pt-1 pb-1" v-for="(opt,index) in tx.operations" :key="index">
+
+                  <div class="flex1 textcenter pl-1">{{index+1}}</div>
+                  <div class="flex6 pl-1 pr-1" v-text="optText(opt)"></div>
+
+                </div>
               </div>
 
-              <div class="tx-opts">
-                <div class="flex-row tx-opt-item" v-for="(opt,index) in tx.operations" :key="index">
-                  <div class="flex1 textcenter">{{index+1}}</div>
-                  <div class="flex6" v-if="opt.type === 'payment'">
-                    <span class="pa-1 tx-opt-item-type textcenter">{{$t(opt.type)}}</span>
-                    <span class="pa-1">{{opt.amount}}{{opt.asset.code}}</span>
-                    <span class="pa-1">{{$t('DestinationAddress')}}:{{opt.destination | miniaddress}}</span>
-                  </div>
-                  <div class="flex6" v-if="opt.type === 'allowTrust'">
-                    <span class="pa-1 tx-opt-item-type">{{$t(opt.type)}}</span>
-                    <span class="pa-1">{{opt.assetCode}}</span>
-                  </div>
-                  <div class="flex6" v-if="opt.type === 'changeTrust'">
-                    <span class="pa-1 tx-opt-item-type">{{$t(opt.type)}}</span>
-                    <span class="pa-1">{{opt.line.code}}({{opt.line.issuer | miniaddress}})</span>
-                    <span class="pa-1">{{$t('limit')}}:{{opt.limit}}</span>
-                  </div>
-                </div>
+               <!--手续费，序列号，有效时间，备注，业务操作数-->
+              <div class="textright">
+                <span class="confirm-title">{{$t('DW.Fee')}}</span>
+                <span class="confirm-memo pr-4">{{fee}}</span>
               </div>
 
             </div>
@@ -82,7 +68,7 @@ import { mapState, mapActions, mapGetters} from 'vuex'
 import Card from '@/components/Card'
 import Loading from '@/components/Loading'
 import  defaultsDeep  from 'lodash/defaultsDeep'
-import { shortAddress,canSend,sendByPathPayment, send } from '@/api/account'
+import { shortAddress,miniAddress, canSend,sendByPathPayment, send } from '@/api/account'
 import { isNativeAsset } from '@/api/assets'
 import { readAccountData } from '@/api/storage'
 import { xdrFromTransactionEnvelope } from '@/api/xdr'
@@ -113,6 +99,7 @@ export default {
    computed:{
     ...mapState({
       account: state => state.accounts.selectedAccount,
+      address: state => state.accounts.selectedAccount.address,
       accountData: state => state.accounts.accountData,
       islogin: state => (state.accounts.accountData.seed ? true : false),
       assethosts: state => state.asset.assethosts,
@@ -160,6 +147,51 @@ export default {
       // alert('after --signxdr--' + data)
       this.$emit('success',data)
 
+    },
+    optText(opt){//返回说明
+      // alert('opt text:'+ JSON.stringify(opt))
+      let result = ''
+      if(opt.type === 'payment'){
+        if(opt.destination === this.address){
+          result += this.$t('Receive') + ' ' + opt.amount + opt.asset.code
+        }else{
+          result += this.$t('payment') + ' ' + opt.amount + opt.asset.code + ',' + this.$t('DestinationAddress') +':'+ miniAddress(opt.destination)
+        }
+      }else if(opt.type === 'createAccount'){
+        result += this.$t('payment') + ' ' + opt.amount + opt.asset.code + ' ' + this.$t('create_account') +':'+ miniAddress(opt.destination)
+      }else if(opt.type === 'pathPayment'){
+        result += this.$t('path_payment')+ ' [' + opt.sendMax + opt.sendAsset.code 
+          + '-' + opt.destAmount + opt.destAsset.code + '],' 
+          + this.$t('DestinationAddress') + ':' + miniAddress(opt.destination)
+      }else if(opt.type === 'manageOffer'){
+        result += this.$t('manageOffer') + ' ' 
+          + this.$t('Trade.Sell') + opt.amount +  opt.selling.code + ',' 
+          + this.$t('Trade.Price') + opt.price + opt.buying.code
+      }else if(opt.type === 'createPassiveOffer'){
+        result += this.$t('createPassiveOffer')
+            + this.$t('Trade.Sell') + opt.amount +  opt.selling.code + ',' 
+            + this.$t('Trade.Price') + opt.price + opt.buying.code
+      }else if(opt.type === 'setOptions'){
+        result += 'setOptions:'
+        if(opt.inflationDest){
+          result += this.$t('Inflation')+'='+opt.inflationDest+' '
+        }
+        if(opt.homeDomain){
+          result += 'home_domain='+opt.homeDomain
+        }
+      }else if(opt.type === 'accountMerge'){
+        result += this.$t('accountMerge')+':' + miniAddress(opt.destination)
+      }else if(opt.type === 'inflation'){
+        result = 'inflation'
+      }else if(opt.type === 'manageData'){
+        result += 'manageData:[' + opt.name +'='+opt.value + ']'
+      }else if(opt.type === 'allowTrust'){
+        result += this.$t(opt.type) + opt.assetCode
+      }else if(opt.type === 'changeTrust'){
+        result += this.$t(opt.type) + opt.line.code + '(' + miniAddress(opt.line.issuer) + ')'
+          + ' ' + this.$t('limit') + ':' + opt.limit
+      }
+      return result
     }
   },
   components: {
@@ -186,9 +218,9 @@ export default {
   background: $primarycolor.gray
   opacity: .8
   position: fixed
-  bottom: 11rem
-  bottom: calc(11rem+constant(safe-area-inset-bottom))
-  bottom: calc(11rem+env(safe-area-inset-bottom))
+  bottom: 0
+  bottom: constant(safe-area-inset-bottom)
+  bottom: env(safe-area-inset-bottom)
   right: 0
   left: 0
   top: 0
@@ -197,16 +229,6 @@ export default {
   z-index: 9
 .confirm-dlg
   background: $secondarycolor.gray
-  height: 11rem
-  height: calc(11rem+constant(safe-area-inset-bottom))
-  height: calc(11rem+env(safe-area-inset-bottom))
-  position: fixed
-  bottom: 0
-  padding: 0
-  padding-bottom: constant(safe-area-inset-bottom)
-  paddingbottom: env(safe-area-inset-bottom)
-  right: 0
-  left: 0
   opacity: 1
 .dlg-title
   color: $primarycolor.green
@@ -334,8 +356,14 @@ export default {
 .tx-opts
   height: 3rem
   overflow-y: auto
+  border-bottom: 1px solid #999999
+  border-top: 1px solid #999999
 .tx-opt-item
   color: $secondarycolor.font
+  border-bottom: 1px solid #999999
+  &:last-child
+    border-bottom: 0px
+
 .sign-xdr-content
   background: $secondarycolor.gray
   padding-top: 8px

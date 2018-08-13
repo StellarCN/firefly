@@ -22,6 +22,10 @@
           <div class="textcenter appversion">
             {{$t('Version')}}:{{appversion}}<span v-if="isDebug">&nbsp;DEBUG</span>
           </div>
+          <div class="textcenter appversion" v-if="currentWebVersion">
+            {{currentWebVersion}}
+          </div>
+          
         </div>
       </card>
       <card class="detail-card" padding="10px 10px" margin="10px 0 10px 0">
@@ -99,13 +103,19 @@ export default {
       working: false,
       counter: 0,
       isDebug: DEBUG,
+      currentWebVersion:null,
     };
   },
-  beforeDestroy () {
-    
+  created(){
+    this.getReleaseVersion()
+    if(chcp){
+      chcp.getVersionInfo((err,data) => {
+        this.currentWebVersion = data.currentWebVersion
+      });
+    }
   },
   mounted() {
-   this.getReleaseVersion()
+   
    document.addEventListener('chcp_nothingToUpdate',()=>{
      this.$toasted.show(this.$t('NothingToInstall'))
    }, false)

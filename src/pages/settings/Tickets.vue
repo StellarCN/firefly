@@ -137,7 +137,7 @@ export default {
        if(type === FFW_EVENT_TYPE_SIGN){
           that.doSign(e)
         }
-      },3000))
+      },300))
     },
     hideDapp(e){
       this.appInstance.hide()
