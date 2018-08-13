@@ -176,11 +176,22 @@ export default {
         this.changeAccount(index,item)
       }
     },
+    isPage(path){	
+      let url = this.$route.name	
+      if(url.indexOf(path.name)===0){	
+        return ' menuactive'	
+      }	
+      return ''	
+    },
+     showPasswordLogin(){	
+      this.showPwdSheet = true	
+    },
     //取消输入密码，则直接无密码跳转账户
     canclePwdInput(){
       this.showPwdSheet=false
       //this.choseAccountNoPwd({index:this.selectedIndex, account: this.selectedAccount.address})
     },
+
     //校验密码是否正确，不正确则提示，正确则跳转账户
     okPwdInput(){
       if(this.checkPwd)return
