@@ -248,10 +248,35 @@ export default {
           // this.$emit('unfunding')
           return
         }
-        this.$toasted.error(this.$t('Error.PasswordWrong'))
         this.checkPwd = false
       })
     },
+     updateFederationAndInflationInfo() {
+      // update home_domain and inflation_destination from horizon.
+      console.log("updateFederationAndInflationInfo")
+      console.log(this.accountData)
+      if (this.account.inflationAddress !== this.accountDetails.inflation_destination 
+        || this.account.federationAddress !== this.accountDetails.home_domain) {
+        let data = defaultsDeep({}, this.account, {
+          federationAddress: this.accountDetails.home_domain,
+          inflationAddress: this.accountDetails.inflation_destination
+        })
+        let params = {
+          index: this.selectedAccountIndex,
+          account: data
+        }
+        console.log(params)
+        this.updateAccount(params)
+          .then(data => {
+            console.log("success")
+          })
+          .catch(err => {
+            console.log("failed")
+            console.error(err)
+          })
+      }
+    },
+
   }
 }
 </script>
