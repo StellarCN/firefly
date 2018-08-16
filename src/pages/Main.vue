@@ -184,7 +184,8 @@ export default {
               return
             }
             console.error(err)
-            if (err.data && err.data.status === 404) {
+            if ((err.data && err.data.status === 404 ) ||
+         (err.response && err.response.status === 404)) {
               this.noticeText = this.$t('Error.AccountNotFund')
               this.$store.commit(ACCOUNT_NOT_FUNDING)
               this.notice = true
