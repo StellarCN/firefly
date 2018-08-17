@@ -36,6 +36,14 @@ export function getDepositAndWithdrawRecords(account, asset_code, asset_issuer){
   return axios.get(uri)
 }
 
+export function getDepositAndWithdrawRecordsV2(dw_type='deposit', account, asset_code, asset_issuer){
+  if(account === null || asset_code  === null || asset_issuer === null)throw new Error('params invalid')
+  let t = new Date().getTime()
+  let uri = `${host}/api/dwrecords_v2?r=${t}&dw_type=${dw_type}&account=${account}&asset_code=${asset_code}&asset_issuer=${asset_issuer}`
+  return axios.get(uri)
+}
+
+
 /**
  * 查询账户的委单信息
  * @param { String } account 账户地址
