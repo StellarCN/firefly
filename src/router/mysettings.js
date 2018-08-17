@@ -66,6 +66,11 @@ export default {
         name: 'Tickets',
         component: resolve => require(['../pages/settings/Tickets'], resolve)
       },
+      {
+        path: 'login',
+        name: 'Login',
+        component: resolve => require(['../pages/Login'], resolve)
+      },
      
     ]
   }

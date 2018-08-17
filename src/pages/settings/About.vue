@@ -65,6 +65,12 @@
                 <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
               </div>
             </div>
+            <div class="row" v-if="isDebug" @click="toScanLogin">
+              <div class="label">Scan to Login</div>
+              <div class="value">
+                <i class="material-icons vcenter f-right">keyboard_arrow_right</i>
+              </div>
+            </div>
 
             <div class="field_btn">
               <v-btn :loading="working" class="error btn_ok" @click.stop="checkForUpdates">{{$t('CheckForUpdates')}}</v-btn>
@@ -181,6 +187,9 @@ export default {
     toDebug(){
       //window.location.href = 'http://192.168.2.253:3000'
       window.open('http://192.168.2.253:3000', "_self");
+    },
+    toScanLogin(){
+      this.$router.push({name: 'Login'})
     }
   },
   components: {
