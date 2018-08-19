@@ -1,16 +1,14 @@
 <template>
   <vue-qr
-        :text="text" 
-        :autoColor='true'  
-        dotScale='1' 
-        :size="size" 
-        :logoSrc="logo" 
+        :value="text" 
         :callback="qrcallback"
-        margin="10"></vue-qr>
+        :options="{ size }"></vue-qr>
+  
 </template>
 
 <script>
-import VueQR from '@/libs/vue-qr/main'
+// import VueQR from '@/libs/vue-qr/main'
+import VueQR from '@/libs/qrcode'
 let GREEN = 'green', RED = 'red'
 export default {
   data(){

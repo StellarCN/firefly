@@ -1,6 +1,6 @@
 const uuidv4 = require('uuid/v4')
 import { toBoolean } from './util.js'
-import AwesomeQRCode from 'awesome-qr'
+let AwesomeQR = require('awesome-qr');
 export default {
   props: [
     'text',
@@ -24,7 +24,7 @@ export default {
   name: 'vue-qr',
   data() {
     return {
-      uuid: ''
+      uuid: '',
     }
   },
   watch: {
@@ -80,7 +80,7 @@ export default {
     },
     render(img, logoImg) {
       const that = this
-      new AwesomeQRCode().create({
+      new AwesomeQR().create({
         text: that.text,
         size: that.size || 200,
         margin: that.margin || 20,
@@ -98,10 +98,20 @@ export default {
         binarize: toBoolean(that.binarize) || false,
         binarizeThreshold: that.binarizeThreshold || 128,
         callback: function(dataURI) {
-          that.callback && that.callback(dataURI)
+          document.getElementById(that.uuid).src = that.arrayBufferToBase64(dataURI)
+          that.callback && that.callback(that.arrayBufferToBase64(dataURI))
         },
         bindElement: that.uuid
       })
+    },
+    arrayBufferToBase64( buffer ) {
+      var binary = '';
+      var bytes = new Uint8Array( buffer );
+      var len = bytes.byteLength;
+      for (var i = 0; i < len; i++) {
+          binary += String.fromCharCode( bytes[ i ] );
+      }
+      return  'data:image/png;base64,' + window.btoa( binary );
     }
   }
 }

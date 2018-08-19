@@ -77,6 +77,9 @@ module.exports = {
       {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
         loader: 'base64-font-loader'
+      } ,{
+        test: /\.node$/,
+        use: 'node-loader'
       }
     ],
     loaders: [
