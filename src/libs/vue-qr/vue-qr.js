@@ -1,6 +1,6 @@
 const uuidv4 = require('uuid/v4')
 import { toBoolean } from './util.js'
-let AwesomeQR = require('awesome-qr');
+let AwesomeQR = require('../awesome-qr/awesome-qr');
 export default {
   props: [
     'text',
@@ -90,15 +90,15 @@ export default {
         backgroundDimming: that.backgroundDimming || 'rgba(0,0,0,0)',
         logoImage: logoImg,
         logoScale: that.logoScale || 0.2,
-        logoMargin: that.logoMargin || 0,
+        logoMargin: that.logoMargin || 6,
         logoCornerRadius: that.logoCornerRadius || 8,
-        whiteMargin: toBoolean(that.whiteMargin) || true,
+        whiteMargin: false,
         dotScale: that.dotScale || 0.35,
         autoColor: toBoolean(that.autoColor) || true,
         binarize: toBoolean(that.binarize) || false,
         binarizeThreshold: that.binarizeThreshold || 128,
         callback: function(dataURI) {
-          document.getElementById(that.uuid).src = that.arrayBufferToBase64(dataURI)
+          //document.getElementById(that.uuid).src = that.arrayBufferToBase64(dataURI)
           that.callback && that.callback(that.arrayBufferToBase64(dataURI))
         },
         bindElement: that.uuid

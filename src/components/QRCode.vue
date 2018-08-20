@@ -1,14 +1,25 @@
 <template>
-  <vue-qr
+  <!-- <vue-qr
         :value="text" 
         :callback="qrcallback"
-        :options="{ size }"></vue-qr>
+        :options="{ size }"></vue-qr> -->
+    <div :style="{textAlign:'center',background:'#FFFFFF',
+      width:size+20+'px', height: size+20+'px', margin: '0 auto', padding:'10px 10px'}">
+       <vue-qr
+        :text="text" 
+        :autoColor='true'  
+        dotScale='1' 
+        :size="size" 
+        :logoSrc="logo" 
+        :callback="qrcallback"
+        margin="0"></vue-qr>
+    </div>
   
 </template>
 
 <script>
-// import VueQR from '@/libs/vue-qr/main'
-import VueQR from '@/libs/qrcode'
+import VueQR from '@/libs/vue-qr/main'
+// import VueQR from '@/libs/qrcode'
 let GREEN = 'green', RED = 'red'
 export default {
   data(){
