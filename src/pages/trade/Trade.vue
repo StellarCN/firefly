@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-05 10:51:54 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-07-06 12:27:18
+ * @Last Modified time: 2018-08-20 11:34:34
  * @License MIT 
  */
 <template>
@@ -152,8 +152,8 @@ export default {
           return asset.code ===item.code && asset.issuer === item.issuer
         }
       })
-      if(data.length === 0)return _.defaultsDeep({balance: 0}, asset)
-      return _.defaultsDeep({}, data[0])
+      if(data.length === 0)return defaultsDeep({balance: 0}, asset)
+      return defaultsDeep({}, data[0])
     },
     choseTradePair({index,tradepair}){//选择交易对
       this.$nextTick(()=>{

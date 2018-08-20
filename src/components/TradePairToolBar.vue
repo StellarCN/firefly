@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-02-08 15:40:36 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-07-02 18:06:02
+ * @Last Modified time: 2018-08-20 11:36:30
  * @License MIT 
  */
 
@@ -76,6 +76,7 @@
 <script>
 import { mapState, mapActions, mapGetters} from 'vuex'
 import StatusBar from './StatusBar.vue';
+import  defaultsDeep  from 'lodash/defaultsDeep'
 
 export default {
   data(){
@@ -150,14 +151,14 @@ export default {
       this.$emit('choseTradePair',data)
     },
     nativeBalance(){
-      let d = _.defaultsDeep({}, this.balances.filter(item=>isNativeAsset(item))[0])
+      let d = defaultsDeep({}, this.balances.filter(item=>isNativeAsset(item))[0])
       let t = this.native.balance - this.reserve - this.base_reserve - 0.0001
       if(t < 0 ) t = 0 
       d.balance = Number(t.toFixed(7))
       return d;
     },
     assetBalance(asset){
-      return _.defaultsDeep({}, this.balances.filter(item=> item.code === asset.code && item.issuer === asset.issuer)[0])
+      return defaultsDeep({}, this.balances.filter(item=> item.code === asset.code && item.issuer === asset.issuer)[0])
     },
     doSwitchTradePair(){
       this.switchSelectedTradePair()
