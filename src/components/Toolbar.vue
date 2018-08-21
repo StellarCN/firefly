@@ -219,7 +219,7 @@ export default {
 
       }).then(data => {
         this.updateFederationAndInflationInfo()
-        this.$store.commit(ACCOUNT_IS_FUNDING)
+        this.$store.commit('ACCOUNT_IS_FUNDING')
         //检查当前用户是否设置了通胀池
         if(!this.accountDetails.inflation_destination){
           this.inflation_unset = true
