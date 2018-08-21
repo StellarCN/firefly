@@ -168,7 +168,6 @@ export default {
     },
     history(){
       console.log('--------payments records')
-      console.log(this.paymentsRecords)
       let data = []
       if(!this.paymentsRecords){
         return data;
@@ -218,7 +217,10 @@ export default {
     swipeAsset () {
       console.log('-------------')
       console.log(this.swiperTop)
-      this.selectAsset(this.balances[this.swiperTop.activeIndex])
+      let asset = this.balances[this.swiperTop.activeIndex]
+      if(asset){
+        this.selectAsset(asset)
+      }
     },
     back(){
       this.$router.push({name:"MyAssets"})
