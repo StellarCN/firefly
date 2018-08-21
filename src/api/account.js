@@ -144,7 +144,8 @@ export function send(seed,pubkey,target,assetdata,amount,memo_type,memo_value,ba
       .catch(err=>{
         if('Error.NotEnoughAsset' === err.message)throw err
         //账户状态是404才会调用创建账户功能
-        if(err.data && err.data.status === 404){
+        if((err.data && err.data.status === 404 ) ||
+         (err.response && err.response.status === 404)){
           //新建用户只能发XLM
           if(!isNativeAsset(asset)){
             throw new Error('Error.UnFundNeedXLM')

@@ -176,11 +176,22 @@ export default {
         this.changeAccount(index,item)
       }
     },
+    isPage(path){	
+      let url = this.$route.name	
+      if(url.indexOf(path.name)===0){	
+        return ' menuactive'	
+      }	
+      return ''	
+    },
+     showPasswordLogin(){	
+      this.showPwdSheet = true	
+    },
     //取消输入密码，则直接无密码跳转账户
     canclePwdInput(){
       this.showPwdSheet=false
       //this.choseAccountNoPwd({index:this.selectedIndex, account: this.selectedAccount.address})
     },
+
     //校验密码是否正确，不正确则提示，正确则跳转账户
     okPwdInput(){
       if(this.checkPwd)return
@@ -208,7 +219,7 @@ export default {
 
       }).then(data => {
         this.updateFederationAndInflationInfo()
-        this.$store.commit(ACCOUNT_IS_FUNDING)
+        this.$store.commit('ACCOUNT_IS_FUNDING')
         //检查当前用户是否设置了通胀池
         if(!this.accountDetails.inflation_destination){
           this.inflation_unset = true
@@ -237,10 +248,35 @@ export default {
           // this.$emit('unfunding')
           return
         }
-        this.$toasted.error(this.$t('Error.PasswordWrong'))
         this.checkPwd = false
       })
     },
+     updateFederationAndInflationInfo() {
+      // update home_domain and inflation_destination from horizon.
+      console.log("updateFederationAndInflationInfo")
+      console.log(this.accountData)
+      if (this.account.inflationAddress !== this.accountDetails.inflation_destination 
+        || this.account.federationAddress !== this.accountDetails.home_domain) {
+        let data = defaultsDeep({}, this.account, {
+          federationAddress: this.accountDetails.home_domain,
+          inflationAddress: this.accountDetails.inflation_destination
+        })
+        let params = {
+          index: this.selectedAccountIndex,
+          account: data
+        }
+        console.log(params)
+        this.updateAccount(params)
+          .then(data => {
+            console.log("success")
+          })
+          .catch(err => {
+            console.log("failed")
+            console.error(err)
+          })
+      }
+    },
+
   }
 }
 </script>

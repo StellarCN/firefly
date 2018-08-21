@@ -223,7 +223,7 @@ import loadaccount from '@/mixins/loadaccount'
 import BottomNotice from '@/components/BottomNotice'
 var moment = require('moment')
 import UnFundNotice from '@/components/UnFundNotice'
-
+import  defaultsDeep  from 'lodash/defaultsDeep'
 const FLAG_BUY = 'buy'
 const FLAG_SELL = 'sell'
 const FLAG_MYOFFER = 'myOffer'
@@ -413,7 +413,7 @@ export default {
       this.$router.back()
     },
     nativeBalance(){
-      let d = _.defaultsDeep({}, this.balances.filter(item=>isNativeAsset(item))[0])
+      let d = defaultsDeep({}, this.balances.filter(item=>isNativeAsset(item))[0])
       let t = this.native.balance - this.reserve - this.base_reserve - 0.0001
       if(t < 0 ) t = 0 
       d.balance = Number(t.toFixed(7))
@@ -428,8 +428,8 @@ export default {
           return asset.code ===item.code && asset.issuer === item.issuer
         }
       })
-      if(data.length === 0)return _.defaultsDeep({balance: 0}, asset)
-      return _.defaultsDeep({}, data[0])
+      if(data.length === 0)return defaultsDeep({balance: 0}, asset)
+      return defaultsDeep({}, data[0])
     },
 
     setNum(){

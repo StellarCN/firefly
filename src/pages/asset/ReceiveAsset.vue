@@ -157,9 +157,10 @@ export default {
       // use stargaze pattern
       //{"stellar":{"payment":{"destination":"GAD2....5UZ6","amount":1,"asset":{"code":"BTC","issuer":"GATEMH....MTCH"}}}}
       let data = {stellar:{payment:{destination:this.account.address,amount: this.num}}}
-      if(isNativeAsset(this.selectedasset)){
-        data.stellar.payment.asset = {code:this.selectedasset, issuer: this.selectedasset.issuer}
+      if(!isNativeAsset(this.selectedasset)){
+        data.stellar.payment.asset = {code:this.selectedasset.code, issuer: this.selectedasset.issuer}
       }
+      console.log(JSON.stringify(data))
       return JSON.stringify(data)
     }
   

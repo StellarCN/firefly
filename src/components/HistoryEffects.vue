@@ -5,12 +5,12 @@
                 <v-flex xs12 v-for="item in effectsData" :key="item.id+item.paging_token" >
                     <v-flex xs12 v-if="item.type=='account_credited'" class="content_style">
                         <v-layout>
-                            <v-flex xs7 class="itemtype_account_credited">{{$t("AccountCredited")}}</v-flex>
+                            <v-flex xs7 class="itemtype_account_credited">Account Credited</v-flex>
                             <v-flex xs5 class="itemstylef_account_credited" v-if="item.tx!=undefined&&item.tx.length!=0" >TX:{{getEffectsDataMiniAddress(item.tx)}}</v-flex>
                         </v-layout>
                         <v-layout>
                             <v-flex xs7 class="itemtime_account_credited" >{{getlocaltime(item.time)}}</v-flex>
-                            <v-flex xs5 class="itemstyleth_account_credited">{{$t("AssetCode")}}：{{item.asset_type==="native"?"XLM":item.asset_type}}</v-flex>
+                            <v-flex xs5 class="itemstyleth_account_credited">{{$t("AssetCode")}}：{{item.asset_type==="native"?"XLM":item.asset_code}}</v-flex>
                         </v-layout>
                         <v-layout>
                             <v-flex xs7 class="itemstyleo_account_credited">{{$t("SourceAccount")}}:{{getEffectsDataMiniAddress(item.account)}}</v-flex>
@@ -28,7 +28,7 @@
                         <v-layout xs12>
                                 <v-flex xs5 class="itemstyleo_trade">+{{item.bought_amount}}{{item.bought_asset_code}}</v-flex>
                                 <v-flex xs1 class="itemstylet_trade">/</v-flex>    
-                                <v-flex xs6 class="itemstyleth_trade" >-{{item.sold_amount}}{{item.sold_asset_type==="native"?"XLM":item.sold_asset_type}}</v-flex>    
+                                <v-flex xs6 class="itemstyleth_trade" >-{{item.sold_amount}}{{item.sold_asset_type==="native"?"XLM":item.sold_asset_code}}</v-flex>    
                         </v-layout>
                           <v-layout>
                         </v-layout>                             
@@ -40,7 +40,7 @@
                         </v-layout>
                         <v-layout>
                             <v-flex xs7 class="itemtime_trustline_c">{{getlocaltime(item.time,item.tx)}}</v-flex>
-                            <v-flex xs5 class="itemstyleth_trustline_c">{{$t("AssetCode")}}：{{item.asset_code}}</v-flex>
+                            <v-flex xs5 class="itemstyleth_trustline_c">{{$t("AssetCode")}}：{{item.asset_type==="native"?"XLM":item.asset_code}}</v-flex>
                         </v-layout>
                         <v-layout>
                             <v-flex xs12 class="itemstylet_trustline_c">{{$t("AssetIssuer")}}:&nbsp;{{getEffectsDataMiniAddress(item.asset_issuer)}}</v-flex>
@@ -53,7 +53,7 @@
                         </v-layout>
                         <v-layout xs12>
                             <v-flex xs7 class="itemtime_trustline_r">{{getlocaltime(item.time,item.tx)}}</v-flex>
-                            <v-flex xs5 class="itemstyleth_trustline_r">{{$t("AssetCode")}}：{{item.asset_code}}</v-flex> 
+                            <v-flex xs5 class="itemstyleth_trustline_r">{{$t("AssetCode")}}：{{item.asset_type==="native"?"XLM":item.asset_code}}</v-flex> 
                         </v-layout>
                         <v-layout>
                             <v-flex xs12 class="itemstylet_trustline_r">{{$t("AssetIssuer")}}:{{getEffectsDataMiniAddress(item.asset_issuer)}}</v-flex>
@@ -61,12 +61,12 @@
                     </v-flex>
                     <v-flex v-if="item.type=='account_debited'" xs12 class="content_style">
                         <v-layout xs12>
-                            <v-flex xs7 class="itemtype_account_debited">{{$t("AccountDebited")}}</v-flex>
+                            <v-flex xs7 class="itemtype_account_debited">Account Debited</v-flex>
                             <v-flex xs5 class="itemstylef_account_debited" v-if="item.tx!=undefined&&item.tx.length!=0">TX:{{getEffectsDataMiniAddress(item.tx)}}</v-flex>
                         </v-layout>
                         <v-layout>
                             <v-flex xs7 class="itemtime_account_debited">{{getlocaltime(item.time)}}</v-flex>
-                            <v-flex xs5 class="itemstyleth_account_debited">{{$t("AssetCode")}}：{{item.asset_type==="native"?"XLM":item.asset_type}}</v-flex>
+                            <v-flex xs5 class="itemstyleth_account_debited">{{$t("AssetCode")}}：{{item.asset_type==="native"?"XLM":item.asset_code}}</v-flex>
                         </v-layout>
                         <v-layout>
                             <v-flex xs7 class="itemstyleo_account_debited">{{$t("SourceAccount")}}：{{getEffectsDataMiniAddress(item.account)}}</v-flex>
@@ -129,11 +129,8 @@
                     </v-flex>
                 </v-flex>
                     <v-flex xs12 class="loadmorestyle">
-                        <v-layout xs12>
-                            <v-flex v-if="this.loading_flag" xs12>{{"loading..."}}</v-flex>
-                            <v-flex v-else-if="this.loadmore_isflag" @click="loadmore" xs12>{{$t("LoadMore")}}</v-flex>
-                            <v-flex v-else xs12>{{$t("NoMoreData")}}</v-flex>
-                        </v-layout>
+                        <v-btn block flat v-if="loadmore_isflag" class="mt-1"   :loading="loading_flag" color="primary" @click="loadmore">{{$t('LoadMore')}}</v-btn>
+                        <div v-if="!loading_flag && !loadmore_isflag">{{$t("NoMoreData")}}</div>
                     </v-flex>
             </div>
         
@@ -195,8 +192,10 @@ export default {
       },
       getEffectsData(){
           console.log('------------get')
+          this.loading_flag = true
           if(this.effectsInstance){
               this.effectsInstance.next().then(response=>{
+                  this.loading_flag = false
                   console.log('----------effect instance --')
                   console.log(response)
                   this.loadmore_count= this.effectsData.length
@@ -218,11 +217,14 @@ export default {
                     console.log(item)
                     })
                     })
+                    
               }).catch(err=>{
+                  this.loading_flag = false
                   console.error(err)
               })
           }else{
               fetchEffects(this.account.address).then(response=>{
+                  this.loading_flag = false
                   this.effectsInstance = response
                 this.effectsData = this.effectsData.concat(response.records)
                 this.effectsData = this.effectsData.map(item=> Object.assign({time: '',tx: ''},item))
@@ -247,8 +249,8 @@ export default {
                   this.dataObj.push(tempObj)
                   })
                   })
-                  this.loading_flag = false
               }).catch(err=>{
+                  this.loading_flag = false
                   console.error(err)
               })
           }

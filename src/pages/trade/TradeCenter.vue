@@ -268,16 +268,8 @@ export default {
   watch:{
   },
   beforeMount(){
-    let locale = this.app.locale
-    if(locale && locale.key !== ZH_CN.key){
-      this.allTags = TAGS_OTHER
-      this.allTagsLabel = [TAG_BTC, TAG_XLM, TAG_XCN, this.$t('custom')]
-    }else{
-      this.allTags = TAGS_ZH_CN
-      this.allTagsLabel = [TAG_XCN, TAG_BTC, TAG_XLM, this.$t('custom')]
-    }
-    this.filterTag = TAGS_OTHER[0]
     
+    this.initTagAndLables()
     //保存默认的交易对
     // this.saveDefaultTradePairs()
     // let custom = this.tradepairs.custom
@@ -286,7 +278,13 @@ export default {
     //   this.tagIndex = TAGS.indexOf(TAG_CUSTOM).toString()
     // }
     // this.allTagsLabel = [TAG_XCN, TAG_BTC, TAG_XLM, this.$t('custom')]
-    this.reloadTradePairs().then(data=>{}).catch(err=>{});
+    this.reloadTradePairs().then(data=>{
+      //this.allTags = []
+     // this.allTagsLabel = []
+      this.$nextTick(()=>{
+       // this.initTagAndLables()
+      })
+    }).catch(err=>{});
   },
   mounted(){
     // if(!this.islogin){
@@ -307,6 +305,18 @@ export default {
       saveTradePairStat: 'saveTradePairStat',
 
     }),
+    initTagAndLables(){
+      let locale = this.app.locale
+      if(locale && locale.key !== ZH_CN.key){
+        this.allTags = TAGS_OTHER
+        this.allTagsLabel = [TAG_BTC, TAG_XLM, TAG_XCN, this.$t('custom')]
+      }else{
+        this.allTags = TAGS_ZH_CN
+        this.allTagsLabel = [TAG_XCN, TAG_BTC, TAG_XLM, this.$t('custom')]
+      }
+      this.tagIndex = 0
+      this.filterTag = this.allTags[0]
+    },
     reloadTradePairs(){
       let promises = [this.saveDefaultTradePairsStat()]
       let custom = this.tradepairs.custom

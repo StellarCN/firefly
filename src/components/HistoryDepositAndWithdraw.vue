@@ -45,8 +45,9 @@
     <!-- 内容： 充值/提现 -->
     <card class="dw-card" padding="10px 10px" margin="10px 0px" v-if="selectedasset.code">
       <div class="dw-card-content" slot="card-content">
-        
-        <v-progress-circular indeterminate color="primary" v-if="working"></v-progress-circular>
+        <div class="progress-wrapper textcenter pa-4" v-if="working">
+          <v-progress-circular indeterminate color="primary" ></v-progress-circular>
+        </div>
 
         <div class="dw-error" v-if="!working && error">
           {{$t('DW.Error.NoDepositServiceDesc')}}
@@ -108,7 +109,7 @@ import { isNativeAsset } from '@/api/assets'
 import Loading from './Loading'
 import { Decimal } from 'decimal.js'
 import { getXdrResultCode } from '@/api/xdr'
-import { getDepositAndWithdrawRecords } from '@/api/fchain'
+import { getDepositAndWithdrawRecordsV2 } from '@/api/fchain'
 import  defaultsDeep  from 'lodash/defaultsDeep'
 var moment = require('moment')
 
@@ -121,7 +122,7 @@ const TYPE_WITHDRAW = 'withdraw'
         selectedasset:{},
         assetChoseReturnObject: true,
         working: false,
-        records:{},
+        records:{deposit:[],withdraw:[]},
         active: TYPE_DEPOSIT,
         error: null,
 
@@ -171,25 +172,23 @@ const TYPE_WITHDRAW = 'withdraw'
         })
       },
       queryDW(){
-        console.log(this.selectedasset.code)
-        console.log(!this.selectedasset.code)
-        console.log(this.working)
         if(!this.selectedasset.code)return;
         if(this.working)return
         this.working = true
         this.error = null
-          getDepositAndWithdrawRecords(this.account.address, this.selectedasset.code, this.selectedasset.issuer)
+        getDepositAndWithdrawRecordsV2(this.active, this.account.address, this.selectedasset.code, this.selectedasset.issuer)
           .then(response=>{
-            this.records = response.data
+            this.records[this.active] = response.data[this.active]
             this.working = false
           }).catch(err=>{
             this.working = false
-            this.records = {}
+            this.records[this.active] = []
             this.error = err.message
           })
       },
       switchMenu(type){
         this.active = type
+        this.queryDW()
       },
       changeAsset(){
         this.$nextTick(()=>{
