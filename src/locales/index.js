@@ -26,16 +26,23 @@ export const ZH_TW = {
   label: '台灣正體'
 }
 
+export const TH = {
+  key: 'th',
+  label: 'ไทย'
+}
+
 export const LANGUAGES = [
   EN,
   ZH_CN,
-  ZH_HK
+  ZH_HK,
+  TH
 ]
 
 export const MOMENT_LANGUAGES = {
   'zh_cn': 'zh-cn',
   'en': 'en',
   'zh_hk': 'zh-hk',
+  'th':'th'
   // 'zh_tw': 'zh-tw'
   
 }
@@ -50,7 +57,9 @@ export function getDeviceLanguage(){
           resolve(ZH_HK)
         }else if('zh-TW' === val){
           resolve(ZH_HK)
-        } else {
+        } else if('th' === val){
+          resolve(TH)
+        }else{
           resolve(EN)
         }
       },()=>{
