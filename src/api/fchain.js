@@ -118,3 +118,22 @@ export function getFchainRss(){
 
   })
 }
+
+//交易所地址
+const EXCHANGES_URL = 'https://update.fchain.io/config/exchanges.json'
+export function exchangeAddresses(){
+  return new Promise((resolve,reject) => {
+    cordova.plugin.http.get(EXCHANGES_URL, {},  {}, (response) => {
+      let data = JSON.parse(response.data)
+      let result = {}
+      data.forEach(element => {
+        element.accounts.forEach(ac => {
+          result[ac] = Object.assign({}, element)
+        })
+      });
+      resolve(result);
+    }, (response) => {
+      reject(response.error)
+    });
+  });
+}

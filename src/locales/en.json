@@ -533,7 +533,8 @@
   "autofund_hint":"please wait, autofund is working...",
   "manageOffer":"manage offer",
   "createPassiveOffer":"create passive offer",
-  "accountMerge":"merge account"
+  "accountMerge":"merge account",
+  "send_to_exchange":"sendint to exchange {0} with no memo, are you sure?"
 
 
   

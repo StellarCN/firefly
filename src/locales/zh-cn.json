@@ -525,7 +525,8 @@
   "autofund_hint":"请稍等，正在进行激活操作！",
   "manageOffer":"操作委单",
   "createPassiveOffer":"创建延迟委单",
-  "accountMerge":"合并账户"
+  "accountMerge":"合并账户",
+  "send_to_exchange":"正在向{0}交易所转账，没有填写备注，您确认发送么？"
 
  
  
