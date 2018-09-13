@@ -3,7 +3,7 @@
  * @Author: mazhaoyong@gmail.com 
  * @Date: 2018-03-05 17:30:09 
  * @Last Modified by: mazhaoyong@gmail.com
- * @Last Modified time: 2018-05-25 11:21:44
+ * @Last Modified time: 2018-08-27 11:12:07
  * @License MIT 
  */
  <template>
@@ -125,6 +125,9 @@
     },
     keyBoardChange(val){
       let value = this.$refs.keyboard.getInputValue()
+      if(!value.startsWith('S-')){
+        value = 'S' + value
+      }
       this.seedInput = util.getFormattedValue(
             value,
             this.blocks, this.blocks.length,

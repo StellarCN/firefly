@@ -525,7 +525,8 @@
   "autofund_hint":"請稍等，正在進行激活操作！",
   "manageOffer":"操作委單",
   "createPassiveOffer":"創建延遲委單",
-  "accountMerge":"合并賬戶"
+  "accountMerge":"合并賬戶",
+  "send_to_exchange":"正在向{0}交易所轉賬，沒有填寫備註，您確認發送么？"
 
   
 

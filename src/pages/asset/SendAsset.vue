@@ -143,6 +143,7 @@
     <contact-book v-show="showContacts" :data="contactsdata" :close="()=>{showContacts=false}" :ok="selectContact"/>
 
     <contact-book v-show="showmemobook" :data="memobookdata" :close="()=>{showmemobook=false}" :ok="selectmemo"/>
+      
       <div v-if="is_sendconfim" class="sendconfim_bottom_sheet">
         <v-bottom-sheet  v-model="is_sendconfim" dark>
             <v-container class="v_container">
@@ -196,6 +197,18 @@
             </v-container>
         </v-bottom-sheet>
       </div>
+
+    <v-dialog v-model="exchangeConfirmDlg" persistent max-width="95%">
+      <v-card>
+        <v-card-text class="ex_content">{{$t('send_to_exchange', [choosedExchange])}}</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green" flat @click.native="is_sendconfim = exchangeConfirmDlg = false">{{$t('Button.Cancel')}}</v-btn>
+          <v-btn color="red" flat @click.native="doSend">{{$t('Button.OK')}}</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
   </div>
 </template>
 
@@ -211,6 +224,7 @@ import { resolveByFedAddress } from '@/api/federation'
 import ContactBook from '@/components/ContactBook'
 import { xdrMsg,getXdrResultCode } from '@/api/xdr'
 import { isNativeAsset } from '@/api/assets'
+import { exchangeAddresses } from '@/api/fchain'
 
 //TODO 校验输入数据不能超过最大值
 
@@ -260,6 +274,10 @@ export default {
       //wdp改动的地方3
       is_sendconfim:false,//是否显示发送确认的bottom-list
 
+      exchanges: null,
+      choosedExchange: null,
+      exchangeConfirmDlg: false,
+
     }
   },
    computed:{
@@ -285,6 +303,7 @@ export default {
 
   },
   mounted(){
+    this.initExchanges();
     this.selectedasset = Object.assign({id: this.asset.code+'-'+ this.asset.issuer}, this.asset)
     if (this.$route.params.destination) {
       console.log('set destination')
@@ -322,6 +341,13 @@ export default {
     }),
     back(){
       this.$router.back()
+    },
+    initExchanges(){
+      exchangeAddresses().then(result=>{
+        this.exchanges = result;
+      }).catch(err=>{
+        console.error(err);
+      })
     },
     onMemoTypeInput () {
       if(this.memotype === 'None'){
@@ -456,7 +482,6 @@ export default {
         }
       }
 
-
       let dest = this.destination
       if(this.destination.indexOf("*")>0){
         dest = this.realDestination
@@ -466,7 +491,19 @@ export default {
         this.$toasted.error(this.$t('Error.UnValidatedAddress'))
         return
       }
-
+     
+      if(this.exchanges && this.exchanges[dest] 
+        && !this.memoswitch 
+        && (this.memotype === null || typeof this.memotype === 'undefined' 
+          ||this.memo === null || typeof this.memo === 'undefined' )
+        ){
+        this.choosedExchange = this.exchanges[dest].name
+        this.exchangeConfirmDlg = true
+      }else{
+        this.doSend(seed, dest);
+      }
+    },
+    doSend(seed,dest){
       let params = {
         seed,
         address: this.account.address,
@@ -519,7 +556,6 @@ export default {
           }
 
         })
-
     },
     // hideLoading(){
     //   setTimeout(()=>{
@@ -797,6 +833,7 @@ export default {
 .hidebackground
   background none
 
-
+.ex_content
+  font-size: .5rem
 
 </style>
