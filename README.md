@@ -57,7 +57,7 @@ npm i -g cordova@7.1.0
 npm install -g cordova-hot-code-push-cli
 
 
-git clone https://github.com/stellarcn/firelfy.git
+git clone https://github.com/StellarCN/firefly.git
 cd firefly
 npm i
 # build 
