@@ -114,6 +114,27 @@
 <!--   
   <tab-bar />
    -->
+
+
+    <v-dialog v-model="showUpdateHintDlg" max-width="95%" persistent class="upDlg">
+      <div>
+        <div class="a-card-content">
+          <div class="avatar-div textcenter">
+            <v-avatar>
+              <img src="../../assets/img/logo-red.png" />
+            </v-avatar>
+          </div>
+          <div class="uhint" v-html="$t('update_2_native_hint')" @click="toUpdate">
+            
+          </div>
+          <div class="u-btns flex-row">
+            <div class="flex1 u-red textcenter" @click="toUpdate">{{$t('Button.OK')}}</div>
+            <div class="flex1 u-red textcenter" @click="showUpdateHintDlg=false">{{$t('Button.Cancel')}}</div>
+          </div>
+        </div>
+      </div>
+    </v-dialog>
+
   
    <bottom-notice :show.sync="notice" :text="noticeText"></bottom-notice>
 
@@ -172,6 +193,7 @@ export default {
       notice: false,
 
       showaccountsview: false,
+      showUpdateHintDlg: true,
 
       working:false,
       delok: false,
@@ -463,6 +485,9 @@ export default {
     closeView(){
         this.showaccountsview = false
     },
+    toUpdate(){
+      window.open('https://wallet.fchain.io', "_system");
+    }
    
   },
   components: {

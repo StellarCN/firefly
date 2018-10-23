@@ -534,7 +534,8 @@
   "manageOffer":"manage offer",
   "createPassiveOffer":"create passive offer",
   "accountMerge":"merge account",
-  "send_to_exchange":"sendint to exchange {0} with no memo, are you sure?"
+  "send_to_exchange":"sendint to exchange {0} with no memo, are you sure?",
+  "update_2_native_hint":"Hi, this version is about to stop updating. The firefly team has launched a new version of wallet, smooth and fast. Please visit <b>https://wallet.fchain.io</b> to download."
 
 
   

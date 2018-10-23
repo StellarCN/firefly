@@ -526,7 +526,8 @@
   "manageOffer":"操作委单",
   "createPassiveOffer":"创建延迟委单",
   "accountMerge":"合并账户",
-  "send_to_exchange":"正在向{0}交易所转账，没有填写备注，您确认发送么？"
+  "send_to_exchange":"正在向{0}交易所转账，没有填写备注，您确认发送么？",
+  "update_2_native_hint":"亲爱的小主，本版钱包即将停止更新。萤火团队已推出新版原生钱包：流畅、清爽、不卡顿。请立即下载：<b>https://wallet.fchain.io</b>"
 
  
  

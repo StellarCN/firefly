@@ -526,7 +526,8 @@
   "manageOffer":"操作委單",
   "createPassiveOffer":"創建延遲委單",
   "accountMerge":"合并賬戶",
-  "send_to_exchange":"正在向{0}交易所轉賬，沒有填寫備註，您確認發送么？"
+  "send_to_exchange":"正在向{0}交易所轉賬，沒有填寫備註，您確認發送么？",
+  "update_2_native_hint":"親愛的小主，本版錢包即將停止更新。螢火團隊已推出新版原生錢包：流暢、清爽、不卡頓。請立即下載：<b>https://wallet.fchain.io</b>"
 
   
 

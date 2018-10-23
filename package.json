@@ -31,7 +31,7 @@
     "axios": ">0.17.1",
     "better-scroll": "^1.4.2",
     "bip39": "^2.4.0",
-    "cordova": "^8.0.0",
+    "cordova": "^7.1.0",
     "cordova-android": "^7.1.1",
     "cordova-browser": "^5.0.4",
     "cordova-clipboard": "^1.1.1",
