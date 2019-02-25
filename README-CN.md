@@ -3,6 +3,14 @@
 萤火钱包是[恒星网络](https://stellar.org)的手机钱包，支持安卓和IOS平台
 
 
+## 项目不再维护
+
+项目转移到[fchainio/firefly](https://github.com/fchainio/firefly)。
+
+## 您可以阅读、修改本项目源码，但不能用于商务活动，萤火官方保留相关法律权益。
+
+
+
 ## [English Document](README.md)
 
 ## [DAPP API文档](http://fireflyapi.mydoc.io/)
@@ -73,6 +81,6 @@ npm run cordova # 下载android和ios及相关插件
 
 
 ## 开源协议
-**萤火钱包** 使用 **MIT License**
+**萤火钱包** 使用 **FChain License**
 
 

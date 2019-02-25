@@ -4,6 +4,13 @@
 firefly is a mobile wallet for [Stellar](https://stellar.org) network. It supports android and ios platforms
 
 
+## No longer maintained.
+
+Transfer to [fchainio/firefly](https://github.com/fchainio/firefly)。
+
+## You can read or edit this project personally, but not for commecial usage.
+
+
 ## [中文文档](README-CN.md)
 
 ## [DAPP API文档](http://fireflyapi.mydoc.io/)
@@ -75,6 +82,6 @@ npm run cordova # download android and ios plugins
 
 
 ## License
-**firefly** is released under **MIT License**
+**firefly** is released under **FChain License**
 
 
